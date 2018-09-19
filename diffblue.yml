@@ -9,7 +9,7 @@ phases:
     java-test-input-factory: bmc
     lazy-methods-extra-entry-point: [ '(?!javax?).*<init>.*', '(?!javax?).*\.set[A-Z]\w*' ]
     java-assume-inputs-non-null: true
-    string-max-input-length: 20
+    max-nondet-string-length: 20
 -
   timeout: 120
   cbmcArguments:
@@ -19,7 +19,7 @@ phases:
     java-test-input-factory: bmc
     lazy-methods-extra-entry-point: [ '(?!javax?).*<init>.*', '(?!javax?).*\.set[A-Z]\w*' ]
     java-assume-inputs-non-null: true
-    string-max-input-length: 20
+    max-nondet-string-length: 20
 -
   timeout: 300
   cbmcArguments:
@@ -29,4 +29,4 @@ phases:
     java-test-input-factory: bmc
     lazy-methods-extra-entry-point: [ '(?!javax?).*<init>.*', '(?!javax?).*\.set[A-Z]\w*' ]
     java-throw-runtime-exceptions: true
-    string-max-input-length: 20
+    max-nondet-string-length: 20
