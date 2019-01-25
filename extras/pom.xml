@@ -6,11 +6,14 @@
   <version>1.0-SNAPSHOT</version>
   <inceptionYear>2008</inceptionYear>
   <name>Gson Extras</name>
+  
   <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>9</version>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson-parent</artifactId>
+    <version>2.8.6-SNAPSHOT</version>
+    <relativePath>../parent/pom.xml</relativePath>
   </parent>
+  
   <url>http://code.google.com/p/google-gson/</url>
   <description>Google Gson grab bag of utilities, type adapters, etc.</description>
   <properties>
