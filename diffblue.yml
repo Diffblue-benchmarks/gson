@@ -1,0 +1,25 @@
+cbmcArguments:
+ depth: false
+phases:
+-
+ timeout: 300
+ cbmcArguments:
+   classpath: '/tools/cbmc/models-simple-overlay.jar:/tools/cbmc/models.jar:.'
+   max-nondet-array-length: 100
+   java-max-vla-length: false
+   unwind: 1
+-
+ timeout: 300
+ cbmcArguments:
+   classpath: '/tools/cbmc/models-simple-overlay.jar:/tools/cbmc/models.jar:.'
+   max-nondet-array-length: 100
+   java-max-vla-length: false
+   unwind: 2
+-
+ timeout: 300
+ cbmcArguments:
+   classpath: '/tools/cbmc/models.jar:.'
+   max-nondet-array-length: 100
+   java-max-vla-length: false
+   unwind: 3
+   
