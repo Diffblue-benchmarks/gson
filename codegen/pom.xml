@@ -39,14 +39,14 @@
     <name>Google, Inc.</name>
     <url>http://www.google.com</url>
   </organization>
-  <dependencies>
+  <!-- <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.2</version>
       <scope>test</scope>
     </dependency>
-  </dependencies>
+  </dependencies> -->
   <profiles>
     <!-- Activate PGP signing only when performing a release -->
     <profile>
