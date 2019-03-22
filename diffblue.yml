@@ -1,3 +1,4 @@
+skipVerification: true
 cbmcArguments:
   java-version: 6
 phases:
