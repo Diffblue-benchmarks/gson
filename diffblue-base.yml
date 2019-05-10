@@ -8,5 +8,35 @@
 # merging a custom yml file on top of this one using the script
 # in dashboard/scripts/update-diffblue-yml. Any options specified here would
 # be overriden to keep consistency with other benchmarks.
+exceptionJson: true
 cbmcArguments:
   java-version: 6
+  java-stub-specified-exceptions-file: 'dependency-exceptions.json'
+  java-load-class:
+    - java.io.IOException
+    - java.net.UnknownHostException
+    - java.lang.SecurityException
+    - org.jacoco.agent.rt.internal_28bab1d.core.data.IncompatibleExecDataVersionException
+    - org.junit.experimental.theories.PotentialAssignment$CouldNotGenerateValueException
+    - java.lang.reflect.InvocationTargetException
+    - org.junit.internal.runners.FailedBefore
+    - org.junit.runner.notification.StoppedByUserException
+    - org.junit.internal.ArrayComparisonFailure
+    - java.lang.InterruptedException
+    - java.lang.Exception
+    - org.junit.runners.model.InitializationError
+    - org.junit.runner.FilterFactory$FilterNotCreatedException
+    - java.lang.Throwable
+    - org.junit.runner.manipulation.NoTestsRemainException
+    - org.jacoco.agent.rt.internal_28bab1d.asm.MethodTooLargeException
+    - java.lang.instrument.IllegalClassFormatException
+    - org.junit.experimental.max.CouldNotReadCoreException
+    - java.lang.ClassNotFoundException
+    - org.jacoco.agent.rt.internal_28bab1d.asm.ClassTooLargeException
+    - java.lang.IllegalStateException
+    - java.lang.IllegalAccessException
+    - java.lang.NoSuchMethodException
+    - java.lang.AssertionError
+    - org.junit.internal.runners.InitializationError
+    - java.lang.InstantiationException
+    - java.lang.IllegalArgumentException

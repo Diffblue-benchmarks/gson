@@ -1,0 +1,1873 @@
+[
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.Assert\\.assertArrayEquals\\:\\(Ljava\\/lang\\/String\\;\\[Ljava\\/lang\\/Object\\;\\[Ljava\\/lang\\/Object\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.Assert\\.assertArrayEquals\\:\\(Ljava\\/lang\\/String\\;\\[Z\\[Z\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.Assert\\.assertArrayEquals\\:\\(Ljava\\/lang\\/String\\;\\[B\\[B\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.Assert\\.assertArrayEquals\\:\\(Ljava\\/lang\\/String\\;\\[C\\[C\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.Assert\\.assertArrayEquals\\:\\(Ljava\\/lang\\/String\\;\\[S\\[S\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.Assert\\.assertArrayEquals\\:\\(Ljava\\/lang\\/String\\;\\[I\\[I\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.Assert\\.assertArrayEquals\\:\\(Ljava\\/lang\\/String\\;\\[J\\[J\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.Assert\\.assertArrayEquals\\:\\(Ljava\\/lang\\/String\\;\\[D\\[DD\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.Assert\\.assertArrayEquals\\:\\(Ljava\\/lang\\/String\\;\\[F\\[FF\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.Assert\\.internalArrayEquals\\:\\(Ljava\\/lang\\/String\\;Ljava\\/lang\\/Object\\;Ljava\\/lang\\/Object\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.ExternalResource\\.before\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TestWatcher\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/rules\\/TestWatcher\\;Lorg\\/junit\\/runner\\/Description\\;Lorg\\/junit\\/runners\\/model\\/Statement\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TestWatcher\\$1\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TemporaryFolder\\.before\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TemporaryFolder\\.create\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TemporaryFolder\\.newFile\\:\\(Ljava\\/lang\\/String\\;\\)Ljava\\/io\\/File\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TemporaryFolder\\.newFile\\:\\(\\)Ljava\\/io\\/File\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TemporaryFolder\\.newFolder\\:\\(Ljava\\/lang\\/String\\;\\)Ljava\\/io\\/File\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TemporaryFolder\\.newFolder\\:\\(\\[Ljava\\/lang\\/String\\;\\)Ljava\\/io\\/File\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TemporaryFolder\\.validateFolderName\\:\\(Ljava\\/lang\\/String\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TemporaryFolder\\.newFolder\\:\\(\\)Ljava\\/io\\/File\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TemporaryFolder\\.createTemporaryFolderIn\\:\\(Ljava\\/io\\/File\\;\\)Ljava\\/io\\/File\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.RunRules\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TestWatchman\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/rules\\/TestWatchman\\;Lorg\\/junit\\/runners\\/model\\/FrameworkMethod\\;Lorg\\/junit\\/runners\\/model\\/Statement\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.TestWatchman\\$1\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.Verifier\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/rules\\/Verifier\\;Lorg\\/junit\\/runners\\/model\\/Statement\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.Verifier\\$1\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.ExpectedException\\.handleException\\:\\(Ljava\\/lang\\/Throwable\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.AssertionError"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.ExpectedException\\.failDueToMissingException\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.ExpectedException\\.access\\$000\\:\\(Lorg\\/junit\\/rules\\/ExpectedException\\;Ljava\\/lang\\/Throwable\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.AssertionError"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.ExpectedException\\.access\\$200\\:\\(Lorg\\/junit\\/rules\\/ExpectedException\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.ExpectedException\\$ExpectedExceptionStatement\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.ErrorCollector\\$1\\.call\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.Verifier\\.verify\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.Timeout\\.createFailOnTimeoutStatement\\:\\(Lorg\\/junit\\/runners\\/model\\/Statement\\;\\)Lorg\\/junit\\/runners\\/model\\/Statement\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.Timeout\\$1\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.ExternalResource\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/rules\\/ExternalResource\\;Lorg\\/junit\\/runners\\/model\\/Statement\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.ExternalResource\\$1\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.rules\\.ErrorCollector\\.verify\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.AllTests\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.JUnit4\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.BlockJUnit4ClassRunner\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.BlockJUnit4ClassRunner\\.createTest\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.ParentRunner\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.manipulation.NoTestsRemainException"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.ParentRunner\\.filter\\:\\(Lorg\\/junit\\/runner\\/manipulation\\/Filter\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.ParentRunner\\.validate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.BlockJUnit4ClassRunner\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/runners\\/BlockJUnit4ClassRunner\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.BlockJUnit4ClassRunner\\$1\\.runReflectiveCall\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.parameterized\\.ParametersRunnerFactory\\.createRunnerForTestWithParameters\\:\\(Lorg\\/junit\\/runners\\/parameterized\\/TestWithParameters\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.parameterized\\.BlockJUnit4ClassRunnerWithParameters\\.\\<init\\>\\:\\(Lorg\\/junit\\/runners\\/parameterized\\/TestWithParameters\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.parameterized\\.BlockJUnit4ClassRunnerWithParameters\\.createTest\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.parameterized\\.BlockJUnit4ClassRunnerWithParameters\\.createTestUsingConstructorInjection\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.parameterized\\.BlockJUnit4ClassRunnerWithParameters\\.createTestUsingFieldInjection\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.parameterized\\.BlockJUnit4ClassRunnerWithParametersFactory\\.createRunnerForTestWithParameters\\:\\(Lorg\\/junit\\/runners\\/parameterized\\/TestWithParameters\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Suite\\.getAnnotatedClasses\\:\\(Ljava\\/lang\\/Class\\;\\)\\[Ljava\\/lang\\/Class\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Suite\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;Lorg\\/junit\\/runners\\/model\\/RunnerBuilder\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Suite\\.\\<init\\>\\:\\(Lorg\\/junit\\/runners\\/model\\/RunnerBuilder\\;\\[Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Suite\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;\\[Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Suite\\.\\<init\\>\\:\\(Lorg\\/junit\\/runners\\/model\\/RunnerBuilder\\;Ljava\\/lang\\/Class\\;\\[Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Suite\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;Ljava\\/util\\/List\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.model\\.MultipleFailureException\\.assertEmpty\\:\\(Ljava\\/util\\/List\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.model\\.RunnerBuilder\\.runnerForClass\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.model\\.RunnerBuilder\\.addParent\\:\\(Ljava\\/lang\\/Class\\;\\)Ljava\\/lang\\/Class\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.model\\.RunnerBuilder\\.runners\\:\\(Ljava\\/lang\\/Class\\;\\[Ljava\\/lang\\/Class\\;\\)Ljava\\/util\\/List\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.model\\.RunnerBuilder\\.runners\\:\\(Ljava\\/lang\\/Class\\;Ljava\\/util\\/List\\;\\)Ljava\\/util\\/List\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.IllegalArgumentException", 
+   "java.lang.IllegalAccessException"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.model\\.FrameworkField\\.get\\:\\(Ljava\\/lang\\/Object\\;\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.model\\.Statement\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.model\\.FrameworkMethod\\.invokeExplosively\\:\\(Ljava\\/lang\\/Object\\;\\[Ljava\\/lang\\/Object\\;\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.reflect.InvocationTargetException", 
+   "java.lang.IllegalAccessException"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.model\\.FrameworkMethod\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/runners\\/model\\/FrameworkMethod\\;Ljava\\/lang\\/Object\\;\\[Ljava\\/lang\\/Object\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.model\\.FrameworkMethod\\$1\\.runReflectiveCall\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Parameterized\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.InstantiationException", 
+   "java.lang.IllegalAccessException"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Parameterized\\.getParametersRunnerFactory\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runners\\/parameterized\\/ParametersRunnerFactory\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Parameterized\\.allParameters\\:\\(\\)Ljava\\/lang\\/Iterable\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Parameterized\\.getParametersMethod\\:\\(\\)Lorg\\/junit\\/runners\\/model\\/FrameworkMethod\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError", 
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Parameterized\\.createRunnersForParameters\\:\\(Ljava\\/lang\\/Iterable\\;Ljava\\/lang\\/String\\;Lorg\\/junit\\/runners\\/parameterized\\/ParametersRunnerFactory\\;\\)Ljava\\/util\\/List\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Parameterized\\.createTestsForParameters\\:\\(Ljava\\/lang\\/Iterable\\;Ljava\\/lang\\/String\\;\\)Ljava\\/util\\/List\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runners\\.Parameterized\\.parametersMethodReturnedWrongType\\:\\(\\)Ljava\\/lang\\/Exception\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.FilterFactory$FilterNotCreatedException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.FilterFactory\\.createFilter\\:\\(Lorg\\/junit\\/runner\\/FilterFactoryParams\\;\\)Lorg\\/junit\\/runner\\/manipulation\\/Filter\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Result\\.writeObject\\:\\(Ljava\\/io\\/ObjectOutputStream\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.ClassNotFoundException", 
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Result\\.readObject\\:\\(Ljava\\/io\\/ObjectInputStream\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Result\\$Listener\\.testRunStarted\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Result\\$Listener\\.testRunFinished\\:\\(Lorg\\/junit\\/runner\\/Result\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Result\\$Listener\\.testFinished\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Result\\$Listener\\.testFailure\\:\\(Lorg\\/junit\\/runner\\/notification\\/Failure\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Result\\$Listener\\.testIgnored\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.FilterFactory$FilterNotCreatedException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.FilterFactories\\.createFilterFromFilterSpec\\:\\(Lorg\\/junit\\/runner\\/Request\\;Ljava\\/lang\\/String\\;\\)Lorg\\/junit\\/runner\\/manipulation\\/Filter\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.FilterFactory$FilterNotCreatedException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.FilterFactories\\.createFilter\\:\\(Ljava\\/lang\\/String\\;Lorg\\/junit\\/runner\\/FilterFactoryParams\\;\\)Lorg\\/junit\\/runner\\/manipulation\\/Filter\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.FilterFactory$FilterNotCreatedException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.FilterFactories\\.createFilter\\:\\(Ljava\\/lang\\/Class\\;Lorg\\/junit\\/runner\\/FilterFactoryParams\\;\\)Lorg\\/junit\\/runner\\/manipulation\\/Filter\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.FilterFactory$FilterNotCreatedException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.FilterFactories\\.createFilterFactory\\:\\(Ljava\\/lang\\/String\\;\\)Lorg\\/junit\\/runner\\/FilterFactory\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.FilterFactory$FilterNotCreatedException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.FilterFactories\\.createFilterFactory\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/FilterFactory\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Result\\$SerializedForm\\.\\<init\\>\\:\\(Ljava\\/io\\/ObjectInputStream\\$GetField\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Result\\$SerializedForm\\.serialize\\:\\(Ljava\\/io\\/ObjectOutputStream\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.ClassNotFoundException", 
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Result\\$SerializedForm\\.deserialize\\:\\(Ljava\\/io\\/ObjectInputStream\\;\\)Lorg\\/junit\\/runner\\/Result\\$SerializedForm\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.manipulation.NoTestsRemainException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.manipulation\\.Filter\\.apply\\:\\(Ljava\\/lang\\/Object\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.manipulation.NoTestsRemainException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.manipulation\\.Filterable\\.filter\\:\\(Lorg\\/junit\\/runner\\/manipulation\\/Filter\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.manipulation.NoTestsRemainException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.manipulation\\.Filter\\$1\\.apply\\:\\(Ljava\\/lang\\/Object\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Computer\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/runner\\/Computer\\;Lorg\\/junit\\/runners\\/model\\/RunnerBuilder\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Computer\\$1\\.runnerForClass\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.notification.StoppedByUserException"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\.fireTestStarted\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunNotifier\\;Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$1\\.notifyListener\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunListener\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$2\\.\\<init\\>\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunNotifier\\;Lorg\\/junit\\/runner\\/Result\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$2\\.notifyListener\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunListener\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$3\\.\\<init\\>\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunNotifier\\;Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$3\\.notifyListener\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunListener\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$4\\.\\<init\\>\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunNotifier\\;Ljava\\/util\\/List\\;Ljava\\/util\\/List\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$4\\.notifyListener\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunListener\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.SynchronizedRunListener\\.testRunStarted\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.SynchronizedRunListener\\.testRunFinished\\:\\(Lorg\\/junit\\/runner\\/Result\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.SynchronizedRunListener\\.testStarted\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.SynchronizedRunListener\\.testFinished\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.SynchronizedRunListener\\.testFailure\\:\\(Lorg\\/junit\\/runner\\/notification\\/Failure\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.SynchronizedRunListener\\.testIgnored\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$SafeNotifier\\.notifyListener\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunListener\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$5\\.notifyListener\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunListener\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$6\\.\\<init\\>\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunNotifier\\;Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$6\\.notifyListener\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunListener\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$7\\.\\<init\\>\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunNotifier\\;Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunNotifier\\$7\\.notifyListener\\:\\(Lorg\\/junit\\/runner\\/notification\\/RunListener\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunListener\\.testRunStarted\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunListener\\.testRunFinished\\:\\(Lorg\\/junit\\/runner\\/Result\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunListener\\.testStarted\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunListener\\.testFinished\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunListener\\.testFailure\\:\\(Lorg\\/junit\\/runner\\/notification\\/Failure\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.notification\\.RunListener\\.testIgnored\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Computer\\.getSuite\\:\\(Lorg\\/junit\\/runners\\/model\\/RunnerBuilder\\;\\[Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.runner\\.Computer\\.getRunner\\:\\(Lorg\\/junit\\/runners\\/model\\/RunnerBuilder\\;Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.IllegalArgumentException", 
+   "java.lang.IllegalAccessException", 
+   "java.lang.reflect.InvocationTargetException"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.TestMethod\\.invoke\\:\\(Ljava\\/lang\\/Object\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.SecurityException", 
+   "java.lang.NoSuchMethodException"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.TestClass\\.getConstructor\\:\\(\\)Ljava\\/lang\\/reflect\\/Constructor\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.runners.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.JUnit4ClassRunner\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.runners.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.JUnit4ClassRunner\\.validate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.JUnit4ClassRunner\\.createTest\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.manipulation.NoTestsRemainException"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.JUnit4ClassRunner\\.filter\\:\\(Lorg\\/junit\\/runner\\/manipulation\\/Filter\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.statements\\.Fail\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.statements\\.FailOnTimeout\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.statements\\.RunAfters\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.statements\\.RunBefores\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.statements\\.ExpectException\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.statements\\.InvokeMethod\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.statements\\.FailOnTimeout\\$CallableStatement\\.call\\:\\(\\)Ljava\\/lang\\/Throwable\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.InterruptedException"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.statements\\.FailOnTimeout\\$CallableStatement\\.awaitStarted\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.statements\\.FailOnTimeout\\$CallableStatement\\.call\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.runners.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.MethodValidator\\.assertValid\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.manipulation.NoTestsRemainException"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.JUnit38ClassRunner\\.filter\\:\\(Lorg\\/junit\\/runner\\/manipulation\\/Filter\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.SuiteMethod\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.SuiteMethod\\.testFromSuiteMethod\\:\\(Ljava\\/lang\\/Class\\;\\)Ljunit\\/framework\\/Test\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.runners.FailedBefore"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.MethodRoadie\\.runBefores\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.runners.FailedBefore"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.ClassRoadie\\.runBefores\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.MethodRoadie\\$1\\$1\\.call\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.model\\.ReflectiveCallable\\.run\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.runners\\.model\\.ReflectiveCallable\\.runReflectiveCall\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.internal.ArrayComparisonFailure"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.ComparisonCriteria\\.arrayEquals\\:\\(Ljava\\/lang\\/String\\;Ljava\\/lang\\/Object\\;Ljava\\/lang\\/Object\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.Throwables\\.rethrowAsException\\:\\(Ljava\\/lang\\/Throwable\\;\\)Ljava\\/lang\\/Exception\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.Throwables\\.rethrow\\:\\(Ljava\\/lang\\/Throwable\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.ClassNotFoundException"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.Classes\\.getClass\\:\\(Ljava\\/lang\\/String\\;\\)Ljava\\/lang\\/Class\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.builders\\.JUnit4Builder\\.runnerForClass\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.builders\\.AnnotatedBuilder\\.runnerForClass\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.builders\\.AnnotatedBuilder\\.buildRunner\\:\\(Ljava\\/lang\\/Class\\;Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.builders\\.JUnit3Builder\\.runnerForClass\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.builders\\.AllDefaultPossibilitiesBuilder\\.runnerForClass\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.builders\\.NullBuilder\\.runnerForClass\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.internal\\.builders\\.SuiteMethodBuilder\\.runnerForClass\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.max\\.MaxHistory\\$RememberingListener\\.testStarted\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.max\\.MaxHistory\\$RememberingListener\\.testFinished\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.max\\.MaxHistory\\$RememberingListener\\.testFailure\\:\\(Lorg\\/junit\\/runner\\/notification\\/Failure\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.max\\.MaxHistory\\$RememberingListener\\.testRunFinished\\:\\(Lorg\\/junit\\/runner\\/Result\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.max\\.MaxCore\\$1\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/experimental\\/max\\/MaxCore\\$1\\;Ljava\\/lang\\/Class\\;Ljava\\/util\\/List\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.experimental.max.CouldNotReadCoreException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.max\\.MaxHistory\\.readHistory\\:\\(Ljava\\/io\\/File\\;\\)Lorg\\/junit\\/experimental\\/max\\/MaxHistory\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.max\\.MaxHistory\\.save\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.max\\.MaxHistory\\.access\\$000\\:\\(Lorg\\/junit\\/experimental\\/max\\/MaxHistory\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.ParallelComputer\\.getSuite\\:\\(Lorg\\/junit\\/runners\\/model\\/RunnerBuilder\\;\\[Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.ParallelComputer\\.getRunner\\:\\(Lorg\\/junit\\/runners\\/model\\/RunnerBuilder\\;Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/runner\\/Runner\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\$2\\.\\<init\\>\\:\\(Lorg\\/junit\\/experimental\\/theories\\/Theories\\$TheoryAnchor\\;Lorg\\/junit\\/experimental\\/theories\\/internal\\/Assignments\\;Lorg\\/junit\\/runners\\/model\\/FrameworkMethod\\;Ljava\\/lang\\/Object\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\$2\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\.runWithAssignment\\:\\(Lorg\\/junit\\/experimental\\/theories\\/internal\\/Assignments\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\.runWithIncompleteAssignment\\:\\(Lorg\\/junit\\/experimental\\/theories\\/internal\\/Assignments\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\.runWithCompleteAssignment\\:\\(Lorg\\/junit\\/experimental\\/theories\\/internal\\/Assignments\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\.reportParameterizedError\\:\\(Ljava\\/lang\\/Throwable\\;\\[Ljava\\/lang\\/Object\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\$1\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/experimental\\/theories\\/Theories\\$TheoryAnchor\\$1\\;Lorg\\/junit\\/runners\\/model\\/Statement\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\$1\\$1\\.evaluate\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\$1\\.\\<init\\>\\:\\(Lorg\\/junit\\/experimental\\/theories\\/Theories\\$TheoryAnchor\\;Ljava\\/lang\\/Class\\;Lorg\\/junit\\/experimental\\/theories\\/internal\\/Assignments\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\$TheoryAnchor\\$1\\.createTest\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.experimental.theories.PotentialAssignment$CouldNotGenerateValueException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.PotentialAssignment\\.getValue\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.experimental.theories.PotentialAssignment$CouldNotGenerateValueException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.PotentialAssignment\\.getDescription\\:\\(\\)Ljava\\/lang\\/String\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.Theories\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.experimental.theories.PotentialAssignment$CouldNotGenerateValueException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.AllMembersSupplier\\$MethodParameterValue\\.getValue\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.experimental.theories.PotentialAssignment$CouldNotGenerateValueException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.AllMembersSupplier\\$MethodParameterValue\\.getDescription\\:\\(\\)Ljava\\/lang\\/String\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.AllMembersSupplier\\.getValueSources\\:\\(Lorg\\/junit\\/experimental\\/theories\\/ParameterSignature\\;\\)Ljava\\/util\\/List\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.AllMembersSupplier\\.addMultiPointMethods\\:\\(Lorg\\/junit\\/experimental\\/theories\\/ParameterSignature\\;Ljava\\/util\\/List\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.experimental.theories.PotentialAssignment$CouldNotGenerateValueException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.Assignments\\.getActualValues\\:\\(II\\)\\[Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.Assignments\\.potentialsForNextUnassigned\\:\\(\\)Ljava\\/util\\/List\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.Assignments\\.getSupplier\\:\\(Lorg\\/junit\\/experimental\\/theories\\/ParameterSignature\\;\\)Lorg\\/junit\\/experimental\\/theories\\/ParameterSupplier\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.Assignments\\.buildParameterSupplierFromClass\\:\\(Ljava\\/lang\\/Class\\;\\)Lorg\\/junit\\/experimental\\/theories\\/ParameterSupplier\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.experimental.theories.PotentialAssignment$CouldNotGenerateValueException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.Assignments\\.getConstructorArguments\\:\\(\\)\\[Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.experimental.theories.PotentialAssignment$CouldNotGenerateValueException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.Assignments\\.getMethodArguments\\:\\(\\)\\[Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.experimental.theories.PotentialAssignment$CouldNotGenerateValueException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.Assignments\\.getAllArguments\\:\\(\\)\\[Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.experimental.theories.PotentialAssignment$CouldNotGenerateValueException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.internal\\.Assignments\\.getArgumentStrings\\:\\(Z\\)\\[Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.theories\\.ParameterSupplier\\.getValueSources\\:\\(Lorg\\/junit\\/experimental\\/theories\\/ParameterSignature\\;\\)Ljava\\/util\\/List\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.FilterFactory$FilterNotCreatedException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.categories\\.CategoryFilterFactory\\.createFilter\\:\\(Lorg\\/junit\\/runner\\/FilterFactoryParams\\;\\)Lorg\\/junit\\/runner\\/manipulation\\/Filter\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.ClassNotFoundException"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.categories\\.CategoryFilterFactory\\.parseCategories\\:\\(Ljava\\/lang\\/String\\;\\)Ljava\\/util\\/List\\;"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.categories\\.Categories\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;Lorg\\/junit\\/runners\\/model\\/RunnerBuilder\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.categories\\.Categories\\.assertNoCategorizedDescendentsOfUncategorizeableParents\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runners.model.InitializationError"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.categories\\.Categories\\.assertNoDescendantsHaveCategoryAnnotations\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "org\\.junit\\.experimental\\.runners\\.Enclosed\\.\\<init\\>\\:\\(Ljava\\/lang\\/Class\\;Lorg\\/junit\\/runners\\/model\\/RunnerBuilder\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "junit\\.framework\\.TestCase\\.runBare\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "junit\\.framework\\.TestCase\\.runTest\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.framework\\.TestCase\\.setUp\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.framework\\.TestCase\\.tearDown\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "org.junit.runner.manipulation.NoTestsRemainException"
+  ], 
+  "methodRegex": "junit\\.framework\\.JUnit4TestAdapter\\.filter\\:\\(Lorg\\/junit\\/runner\\/manipulation\\/Filter\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "junit\\.framework\\.TestResult\\$1\\.\\<init\\>\\:\\(Ljunit\\/framework\\/TestResult\\;Ljunit\\/framework\\/TestCase\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "junit\\.framework\\.TestResult\\$1\\.protect\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.NoSuchMethodException"
+  ], 
+  "methodRegex": "junit\\.framework\\.TestSuite\\.getTestConstructor\\:\\(Ljava\\/lang\\/Class\\;\\)Ljava\\/lang\\/reflect\\/Constructor\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Throwable"
+  ], 
+  "methodRegex": "junit\\.framework\\.Protectable\\.protect\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.framework\\.JUnit4TestAdapterCache\\$1\\.testFailure\\:\\(Lorg\\/junit\\/runner\\/notification\\/Failure\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.framework\\.JUnit4TestAdapterCache\\$1\\.testFinished\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.framework\\.JUnit4TestAdapterCache\\$1\\.testStarted\\:\\(Lorg\\/junit\\/runner\\/Description\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "junit\\.runner\\.BaseTestRunner\\.savePreferences\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.ClassNotFoundException"
+  ], 
+  "methodRegex": "junit\\.runner\\.BaseTestRunner\\.loadSuiteClass\\:\\(Ljava\\/lang\\/String\\;\\)Ljava\\/lang\\/Class\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.extensions\\.TestSetup\\.setUp\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.extensions\\.TestSetup\\.tearDown\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.extensions\\.TestSetup\\$1\\.\\<init\\>\\:\\(Ljunit\\/extensions\\/TestSetup\\;Ljunit\\/framework\\/TestResult\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.extensions\\.TestSetup\\$1\\.protect\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.textui\\.TestRunner\\.start\\:\\(\\[Ljava\\/lang\\/String\\;\\)Ljunit\\/framework\\/TestResult\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "junit\\.textui\\.TestRunner\\.runSingleMethod\\:\\(Ljava\\/lang\\/String\\;Ljava\\/lang\\/String\\;Z\\)Ljunit\\/framework\\/TestResult\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.IllegalStateException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.RT\\.getAgent\\:\\(\\)Lorg\\/jacoco\\/agent\\/rt\\/IAgent\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.IAgent\\.dump\\:\\(Z\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.JmxRegistration\\.\\<init\\>\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/IAgent\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.JmxRegistration\\.call\\:\\(\\)Ljava\\/lang\\/Void\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.JmxRegistration\\.call\\:\\(\\)Ljava\\/lang\\/Object\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.PreMain\\.premain\\:\\(Ljava\\/lang\\/String\\;Ljava\\/lang\\/instrument\\/Instrumentation\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.PreMain\\.createRuntime\\:\\(Ljava\\/lang\\/instrument\\/Instrumentation\\;\\)Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/IRuntime\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.ClassFileDumper\\.dump\\:\\(Ljava\\/lang\\/String\\;\\[B\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.IllegalStateException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.Agent\\.getInstance\\:\\(\\)Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/Agent\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.Agent\\.dump\\:\\(Z\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpConnection\\.init\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpConnection\\.run\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpConnection\\.writeExecutionData\\:\\(Z\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpConnection\\.close\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpConnection\\.visitDumpCommand\\:\\(ZZ\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpClientOutput\\.startup\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/AgentOptions\\;Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/RuntimeData\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpClientOutput\\.shutdown\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpClientOutput\\.writeExecutionData\\:\\(Z\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpClientOutput\\.createSocket\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/AgentOptions\\;\\)Ljava\\/net\\/Socket\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.FileOutput\\.startup\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/AgentOptions\\;Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/RuntimeData\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.FileOutput\\.writeExecutionData\\:\\(Z\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.FileOutput\\.shutdown\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.FileOutput\\.openFile\\:\\(\\)Ljava\\/io\\/OutputStream\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpServerOutput\\.startup\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/AgentOptions\\;Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/RuntimeData\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpServerOutput\\.shutdown\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpServerOutput\\.writeExecutionData\\:\\(Z\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpServerOutput\\.createServerSocket\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/AgentOptions\\;\\)Ljava\\/net\\/ServerSocket\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.net.UnknownHostException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.TcpServerOutput\\.getInetAddress\\:\\(Ljava\\/lang\\/String\\;\\)Ljava\\/net\\/InetAddress\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.IAgentOutput\\.startup\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/AgentOptions\\;Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/RuntimeData\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.IAgentOutput\\.shutdown\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.output\\.IAgentOutput\\.writeExecutionData\\:\\(Z\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.instrument.IllegalClassFormatException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.CoverageTransformer\\.transform\\:\\(Ljava\\/lang\\/ClassLoader\\;Ljava\\/lang\\/String\\;Ljava\\/lang\\/Class\\;Ljava\\/security\\/ProtectionDomain\\;\\[B\\)\\[B"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "com\\.vladium\\.emma\\.rt\\.RT\\.dumpCoverageData\\:\\(Ljava\\/io\\/File\\;ZZ\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "com\\.vladium\\.emma\\.rt\\.RT\\.dumpCoverageData\\:\\(Ljava\\/io\\/File\\;Z\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException", 
+   "org.jacoco.agent.rt.internal_28bab1d.core.data.IncompatibleExecDataVersionException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionDataReader\\.read\\:\\(\\)Z"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionDataReader\\.readBlock\\:\\(B\\)Z"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionDataReader\\.readHeader\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionDataReader\\.readSessionInfo\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionDataReader\\.readExecutionData\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.IllegalStateException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionDataStore\\.put\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/data\\/ExecutionData\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.IllegalStateException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionDataStore\\.subtract\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/data\\/ExecutionData\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.IllegalStateException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionData\\.assertCompatibility\\:\\(JLjava\\/lang\\/String\\;I\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionDataWriter\\.\\<init\\>\\:\\(Ljava\\/io\\/OutputStream\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionDataWriter\\.writeHeader\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.data\\.ExecutionDataWriter\\.flush\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.RemoteControlReader\\.\\<init\\>\\:\\(Ljava\\/io\\/InputStream\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.RemoteControlReader\\.readBlock\\:\\(B\\)Z"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.RemoteControlReader\\.readDumpCommand\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.ModifiedSystemClassRuntime\\.startup\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/RuntimeData\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.ClassNotFoundException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.ModifiedSystemClassRuntime\\.createFor\\:\\(Ljava\\/lang\\/instrument\\/Instrumentation\\;Ljava\\/lang\\/String\\;\\)Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/IRuntime\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.ClassNotFoundException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.ModifiedSystemClassRuntime\\.createFor\\:\\(Ljava\\/lang\\/instrument\\/Instrumentation\\;Ljava\\/lang\\/String\\;Ljava\\/lang\\/String\\;\\)Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/IRuntime\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.IRuntime\\.startup\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/RuntimeData\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.IRemoteCommandVisitor\\.visitDumpCommand\\:\\(ZZ\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.RemoteControlWriter\\.\\<init\\>\\:\\(Ljava\\/io\\/OutputStream\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.RemoteControlWriter\\.sendCmdOk\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.RemoteControlWriter\\.visitDumpCommand\\:\\(ZZ\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.Exception"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.AbstractRuntime\\.startup\\:\\(Lorg\\/jacoco\\/agent\\/rt\\/internal\\_28bab1d\\/core\\/runtime\\/RuntimeData\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.instrument.IllegalClassFormatException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.runtime\\.ModifiedSystemClassRuntime\\$1\\.transform\\:\\(Ljava\\/lang\\/ClassLoader\\;Ljava\\/lang\\/String\\;Ljava\\/lang\\/Class\\;Ljava\\/security\\/ProtectionDomain\\;\\[B\\)\\[B"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.data\\.CompactDataOutput\\.writeVarInt\\:\\(I\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.data\\.CompactDataOutput\\.writeBooleanArray\\:\\(\\[Z\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.data\\.CompactDataInput\\.readVarInt\\:\\(\\)I"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.data\\.CompactDataInput\\.readBooleanArray\\:\\(\\)\\[Z"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.Pack200Streams\\$NoCloseInput\\.close\\:\\(\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.InputStreams\\.readFully\\:\\(Ljava\\/io\\/InputStream\\;\\)\\[B"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.Pack200Streams\\.unpack\\:\\(Ljava\\/io\\/InputStream\\;\\)Ljava\\/io\\/InputStream\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.Pack200Streams\\.pack\\:\\(\\[BLjava\\/io\\/OutputStream\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.ContentTypeDetector\\.\\<init\\>\\:\\(Ljava\\/io\\/InputStream\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.ContentTypeDetector\\.determineType\\:\\(Ljava\\/io\\/InputStream\\;\\)I"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.ContentTypeDetector\\.readInt\\:\\(Ljava\\/io\\/InputStream\\;\\)I"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.instr\\.SignatureRemover\\.filterEntry\\:\\(Ljava\\/lang\\/String\\;Ljava\\/io\\/InputStream\\;Ljava\\/io\\/OutputStream\\;\\)Z"
+ }, 
+ {
+  "exceptions": [
+   "java.lang.IllegalStateException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.internal\\.instr\\.InstrSupport\\.assertNotInstrumented\\:\\(Ljava\\/lang\\/String\\;Ljava\\/lang\\/String\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.instr\\.Instrumenter\\.instrument\\:\\(\\[BLjava\\/lang\\/String\\;\\)\\[B"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.instr\\.Instrumenter\\.instrument\\:\\(Ljava\\/io\\/InputStream\\;Ljava\\/lang\\/String\\;\\)\\[B"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.instr\\.Instrumenter\\.instrument\\:\\(Ljava\\/io\\/InputStream\\;Ljava\\/io\\/OutputStream\\;Ljava\\/lang\\/String\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.instr\\.Instrumenter\\.instrumentAll\\:\\(Ljava\\/io\\/InputStream\\;Ljava\\/io\\/OutputStream\\;Ljava\\/lang\\/String\\;\\)I"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.instr\\.Instrumenter\\.instrumentZip\\:\\(Ljava\\/io\\/InputStream\\;Ljava\\/io\\/OutputStream\\;Ljava\\/lang\\/String\\;\\)I"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.instr\\.Instrumenter\\.nextEntry\\:\\(Ljava\\/util\\/zip\\/ZipInputStream\\;Ljava\\/lang\\/String\\;\\)Ljava\\/util\\/zip\\/ZipEntry\\;"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.instr\\.Instrumenter\\.instrumentGzip\\:\\(Ljava\\/io\\/InputStream\\;Ljava\\/io\\/OutputStream\\;Ljava\\/lang\\/String\\;\\)I"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.instr\\.Instrumenter\\.instrumentPack200\\:\\(Ljava\\/io\\/InputStream\\;Ljava\\/io\\/OutputStream\\;Ljava\\/lang\\/String\\;\\)I"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.instr\\.Instrumenter\\.copy\\:\\(Ljava\\/io\\/InputStream\\;Ljava\\/io\\/OutputStream\\;Ljava\\/lang\\/String\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.core\\.instr\\.Instrumenter\\.read\\:\\(Ljava\\/io\\/InputStream\\;\\[BLjava\\/lang\\/String\\;\\)I"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.asm\\.ClassReader\\.\\<init\\>\\:\\(Ljava\\/io\\/InputStream\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.asm\\.ClassReader\\.\\<init\\>\\:\\(Ljava\\/lang\\/String\\;\\)V"
+ }, 
+ {
+  "exceptions": [
+   "java.io.IOException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.asm\\.ClassReader\\.readStream\\:\\(Ljava\\/io\\/InputStream\\;Z\\)\\[B"
+ }, 
+ {
+  "exceptions": [
+   "org.jacoco.agent.rt.internal_28bab1d.asm.ClassTooLargeException", 
+   "org.jacoco.agent.rt.internal_28bab1d.asm.MethodTooLargeException"
+  ], 
+  "methodRegex": "org\\.jacoco\\.agent\\.rt\\.internal\\_28bab1d\\.asm\\.ClassWriter\\.toByteArray\\:\\(\\)\\[B"
+ }
+]
