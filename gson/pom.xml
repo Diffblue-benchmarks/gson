@@ -22,6 +22,18 @@
   <build>
     <plugins>
       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M1</version>
+        <configuration>
+          <!-- Some tests might cause JVM to die completely or to hang for a long time.
+               This can result in Jacoco not seeing any coverage.
+               Run one JVM per test class to mitigate the damage -->
+          <reuseForks>false</reuseForks>
+          <forkedProcessTimeoutInSeconds>600</forkedProcessTimeoutInSeconds>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
