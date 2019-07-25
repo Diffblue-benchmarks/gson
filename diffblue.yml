@@ -6,6 +6,7 @@ cbmcArguments:
   java-max-vla-length: 100000
   depth: false
 skipVerification: true
+staticValuesJson: true
 phases:
   - timeout: 150
     cbmcArguments:
