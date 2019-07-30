@@ -4,9 +4,9 @@
 cbmcArguments:
   java-version: 6
   java-max-vla-length: 100000
-  depth: 'false,'
-  java-test-input-factory: 'false,'
-  java-test-input-factory-bmc-max-mutators: 'false,'
+  depth: false
+  java-test-input-factory: false
+  java-test-input-factory-bmc-max-mutators: false
   java-test-input-factory-bmc-recursion-limit: false
 skipVerification: true
 staticValuesJson: true
