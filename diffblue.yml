@@ -12,6 +12,8 @@ cbmcArguments:
     - private
   cover-function-only: false
   cover-only: file
+testCmd: 'true'
+ignoreExistingCoverage: true
 skipVerification: true
 staticValuesJson: true
 phases:
