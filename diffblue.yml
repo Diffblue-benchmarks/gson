@@ -12,6 +12,8 @@ cbmcArguments:
     - private
   cover-function-only: false
   cover-only: file
+  inline-into-assertion: true
+  inline-function-arguments: true
 testCmd: 'true'
 ignoreExistingCoverage: true
 skipVerification: true
