@@ -316,7 +316,6 @@ units:
      file: com/google/gson/internal/LinkedHashTreeMap.class
      sourceDir: gson/src/main/java
      sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
-units:
  - target:
    - dir: gson/target/classes
      file: com/google/gson/internal/LinkedTreeMap$EntrySet.class
