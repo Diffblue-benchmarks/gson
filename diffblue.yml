@@ -158,3 +158,923 @@ phases:
       # Add constraint that strings are printable
       string-printable: false
 units:
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$AvlIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$KeySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$AvlBuilder.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$EntrySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$EntrySet$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$EntrySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$LinkedTreeMapIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$LinkedTreeMapIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$EntrySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$EntrySet$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$AvlIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$LinkedTreeMapIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$AvlBuilder.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$KeySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$AvlIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$LinkedTreeMapIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$KeySet$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$AvlBuilder.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$AvlIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$KeySet$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$KeySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$LinkedTreeMapIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$AvlBuilder.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedHashTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedHashTreeMap.java
+units:
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$EntrySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$LinkedTreeMapIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$EntrySet$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$LinkedTreeMapIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$KeySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$KeySet$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$LinkedTreeMapIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$KeySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$EntrySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$KeySet$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$KeySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$LinkedTreeMapIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$EntrySet$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$EntrySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$LinkedTreeMapIterator.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LazilyParsedNumber.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LazilyParsedNumber.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$EntrySet.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonArray.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonArray.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonObject.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonObject.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonElement.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonElement.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Preconditions.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Preconditions.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonToken.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonToken.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonPrimitive.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonPrimitive.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeReader$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeReader.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeReader$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeReader.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/JsonArray.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonArray.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonElement.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonElement.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Preconditions.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Preconditions.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonPrimitive.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonPrimitive.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonArray.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonArray.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeWriter$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/LinkedTreeMap$Node.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/LinkedTreeMap.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonObject.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonObject.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonElement.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonElement.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Preconditions.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Preconditions.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonPrimitive.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonPrimitive.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeWriter$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeWriter.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonPrimitive.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonPrimitive.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/JsonReaderInternalAccess.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/JsonReaderInternalAccess.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/MalformedJsonException.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/MalformedJsonException.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Preconditions.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Preconditions.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonElement.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonElement.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/MalformedJsonException.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/MalformedJsonException.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/JsonReaderInternalAccess.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/JsonReaderInternalAccess.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonToken.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonToken.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/GsonBuilder.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/GsonBuilder.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/Excluder.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/Excluder.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$5.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/LongSerializationPolicy.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/LongSerializationPolicy.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/TypeAdapters$35.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/TypeAdapters.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/CollectionTypeAdapterFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/CollectionTypeAdapterFactory.java
+   - dir: gson/target/classes
+     file: com/google/gson/FieldNamingStrategy.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/FieldNamingStrategy.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/ConstructorConstructor.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/ConstructorConstructor.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/PreJava9DateFormatProvider.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/PreJava9DateFormatProvider.java
+   - dir: gson/target/classes
+     file: com/google/gson/reflect/TypeToken.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/reflect/TypeToken.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Types.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Types.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/TreeTypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/TreeTypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/MapTypeAdapterFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/MapTypeAdapterFactory.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/JavaVersion.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/JavaVersion.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapter$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/DefaultDateTypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/DefaultDateTypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Types$GenericArrayTypeImpl.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Types.java
+   - dir: gson/target/classes
+     file: com/google/gson/ExclusionStrategy.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/ExclusionStrategy.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Types$ParameterizedTypeImpl.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Types.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$4.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Types$WildcardTypeImpl.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Types.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapterFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapterFactory.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/ReflectiveTypeAdapterFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/ReflectiveTypeAdapterFactory.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/TypeAdapters$33.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/TypeAdapters.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/TypeAdapters$32.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/TypeAdapters.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$2.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/FieldNamingPolicy.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/FieldNamingPolicy.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/reflect/ReflectionAccessor.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/reflect/ReflectionAccessor.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/TypeAdapters.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/TypeAdapters.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/TreeTypeAdapter$SingleTypeFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/TreeTypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/TypeAdapters$31.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/TypeAdapters.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Preconditions.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Preconditions.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$3.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$2.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/MalformedJsonException.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/MalformedJsonException.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/MalformedJsonException.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/MalformedJsonException.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$FutureTypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapter.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$5.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/MalformedJsonException.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/MalformedJsonException.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$4.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$3.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/MalformedJsonException.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/MalformedJsonException.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/Gson.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/Excluder.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/Excluder.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/Streams.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/Streams.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonElement.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonElement.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$5.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/LongSerializationPolicy.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/LongSerializationPolicy.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonParseException.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonParseException.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapter$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapter.java
+   - dir: gson/target/classes
+     file: com/google/gson/FieldNamingStrategy.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/FieldNamingStrategy.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/ConstructorConstructor.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/ConstructorConstructor.java
+   - dir: gson/target/classes
+     file: com/google/gson/reflect/TypeToken.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/reflect/TypeToken.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Types.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Types.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonIOException.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonIOException.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/TypeAdapterFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/TypeAdapterFactory.java
+   - dir: gson/target/classes
+     file: com/google/gson/GsonBuilder.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/GsonBuilder.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$2.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/Primitives.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/Primitives.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/CollectionTypeAdapterFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/CollectionTypeAdapterFactory.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$1.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Types$GenericArrayTypeImpl.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Types.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$FutureTypeAdapter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Types$ParameterizedTypeImpl.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Types.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$4.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Types$WildcardTypeImpl.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Types.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/MapTypeAdapterFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/MapTypeAdapterFactory.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/ReflectiveTypeAdapterFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/ReflectiveTypeAdapterFactory.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/TypeAdapters$33.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/TypeAdapters.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeWriter.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/TypeAdapters$32.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/TypeAdapters.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/Streams$AppendableWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/Streams.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/Streams$AppendableWriter$CurrentWrite.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/Streams.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonTreeReader.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonTreeReader.java
+   - dir: gson/target/classes
+     file: com/google/gson/stream/MalformedJsonException.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/MalformedJsonException.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/reflect/ReflectionAccessor.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/reflect/ReflectionAccessor.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/TypeAdapters.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/TypeAdapters.java
+   - dir: gson/target/classes
+     file: com/google/gson/JsonSyntaxException.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/JsonSyntaxException.java
+   - dir: gson/target/classes
+     file: com/google/gson/internal/$Gson$Preconditions.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/$Gson$Preconditions.java
+   - dir: gson/target/classes
+     file: com/google/gson/Gson$3.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/Gson.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/internal/bind/util/ISO8601Utils.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/internal/bind/util/ISO8601Utils.java
+ - target:
+   - dir: gson/target/classes
+     file: com/google/gson/stream/JsonWriter.class
+     sourceDir: gson/src/main/java
+     sourceFile: com/google/gson/stream/JsonWriter.java
