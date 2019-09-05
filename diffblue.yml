@@ -33,6 +33,33 @@ phases:
       unwind: 1
     nextPhase:
       not_analyzed: null
+      time_out: 3
+  - timeout: 150
+    cbmcArguments:
+      classpath: '/tools/cbmc/models.jar:.'
+      smart-harness: simplest-constructor-and-nondet
+      java-assume-inputs-non-null: true
+      max-nondet-array-length: 20
+      max-nondet-string-length: 50
+      string-printable: true
+      java-assume-inputs-integral: true
+      throw-runtime-exceptions: false
+      unwind: 4
+    nextPhase:
+      time_out: 3
+  - timeout: 150
+    cbmcArguments:
+      classpath: '/tools/cbmc/models.jar:.'
+      smart-harness: simplest-constructor-and-nondet
+      java-assume-inputs-non-null: true
+      max-nondet-array-length: 30
+      max-nondet-string-length: 100
+      string-printable: false
+      java-assume-inputs-integral: false
+      throw-runtime-exceptions: false
+      unwind: 16
+    nextPhase:
+      time_out: 3
   - timeout: 150
     cbmcArguments:
       classpath: '/tools/cbmc/models-simple-overlay.jar:/tools/cbmc/models.jar:.'
@@ -58,7 +85,7 @@ phases:
       throw-runtime-exceptions: false
       unwind: 1
     nextPhase:
-      time_out: 8
+      time_out: 10
   - timeout: 150
     cbmcArguments:
       classpath: '/tools/cbmc/models-simple-overlay.jar:/tools/cbmc/models.jar:.'
@@ -70,7 +97,7 @@ phases:
       throw-runtime-exceptions: false
       unwind: 2
     nextPhase:
-      time_out: 8
+      time_out: 10
   - timeout: 150
     cbmcArguments:
       classpath: '/tools/cbmc/models.jar:.'
@@ -82,7 +109,7 @@ phases:
       throw-runtime-exceptions: false
       unwind: 4
     nextPhase:
-      time_out: 8
+      time_out: 10
   - timeout: 150
     cbmcArguments:
       classpath: '/tools/cbmc/models.jar:.'
@@ -94,7 +121,7 @@ phases:
       throw-runtime-exceptions: false
       unwind: 8
     nextPhase:
-      time_out: 8
+      time_out: 10
   - timeout: 150
     cbmcArguments:
       classpath: '/tools/cbmc/models.jar:.'
@@ -106,7 +133,7 @@ phases:
       throw-runtime-exceptions: false
       unwind: 16
     nextPhase:
-      time_out: 8
+      time_out: 10
   - timeout: 150
     cbmcArguments:
       classpath: '/tools/cbmc/models.jar:.'
