@@ -28,6 +28,8 @@ phases:
       max-nondet-array-length: 10
       max-nondet-string-length: 10
       string-printable: true
+      string-input-value:
+        - foo
       java-assume-inputs-integral: true
       throw-runtime-exceptions: false
       unwind: 1
@@ -42,6 +44,8 @@ phases:
       max-nondet-array-length: 20
       max-nondet-string-length: 50
       string-printable: true
+      string-input-value:
+        - foo
       java-assume-inputs-integral: true
       throw-runtime-exceptions: false
       unwind: 4
@@ -71,6 +75,8 @@ phases:
       max-nondet-array-length: 2
       max-nondet-string-length: 10
       string-printable: true
+      string-input-value:
+        - foo
       java-assume-inputs-integral: true
       throw-runtime-exceptions: false
       unwind: 2
@@ -81,6 +87,8 @@ phases:
       max-nondet-array-length: 10
       max-nondet-string-length: 10
       string-printable: true
+      string-input-value:
+        - foo
       java-assume-inputs-integral: true
       throw-runtime-exceptions: false
       unwind: 1
@@ -93,6 +101,8 @@ phases:
       max-nondet-array-length: 20
       max-nondet-string-length: 50
       string-printable: true
+      string-input-value:
+        - foo
       java-assume-inputs-integral: true
       throw-runtime-exceptions: false
       unwind: 2
