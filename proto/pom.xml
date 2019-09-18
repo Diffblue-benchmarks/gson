@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.code.gson</groupId>
   <artifactId>proto</artifactId>
@@ -48,9 +45,7 @@
     <system>Google Code Issue Tracking</system>
     <url>http://code.google.com/p/google-gson/issues/list</url>
   </issueManagement>
-
   <dependencies>
-
     <!--  Gson: Java to Json conversion -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -58,28 +53,24 @@
       <version>2.4</version>
       <scope>compile</scope>
     </dependency>
-
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
       <version>2.6.1</version>
       <scope>compile</scope>
     </dependency>
-    
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>18.0</version>
       <scope>compile</scope>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
-    
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
@@ -87,7 +78,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
   <build>
     <finalName>gson-proto</finalName>
     <plugins>
@@ -100,18 +90,18 @@
             <phase>generate-sources</phase>
             <configuration>
               <tasks>
-                <mkdir dir="target/generated" />
+                <mkdir dir="target/generated"/>
                 <path id="proto.path">
                   <fileset dir="src/main/protobuf">
-                    <include name="**/*.proto" />
+                    <include name="**/*.proto"/>
                   </fileset>
                 </path>
-                <pathconvert pathsep=" " property="proto.files" refid="proto.path" />
+                <pathconvert pathsep=" " property="proto.files" refid="proto.path"/>
                 <exec executable="protoc" failonerror="true">
-                  <arg value="--java_out=src/main/java" />
-                  <arg value="--proto_path=/usr/include" />
-                  <arg value="-I${project.basedir}/src/main/protobuf" />
-                  <arg line="${proto.files}" />
+                  <arg value="--java_out=src/main/java"/>
+                  <arg value="--proto_path=/usr/include"/>
+                  <arg value="-I${project.basedir}/src/main/protobuf"/>
+                  <arg line="${proto.files}"/>
                 </exec>
               </tasks>
             </configuration>
@@ -206,6 +196,22 @@
           <outputDirectory>target/dist</outputDirectory>
           <workDirectory>target/assembly/work</workDirectory>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.1</version>
+        <configuration>
+          <outputFile>target/${project.artifactId}-${project.version}-with-dependencies.jar</outputFile>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
