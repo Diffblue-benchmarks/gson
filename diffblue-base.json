@@ -1,5 +1,16 @@
 {
   "phaseBase": {
-    "javaVersion": 6
+    "javaVersion": 6,
+    "preferDepsJar": true,
+    "context-include": [
+      "com.google.gson.",
+      "com.diffblue.annotation.",
+      "java.",
+      "org.cprover.",
+      "org.slf4j.",
+      "sun.misc.",
+      "sun.nio.cs.",
+      "sun.util."
+    ]
   }
 }
