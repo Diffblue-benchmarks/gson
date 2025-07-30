@@ -1,6 +1,7 @@
 package com.example;
 
 import static org.junit.Assert.assertNull;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
@@ -14,9 +15,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.protobuf.ProtoTypeAdapter.Builder;
 import com.google.gson.protobuf.ProtoTypeAdapter.EnumSerialization;
-import com.google.gson.protobuf.generated.Bag;
 import com.google.gson.protobuf.generated.Bag.OuterMessage;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.EnumValueOptions;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Extension;
@@ -26,7 +25,6 @@ import com.google.protobuf.Message;
 import java.lang.reflect.Type;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.mockito.internal.util.reflection.GenericMetadataSupport;
 import org.mockito.internal.util.reflection.GenericMetadataSupport.TypeVarBoundedType;
 
 public class ProtoTypeAdapterDiffblueTest {

@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
@@ -93,8 +94,8 @@ public class ConstructorConstructorDiffblueTest {
 
     // Act and Assert
     assertEquals(
-        "Interfaces can't be instantiated! Register an InstanceCreator or a TypeAdapter for this type. Interface"
-            + " name: java.lang.reflect.ParameterizedType",
+        "Interfaces can't be instantiated! Register an InstanceCreator or a TypeAdapter for this"
+            + " type. Interface name: java.lang.reflect.ParameterizedType",
         ConstructorConstructor.checkInstantiable(c));
   }
 
@@ -118,8 +119,8 @@ public class ConstructorConstructorDiffblueTest {
 
     // Act and Assert
     assertEquals(
-        "Abstract classes can't be instantiated! Adjust the R8 configuration or register an InstanceCreator or"
-            + " a TypeAdapter for this type. Class name: java.util.EnumSet\n"
+        "Abstract classes can't be instantiated! Adjust the R8 configuration or register an"
+            + " InstanceCreator or a TypeAdapter for this type. Class name: java.util.EnumSet\n"
             + "See https://github.com/google/gson/blob/main/Troubleshooting.md#r8-abstract-class",
         ConstructorConstructor.checkInstantiable(c));
   }

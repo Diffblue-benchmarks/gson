@@ -14,6 +14,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
@@ -52,7 +53,6 @@ import java.util.Map;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.GenericMetadataSupport;
 import org.mockito.internal.util.reflection.GenericMetadataSupport.TypeVarBoundedType;
 
 public class GsonDiffblueTest {
@@ -937,7 +937,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_givenReflectionAccessFilter_thenArrayListSizeIsOne() {
     // Arrange
@@ -1007,7 +1009,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_givenReflectionAccessFilter_thenArrayListSizeIsTwo() {
     // Arrange
@@ -1078,7 +1082,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_givenTypeAdapterFactory_thenReturnBuilderFactoriesSizeIsOne() {
     // Arrange
@@ -1148,7 +1154,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_givenTypeAdapterFactory_thenReturnBuilderFactoriesSizeIsTwo() {
     // Arrange
@@ -1219,7 +1227,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_givenTypeAdapterFactory_thenReturnBuilderHierarchyFactoriesSizeIsOne() {
     // Arrange
@@ -1289,7 +1299,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_givenTypeAdapterFactory_thenReturnBuilderHierarchyFactoriesSizeIsTwo() {
     // Arrange
@@ -1360,7 +1372,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_givenTypeAdapterFactory_thenReturnFactoriesSizeIsFortyFour() {
     // Arrange
@@ -1427,7 +1441,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_givenTypeAdapterFactory_thenReturnFactoriesSizeIsFortyThree() {
     // Arrange
@@ -1492,7 +1508,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_whenDefault_number_to_number_strategy() {
     // Arrange
@@ -1557,7 +1575,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_whenDefault_object_to_number_strategy() {
     // Arrange
@@ -1623,7 +1643,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_whenDefault_thenArrayListIsBuilderFactories() {
     // Arrange
@@ -1690,7 +1712,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_whenFalse_thenReturnNotSerializeSpecialFloatingPointValues() {
     // Arrange
@@ -1758,7 +1782,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean, FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int, int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
+    "void Gson.<init>(Excluder, FieldNamingStrategy, Map, boolean, boolean, boolean, boolean,"
+        + " FormattingStyle, Strictness, boolean, boolean, LongSerializationPolicy, String, int,"
+        + " int, List, List, List, ToNumberStrategy, ToNumberStrategy, List)"
   })
   public void testNewGson_whenString_thenReturnLongSerializationPolicyIsString() {
     // Arrange

@@ -7,13 +7,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.internal.LinkedTreeMap.EntrySet;
 import com.google.gson.internal.LinkedTreeMap.KeySet;
 import com.google.gson.internal.LinkedTreeMap.Node;
-import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Comparator;
 import java.util.Map.Entry;

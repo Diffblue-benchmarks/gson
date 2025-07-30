@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
@@ -50,7 +51,8 @@ public class TreeTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void TreeTypeAdapter.<init>(JsonSerializer, JsonDeserializer, Gson, TypeToken, TypeAdapterFactory)"
+    "void TreeTypeAdapter.<init>(JsonSerializer, JsonDeserializer, Gson, TypeToken,"
+        + " TypeAdapterFactory)"
   })
   public void testNewTreeTypeAdapter() {
     // Arrange
@@ -83,7 +85,8 @@ public class TreeTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "void TreeTypeAdapter.<init>(JsonSerializer, JsonDeserializer, Gson, TypeToken, TypeAdapterFactory, boolean)"
+    "void TreeTypeAdapter.<init>(JsonSerializer, JsonDeserializer, Gson, TypeToken,"
+        + " TypeAdapterFactory, boolean)"
   })
   public void testNewTreeTypeAdapter2() {
     // Arrange

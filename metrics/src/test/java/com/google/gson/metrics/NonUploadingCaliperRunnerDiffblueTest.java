@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
+
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import org.junit.jupiter.api.DisplayName;
@@ -126,7 +127,8 @@ class NonUploadingCaliperRunnerDiffblueTest {
    */
   @Test
   @DisplayName(
-      "Test run(Class, String[]); when array of String with 'negative duration: %s'; then calls exit(int)")
+      "Test run(Class, String[]); when array of String with 'negative duration: %s'; then calls"
+          + " exit(int)")
   @Tag("ContributionFromDiffblue")
   @ManagedByDiffblue
   @MethodsUnderTest({"void NonUploadingCaliperRunner.run(Class, String[])"})

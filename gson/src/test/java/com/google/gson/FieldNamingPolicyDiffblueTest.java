@@ -1,6 +1,7 @@
 package com.google.gson;
 
 import static org.junit.Assert.assertEquals;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;

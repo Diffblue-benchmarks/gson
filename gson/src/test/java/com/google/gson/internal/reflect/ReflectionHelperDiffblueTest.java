@@ -2,6 +2,7 @@ package com.google.gson.internal.reflect;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
@@ -86,7 +87,8 @@ public class ReflectionHelperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "RuntimeException ReflectionHelper.createExceptionForUnexpectedIllegalAccess(IllegalAccessException)"
+    "RuntimeException"
+        + " ReflectionHelper.createExceptionForUnexpectedIllegalAccess(IllegalAccessException)"
   })
   public void testCreateExceptionForUnexpectedIllegalAccess() {
     // Arrange, Act and Assert

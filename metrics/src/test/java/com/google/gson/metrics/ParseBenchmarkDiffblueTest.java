@@ -3,6 +3,7 @@ package com.google.gson.metrics;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.metrics.ParseBenchmark.Content;
@@ -78,7 +79,14 @@ class ParseBenchmarkDiffblueTest {
   void testItemGettersAndSetters() {
     // Arrange, Act and Assert
     assertEquals(
-        "null\nauthor: null\npublished: 0\nupdated: 0\nnull\nliking users: null\nalternates: null\ncategories: null",
+        "null\n"
+            + "author: null\n"
+            + "published: 0\n"
+            + "updated: 0\n"
+            + "null\n"
+            + "liking users: null\n"
+            + "alternates: null\n"
+            + "categories: null",
         new Item().toString());
   }
 

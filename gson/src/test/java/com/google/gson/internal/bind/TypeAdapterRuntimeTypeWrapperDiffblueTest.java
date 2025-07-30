@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
@@ -38,7 +39,6 @@ import java.util.HashMap;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.GenericMetadataSupport;
 import org.mockito.internal.util.reflection.GenericMetadataSupport.TypeVarBoundedType;
 
 public class TypeAdapterRuntimeTypeWrapperDiffblueTest {

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
@@ -240,7 +241,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .beginArray());
   }
 
@@ -569,7 +571,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .endArray());
   }
 
@@ -948,7 +951,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .beginObject());
   }
 
@@ -1273,7 +1277,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .endObject());
   }
 
@@ -1652,7 +1657,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .hasNext());
   }
 
@@ -1843,7 +1849,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .peek());
   }
 
@@ -2029,7 +2036,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .doPeek());
   }
 
@@ -2381,7 +2389,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .nextName());
   }
 
@@ -2708,7 +2717,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .nextString());
   }
 
@@ -3058,7 +3068,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .nextBoolean());
   }
 
@@ -3383,7 +3394,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .nextNull());
   }
 
@@ -3710,7 +3722,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .nextDouble());
   }
 
@@ -4012,7 +4025,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .nextLong());
   }
 
@@ -4312,7 +4326,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .nextInt());
   }
 
@@ -4612,7 +4627,8 @@ public class JsonReaderDiffblueTest {
         () ->
             new JsonReader(
                     new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"))
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
                 .skipValue());
   }
 

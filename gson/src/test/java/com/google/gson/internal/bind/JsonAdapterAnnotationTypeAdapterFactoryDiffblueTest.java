@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
@@ -68,7 +69,9 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "com.google.gson.TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+    "com.google.gson.TypeAdapter"
+        + " JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson,"
+        + " TypeToken, JsonAdapter, boolean)"
   })
   public void testGetTypeAdapter() {
     // Arrange
@@ -116,7 +119,9 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "com.google.gson.TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+    "com.google.gson.TypeAdapter"
+        + " JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson,"
+        + " TypeToken, JsonAdapter, boolean)"
   })
   public void testGetTypeAdapter_givenFalse_thenCallsNullSafe() {
     // Arrange
@@ -162,7 +167,9 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "com.google.gson.TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+    "com.google.gson.TypeAdapter"
+        + " JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson,"
+        + " TypeToken, JsonAdapter, boolean)"
   })
   public void testGetTypeAdapter_givenIllegalArgumentExceptionWithFoo() {
     // Arrange
@@ -207,7 +214,9 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "com.google.gson.TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+    "com.google.gson.TypeAdapter"
+        + " JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson,"
+        + " TypeToken, JsonAdapter, boolean)"
   })
   public void testGetTypeAdapter_givenReflectionAccessFilterCheckReturnAllow_thenCallsCheck() {
     // Arrange
@@ -259,7 +268,8 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "boolean JsonAdapterAnnotationTypeAdapterFactory.isClassJsonAdapterFactory(TypeToken, TypeAdapterFactory)"
+    "boolean JsonAdapterAnnotationTypeAdapterFactory.isClassJsonAdapterFactory(TypeToken,"
+        + " TypeAdapterFactory)"
   })
   public void testIsClassJsonAdapterFactory_whenJavaLangObject_thenReturnFalse() {
     // Arrange
