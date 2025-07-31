@@ -91,6 +91,20 @@
 
   <build>
     <plugins>
+<plugin>
+    <groupId>org.pitest</groupId>
+    <artifactId>pitest-maven</artifactId>
+    <version>1.17.1</version> <configuration>
+        <argLine></argLine>
+
+        <targetClasses>
+            <param>com.google.gson.*</param>
+        </targetClasses>
+        <targetTests>
+            <param>com.google.gson.*</param>
+        </targetTests>
+    </configuration>
+</plugin>
       <!--
         Plugins for source generation and compilation
       -->
