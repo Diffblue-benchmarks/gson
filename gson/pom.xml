@@ -178,20 +178,62 @@
       <!--
         Plugins for test execution
       -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <!-- Deny illegal access, this is required for ReflectionAccessTest -->
-          <!-- Requires Java >= 9; Important: In case future Java versions
-            don't support this flag anymore, don't remove it unless CI also runs with
-            that Java version. Ideally would use toolchain to specify that this should
-            run with e.g. Java 11, but Maven toolchain requirements (unlike Gradle ones)
-            don't seem to be portable (every developer would have to set up toolchain
-            configuration locally). -->
-          <argLine>--illegal-access=deny</argLine>
-        </configuration>
-      </plugin>
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-surefire-plugin</artifactId>
+  <configuration>
+    <argLine>${argLine} --illegal-access=deny</argLine>
+  </configuration>
+</plugin>
+
+
+
+<plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.8</version>
+    <executions>
+        <execution>
+            <id>prepare-agent</id>
+            <goals>
+                <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+                <destFile>${project.build.directory}/jacoco.exec</destFile>
+            </configuration>
+        </execution>
+        <execution>
+            <id>prepare-agent-integration</id>
+            <goals>
+                <goal>prepare-agent-integration</goal>
+            </goals>
+            <configuration>
+                <destFile>${project.build.directory}/jacoco-it.exec</destFile>
+            </configuration>
+        </execution>
+        <execution>
+            <id>report</id>
+            <phase>post-integration-test</phase>
+            <goals>
+                <goal>report</goal>
+            </goals>
+            <configuration>
+                <dataFile>${project.build.directory}/jacoco.exec</dataFile>
+                <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+            </configuration>
+        </execution>
+         <execution>
+            <id>report-integration</id>
+            <goals>
+                <goal>report-integration</goal>
+            </goals>
+             <configuration>
+                 <dataFile>${project.build.directory}/jacoco-it.exec</dataFile>
+                 <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+             </configuration>
+        </execution>
+    </executions>
+</plugin>
       <!-- Failsafe plugin for running integration tests against final JAR, see `*IT.java` test classes -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
