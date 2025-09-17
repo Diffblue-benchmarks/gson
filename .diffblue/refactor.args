@@ -1,0 +1,1 @@
+--exclude-modules=com.google.code.gson:test-jpms,com.google.code.gson:test-graal-native-image
