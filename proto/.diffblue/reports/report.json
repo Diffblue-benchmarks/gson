@@ -1,0 +1,439 @@
+{
+  "meta" : {
+    "reportVersion" : "2.7"
+  },
+  "run" : {
+    "version" : "2025.09.01-44e352d-licensed",
+    "creationTimestamp" : "2025-09-19T09:48:19.589511Z",
+    "command" : "dcover create --exclude-modules=com.google.code.gson:test-jpms,com.google.code.gson:test-graal-native-image --coverage-reports --upload http://localhost:8080 --project-name gson --name with-diffblue-tests",
+    "totalTime" : 37.137,
+    "environmentDetectionTime" : 0.059,
+    "indexingTime" : 0.344,
+    "entryPointsTime" : 0.045,
+    "generationTime" : 1314.189,
+    "timeToFirstTest" : 255.597,
+    "timeToLastTest" : 1481.633,
+    "indexQueryTime" : 2.863,
+    "verificationTime" : 78.958,
+    "validationTime" : 9.104
+  },
+  "codes" : {
+    "R005" : "Unable to load class",
+    "T000" : "Method eligible for test creation",
+    "T002" : "Trivial setter",
+    "T003" : "Private method",
+    "T005" : "Trivial constructor",
+    "T012" : "Synthetic method",
+    "T023" : "Testability unknown",
+    "V000" : "Validated successfully"
+  },
+  "summary" : {
+    "classesCount" : 3,
+    "methodsCount" : 24,
+    "cumulativeDiffblueTestCount" : 0,
+    "cumulativeManualTestCount" : 21,
+    "completeTestCount" : 0,
+    "incompleteTestCount" : 0,
+    "skeletonTestCount" : 0,
+    "totalPhysicalLineCount" : 269,
+    "perMethodTestability" : {
+      "T000" : 6,
+      "T002" : 2,
+      "T003" : 8,
+      "T005" : 1,
+      "T012" : 5,
+      "T023" : 2
+    },
+    "perMethodOutcome" : {
+      "R005" : 9,
+      "T003" : 8,
+      "T012" : 5,
+      "T023" : 2
+    },
+    "perTestValidation" : {
+      "V000" : 24
+    }
+  },
+  "classes" : {
+    "com.google.gson.protobuf.ProtoTypeAdapter" : {
+      "methodsCount" : 12,
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : {
+        "T000" : 2,
+        "T003" : 6,
+        "T005" : 1,
+        "T012" : 2,
+        "T023" : 1
+      },
+      "perMethodOutcome" : {
+        "R005" : 3,
+        "T003" : 6,
+        "T012" : 2,
+        "T023" : 1
+      }
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$Builder" : {
+      "methodsCount" : 8,
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : {
+        "T000" : 4,
+        "T002" : 2,
+        "T003" : 1,
+        "T012" : 1
+      },
+      "perMethodOutcome" : {
+        "R005" : 6,
+        "T003" : 1,
+        "T012" : 1
+      }
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$EnumSerialization" : {
+      "methodsCount" : 4,
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : {
+        "T003" : 1,
+        "T012" : 2,
+        "T023" : 1
+      },
+      "perMethodOutcome" : {
+        "T003" : 1,
+        "T012" : 2,
+        "T023" : 1
+      }
+    }
+  },
+  "methods" : {
+    "com.google.gson.protobuf.ProtoTypeAdapter$Builder.<init>:(Lcom/google/gson/protobuf/ProtoTypeAdapter$EnumSerialization;Lcom/google/common/base/CaseFormat;Lcom/google/common/base/CaseFormat;)V" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T003",
+      "perMethodOutcome" : "T003",
+      "lineNumbers" : [
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$Builder.<init>:(Lcom/google/gson/protobuf/ProtoTypeAdapter$EnumSerialization;Lcom/google/common/base/CaseFormat;Lcom/google/common/base/CaseFormat;Lcom/google/gson/protobuf/ProtoTypeAdapter$1;)V" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T012",
+      "perMethodOutcome" : "T012",
+      "lineNumbers" : [
+        88
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$Builder.addSerializedEnumValueExtension:(Lcom/google/protobuf/Extension;)Lcom/google/gson/protobuf/ProtoTypeAdapter$Builder;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T000",
+      "perMethodOutcome" : "R005",
+      "lineNumbers" : [
+        177,
+        178
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$Builder.addSerializedNameExtension:(Lcom/google/protobuf/Extension;)Lcom/google/gson/protobuf/ProtoTypeAdapter$Builder;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T000",
+      "perMethodOutcome" : "R005",
+      "lineNumbers" : [
+        151,
+        152
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$Builder.build:()Lcom/google/gson/protobuf/ProtoTypeAdapter;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T000",
+      "perMethodOutcome" : "R005",
+      "lineNumbers" : [
+        208
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$Builder.setEnumSerialization:(Lcom/google/gson/protobuf/ProtoTypeAdapter$EnumSerialization;)Lcom/google/gson/protobuf/ProtoTypeAdapter$Builder;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T002",
+      "perMethodOutcome" : "R005",
+      "lineNumbers" : [
+        109,
+        110
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$Builder.setFieldNameSerializationFormat:(Lcom/google/common/base/CaseFormat;Lcom/google/common/base/CaseFormat;)Lcom/google/gson/protobuf/ProtoTypeAdapter$Builder;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T000",
+      "perMethodOutcome" : "R005",
+      "lineNumbers" : [
+        131,
+        132,
+        133
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$Builder.setShouldUseJsonNameFieldOption:(Z)Lcom/google/gson/protobuf/ProtoTypeAdapter$Builder;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T002",
+      "perMethodOutcome" : "R005",
+      "lineNumbers" : [
+        203,
+        204
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$EnumSerialization.<clinit>:()V" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T023",
+      "perMethodOutcome" : "T023"
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$EnumSerialization.<init>:(Ljava/lang/String;I)V" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T003",
+      "perMethodOutcome" : "T003",
+      "lineNumbers" : [
+        77
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$EnumSerialization.valueOf:(Ljava/lang/String;)Lcom/google/gson/protobuf/ProtoTypeAdapter$EnumSerialization;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T012",
+      "perMethodOutcome" : "T012",
+      "lineNumbers" : [
+        77
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter$EnumSerialization.values:()[Lcom/google/gson/protobuf/ProtoTypeAdapter$EnumSerialization;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T012",
+      "perMethodOutcome" : "T012",
+      "lineNumbers" : [
+        77
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.<clinit>:()V" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T023",
+      "perMethodOutcome" : "T023"
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.<init>:(Lcom/google/gson/protobuf/ProtoTypeAdapter$EnumSerialization;Lcom/google/common/base/CaseFormat;Lcom/google/common/base/CaseFormat;Ljava/util/Set;Ljava/util/Set;Z)V" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T003",
+      "perMethodOutcome" : "T003",
+      "lineNumbers" : [
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.<init>:(Lcom/google/gson/protobuf/ProtoTypeAdapter$EnumSerialization;Lcom/google/common/base/CaseFormat;Lcom/google/common/base/CaseFormat;Ljava/util/Set;Ljava/util/Set;ZLcom/google/gson/protobuf/ProtoTypeAdapter$1;)V" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T012",
+      "perMethodOutcome" : "T012",
+      "lineNumbers" : [
+        75
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.deserialize:(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lcom/google/protobuf/Message;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T000",
+      "perMethodOutcome" : "R005",
+      "lineNumbers" : [
+        290,
+        292,
+        294,
+        295,
+        299,
+        300,
+        302,
+        303,
+        305,
+        306,
+        308,
+        309,
+        311,
+        312,
+        315,
+        316,
+        318,
+        319,
+        320,
+        321,
+        322,
+        321,
+        323,
+        324,
+        325,
+        327,
+        329,
+        330,
+        333,
+        334,
+        335,
+        338,
+        339,
+        342,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        352,
+        353,
+        354,
+        355
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.findValueByNameAndExtension:(Lcom/google/protobuf/Descriptors$EnumDescriptor;Lcom/google/gson/JsonElement;)Lcom/google/protobuf/Descriptors$EnumValueDescriptor;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T003",
+      "perMethodOutcome" : "T003",
+      "lineNumbers" : [
+        411,
+        413,
+        414,
+        415,
+        416,
+        418,
+        419,
+        420,
+        423,
+        424,
+        425,
+        426,
+        428
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.getCachedMethod:(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T003",
+      "perMethodOutcome" : "T003",
+      "lineNumbers" : [
+        435,
+        436,
+        437,
+        438,
+        439,
+        440,
+        443,
+        444,
+        445,
+        446,
+        449
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.getCustSerializedEnumValue:(Lcom/google/protobuf/DescriptorProtos$EnumValueOptions;Ljava/lang/String;)Ljava/lang/String;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T003",
+      "perMethodOutcome" : "T003",
+      "lineNumbers" : [
+        381,
+        382,
+        383,
+        385,
+        386
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.getCustSerializedName:(Lcom/google/protobuf/Descriptors$FieldDescriptor;)Ljava/lang/String;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T003",
+      "perMethodOutcome" : "T003",
+      "lineNumbers" : [
+        364,
+        365,
+        366,
+        367,
+        369,
+        370,
+        371,
+        373
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.getEnumValue:(Lcom/google/protobuf/Descriptors$EnumValueDescriptor;)Ljava/lang/Object;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T003",
+      "perMethodOutcome" : "T003",
+      "lineNumbers" : [
+        394,
+        395,
+        397
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.newBuilder:()Lcom/google/gson/protobuf/ProtoTypeAdapter$Builder;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T005",
+      "perMethodOutcome" : "R005",
+      "lineNumbers" : [
+        224
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.serialize:(Lcom/google/protobuf/Message;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T000",
+      "perMethodOutcome" : "R005",
+      "lineNumbers" : [
+        256,
+        257,
+        259,
+        260,
+        261,
+        263,
+        265,
+        267,
+        269,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        280,
+        282,
+        283
+      ]
+    },
+    "com.google.gson.protobuf.ProtoTypeAdapter.serialize:(Ljava/lang/Object;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;" : {
+      "completeTestCount" : 0,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T012",
+      "perMethodOutcome" : "T012",
+      "lineNumbers" : [
+        75
+      ]
+    }
+  },
+  "validationMetrics" : { }
+}
