@@ -1819,6 +1819,174 @@ public class GsonDiffblueTest {
   }
 
   /**
+   * Test {@link Gson#getAdapter(Class)} with {@code Class}.
+   *
+   * <ul>
+   *   <li>Then return {@link FutureTypeAdapter}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#getAdapter(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapter Gson.getAdapter(Class)"})
+  public void testGetAdapterWithClass_thenReturnFutureTypeAdapter() {
+    // Arrange
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<TypeAdapterFactory> type = TypeAdapterFactory.class;
+
+    // Act
+    TypeAdapter<Object> actualAdapter = gson.getAdapter(type);
+
+    // Assert
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    assertTrue(actualAdapter instanceof FutureTypeAdapter);
+    assertSame(futureTypeAdapter, actualAdapter);
+  }
+
+  /**
+   * Test {@link Gson#getAdapter(Class)} with {@code Class}.
+   *
+   * <ul>
+   *   <li>Then return toJson {@code Value} is {@code {}}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#getAdapter(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapter Gson.getAdapter(Class)"})
+  public void testGetAdapterWithClass_thenReturnToJsonValueIsLeftCurlyBracketRightCurlyBracket() {
+    // Arrange
+    Gson gson = new Gson();
+    Class<TypeAdapterFactory> type = TypeAdapterFactory.class;
+
+    // Act and Assert
+    assertEquals("{}", gson.getAdapter(type).toJson("Value"));
+  }
+
+  /**
+   * Test {@link Gson#getAdapter(TypeToken)} with {@code TypeToken}.
+   *
+   * <p>Method under test: {@link Gson#getAdapter(TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapter Gson.getAdapter(TypeToken)"})
+  public void testGetAdapterWithTypeToken() {
+    // Arrange
+    Gson gson = new Gson();
+    Class<TypeAdapterFactory> type = TypeAdapterFactory.class;
+    TypeToken<Object> type2 = TypeToken.get(type);
+
+    // Act and Assert
+    assertEquals("{}", gson.getAdapter(type2).toJson("Value"));
+  }
+
+  /**
+   * Test {@link Gson#getAdapter(TypeToken)} with {@code TypeToken}.
+   *
+   * <ul>
+   *   <li>Then return {@link FutureTypeAdapter}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#getAdapter(TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapter Gson.getAdapter(TypeToken)"})
+  public void testGetAdapterWithTypeToken_thenReturnFutureTypeAdapter() {
+    // Arrange
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<TypeAdapterFactory> type = TypeAdapterFactory.class;
+    TypeToken<Object> type2 = TypeToken.get(type);
+
+    // Act
+    TypeAdapter<Object> actualAdapter = gson.getAdapter(type2);
+
+    // Assert
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    assertTrue(actualAdapter instanceof FutureTypeAdapter);
+    assertSame(futureTypeAdapter, actualAdapter);
+  }
+
+  /**
    * Test {@link Gson#getAdapter(TypeToken)} with {@code TypeToken}.
    *
    * <ul>
@@ -1866,6 +2034,30 @@ public class GsonDiffblueTest {
 
     // Act and Assert
     assertTrue(gson.getDelegateAdapter(skipPast, type2) instanceof ObjectTypeAdapter);
+  }
+
+  /**
+   * Test {@link Gson#getDelegateAdapter(TypeAdapterFactory, TypeToken)}.
+   *
+   * <ul>
+   *   <li>When {@code TypeAdapterFactory}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#getDelegateAdapter(TypeAdapterFactory, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapter Gson.getDelegateAdapter(TypeAdapterFactory, TypeToken)"})
+  public void testGetDelegateAdapter_whenComGoogleGsonTypeAdapterFactory() {
+    // Arrange
+    Gson gson = new Gson();
+    TypeAdapterFactory skipPast = mock(TypeAdapterFactory.class);
+    Class<TypeAdapterFactory> type = TypeAdapterFactory.class;
+    TypeToken<Object> type2 = TypeToken.get(type);
+
+    // Act and Assert
+    assertEquals("{}", gson.getDelegateAdapter(skipPast, type2).toJson("Value"));
   }
 
   /**
@@ -7934,6 +8126,64 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
    *
    * <ul>
+   *   <li>When {@code LazilyParsedNumber}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
+  public void testFromJsonWithJsonElementTypeToken_whenComGoogleGsonInternalLazilyParsedNumber()
+      throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            255,
+            255,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    JsonObject json = new JsonObject();
+    json.addProperty("type must not be null", Integer.valueOf(255));
+    json.add("in == null", JsonNull.INSTANCE);
+    Class<LazilyParsedNumber> type = LazilyParsedNumber.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(json, typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
+   *
+   * <ul>
    *   <li>When {@link JsonNull#INSTANCE}.
    *   <li>Then return {@code null}.
    * </ul>
@@ -8241,6 +8491,188 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
    *
    * <ul>
+   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} return
+   *       valueOf one.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
+  public void testFromJsonWithJsonElementType_givenToNumberStrategyReadNumberReturnValueOfOne()
+      throws JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenReturn(Integer.valueOf(1));
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    JsonObject json = new JsonObject();
+    json.addProperty("type must not be null", Integer.valueOf(1));
+    json.add("in == null", JsonNull.INSTANCE);
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} throw
+   *       {@link EOFException#EOFException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
+  public void testFromJsonWithJsonElementType_givenToNumberStrategyReadNumberThrowEOFException()
+      throws JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenThrow(new EOFException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    JsonObject json = new JsonObject();
+    json.addProperty("type must not be null", Integer.valueOf(1));
+    json.add("in == null", JsonNull.INSTANCE);
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} throw
+   *       {@link IOException#IOException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
+  public void testFromJsonWithJsonElementType_givenToNumberStrategyReadNumberThrowIOException()
+      throws JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenThrow(new IOException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    JsonObject json = new JsonObject();
+    json.addProperty("type must not be null", Integer.valueOf(1));
+    json.add("in == null", JsonNull.INSTANCE);
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
+   *
+   * <ul>
    *   <li>Then return {@code in == null}.
    * </ul>
    *
@@ -8423,6 +8855,63 @@ public class GsonDiffblueTest {
     assertEquals(
         "in == null", ((Map<String, String>) actualFromJsonResult).get("type must not be null"));
     assertNull(((Map<String, String>) actualFromJsonResult).get("in == null"));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@code LazilyParsedNumber}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
+  public void testFromJsonWithJsonElementType_whenComGoogleGsonInternalLazilyParsedNumber()
+      throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    JsonObject json = new JsonObject();
+    json.addProperty("type must not be null", Integer.valueOf(1));
+    json.add("in == null", JsonNull.INSTANCE);
+    Class<LazilyParsedNumber> typeOfT = LazilyParsedNumber.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
   }
 
   /**
@@ -9246,6 +9735,65 @@ public class GsonDiffblueTest {
     verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
     assertEquals(1, ((Integer) actualFromJsonResult).intValue());
     assertSame(valueOfResult, actualFromJsonResult);
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
+   *
+   * <ul>
+   *   <li>Then return {@link LazilyParsedNumber}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
+  public void testFromJsonWithJsonReaderTypeToken_thenReturnLazilyParsedNumber()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonReader reader = new JsonReader(new StringReader("42"));
+    Class<LazilyParsedNumber> type = LazilyParsedNumber.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act
+    Object actualFromJsonResult = gson.fromJson(reader, typeOfT);
+
+    // Assert
+    assertTrue(actualFromJsonResult instanceof LazilyParsedNumber);
+    assertEquals("42", actualFromJsonResult.toString());
   }
 
   /**
@@ -10931,6 +11479,157 @@ public class GsonDiffblueTest {
   }
 
   /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType() throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("foo");
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType2() throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("foo");
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType3()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenThrow(new IllegalStateException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("42");
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
    * Test {@link Gson#fromJson(Reader, TypeToken)} with {@code Reader}, {@code TypeToken}.
    *
    * <p>Method under test: {@link Gson#fromJson(Reader, TypeToken)}
@@ -11430,6 +12129,65 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(Reader, TypeToken)} with {@code Reader}, {@code TypeToken}.
    *
    * <ul>
+   *   <li>Then return {@link LazilyParsedNumber}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, TypeToken)"})
+  public void testFromJsonWithReaderTypeToken_thenReturnLazilyParsedNumber()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            255,
+            255,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("42");
+    Class<LazilyParsedNumber> type = LazilyParsedNumber.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act
+    Object actualFromJsonResult = gson.fromJson(json, typeOfT);
+
+    // Assert
+    assertTrue(actualFromJsonResult instanceof LazilyParsedNumber);
+    assertEquals("42", actualFromJsonResult.toString());
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, TypeToken)} with {@code Reader}, {@code TypeToken}.
+   *
+   * <ul>
    *   <li>When {@link FileReader#FileReader(FileDescriptor)} with {@link
    *       FileDescriptor#FileDescriptor()}.
    * </ul>
@@ -11806,6 +12564,56 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
    *
    * <ul>
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code in == null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_givenGson_whenStringReaderWithInNull()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    StringReader json = new StringReader("in == null");
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code type must not be null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_givenGson_whenStringReaderWithTypeMustNotBeNull()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    StringReader json = new StringReader("type must not be null");
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
    *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} return
    *       {@code null}.
    * </ul>
@@ -11860,6 +12668,179 @@ public class GsonDiffblueTest {
     // Assert
     verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
     assertNull(actualFromJsonResult);
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} return
+   *       valueOf one.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_givenToNumberStrategyReadNumberReturnValueOfOne()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenReturn(Integer.valueOf(1));
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("42");
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} throw
+   *       {@link EOFException#EOFException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_givenToNumberStrategyReadNumberThrowEOFException()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenThrow(new EOFException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("42");
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} throw
+   *       {@link IOException#IOException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_givenToNumberStrategyReadNumberThrowIOException()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenThrow(new IOException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("42");
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
   }
 
   /**
@@ -11979,6 +12960,61 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
    *
    * <ul>
+   *   <li>When {@link FileReader#FileReader(FileDescriptor)} with {@link
+   *       FileDescriptor#FileDescriptor()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenFileReaderWithFileDescriptor()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    FileReader json = new FileReader(new FileDescriptor());
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
    *   <li>When {@link StringReader#StringReader(String)} with empty string.
    *   <li>Then return {@code null}.
    * </ul>
@@ -12078,6 +13114,114 @@ public class GsonDiffblueTest {
 
     // Act and Assert
     assertEquals("foo", gson.fromJson(json, (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code in == null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenStringReaderWithInNull()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("in == null");
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code type must not be null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenStringReaderWithTypeMustNotBeNull()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("type must not be null");
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson(json, (Type) typeOfT));
   }
 
   /**
@@ -12776,6 +13920,105 @@ public class GsonDiffblueTest {
   }
 
   /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType() throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson("Json", (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType2() throws JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenThrow(new IllegalStateException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson("42", (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
    * Test {@link Gson#fromJson(String, TypeToken)} with {@code String}, {@code TypeToken}.
    *
    * <p>Method under test: {@link Gson#fromJson(String, TypeToken)}
@@ -13266,6 +14509,64 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(String, TypeToken)} with {@code String}, {@code TypeToken}.
    *
    * <ul>
+   *   <li>Then return {@link LazilyParsedNumber}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, TypeToken)"})
+  public void testFromJsonWithStringTypeToken_thenReturnLazilyParsedNumber()
+      throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            255,
+            255,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<LazilyParsedNumber> type = LazilyParsedNumber.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act
+    Object actualFromJsonResult = gson.fromJson("42", typeOfT);
+
+    // Assert
+    assertTrue(actualFromJsonResult instanceof LazilyParsedNumber);
+    assertEquals("42", actualFromJsonResult.toString());
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, TypeToken)} with {@code String}, {@code TypeToken}.
+   *
+   * <ul>
    *   <li>When {@code in == null}.
    *   <li>Then throw {@link JsonSyntaxException}.
    * </ul>
@@ -13479,6 +14780,32 @@ public class GsonDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@code in == null}.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_givenGson_whenInNull_thenThrowJsonSyntaxException()
+      throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, (Type) () -> gson.fromJson("in == null", (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
    *   <li>When {@code Json}.
    *   <li>Then return {@code Json}.
    * </ul>
@@ -13522,6 +14849,32 @@ public class GsonDiffblueTest {
 
     // Act and Assert
     assertNull(gson.fromJson((String) null, (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@code type must not be null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_givenGson_whenTypeMustNotBeNull()
+      throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        (Type) () -> gson.fromJson("type must not be null", (Type) typeOfT));
   }
 
   /**
@@ -13587,6 +14940,176 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
    *
    * <ul>
+   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} return
+   *       valueOf one.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_givenToNumberStrategyReadNumberReturnValueOfOne()
+      throws JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenReturn(Integer.valueOf(1));
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson("42", (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} throw
+   *       {@link EOFException#EOFException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_givenToNumberStrategyReadNumberThrowEOFException()
+      throws JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenThrow(new EOFException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson("42", (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} throw
+   *       {@link IOException#IOException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_givenToNumberStrategyReadNumberThrowIOException()
+      throws JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenThrow(new IOException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, (Type) () -> gson.fromJson("42", (Type) typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
    *   <li>Then return {@link LazilyParsedNumber}.
    * </ul>
    *
@@ -13643,6 +15166,61 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
    *
    * <ul>
+   *   <li>When {@code in == null}.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_whenInNull_thenThrowJsonSyntaxException()
+      throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, (Type) () -> gson.fromJson("in == null", (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
    *   <li>When {@code Json}.
    *   <li>Then return {@code Json}.
    * </ul>
@@ -13690,5 +15268,61 @@ public class GsonDiffblueTest {
 
     // Act and Assert
     assertEquals("Json", gson.fromJson("Json", (Type) typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@code type must not be null}.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_whenTypeMustNotBeNull_thenThrowJsonSyntaxException()
+      throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<Object> typeOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        (Type) () -> gson.fromJson("type must not be null", (Type) typeOfT));
   }
 }

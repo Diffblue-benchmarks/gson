@@ -4,22 +4,24 @@
   },
   "run" : {
     "version" : "2025.09.01-44e352d-licensed",
-    "creationTimestamp" : "2025-09-19T09:48:19.589511Z",
+    "creationTimestamp" : "2025-10-15T15:27:01.051025Z",
     "command" : "dcover create --exclude-modules=com.google.code.gson:test-jpms,com.google.code.gson:test-graal-native-image --coverage-reports --upload http://localhost:8080 --project-name gson --name with-diffblue-tests",
-    "totalTime" : 54.688,
-    "environmentDetectionTime" : 0.063,
-    "indexingTime" : 0.329,
-    "entryPointsTime" : 0.051,
-    "generationTime" : 1265.455,
-    "timeToFirstTest" : 107.242,
-    "timeToLastTest" : 1385.109,
-    "indexQueryTime" : 2.763,
-    "verificationTime" : 74.701,
-    "validationTime" : 10.099
+    "totalTime" : 159.807,
+    "environmentDetectionTime" : 0.051,
+    "indexingTime" : 0.406,
+    "entryPointsTime" : 0.039,
+    "generationTime" : 1354.062,
+    "timeToFirstTest" : 208.855,
+    "timeToLastTest" : 1401.088,
+    "indexQueryTime" : 2.536,
+    "verificationTime" : 4.898,
+    "validationTime" : 10.62
   },
   "codes" : {
     "R000" : "Success",
-    "R005" : "Unable to load class",
+    "R002" : "Missing observers",
+    "R004" : "No meaningful assertions found",
+    "R013" : "No inputs found that don't throw a trivial exception",
     "T000" : "Method eligible for test creation",
     "T001" : "Trivial getter",
     "T003" : "Private method",
@@ -34,9 +36,9 @@
   "summary" : {
     "classesCount" : 38,
     "methodsCount" : 124,
-    "cumulativeDiffblueTestCount" : 0,
+    "cumulativeDiffblueTestCount" : 40,
     "cumulativeManualTestCount" : 0,
-    "completeTestCount" : 25,
+    "completeTestCount" : 40,
     "incompleteTestCount" : 0,
     "skeletonTestCount" : 0,
     "totalPhysicalLineCount" : 620,
@@ -52,8 +54,10 @@
       "T023" : 2
     },
     "perMethodOutcome" : {
-      "R000" : 31,
-      "R005" : 19,
+      "R000" : 41,
+      "R002" : 6,
+      "R004" : 1,
+      "R013" : 2,
       "T003" : 23,
       "T004" : 7,
       "T010" : 1,
@@ -61,10 +65,10 @@
       "T023" : 2
     },
     "perTestOutcome" : {
-      "R000" : 25
+      "R000" : 40
     },
     "perTestValidation" : {
-      "V000" : 25
+      "V000" : 40
     }
   },
   "classes" : {
@@ -85,7 +89,7 @@
     },
     "com.example.ClassWithAdapter$Adapter" : {
       "methodsCount" : 4,
-      "completeTestCount" : 0,
+      "completeTestCount" : 5,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 2,
@@ -93,8 +97,12 @@
         "T012" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 3,
+        "R000" : 2,
+        "R002" : 1,
         "T012" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 5
       }
     },
     "com.example.ClassWithExposeAnnotation" : {
@@ -143,7 +151,7 @@
     },
     "com.example.ClassWithJsonAdapterAnnotation$Adapter" : {
       "methodsCount" : 4,
-      "completeTestCount" : 0,
+      "completeTestCount" : 3,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 2,
@@ -151,20 +159,28 @@
         "T012" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 3,
+        "R000" : 2,
+        "R002" : 1,
         "T012" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 3
       }
     },
     "com.example.ClassWithJsonAdapterAnnotation$Deserializer" : {
       "methodsCount" : 2,
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 1,
         "T005" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 2
+        "R000" : 1,
+        "R002" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 1
       }
     },
     "com.example.ClassWithJsonAdapterAnnotation$DummyClass" : {
@@ -191,7 +207,8 @@
         "T005" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 2
+        "R002" : 1,
+        "R004" : 1
       }
     },
     "com.example.ClassWithJsonAdapterAnnotation$Factory$1" : {
@@ -209,7 +226,7 @@
     },
     "com.example.ClassWithJsonAdapterAnnotation$Serializer" : {
       "methodsCount" : 3,
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 1,
@@ -217,8 +234,12 @@
         "T012" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 2,
+        "R000" : 1,
+        "R002" : 1,
         "T012" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 1
       }
     },
     "com.example.ClassWithNamedFields" : {
@@ -363,7 +384,7 @@
     },
     "com.example.GenericClasses$DummyClass$Adapter" : {
       "methodsCount" : 4,
-      "completeTestCount" : 0,
+      "completeTestCount" : 3,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 2,
@@ -371,8 +392,12 @@
         "T012" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 3,
+        "R000" : 2,
+        "R002" : 1,
         "T012" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 3
       }
     },
     "com.example.GenericClasses$GenericClass" : {
@@ -456,7 +481,7 @@
         "T012" : 30
       },
       "perMethodOutcome" : {
-        "R005" : 1,
+        "R013" : 1,
         "T003" : 18,
         "T012" : 30
       }
@@ -507,15 +532,19 @@
     },
     "com.example.NoSerializedNameMain" : {
       "methodsCount" : 4,
-      "completeTestCount" : 0,
+      "completeTestCount" : 2,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 3,
         "T003" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 3,
+        "R000" : 2,
+        "R013" : 1,
         "T003" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 2
       }
     },
     "com.example.NoSerializedNameMain$TestClassHasArgsConstructor" : {
@@ -598,16 +627,19 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         11
       ]
     },
     "com.example.ClassWithAdapter$Adapter.read:(Lcom/google/gson/stream/JsonReader;)Lcom/example/ClassWithAdapter;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 3,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 3
+      },
       "lineNumbers" : [
         14,
         15,
@@ -619,10 +651,13 @@
       ]
     },
     "com.example.ClassWithAdapter$Adapter.write:(Lcom/google/gson/stream/JsonWriter;Lcom/example/ClassWithAdapter;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 2,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 2
+      },
       "lineNumbers" : [
         27,
         28,
@@ -696,25 +731,31 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         71
       ]
     },
     "com.example.ClassWithJsonAdapterAnnotation$Adapter.read:(Lcom/google/gson/stream/JsonReader;)Lcom/example/ClassWithJsonAdapterAnnotation$DummyClass;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 2,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 2
+      },
       "lineNumbers" : [
         74
       ]
     },
     "com.example.ClassWithJsonAdapterAnnotation$Adapter.write:(Lcom/google/gson/stream/JsonWriter;Lcom/example/ClassWithJsonAdapterAnnotation$DummyClass;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         79,
         80
@@ -733,16 +774,19 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         113
       ]
     },
     "com.example.ClassWithJsonAdapterAnnotation$Deserializer.deserialize:(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lcom/example/ClassWithJsonAdapterAnnotation$DummyClass;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         118
       ]
@@ -814,7 +858,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         83
       ]
@@ -823,7 +867,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R004",
       "lineNumbers" : [
         88,
         102
@@ -833,16 +877,19 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         106
       ]
     },
     "com.example.ClassWithJsonAdapterAnnotation$Serializer.serialize:(Lcom/example/ClassWithJsonAdapterAnnotation$DummyClass;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         109
       ]
@@ -1051,25 +1098,31 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         56
       ]
     },
     "com.example.GenericClasses$DummyClass$Adapter.read:(Lcom/google/gson/stream/JsonReader;)Lcom/example/GenericClasses$DummyClass;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 2,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 2
+      },
       "lineNumbers" : [
         59
       ]
     },
     "com.example.GenericClasses$DummyClass$Adapter.write:(Lcom/google/gson/stream/JsonWriter;Lcom/example/GenericClasses$DummyClass;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         64
       ]
@@ -1575,7 +1628,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         31,
         33,
@@ -1835,7 +1888,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         55,
         56,
@@ -1843,10 +1896,13 @@
       ]
     },
     "com.example.NoSerializedNameMain.runTestNoArgsConstructor:()Ljava/lang/String;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         37,
         38,
@@ -1854,10 +1910,13 @@
       ]
     },
     "com.example.NoSerializedNameMain.runTestNoJdkUnsafe:()Ljava/lang/String;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         47,
         48,

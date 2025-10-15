@@ -1,6 +1,7 @@
 package com.google.gson.internal.bind;
 
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
@@ -15,6 +16,30 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class NumberTypeAdapterDiffblueTest {
+  /**
+   * Test {@link NumberTypeAdapter#getFactory(ToNumberStrategy)}.
+   *
+   * <ul>
+   *   <li>Then create {@link Gson#Gson()} and {@link Number} return {@link NumberTypeAdapter}.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#getFactory(ToNumberStrategy)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory NumberTypeAdapter.getFactory(ToNumberStrategy)"})
+  public void testGetFactory_thenCreateGsonAndNumberReturnNumberTypeAdapter() {
+    // Arrange and Act
+    TypeAdapterFactory actualFactory = NumberTypeAdapter.getFactory(mock(ToNumberStrategy.class));
+    Gson gson = new Gson();
+    Class<Number> type = Number.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+
+    // Assert
+    assertTrue(actualFactory.create(gson, getResult) instanceof NumberTypeAdapter);
+  }
+
   /**
    * Test {@link NumberTypeAdapter#getFactory(ToNumberStrategy)}.
    *

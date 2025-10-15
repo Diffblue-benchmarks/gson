@@ -4,22 +4,22 @@
   },
   "run" : {
     "version" : "2025.09.01-44e352d-licensed",
-    "creationTimestamp" : "2025-09-19T09:48:19.589511Z",
+    "creationTimestamp" : "2025-10-15T15:27:01.051025Z",
     "command" : "dcover create --exclude-modules=com.google.code.gson:test-jpms,com.google.code.gson:test-graal-native-image --coverage-reports --upload http://localhost:8080 --project-name gson --name with-diffblue-tests",
-    "totalTime" : 72.399,
-    "environmentDetectionTime" : 0.058,
-    "indexingTime" : 0.339,
-    "entryPointsTime" : 0.046,
-    "generationTime" : 1306.612,
-    "timeToFirstTest" : 217.078,
-    "timeToLastTest" : 1460.08,
-    "indexQueryTime" : 4.0280000000000005,
-    "verificationTime" : 78.958,
-    "validationTime" : 9.104
+    "totalTime" : 72.704,
+    "environmentDetectionTime" : 0.082,
+    "indexingTime" : 0.416,
+    "entryPointsTime" : 0.068,
+    "generationTime" : 1471.25,
+    "timeToFirstTest" : 409.37,
+    "timeToLastTest" : 1557.696,
+    "indexQueryTime" : 4.112,
+    "verificationTime" : 16.033,
+    "validationTime" : 8.289
   },
   "codes" : {
     "R000" : "Success",
-    "R005" : "Unable to load class",
+    "R002" : "Missing observers",
     "R013" : "No inputs found that don't throw a trivial exception",
     "T000" : "Method eligible for test creation",
     "T001" : "Trivial getter",
@@ -58,8 +58,8 @@
     },
     "perMethodOutcome" : {
       "R000" : 20,
-      "R005" : 13,
-      "R013" : 3,
+      "R002" : 6,
+      "R013" : 10,
       "T003" : 19,
       "T004" : 19,
       "T006" : 4,
@@ -102,7 +102,8 @@
         "T006" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 5,
+        "R002" : 2,
+        "R013" : 3,
         "T006" : 1
       }
     },
@@ -117,7 +118,8 @@
         "T023" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 5,
+        "R002" : 2,
+        "R013" : 3,
         "T006" : 1,
         "T023" : 1
       }
@@ -551,7 +553,8 @@
         "T006" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 3,
+        "R002" : 2,
+        "R013" : 1,
         "T006" : 1
       }
     }
@@ -666,7 +669,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         32
       ]
@@ -685,7 +688,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         43,
         44,
@@ -697,7 +700,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         50,
         51,
@@ -709,7 +712,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         95,
         96,
@@ -741,7 +744,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         57,
         58,
@@ -789,7 +792,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         34
       ]
@@ -808,7 +811,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         48,
         49,
@@ -823,7 +826,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         58,
         59,
@@ -835,7 +838,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         110,
         111,
@@ -873,7 +876,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         66,
         67,
@@ -1694,7 +1697,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         30
       ]
@@ -1713,7 +1716,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         42,
         43,
@@ -1724,7 +1727,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         47,
         48,

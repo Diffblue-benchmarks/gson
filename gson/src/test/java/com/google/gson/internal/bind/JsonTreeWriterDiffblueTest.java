@@ -461,6 +461,27 @@ public class JsonTreeWriterDiffblueTest {
    * Test {@link JsonTreeWriter#value(Number)} with {@code Number}.
    *
    * <ul>
+   *   <li>When {@link Double#NaN}.
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeWriter#value(Number)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonWriter JsonTreeWriter.value(Number)"})
+  public void testValueWithNumber_whenNaN_thenThrowIllegalArgumentException() throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        (Number) IllegalArgumentException.class,
+        () -> new JsonTreeWriter().value((Number) Double.NaN));
+  }
+
+  /**
+   * Test {@link JsonTreeWriter#value(Number)} with {@code Number}.
+   *
+   * <ul>
    *   <li>When valueOf one.
    *   <li>Then return Strictness is {@code LEGACY_STRICT}.
    * </ul>

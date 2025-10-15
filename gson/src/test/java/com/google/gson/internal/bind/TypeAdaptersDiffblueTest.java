@@ -1,5 +1,6 @@
 package com.google.gson.internal.bind;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
@@ -29,6 +30,94 @@ public class TypeAdaptersDiffblueTest {
   public void testNewFactoryWithClassClassTypeAdapter() {
     // Arrange
     Class<Object> unboxed = Object.class;
+    Class<Object> boxed = Object.class;
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    // Act
+    TypeAdapterFactory actualNewFactoryResult =
+        TypeAdapters.newFactory(unboxed, boxed, typeAdapter);
+    Gson gson2 = new Gson();
+    Class<Object> type2 = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type2);
+
+    // Assert
+    assertSame(typeAdapter, actualNewFactoryResult.create(gson2, getResult));
+  }
+
+  /**
+   * Test {@link TypeAdapters#newFactory(Class, Class, TypeAdapter)} with {@code Class}, {@code
+   * Class}, {@code TypeAdapter}.
+   *
+   * <ul>
+   *   <li>Then return create {@link Gson#Gson()} and {@link Boolean} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapters#newFactory(Class, Class, TypeAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory TypeAdapters.newFactory(Class, Class, TypeAdapter)"})
+  public void testNewFactoryWithClassClassTypeAdapter_thenReturnCreateGsonAndBooleanIsNull() {
+    // Arrange
+    Class<Object> unboxed = Object.class;
+    Class<Object> boxed = Object.class;
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    // Act
+    TypeAdapterFactory actualNewFactoryResult =
+        TypeAdapters.newFactory(unboxed, boxed, typeAdapter);
+    Gson gson2 = new Gson();
+    Class<Boolean> type2 = Boolean.class;
+    TypeToken<Object> getResult = TypeToken.get(type2);
+
+    // Assert
+    assertNull(actualNewFactoryResult.create(gson2, getResult));
+  }
+
+  /**
+   * Test {@link TypeAdapters#newFactory(Class, Class, TypeAdapter)} with {@code Class}, {@code
+   * Class}, {@code TypeAdapter}.
+   *
+   * <ul>
+   *   <li>When {@code Boolean}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapters#newFactory(Class, Class, TypeAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory TypeAdapters.newFactory(Class, Class, TypeAdapter)"})
+  public void testNewFactoryWithClassClassTypeAdapter_whenJavaLangBoolean() {
+    // Arrange
+    Class<Boolean> unboxed = Boolean.class;
     Class<Object> boxed = Object.class;
     Gson context = new Gson();
     JsonSerializer<Object> serializer = mock(JsonSerializer.class);
@@ -95,6 +184,48 @@ public class TypeAdaptersDiffblueTest {
   }
 
   /**
+   * Test {@link TypeAdapters#newFactory(Class, TypeAdapter)} with {@code Class}, {@code
+   * TypeAdapter}.
+   *
+   * <ul>
+   *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapters#newFactory(Class, TypeAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory TypeAdapters.newFactory(Class, TypeAdapter)"})
+  public void testNewFactoryWithClassTypeAdapter_thenReturnCreateGsonAndObjectIsNull() {
+    // Arrange
+    Class<Boolean> type = Boolean.class;
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type2 = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type2);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    // Act
+    TypeAdapterFactory actualNewFactoryResult = TypeAdapters.newFactory(type, typeAdapter);
+    Gson gson2 = new Gson();
+    Class<Object> type3 = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type3);
+
+    // Assert
+    assertNull(actualNewFactoryResult.create(gson2, getResult));
+  }
+
+  /**
    * Test {@link TypeAdapters#newFactory(TypeToken, TypeAdapter)} with {@code TypeToken}, {@code
    * TypeAdapter}.
    *
@@ -131,6 +262,49 @@ public class TypeAdaptersDiffblueTest {
 
     // Assert
     assertSame(typeAdapter, actualNewFactoryResult.create(gson2, getResult));
+  }
+
+  /**
+   * Test {@link TypeAdapters#newFactory(TypeToken, TypeAdapter)} with {@code TypeToken}, {@code
+   * TypeAdapter}.
+   *
+   * <ul>
+   *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapters#newFactory(TypeToken, TypeAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory TypeAdapters.newFactory(TypeToken, TypeAdapter)"})
+  public void testNewFactoryWithTypeTokenTypeAdapter_thenReturnCreateGsonAndObjectIsNull() {
+    // Arrange
+    Class<Boolean> type = Boolean.class;
+    TypeToken<Object> type2 = TypeToken.get(type);
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type3 = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type3);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    // Act
+    TypeAdapterFactory actualNewFactoryResult = TypeAdapters.newFactory(type2, typeAdapter);
+    Gson gson2 = new Gson();
+    Class<Object> type4 = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type4);
+
+    // Assert
+    assertNull(actualNewFactoryResult.create(gson2, getResult));
   }
 
   /**
@@ -173,5 +347,139 @@ public class TypeAdaptersDiffblueTest {
 
     // Assert
     assertSame(typeAdapter, actualNewFactoryForMultipleTypesResult.create(gson2, getResult));
+  }
+
+  /**
+   * Test {@link TypeAdapters#newFactoryForMultipleTypes(Class, Class, TypeAdapter)}.
+   *
+   * <ul>
+   *   <li>Then return create {@link Gson#Gson()} and {@link Boolean} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapters#newFactoryForMultipleTypes(Class, Class,
+   * TypeAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "TypeAdapterFactory TypeAdapters.newFactoryForMultipleTypes(Class, Class, TypeAdapter)"
+  })
+  public void testNewFactoryForMultipleTypes_thenReturnCreateGsonAndBooleanIsNull() {
+    // Arrange
+    Class<Object> base = Object.class;
+    Class<Object> sub = Object.class;
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    // Act
+    TypeAdapterFactory actualNewFactoryForMultipleTypesResult =
+        TypeAdapters.newFactoryForMultipleTypes(base, sub, typeAdapter);
+    Gson gson2 = new Gson();
+    Class<Boolean> type2 = Boolean.class;
+    TypeToken<Object> getResult = TypeToken.get(type2);
+
+    // Assert
+    assertNull(actualNewFactoryForMultipleTypesResult.create(gson2, getResult));
+  }
+
+  /**
+   * Test {@link TypeAdapters#newFactoryForMultipleTypes(Class, Class, TypeAdapter)}.
+   *
+   * <ul>
+   *   <li>When {@code Boolean}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapters#newFactoryForMultipleTypes(Class, Class,
+   * TypeAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "TypeAdapterFactory TypeAdapters.newFactoryForMultipleTypes(Class, Class, TypeAdapter)"
+  })
+  public void testNewFactoryForMultipleTypes_whenJavaLangBoolean() {
+    // Arrange
+    Class<Boolean> base = Boolean.class;
+    Class<Object> sub = Object.class;
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    // Act
+    TypeAdapterFactory actualNewFactoryForMultipleTypesResult =
+        TypeAdapters.newFactoryForMultipleTypes(base, sub, typeAdapter);
+    Gson gson2 = new Gson();
+    Class<Object> type2 = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type2);
+
+    // Assert
+    assertSame(typeAdapter, actualNewFactoryForMultipleTypesResult.create(gson2, getResult));
+  }
+
+  /**
+   * Test {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}.
+   *
+   * <ul>
+   *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory TypeAdapters.newTypeHierarchyFactory(Class, TypeAdapter)"})
+  public void testNewTypeHierarchyFactory_thenReturnCreateGsonAndObjectIsNull() {
+    // Arrange
+    Class<Boolean> clazz = Boolean.class;
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    // Act
+    TypeAdapterFactory actualNewTypeHierarchyFactoryResult =
+        TypeAdapters.newTypeHierarchyFactory(clazz, typeAdapter);
+    Gson gson2 = new Gson();
+    Class<Object> type2 = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type2);
+
+    // Assert
+    assertNull(actualNewTypeHierarchyFactoryResult.create(gson2, getResult));
   }
 }

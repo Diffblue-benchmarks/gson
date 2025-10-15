@@ -127,6 +127,32 @@ public class TypeTokenDiffblueTest {
   }
 
   /**
+   * Test {@link TypeToken#isAssignableFrom(Class)} with {@code cls}.
+   *
+   * <ul>
+   *   <li>Then {@link TypeToken} RawType is {@link TypeToken}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeToken#isAssignableFrom(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean TypeToken.isAssignableFrom(Class)"})
+  public void testIsAssignableFromWithCls_thenTypeTokenRawTypeIsTypeToken() {
+    // Arrange
+    Class<TypeToken> type = TypeToken.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+    Class<Object> cls = Object.class;
+
+    // Act and Assert
+    assertFalse(getResult.isAssignableFrom(cls));
+    Class<TypeToken> expectedRawType = TypeToken.class;
+    assertEquals(expectedRawType, getResult.getRawType());
+    assertSame(type, getResult.getType());
+  }
+
+  /**
    * Test {@link TypeToken#isAssignableFrom(Type)} with {@code from}.
    *
    * <ul>
@@ -157,6 +183,32 @@ public class TypeTokenDiffblueTest {
    * Test {@link TypeToken#isAssignableFrom(Type)} with {@code from}.
    *
    * <ul>
+   *   <li>Then {@link TypeToken} RawType is {@link TypeToken}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeToken#isAssignableFrom(Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean TypeToken.isAssignableFrom(Type)"})
+  public void testIsAssignableFromWithFrom_thenTypeTokenRawTypeIsTypeToken() {
+    // Arrange
+    Class<TypeToken> type = TypeToken.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+    Class<Object> from = Object.class;
+
+    // Act and Assert
+    assertFalse(getResult.isAssignableFrom((Type) from));
+    Class<TypeToken> expectedRawType = TypeToken.class;
+    assertEquals(expectedRawType, getResult.getRawType());
+    assertSame(type, getResult.getType());
+  }
+
+  /**
+   * Test {@link TypeToken#isAssignableFrom(Type)} with {@code from}.
+   *
+   * <ul>
    *   <li>When {@code Object}.
    *   <li>Then return {@code true}.
    * </ul>
@@ -178,6 +230,31 @@ public class TypeTokenDiffblueTest {
     Class<Object> expectedRawType = Object.class;
     assertEquals(expectedRawType, getResult.getRawType());
     assertSame(from, getResult.getType());
+  }
+
+  /**
+   * Test {@link TypeToken#isAssignableFrom(TypeToken)} with {@code token}.
+   *
+   * <ul>
+   *   <li>Given {@code TypeToken}.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeToken#isAssignableFrom(TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean TypeToken.isAssignableFrom(TypeToken)"})
+  public void testIsAssignableFromWithToken_givenComGoogleGsonReflectTypeToken_thenReturnFalse() {
+    // Arrange
+    Class<TypeToken> type = TypeToken.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+    Class<Object> type2 = Object.class;
+    TypeToken<?> token = TypeToken.get(type2);
+
+    // Act and Assert
+    assertFalse(getResult.isAssignableFrom(token));
   }
 
   /**
@@ -313,6 +390,31 @@ public class TypeTokenDiffblueTest {
 
     // Act and Assert
     assertNotEquals(getResult, 1);
+  }
+
+  /**
+   * Test {@link TypeToken#equals(Object)}.
+   *
+   * <ul>
+   *   <li>When other is different.
+   *   <li>Then return not equal.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeToken#equals(Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean TypeToken.equals(Object)", "int TypeToken.hashCode()"})
+  public void testEquals_whenOtherIsDifferent_thenReturnNotEqual2() {
+    // Arrange
+    Class<TypeToken> type = TypeToken.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+    Class<Object> type2 = Object.class;
+    TypeToken<Object> getResult2 = TypeToken.get(type2);
+
+    // Act and Assert
+    assertNotEquals(getResult, getResult2);
   }
 
   /**

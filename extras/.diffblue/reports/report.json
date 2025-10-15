@@ -4,21 +4,23 @@
   },
   "run" : {
     "version" : "2025.09.01-44e352d-licensed",
-    "creationTimestamp" : "2025-09-19T09:48:19.589511Z",
+    "creationTimestamp" : "2025-10-15T15:27:01.051025Z",
     "command" : "dcover create --exclude-modules=com.google.code.gson:test-jpms,com.google.code.gson:test-graal-native-image --coverage-reports --upload http://localhost:8080 --project-name gson --name with-diffblue-tests",
-    "totalTime" : 34.903,
-    "environmentDetectionTime" : 0.074,
-    "indexingTime" : 0.334,
-    "entryPointsTime" : 0.061,
-    "generationTime" : 1276.7,
-    "timeToFirstTest" : 143.517,
-    "timeToLastTest" : 1409.04,
-    "indexQueryTime" : 2.457,
-    "verificationTime" : 74.701,
-    "validationTime" : 10.099
+    "totalTime" : 125.125,
+    "environmentDetectionTime" : 0.08,
+    "indexingTime" : 0.412,
+    "entryPointsTime" : 0.065,
+    "generationTime" : 1438.665,
+    "timeToFirstTest" : 335.419,
+    "timeToLastTest" : 1504.796,
+    "indexQueryTime" : 2.669,
+    "verificationTime" : 11.489,
+    "validationTime" : 9.308
   },
   "codes" : {
-    "R005" : "Unable to load class",
+    "R000" : "Success",
+    "R002" : "Missing observers",
+    "R013" : "No inputs found that don't throw a trivial exception",
     "R083" : "Can't find a suitable constructor",
     "T000" : "Method eligible for test creation",
     "T002" : "Trivial setter",
@@ -30,14 +32,15 @@
     "T012" : "Synthetic method",
     "T020" : "Other trivial method",
     "T023" : "Testability unknown",
-    "V000" : "Validated successfully"
+    "V000" : "Validated successfully",
+    "W001" : "Test did not compile"
   },
   "summary" : {
     "classesCount" : 17,
     "methodsCount" : 69,
-    "cumulativeDiffblueTestCount" : 0,
+    "cumulativeDiffblueTestCount" : 69,
     "cumulativeManualTestCount" : 40,
-    "completeTestCount" : 0,
+    "completeTestCount" : 69,
     "incompleteTestCount" : 0,
     "skeletonTestCount" : 0,
     "totalPhysicalLineCount" : 681,
@@ -54,8 +57,10 @@
       "T023" : 1
     },
     "perMethodOutcome" : {
-      "R005" : 31,
-      "R083" : 1,
+      "R000" : 18,
+      "R002" : 7,
+      "R013" : 5,
+      "R083" : 2,
       "T003" : 8,
       "T004" : 8,
       "T005" : 1,
@@ -64,8 +69,14 @@
       "T012" : 16,
       "T023" : 1
     },
+    "perTestOutcome" : {
+      "R000" : 69
+    },
     "perTestValidation" : {
-      "V000" : 25
+      "V000" : 69
+    },
+    "warnings" : {
+      "W001" : 2
     }
   },
   "classes" : {
@@ -99,13 +110,17 @@
     },
     "com.google.gson.graph.GraphAdapterBuilder" : {
       "methodsCount" : 4,
-      "completeTestCount" : 0,
+      "completeTestCount" : 4,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 4
       },
       "perMethodOutcome" : {
-        "R005" : 4
+        "R000" : 3,
+        "R002" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 4
       }
     },
     "com.google.gson.graph.GraphAdapterBuilder$1" : {
@@ -121,7 +136,7 @@
     },
     "com.google.gson.graph.GraphAdapterBuilder$Element" : {
       "methodsCount" : 7,
-      "completeTestCount" : 0,
+      "completeTestCount" : 23,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 2,
@@ -129,13 +144,17 @@
         "T012" : 4
       },
       "perMethodOutcome" : {
-        "R005" : 3,
+        "R000" : 2,
+        "R002" : 1,
         "T012" : 4
+      },
+      "perTestOutcome" : {
+        "R000" : 23
       }
     },
     "com.google.gson.graph.GraphAdapterBuilder$Factory" : {
       "methodsCount" : 4,
-      "completeTestCount" : 0,
+      "completeTestCount" : 3,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 2,
@@ -143,8 +162,12 @@
         "T012" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 3,
+        "R000" : 2,
+        "R002" : 1,
         "T012" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 3
       }
     },
     "com.google.gson.graph.GraphAdapterBuilder$Factory$1" : {
@@ -168,7 +191,7 @@
         "T012" : 5
       },
       "perMethodOutcome" : {
-        "R005" : 1,
+        "R083" : 1,
         "T003" : 1,
         "T012" : 5
       }
@@ -186,25 +209,33 @@
     },
     "com.google.gson.interceptors.InterceptorFactory" : {
       "methodsCount" : 2,
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 1,
         "T005" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 2
+        "R000" : 1,
+        "R002" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 1
       }
     },
     "com.google.gson.interceptors.InterceptorFactory$InterceptorAdapter" : {
       "methodsCount" : 3,
-      "completeTestCount" : 0,
+      "completeTestCount" : 2,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 3
       },
       "perMethodOutcome" : {
-        "R005" : 3
+        "R000" : 1,
+        "R013" : 2
+      },
+      "perTestOutcome" : {
+        "R000" : 2
       }
     },
     "com.google.gson.interceptors.JsonPostDeserializer" : {
@@ -220,31 +251,42 @@
     },
     "com.google.gson.typeadapters.PostConstructAdapterFactory" : {
       "methodsCount" : 2,
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 1,
         "T005" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 2
+        "R000" : 1,
+        "R002" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "warnings" : {
+        "W001" : 1
       }
     },
     "com.google.gson.typeadapters.PostConstructAdapterFactory$PostConstructAdapter" : {
       "methodsCount" : 3,
-      "completeTestCount" : 0,
+      "completeTestCount" : 19,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 2,
         "T005" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 3
+        "R000" : 2,
+        "R002" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 19
       }
     },
     "com.google.gson.typeadapters.RuntimeTypeAdapterFactory" : {
       "methodsCount" : 12,
-      "completeTestCount" : 0,
+      "completeTestCount" : 4,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 6,
@@ -253,9 +295,16 @@
         "T012" : 4
       },
       "perMethodOutcome" : {
-        "R005" : 7,
+        "R000" : 4,
+        "R013" : 3,
         "T003" : 1,
         "T012" : 4
+      },
+      "perTestOutcome" : {
+        "R000" : 4
+      },
+      "warnings" : {
+        "W001" : 1
       }
     },
     "com.google.gson.typeadapters.RuntimeTypeAdapterFactory$1" : {
@@ -271,7 +320,7 @@
     },
     "com.google.gson.typeadapters.UtcDateTypeAdapter" : {
       "methodsCount" : 10,
-      "completeTestCount" : 0,
+      "completeTestCount" : 12,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 2,
@@ -281,10 +330,14 @@
         "T023" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 3,
+        "R000" : 2,
+        "R002" : 1,
         "T003" : 5,
         "T012" : 1,
         "T023" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 12
       }
     }
   },
@@ -371,7 +424,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         337,
         338,
@@ -418,10 +471,13 @@
       ]
     },
     "com.google.gson.graph.GraphAdapterBuilder$Element.read:(Lcom/google/gson/graph/GraphAdapterBuilder$Graph;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 6,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 6
+      },
       "lineNumbers" : [
         350,
         351,
@@ -433,10 +489,13 @@
       ]
     },
     "com.google.gson.graph.GraphAdapterBuilder$Element.write:(Lcom/google/gson/stream/JsonWriter;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 17,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 17
+      },
       "lineNumbers" : [
         345,
         346
@@ -529,7 +588,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         149,
         146,
@@ -547,10 +606,13 @@
       ]
     },
     "com.google.gson.graph.GraphAdapterBuilder$Factory.create:(Lcom/google/gson/Gson;Lcom/google/gson/reflect/TypeToken;)Lcom/google/gson/TypeAdapter;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 2,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 2
+      },
       "lineNumbers" : [
         155,
         156,
@@ -560,10 +622,13 @@
       ]
     },
     "com.google.gson.graph.GraphAdapterBuilder$Factory.createInstance:(Ljava/lang/reflect/Type;)Ljava/lang/Object;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         285,
         286,
@@ -636,7 +701,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R083",
       "lineNumbers" : [
         319
       ]
@@ -645,7 +710,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         77,
         78,
@@ -655,10 +720,13 @@
       ]
     },
     "com.google.gson.graph.GraphAdapterBuilder.addType:(Ljava/lang/reflect/Type;)Lcom/google/gson/graph/GraphAdapterBuilder;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         91,
         92,
@@ -666,10 +734,13 @@
       ]
     },
     "com.google.gson.graph.GraphAdapterBuilder.addType:(Ljava/lang/reflect/Type;Lcom/google/gson/InstanceCreator;)Lcom/google/gson/graph/GraphAdapterBuilder;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         112,
         113,
@@ -678,10 +749,13 @@
       ]
     },
     "com.google.gson.graph.GraphAdapterBuilder.registerOn:(Lcom/google/gson/GsonBuilder;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 2,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 2
+      },
       "lineNumbers" : [
         128,
         129,
@@ -699,10 +773,13 @@
       "perMethodOutcome" : "T010"
     },
     "com.google.gson.interceptors.InterceptorFactory$InterceptorAdapter.<init>:(Lcom/google/gson/TypeAdapter;Lcom/google/gson/interceptors/Intercept;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 2,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 2
+      },
       "lineNumbers" : [
         45,
         47,
@@ -717,7 +794,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         61,
         62,
@@ -728,7 +805,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         56,
         57
@@ -738,16 +815,19 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         28
       ]
     },
     "com.google.gson.interceptors.InterceptorFactory.create:(Lcom/google/gson/Gson;Lcom/google/gson/reflect/TypeToken;)Lcom/google/gson/TypeAdapter;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         31,
         32,
@@ -766,7 +846,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         52,
         53,
@@ -775,10 +855,13 @@
       ]
     },
     "com.google.gson.typeadapters.PostConstructAdapterFactory$PostConstructAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/lang/Object;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 3,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 3
+      },
       "lineNumbers" : [
         59,
         60,
@@ -794,10 +877,13 @@
       ]
     },
     "com.google.gson.typeadapters.PostConstructAdapterFactory$PostConstructAdapter.write:(Lcom/google/gson/stream/JsonWriter;Ljava/lang/Object;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 16,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 16
+      },
       "lineNumbers" : [
         77,
         78
@@ -807,16 +893,22 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         30
       ]
     },
     "com.google.gson.typeadapters.PostConstructAdapterFactory.create:(Lcom/google/gson/Gson;Lcom/google/gson/reflect/TypeToken;)Lcom/google/gson/TypeAdapter;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "warnings" : {
+        "W001" : 1
+      },
       "lineNumbers" : [
         34,
         35,
@@ -944,10 +1036,16 @@
       ]
     },
     "com.google.gson.typeadapters.RuntimeTypeAdapterFactory.create:(Lcom/google/gson/Gson;Lcom/google/gson/reflect/TypeToken;)Lcom/google/gson/TypeAdapter;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "warnings" : {
+        "W001" : 1
+      },
       "lineNumbers" : [
         245,
         246,
@@ -972,7 +1070,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         199
       ]
@@ -981,7 +1079,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         191
       ]
@@ -990,35 +1088,44 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         183
       ]
     },
     "com.google.gson.typeadapters.RuntimeTypeAdapterFactory.recognizeSubtypes:()Lcom/google/gson/typeadapters/RuntimeTypeAdapterFactory;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T002",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         208,
         209
       ]
     },
     "com.google.gson.typeadapters.RuntimeTypeAdapterFactory.registerSubtype:(Ljava/lang/Class;)Lcom/google/gson/typeadapters/RuntimeTypeAdapterFactory;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         240
       ]
     },
     "com.google.gson.typeadapters.RuntimeTypeAdapterFactory.registerSubtype:(Ljava/lang/Class;Ljava/lang/String;)Lcom/google/gson/typeadapters/RuntimeTypeAdapterFactory;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         220,
         221,
@@ -1039,7 +1146,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         33
       ]
@@ -1195,10 +1302,13 @@
       ]
     },
     "com.google.gson.typeadapters.UtcDateTypeAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/util/Date;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 10,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 10
+      },
       "lineNumbers" : [
         49,
         50,
@@ -1219,10 +1329,13 @@
       ]
     },
     "com.google.gson.typeadapters.UtcDateTypeAdapter.write:(Lcom/google/gson/stream/JsonWriter;Ljava/util/Date;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 2,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 2
+      },
       "lineNumbers" : [
         38,
         39,

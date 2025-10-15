@@ -1046,6 +1046,53 @@ public class JsonElementTypeAdapterDiffblueTest {
    * {@code JsonElement}.
    *
    * <ul>
+   *   <li>Then calls {@link JsonPrimitive#getAsString()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement_thenCallsGetAsString() throws IOException {
+    // Arrange
+    JsonWriter out = mock(JsonWriter.class);
+    when(out.value(Mockito.<String>any())).thenReturn(new JsonWriter(new StringWriter()));
+
+    JsonPrimitive jsonPrimitive = mock(JsonPrimitive.class);
+    when(jsonPrimitive.isBoolean()).thenReturn(false);
+    when(jsonPrimitive.isNumber()).thenReturn(false);
+    when(jsonPrimitive.getAsString()).thenReturn(null);
+
+    JsonNull value = mock(JsonNull.class);
+    when(value.getAsJsonPrimitive()).thenReturn(jsonPrimitive);
+    when(value.isJsonNull()).thenReturn(false);
+    when(value.isJsonPrimitive()).thenReturn(true);
+
+    JsonArray jsonArray = mock(JsonArray.class);
+    doNothing().when(jsonArray).add(Mockito.<Number>any());
+    jsonArray.add(Integer.valueOf(3));
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, value);
+
+    // Assert
+    verify(jsonArray).add(isA(Number.class));
+    verify(value).getAsJsonPrimitive();
+    verify(value).isJsonNull();
+    verify(value).isJsonPrimitive();
+    verify(jsonPrimitive).getAsString();
+    verify(jsonPrimitive).isBoolean();
+    verify(jsonPrimitive).isNumber();
+    verify(out).value(null);
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <ul>
    *   <li>Then throw {@link IllegalArgumentException}.
    * </ul>
    *

@@ -969,6 +969,27 @@ public class JsonWriterDiffblueTest {
    * Test {@link JsonWriter#value(Number)} with {@code Number}.
    *
    * <ul>
+   *   <li>When {@link Double#NaN}.
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonWriter#value(Number)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonWriter JsonWriter.value(Number)"})
+  public void testValueWithNumber_whenNaN_thenThrowIllegalArgumentException() throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        (Number) IllegalArgumentException.class,
+        () -> new JsonWriter(new StringWriter()).value((Number) Double.NaN));
+  }
+
+  /**
+   * Test {@link JsonWriter#value(Number)} with {@code Number}.
+   *
+   * <ul>
    *   <li>When {@code null}.
    *   <li>Then return {@link JsonWriter#JsonWriter(Writer)} with out is {@link
    *       StringWriter#StringWriter()}.
@@ -1305,5 +1326,21 @@ public class JsonWriterDiffblueTest {
 
     // Assert
     assertSame(jsonWriter, actualJsonValueResult);
+  }
+
+  /**
+   * Test {@link JsonWriter#close()}.
+   *
+   * <p>Method under test: {@link JsonWriter#close()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonWriter.close()"})
+  public void testClose() throws IOException {
+    // Arrange
+    try (JsonWriter jsonWriter = new JsonWriter(new StringWriter())) {}
+
+    // Act and Assert
   }
 }

@@ -14,6 +14,34 @@ import org.junit.experimental.categories.Category;
 
 public class NoSerializedNameMainDiffblueTest {
   /**
+   * Test {@link NoSerializedNameMain#runTestNoArgsConstructor()}.
+   *
+   * <p>Method under test: {@link NoSerializedNameMain#runTestNoArgsConstructor()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String NoSerializedNameMain.runTestNoArgsConstructor()"})
+  public void testRunTestNoArgsConstructor() {
+    // Arrange, Act and Assert
+    assertEquals("value", NoSerializedNameMain.runTestNoArgsConstructor());
+  }
+
+  /**
+   * Test {@link NoSerializedNameMain#runTestNoJdkUnsafe()}.
+   *
+   * <p>Method under test: {@link NoSerializedNameMain#runTestNoJdkUnsafe()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String NoSerializedNameMain.runTestNoJdkUnsafe()"})
+  public void testRunTestNoJdkUnsafe() {
+    // Arrange, Act and Assert
+    assertEquals("value", NoSerializedNameMain.runTestNoJdkUnsafe());
+  }
+
+  /**
    * Test TestClassHasArgsConstructor {@link
    * TestClassHasArgsConstructor#TestClassHasArgsConstructor(String)}.
    *

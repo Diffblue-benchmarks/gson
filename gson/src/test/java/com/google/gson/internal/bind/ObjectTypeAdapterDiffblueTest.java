@@ -1,5 +1,6 @@
 package com.google.gson.internal.bind;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -11,6 +12,7 @@ import com.google.gson.ToNumberPolicy;
 import com.google.gson.ToNumberStrategy;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
+import java.util.List;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -62,5 +64,30 @@ public class ObjectTypeAdapterDiffblueTest {
 
     // Assert
     assertTrue(actualFactory.create(gson, getResult) instanceof ObjectTypeAdapter);
+  }
+
+  /**
+   * Test {@link ObjectTypeAdapter#getFactory(ToNumberStrategy)}.
+   *
+   * <ul>
+   *   <li>When {@link ToNumberStrategy}.
+   *   <li>Then return create {@link Gson#Gson()} and {@link List} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ObjectTypeAdapter#getFactory(ToNumberStrategy)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory ObjectTypeAdapter.getFactory(ToNumberStrategy)"})
+  public void testGetFactory_whenToNumberStrategy_thenReturnCreateGsonAndListIsNull() {
+    // Arrange and Act
+    TypeAdapterFactory actualFactory = ObjectTypeAdapter.getFactory(mock(ToNumberStrategy.class));
+    Gson gson = new Gson();
+    Class<List> type = List.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+
+    // Assert
+    assertNull(actualFactory.create(gson, getResult));
   }
 }

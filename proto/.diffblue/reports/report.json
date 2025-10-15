@@ -4,21 +4,24 @@
   },
   "run" : {
     "version" : "2025.09.01-44e352d-licensed",
-    "creationTimestamp" : "2025-09-19T09:48:19.589511Z",
+    "creationTimestamp" : "2025-10-15T15:27:01.051025Z",
     "command" : "dcover create --exclude-modules=com.google.code.gson:test-jpms,com.google.code.gson:test-graal-native-image --coverage-reports --upload http://localhost:8080 --project-name gson --name with-diffblue-tests",
-    "totalTime" : 37.137,
-    "environmentDetectionTime" : 0.059,
-    "indexingTime" : 0.344,
-    "entryPointsTime" : 0.045,
-    "generationTime" : 1314.189,
-    "timeToFirstTest" : 255.597,
-    "timeToLastTest" : 1481.633,
-    "indexQueryTime" : 2.863,
-    "verificationTime" : 78.958,
-    "validationTime" : 9.104
+    "totalTime" : 319.916,
+    "environmentDetectionTime" : 0.078,
+    "indexingTime" : 0.422,
+    "entryPointsTime" : 0.063,
+    "generationTime" : 1750.638,
+    "timeToFirstTest" : 730.578,
+    "timeToLastTest" : 1851.645,
+    "indexQueryTime" : 3.3200000000000003,
+    "verificationTime" : 17.421,
+    "validationTime" : 8.827
   },
   "codes" : {
-    "R005" : "Unable to load class",
+    "R000" : "Success",
+    "R002" : "Missing observers",
+    "R013" : "No inputs found that don't throw a trivial exception",
+    "R083" : "Can't find a suitable constructor",
     "T000" : "Method eligible for test creation",
     "T002" : "Trivial setter",
     "T003" : "Private method",
@@ -30,9 +33,9 @@
   "summary" : {
     "classesCount" : 3,
     "methodsCount" : 24,
-    "cumulativeDiffblueTestCount" : 0,
+    "cumulativeDiffblueTestCount" : 3,
     "cumulativeManualTestCount" : 21,
-    "completeTestCount" : 0,
+    "completeTestCount" : 3,
     "incompleteTestCount" : 0,
     "skeletonTestCount" : 0,
     "totalPhysicalLineCount" : 269,
@@ -45,13 +48,19 @@
       "T023" : 2
     },
     "perMethodOutcome" : {
-      "R005" : 9,
+      "R000" : 3,
+      "R002" : 4,
+      "R013" : 1,
+      "R083" : 1,
       "T003" : 8,
       "T012" : 5,
       "T023" : 2
     },
+    "perTestOutcome" : {
+      "R000" : 3
+    },
     "perTestValidation" : {
-      "V000" : 24
+      "V000" : 3
     }
   },
   "classes" : {
@@ -67,7 +76,9 @@
         "T023" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 3,
+        "R002" : 1,
+        "R013" : 1,
+        "R083" : 1,
         "T003" : 6,
         "T012" : 2,
         "T023" : 1
@@ -75,7 +86,7 @@
     },
     "com.google.gson.protobuf.ProtoTypeAdapter$Builder" : {
       "methodsCount" : 8,
-      "completeTestCount" : 0,
+      "completeTestCount" : 3,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 4,
@@ -84,9 +95,13 @@
         "T012" : 1
       },
       "perMethodOutcome" : {
-        "R005" : 6,
+        "R000" : 3,
+        "R002" : 3,
         "T003" : 1,
         "T012" : 1
+      },
+      "perTestOutcome" : {
+        "R000" : 3
       }
     },
     "com.google.gson.protobuf.ProtoTypeAdapter$EnumSerialization" : {
@@ -131,20 +146,26 @@
       ]
     },
     "com.google.gson.protobuf.ProtoTypeAdapter$Builder.addSerializedEnumValueExtension:(Lcom/google/protobuf/Extension;)Lcom/google/gson/protobuf/ProtoTypeAdapter$Builder;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         177,
         178
       ]
     },
     "com.google.gson.protobuf.ProtoTypeAdapter$Builder.addSerializedNameExtension:(Lcom/google/protobuf/Extension;)Lcom/google/gson/protobuf/ProtoTypeAdapter$Builder;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         151,
         152
@@ -154,7 +175,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         208
       ]
@@ -163,17 +184,20 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T002",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         109,
         110
       ]
     },
     "com.google.gson.protobuf.ProtoTypeAdapter$Builder.setFieldNameSerializationFormat:(Lcom/google/common/base/CaseFormat;Lcom/google/common/base/CaseFormat;)Lcom/google/gson/protobuf/ProtoTypeAdapter$Builder;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         131,
         132,
@@ -184,7 +208,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T002",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         203,
         204
@@ -258,7 +282,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R083",
       "lineNumbers" : [
         290,
         292,
@@ -391,7 +415,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R002",
       "lineNumbers" : [
         224
       ]
@@ -400,7 +424,7 @@
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R005",
+      "perMethodOutcome" : "R013",
       "lineNumbers" : [
         256,
         257,

@@ -108,6 +108,30 @@ public class ExcluderDiffblueTest {
    * Test {@link Excluder#create(Gson, TypeToken)}.
    *
    * <ul>
+   *   <li>When {@code Enum}.
+   *   <li>Then return {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#create(Gson, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"com.google.gson.TypeAdapter Excluder.create(Gson, TypeToken)"})
+  public void testCreate_whenJavaLangEnum_thenReturnNull() {
+    // Arrange
+    Gson gson = new Gson();
+    Class<Enum> type = Enum.class;
+    TypeToken<Object> type2 = TypeToken.get(type);
+
+    // Act and Assert
+    assertNull(Excluder.DEFAULT.create(gson, type2));
+  }
+
+  /**
+   * Test {@link Excluder#create(Gson, TypeToken)}.
+   *
+   * <ul>
    *   <li>When {@code Object}.
    *   <li>Then return {@code null}.
    * </ul>
