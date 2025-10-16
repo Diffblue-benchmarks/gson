@@ -196,37 +196,6 @@ public class JsonParserDiffblueTest {
    * Test {@link JsonParser#parseReader(JsonReader)} with {@code JsonReader}.
    *
    * <ul>
-   *   <li>Then not {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
-   *       JsonNull#INSTANCE} hasNext.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonParser#parseReader(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement JsonParser.parseReader(JsonReader)"})
-  public void testParseReaderWithJsonReader_thenNotJsonTreeReaderWithElementIsInstanceHasNext()
-      throws JsonIOException, JsonSyntaxException, IOException {
-    // Arrange
-    JsonTreeReader reader = new JsonTreeReader(JsonNull.INSTANCE);
-
-    // Act
-    JsonElement actualParseReaderResult = JsonParser.parseReader(reader);
-
-    // Assert
-    assertTrue(actualParseReaderResult instanceof JsonNull);
-    assertFalse(actualParseReaderResult.isJsonPrimitive());
-    assertFalse(reader.hasNext());
-    assertTrue(actualParseReaderResult.isJsonNull());
-    assertSame(
-        ((JsonNull) actualParseReaderResult).INSTANCE, actualParseReaderResult.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonParser#parseReader(JsonReader)} with {@code JsonReader}.
-   *
-   * <ul>
    *   <li>Then return AsString is {@code e}.
    * </ul>
    *
@@ -351,7 +320,6 @@ public class JsonParserDiffblueTest {
 
     // Assert
     assertTrue(actualParseReaderResult instanceof JsonNull);
-    assertFalse(actualParseReaderResult.isJsonPrimitive());
     assertTrue(actualParseReaderResult.isJsonNull());
     assertSame(
         ((JsonNull) actualParseReaderResult).INSTANCE, actualParseReaderResult.getAsJsonNull());
@@ -382,7 +350,6 @@ public class JsonParserDiffblueTest {
 
     // Assert
     assertTrue(actualParseReaderResult instanceof JsonNull);
-    assertFalse(actualParseReaderResult.isJsonPrimitive());
     assertTrue(actualParseReaderResult.isJsonNull());
     assertSame(
         ((JsonNull) actualParseReaderResult).INSTANCE, actualParseReaderResult.getAsJsonNull());
@@ -796,7 +763,30 @@ public class JsonParserDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonParser.parse(JsonReader)"})
-  public void testParseWithJsonReader() throws JsonIOException, JsonSyntaxException {
+  public void testParseWithJsonReader() throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    JsonParser jsonParser = new JsonParser();
+    JsonArray element = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    JsonTreeReader json = new JsonTreeReader(element);
+
+    // Act
+    JsonElement actualParseResult = jsonParser.parse(json);
+
+    // Assert
+    assertFalse(json.hasNext());
+    assertSame(element, actualParseResult);
+  }
+
+  /**
+   * Test {@link JsonParser#parse(JsonReader)} with {@code JsonReader}.
+   *
+   * <p>Method under test: {@link JsonParser#parse(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonElement JsonParser.parse(JsonReader)"})
+  public void testParseWithJsonReader2() throws JsonIOException, JsonSyntaxException {
     // Arrange
     JsonParser jsonParser = new JsonParser();
     CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
@@ -816,34 +806,6 @@ public class JsonParserDiffblueTest {
     assertEquals('\u0001', actualParseResult.getAsCharacter());
     JsonPrimitive actualAsJsonPrimitive = actualParseResult.getAsJsonPrimitive();
     assertSame(actualParseResult, actualAsJsonPrimitive);
-  }
-
-  /**
-   * Test {@link JsonParser#parse(JsonReader)} with {@code JsonReader}.
-   *
-   * <ul>
-   *   <li>Then not {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
-   *       JsonNull#INSTANCE} hasNext.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonParser#parse(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement JsonParser.parse(JsonReader)"})
-  public void testParseWithJsonReader_thenNotJsonTreeReaderWithElementIsInstanceHasNext()
-      throws JsonIOException, JsonSyntaxException, IOException {
-    // Arrange
-    JsonParser jsonParser = new JsonParser();
-    JsonTreeReader json = new JsonTreeReader(JsonNull.INSTANCE);
-
-    // Act
-    JsonElement actualParseResult = jsonParser.parse(json);
-
-    // Assert
-    assertFalse(json.hasNext());
-    assertSame(((JsonNull) actualParseResult).INSTANCE, actualParseResult);
   }
 
   /**

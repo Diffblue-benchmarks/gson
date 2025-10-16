@@ -12,6 +12,7 @@ import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonArrayTestFactory;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonNull;
@@ -21,6 +22,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.Strictness;
 import com.google.gson.internal.bind.JsonTreeReader;
+import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.CharArrayReader;
@@ -32,6 +34,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.util.Iterator;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -346,6 +349,42 @@ public class StreamsDiffblueTest {
    * Test {@link Streams#parse(JsonReader)}.
    *
    * <ul>
+   *   <li>Then return {@link JsonArray}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#parse(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonElement Streams.parse(JsonReader)"})
+  public void testParse_thenReturnJsonArray() throws JsonParseException {
+    // Arrange and Act
+    JsonElement actualParseResult =
+        Streams.parse(new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()));
+
+    // Assert
+    assertTrue(actualParseResult instanceof JsonArray);
+    Iterator<JsonElement> iteratorResult = ((JsonArray) actualParseResult).iterator();
+    assertTrue(iteratorResult.next() instanceof JsonPrimitive);
+    Number asNumber = actualParseResult.getAsNumber();
+    assertTrue(asNumber instanceof LazilyParsedNumber);
+    assertEquals("singleElement", actualParseResult.getAsString());
+    assertEquals("singleElement", asNumber.toString());
+    assertEquals('s', actualParseResult.getAsCharacter());
+    assertEquals(1, ((JsonArray) actualParseResult).size());
+    assertFalse(((JsonArray) actualParseResult).isEmpty());
+    assertFalse(actualParseResult.getAsBoolean());
+    assertFalse(iteratorResult.hasNext());
+    assertTrue(actualParseResult.isJsonArray());
+    JsonArray actualAsJsonArray = actualParseResult.getAsJsonArray();
+    assertSame(actualParseResult, actualAsJsonArray);
+  }
+
+  /**
+   * Test {@link Streams#parse(JsonReader)}.
+   *
+   * <ul>
    *   <li>When {@link CharArrayReader#CharArrayReader(char[])} with {@code ﻿} toCharArray.
    * </ul>
    *
@@ -385,35 +424,6 @@ public class StreamsDiffblueTest {
     assertThrows(
         JsonIOException.class,
         () -> Streams.parse(new JsonReader(new FileReader(new FileDescriptor()))));
-  }
-
-  /**
-   * Test {@link Streams#parse(JsonReader)}.
-   *
-   * <ul>
-   *   <li>When {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then return {@link JsonArray}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Streams#parse(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Streams.parse(JsonReader)"})
-  public void testParse_whenJsonArrayWithCapacityIsThree_thenReturnJsonArray()
-      throws JsonParseException {
-    // Arrange and Act
-    JsonElement actualParseResult = Streams.parse(new JsonTreeReader(new JsonArray(3)));
-
-    // Assert
-    assertTrue(actualParseResult instanceof JsonArray);
-    assertEquals(0, ((JsonArray) actualParseResult).size());
-    assertFalse(((JsonArray) actualParseResult).iterator().hasNext());
-    assertTrue(((JsonArray) actualParseResult).isEmpty());
-    assertTrue(actualParseResult.isJsonArray());
-    JsonArray actualAsJsonArray = actualParseResult.getAsJsonArray();
-    assertSame(actualParseResult, actualAsJsonArray);
   }
 
   /**
@@ -727,14 +737,265 @@ public class StreamsDiffblueTest {
   public void testWrite_givenJsonWriterWithOutIsStringWriter_thenCallsNullValue()
       throws IOException {
     // Arrange
+    JsonArray element = mock(JsonArray.class);
+    when(element.isJsonNull()).thenReturn(true);
+
     JsonWriter writer = mock(JsonWriter.class);
     when(writer.nullValue()).thenReturn(new JsonWriter(new StringWriter()));
 
     // Act
-    Streams.write(JsonNull.INSTANCE, writer);
+    Streams.write(element, writer);
 
     // Assert
+    verify(element).isJsonNull();
     verify(writer).nullValue();
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Given {@code true}.
+   *   <li>When {@link JsonTreeWriter} (default constructor).
+   *   <li>Then calls {@link JsonArray#isJsonNull()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_givenTrue_whenJsonTreeWriter_thenCallsIsJsonNull() throws IOException {
+    // Arrange
+    JsonArray element = mock(JsonArray.class);
+    when(element.isJsonNull()).thenReturn(true);
+
+    // Act
+    Streams.write(element, new JsonTreeWriter());
+
+    // Assert
+    verify(element).isJsonNull();
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Then throw {@link UnsupportedOperationException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_thenThrowUnsupportedOperationException() throws IOException {
+    // Arrange
+    JsonArray element = mock(JsonArray.class);
+    when(element.isJsonNull()).thenThrow(new UnsupportedOperationException());
+
+    // Act and Assert
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> Streams.write(element, new JsonWriter(new StringWriter())));
+    verify(element).isJsonNull();
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When createJsonArrayWithBooleans.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenCreateJsonArrayWithBooleans_thenDoesNotThrow() throws IOException {
+    // Arrange
+    JsonArray element = JsonArrayTestFactory.createJsonArrayWithBooleans();
+
+    // Act and Assert
+    Streams.write(element, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When createJsonArrayWithMixedTypes.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenCreateJsonArrayWithMixedTypes_thenDoesNotThrow() throws IOException {
+    // Arrange
+    JsonArray element = JsonArrayTestFactory.createJsonArrayWithMixedTypes();
+
+    // Act and Assert
+    Streams.write(element, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When createJsonArrayWithNumbers.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenCreateJsonArrayWithNumbers_thenDoesNotThrow() throws IOException {
+    // Arrange
+    JsonArray element = JsonArrayTestFactory.createJsonArrayWithNumbers();
+
+    // Act and Assert
+    Streams.write(element, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When createJsonArrayWithOneElement.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenCreateJsonArrayWithOneElement_thenDoesNotThrow() throws IOException {
+    // Arrange
+    JsonArray element = JsonArrayTestFactory.createJsonArrayWithOneElement();
+
+    // Act and Assert
+    Streams.write(element, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonNull#INSTANCE}.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenInstance_thenDoesNotThrow() throws IOException {
+    // Arrange, Act and Assert
+    Streams.write(JsonNull.INSTANCE, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonObject} (default constructor).
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenJsonObject_thenDoesNotThrow() throws IOException {
+    // Arrange
+    JsonObject element = new JsonObject();
+
+    // Act and Assert
+    Streams.write(element, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonPrimitive#JsonPrimitive(Boolean)} with bool is {@code true}.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenJsonPrimitiveWithBoolIsTrue_thenDoesNotThrow() throws IOException {
+    // Arrange
+    JsonPrimitive element = new JsonPrimitive(true);
+
+    // Act and Assert
+    Streams.write(element, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonPrimitive#JsonPrimitive(Character)} with c is end of text.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenJsonPrimitiveWithCIsEndOfText_thenDoesNotThrow() throws IOException {
+    // Arrange
+    JsonPrimitive element = new JsonPrimitive('\u0003');
+
+    // Act and Assert
+    Streams.write(element, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonPrimitive#JsonPrimitive(String)} with {@code String}.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenJsonPrimitiveWithString_thenDoesNotThrow() throws IOException {
+    // Arrange
+    JsonPrimitive element = new JsonPrimitive("String");
+
+    // Act and Assert
+    Streams.write(element, new JsonWriter(new StringWriter()));
   }
 
   /**

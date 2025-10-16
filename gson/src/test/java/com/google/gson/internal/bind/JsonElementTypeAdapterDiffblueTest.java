@@ -8,6 +8,7 @@ import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonArrayTestFactory;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -18,7 +19,9 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.util.Iterator;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -346,8 +349,7 @@ public class JsonElementTypeAdapterDiffblueTest {
    * Test {@link JsonElementTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>When {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then return {@link JsonArray#JsonArray(int)} with capacity is three.
+   *   <li>Then return createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonElementTypeAdapter#read(JsonReader)}
@@ -356,10 +358,9 @@ public class JsonElementTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonElementTypeAdapter.read(JsonReader)"})
-  public void testRead_whenJsonArrayWithCapacityIsThree_thenReturnJsonArrayWithCapacityIsThree()
-      throws IOException {
+  public void testRead_thenReturnCreateJsonArrayWithOneElement() throws IOException {
     // Arrange
-    JsonArray element = new JsonArray(3);
+    JsonArray element = JsonArrayTestFactory.createJsonArrayWithOneElement();
 
     // Act
     JsonElement actualReadResult = JsonElementTypeAdapter.ADAPTER.read(new JsonTreeReader(element));
@@ -639,8 +640,68 @@ public class JsonElementTypeAdapterDiffblueTest {
   @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
   public void testWriteWithJsonWriterJsonElement() throws IOException {
     // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithOneElement();
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, value);
+
+    // Assert that nothing has changed
+    Iterator<JsonElement> iteratorResult = value.iterator();
+    JsonElement nextResult = iteratorResult.next();
+    assertTrue(nextResult instanceof JsonPrimitive);
+    Number asNumber = value.getAsNumber();
+    assertTrue(asNumber instanceof LazilyParsedNumber);
+    Number asNumber2 = nextResult.getAsNumber();
+    assertTrue(asNumber2 instanceof LazilyParsedNumber);
+    assertFalse(iteratorResult.hasNext());
+    assertEquals(asNumber, asNumber2);
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement2() throws IOException {
+    // Arrange
     JsonTreeWriter out = new JsonTreeWriter();
-    JsonArray value = new JsonArray(3);
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithOneElement();
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, value);
+
+    // Assert
+    JsonElement getResult = out.get();
+    assertTrue(getResult instanceof JsonArray);
+    Iterator<JsonElement> iteratorResult = value.iterator();
+    JsonElement nextResult = iteratorResult.next();
+    assertTrue(nextResult instanceof JsonPrimitive);
+    assertTrue(value.getAsNumber() instanceof LazilyParsedNumber);
+    assertTrue(nextResult.getAsNumber() instanceof LazilyParsedNumber);
+    assertFalse(iteratorResult.hasNext());
+    assertEquals(value, getResult);
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement3() throws IOException {
+    // Arrange
+    JsonTreeWriter out = new JsonTreeWriter();
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithNumbers();
 
     // Act
     JsonElementTypeAdapter.ADAPTER.write(out, value);
@@ -661,102 +722,17 @@ public class JsonElementTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement2() throws IOException {
-    // Arrange
-    JsonTreeWriter out = new JsonTreeWriter();
-    JsonPrimitive value = new JsonPrimitive(true);
-
-    // Act
-    JsonElementTypeAdapter.ADAPTER.write(out, value);
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals(value, getResult);
-  }
-
-  /**
-   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
-   * {@code JsonElement}.
-   *
-   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement3() throws IOException {
-    // Arrange
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    JsonObject value = new JsonObject();
-    value.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-
-    // Act
-    JsonElementTypeAdapter.ADAPTER.write(out, value);
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(value, getResult);
-  }
-
-  /**
-   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
-   * {@code JsonElement}.
-   *
-   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
   public void testWriteWithJsonWriterJsonElement4() throws IOException {
     // Arrange
     JsonTreeWriter out = new JsonTreeWriter();
-
-    JsonObject value = new JsonObject();
-    value.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    value.add("Property", JsonNull.INSTANCE);
-    value.add("name == null", JsonNull.INSTANCE);
-    value.addProperty("com.google.gson.JsonObject", "Value");
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithMixedTypes();
 
     // Act
     JsonElementTypeAdapter.ADAPTER.write(out, value);
 
     // Assert
     JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(value, getResult);
-  }
-
-  /**
-   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
-   * {@code JsonElement}.
-   *
-   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement5() throws IOException {
-    // Arrange
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    JsonObject value = new JsonObject();
-    value.add("name == null", JsonNull.INSTANCE);
-    value.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    value.add("Property", JsonNull.INSTANCE);
-    value.add("name == null", JsonNull.INSTANCE);
-    value.addProperty("com.google.gson.JsonObject", "Value");
-
-    // Act
-    JsonElementTypeAdapter.ADAPTER.write(out, value);
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
+    assertTrue(getResult instanceof JsonArray);
     assertEquals(value, getResult);
   }
 
@@ -765,9 +741,7 @@ public class JsonElementTypeAdapterDiffblueTest {
    * {@code JsonElement}.
    *
    * <ul>
-   *   <li>Given {@code 42}.
-   *   <li>When {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@code LENIENT}.
    * </ul>
    *
    * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
@@ -776,23 +750,18 @@ public class JsonElementTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement_given42_whenJsonObjectAdd42AndInstance()
-      throws IOException {
+  public void testWriteWithJsonWriterJsonElement_givenLenient() throws IOException {
     // Arrange
     JsonTreeWriter out = new JsonTreeWriter();
-
-    JsonObject value = new JsonObject();
-    value.add("42", JsonNull.INSTANCE);
-    value.add("Property", JsonNull.INSTANCE);
-    value.add("name == null", JsonNull.INSTANCE);
-    value.addProperty("com.google.gson.JsonObject", "Value");
+    out.setStrictness(Strictness.LENIENT);
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithNumbers();
 
     // Act
     JsonElementTypeAdapter.ADAPTER.write(out, value);
 
     // Assert
     JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
+    assertTrue(getResult instanceof JsonArray);
     assertEquals(value, getResult);
   }
 
@@ -801,7 +770,7 @@ public class JsonElementTypeAdapterDiffblueTest {
    * {@code JsonElement}.
    *
    * <ul>
-   *   <li>Given {@code Property}.
+   *   <li>Given {@code true}.
    * </ul>
    *
    * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
@@ -810,22 +779,25 @@ public class JsonElementTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement_givenProperty() throws IOException {
+  public void testWriteWithJsonWriterJsonElement_givenTrue() throws IOException {
     // Arrange
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    JsonObject value = new JsonObject();
-    value.add("Property", JsonNull.INSTANCE);
-    value.add("name == null", JsonNull.INSTANCE);
-    value.addProperty("com.google.gson.JsonObject", "Value");
+    JsonWriter out = new JsonWriter(new StringWriter());
+    out.setHtmlSafe(true);
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithOneElement();
 
     // Act
     JsonElementTypeAdapter.ADAPTER.write(out, value);
 
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(value, getResult);
+    // Assert that nothing has changed
+    Iterator<JsonElement> iteratorResult = value.iterator();
+    JsonElement nextResult = iteratorResult.next();
+    assertTrue(nextResult instanceof JsonPrimitive);
+    Number asNumber = value.getAsNumber();
+    assertTrue(asNumber instanceof LazilyParsedNumber);
+    Number asNumber2 = nextResult.getAsNumber();
+    assertTrue(asNumber2 instanceof LazilyParsedNumber);
+    assertFalse(iteratorResult.hasNext());
+    assertEquals(asNumber, asNumber2);
   }
 
   /**
@@ -833,161 +805,7 @@ public class JsonElementTypeAdapterDiffblueTest {
    * {@code JsonElement}.
    *
    * <ul>
-   *   <li>Given {@code Property}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement_givenProperty2() throws IOException {
-    // Arrange
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    JsonObject value = new JsonObject();
-    value.add("name == null", JsonNull.INSTANCE);
-    value.add("Property", JsonNull.INSTANCE);
-    value.add("name == null", JsonNull.INSTANCE);
-    value.addProperty("com.google.gson.JsonObject", "Value");
-
-    // Act
-    JsonElementTypeAdapter.ADAPTER.write(out, value);
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(value, getResult);
-  }
-
-  /**
-   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
-   * {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>Given {@code Value}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement_givenValue() throws IOException {
-    // Arrange
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    JsonObject value = new JsonObject();
-    value.addProperty("com.google.gson.JsonObject", "Value");
-
-    // Act
-    JsonElementTypeAdapter.ADAPTER.write(out, value);
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(value, getResult);
-  }
-
-  /**
-   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
-   * {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>Given {@code Value}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement_givenValue2() throws IOException {
-    // Arrange
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    JsonObject value = new JsonObject();
-    value.add("name == null", JsonNull.INSTANCE);
-    value.addProperty("com.google.gson.JsonObject", "Value");
-
-    // Act
-    JsonElementTypeAdapter.ADAPTER.write(out, value);
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(value, getResult);
-  }
-
-  /**
-   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
-   * {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link
-   *       JsonPrimitive#JsonPrimitive(String)} with {@code String}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement_thenJsonTreeWriterIsJsonPrimitiveWithString()
-      throws IOException {
-    // Arrange
-    JsonTreeWriter out = new JsonTreeWriter();
-    JsonPrimitive value = new JsonPrimitive("String");
-
-    // Act
-    JsonElementTypeAdapter.ADAPTER.write(out, value);
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals(value, getResult);
-  }
-
-  /**
-   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
-   * {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>When {@link JsonObject} (default constructor).
-   *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonObject}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement_whenJsonObject_thenJsonTreeWriterJsonObject()
-      throws IOException {
-    // Arrange
-    JsonTreeWriter out = new JsonTreeWriter();
-    JsonObject value = new JsonObject();
-
-    // Act
-    JsonElementTypeAdapter.ADAPTER.write(out, value);
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(value, getResult);
-  }
-
-  /**
-   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
-   * {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>When {@code null}.
+   *   <li>When {@link JsonTreeWriter} (default constructor).
    *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonNull}.
    * </ul>
    *
@@ -997,7 +815,7 @@ public class JsonElementTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement_whenNull_thenJsonTreeWriterJsonNull()
+  public void testWriteWithJsonWriterJsonElement_whenJsonTreeWriter_thenJsonTreeWriterJsonNull()
       throws IOException {
     // Arrange
     JsonTreeWriter out = new JsonTreeWriter();
@@ -1006,9 +824,6 @@ public class JsonElementTypeAdapterDiffblueTest {
     JsonElementTypeAdapter.ADAPTER.write(out, null);
 
     // Assert that nothing has changed
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
+    assertTrue(out.get() instanceof JsonNull);
   }
 }

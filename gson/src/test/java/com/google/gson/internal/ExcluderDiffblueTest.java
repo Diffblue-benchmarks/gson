@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,7 +15,9 @@ import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
+import com.google.gson.internal.reflect.ReflectionHelperTestFactory;
 import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -150,7 +153,7 @@ public class ExcluderDiffblueTest {
    * Test {@link Excluder#create(Gson, TypeToken)}.
    *
    * <ul>
-   *   <li>Then return toJson {@code Value} is {@code "Value"}.
+   *   <li>Then return toJson {@code null} is {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link Excluder#create(Gson, TypeToken)}
@@ -159,7 +162,7 @@ public class ExcluderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapter Excluder.create(Gson, TypeToken)"})
-  public void testCreate_thenReturnToJsonValueIsValue() {
+  public void testCreate_thenReturnToJsonNullIsNull() {
     // Arrange
     ExclusionStrategy exclusionStrategy = mock(ExclusionStrategy.class);
     when(exclusionStrategy.shouldSkipClass(Mockito.<Class<?>>any())).thenReturn(true);
@@ -177,7 +180,118 @@ public class ExcluderDiffblueTest {
     // Assert
     verify(exclusionStrategy).shouldSkipClass(isA(Class.class));
     verify(list).iterator();
-    assertEquals("\"Value\"", actualCreateResult.toJson("Value"));
+    assertEquals("null", actualCreateResult.toJson(null));
+  }
+
+  /**
+   * Test {@link Excluder#excludeField(Field, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link Excluder#DEFAULT}.
+   *   <li>When {@code false}.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeField(Field, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeField(Field, boolean)"})
+  public void testExcludeField_givenDefault_whenFalse_thenReturnFalse()
+      throws NoSuchFieldException {
+    // Arrange, Act and Assert
+    assertFalse(
+        Excluder.DEFAULT.excludeField(ReflectionHelperTestFactory.createPublicField(), false));
+  }
+
+  /**
+   * Test {@link Excluder#excludeField(Field, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link Excluder#DEFAULT}.
+   *   <li>When {@code true}.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeField(Field, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeField(Field, boolean)"})
+  public void testExcludeField_givenDefault_whenTrue_thenReturnFalse() throws NoSuchFieldException {
+    // Arrange, Act and Assert
+    assertFalse(
+        Excluder.DEFAULT.excludeField(ReflectionHelperTestFactory.createPublicField(), true));
+  }
+
+  /**
+   * Test {@link Excluder#excludeField(Field, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link ExclusionStrategy} {@link ExclusionStrategy#shouldSkipClass(Class)} return
+   *       {@code true}.
+   *   <li>Then return {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeField(Field, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeField(Field, boolean)"})
+  public void testExcludeField_givenExclusionStrategyShouldSkipClassReturnTrue_thenReturnTrue()
+      throws NoSuchFieldException {
+    // Arrange
+    ExclusionStrategy exclusionStrategy = mock(ExclusionStrategy.class);
+    when(exclusionStrategy.shouldSkipClass(Mockito.<Class<?>>any())).thenReturn(true);
+
+    ArrayList<ExclusionStrategy> exclusionStrategyList = new ArrayList<>();
+    exclusionStrategyList.add(exclusionStrategy);
+    when(list.iterator()).thenReturn(exclusionStrategyList.iterator());
+
+    // Act
+    boolean actualExcludeFieldResult =
+        excluder.excludeField(ReflectionHelperTestFactory.createPublicField(), false);
+
+    // Assert
+    verify(exclusionStrategy).shouldSkipClass(isA(Class.class));
+    verify(list).iterator();
+    assertTrue(actualExcludeFieldResult);
+  }
+
+  /**
+   * Test {@link Excluder#excludeField(Field, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link List} {@link List#isEmpty()} return {@code false}.
+   *   <li>When {@code false}.
+   *   <li>Then calls {@link List#isEmpty()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeField(Field, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeField(Field, boolean)"})
+  public void testExcludeField_givenListIsEmptyReturnFalse_whenFalse_thenCallsIsEmpty()
+      throws NoSuchFieldException {
+    // Arrange
+    when(list.isEmpty()).thenReturn(false);
+
+    ArrayList<ExclusionStrategy> exclusionStrategyList = new ArrayList<>();
+    when(list.iterator()).thenReturn(exclusionStrategyList.iterator());
+
+    // Act
+    boolean actualExcludeFieldResult =
+        excluder.excludeField(ReflectionHelperTestFactory.createPublicField(), false);
+
+    // Assert
+    verify(list).isEmpty();
+    verify(list, atLeast(1)).iterator();
+    assertFalse(actualExcludeFieldResult);
   }
 
   /**

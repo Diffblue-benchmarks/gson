@@ -1,5 +1,6 @@
 package com.google.gson.internal.bind;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
@@ -172,5 +173,48 @@ public class TypeAdaptersDiffblueTest {
 
     // Assert
     assertSame(typeAdapter, actualNewFactoryForMultipleTypesResult.create(gson2, getResult));
+  }
+
+  /**
+   * Test {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}.
+   *
+   * <ul>
+   *   <li>Then return create {@link Gson#Gson()} and {@link Object} toJson {@code null} is {@code
+   *       null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory TypeAdapters.newTypeHierarchyFactory(Class, TypeAdapter)"})
+  public void testNewTypeHierarchyFactory_thenReturnCreateGsonAndObjectToJsonNullIsNull() {
+    // Arrange
+    Class<Object> clazz = Object.class;
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    // Act
+    TypeAdapterFactory actualNewTypeHierarchyFactoryResult =
+        TypeAdapters.newTypeHierarchyFactory(clazz, typeAdapter);
+    Gson gson2 = new Gson();
+    Class<Object> type2 = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type2);
+
+    // Assert
+    assertEquals("null", actualNewTypeHierarchyFactoryResult.create(gson2, getResult).toJson(null));
   }
 }

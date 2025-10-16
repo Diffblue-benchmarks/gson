@@ -9,6 +9,7 @@ import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonArrayTestFactory;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -41,7 +42,8 @@ public class JsonTreeReaderDiffblueTest {
   @MethodsUnderTest({"void JsonTreeReader.<init>(JsonElement)"})
   public void testNewJsonTreeReader() throws IOException {
     // Arrange and Act
-    JsonTreeReader actualJsonTreeReader = new JsonTreeReader(JsonNull.INSTANCE);
+    JsonTreeReader actualJsonTreeReader =
+        new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Assert
     assertEquals("$", actualJsonTreeReader.getPath());
@@ -50,6 +52,28 @@ public class JsonTreeReaderDiffblueTest {
     assertEquals(Strictness.LEGACY_STRICT, actualJsonTreeReader.getStrictness());
     assertFalse(actualJsonTreeReader.isLenient());
     assertTrue(actualJsonTreeReader.hasNext());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#beginArray()}.
+   *
+   * <p>Method under test: {@link JsonTreeReader#beginArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonTreeReader.beginArray()"})
+  public void testBeginArray() throws IOException {
+    // Arrange
+    JsonTreeReader jsonTreeReader =
+        new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    jsonTreeReader.beginArray();
+
+    // Assert
+    assertEquals("$[0]", jsonTreeReader.getPath());
+    assertEquals("$[0]", jsonTreeReader.getPreviousPath());
   }
 
   /**
@@ -154,54 +178,6 @@ public class JsonTreeReaderDiffblueTest {
   }
 
   /**
-   * Test {@link JsonTreeReader#beginArray()}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
-   *       JsonArray#JsonArray(int)} Path is {@code $[0]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#beginArray()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonTreeReader.beginArray()"})
-  public void testBeginArray_thenJsonTreeReaderWithElementIsJsonArrayPathIs0() throws IOException {
-    // Arrange
-    JsonTreeReader jsonTreeReader = new JsonTreeReader(new JsonArray(3));
-
-    // Act
-    jsonTreeReader.beginArray();
-
-    // Assert
-    assertEquals("$[0]", jsonTreeReader.getPath());
-    assertEquals("$[0]", jsonTreeReader.getPreviousPath());
-    assertFalse(jsonTreeReader.hasNext());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#endArray()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#endArray()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonTreeReader.endArray()"})
-  public void testEndArray_givenJsonArrayWithCapacityIsThree_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonTreeReader(new JsonArray(3)).endArray());
-  }
-
-  /**
    * Test {@link JsonTreeReader#endArray()}.
    *
    * <ul>
@@ -265,6 +241,28 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#endArray()}.
    *
    * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#endArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonTreeReader.endArray()"})
+  public void testEndArray_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).endArray());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#endArray()}.
+   *
+   * <ul>
    *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
    *       JsonNull#INSTANCE}.
    * </ul>
@@ -299,27 +297,6 @@ public class JsonTreeReaderDiffblueTest {
     // Arrange, Act and Assert
     assertThrows(
         IllegalStateException.class, () -> new JsonTreeReader(new JsonObject()).endArray());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#beginObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#beginObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonTreeReader.beginObject()"})
-  public void testBeginObject_givenJsonArrayWithCapacityIsThree_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonTreeReader(new JsonArray(3)).beginObject());
   }
 
   /**
@@ -388,6 +365,29 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#beginObject()}.
    *
    * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#beginObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonTreeReader.beginObject()"})
+  public void testBeginObject_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).beginObject());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#beginObject()}.
+   *
+   * <ul>
    *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
    *       JsonNull#INSTANCE}.
    * </ul>
@@ -430,27 +430,6 @@ public class JsonTreeReaderDiffblueTest {
     assertEquals("$.", jsonTreeReader.getPath());
     assertEquals("$.", jsonTreeReader.getPreviousPath());
     assertFalse(jsonTreeReader.hasNext());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#endObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#endObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonTreeReader.endObject()"})
-  public void testEndObject_givenJsonArrayWithCapacityIsThree_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonTreeReader(new JsonArray(3)).endObject());
   }
 
   /**
@@ -517,6 +496,28 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#endObject()}.
    *
    * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#endObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonTreeReader.endObject()"})
+  public void testEndObject_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).endObject());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#endObject()}.
+   *
+   * <ul>
    *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
    *       JsonNull#INSTANCE}.
    * </ul>
@@ -551,25 +552,6 @@ public class JsonTreeReaderDiffblueTest {
     // Arrange, Act and Assert
     assertThrows(
         IllegalStateException.class, () -> new JsonTreeReader(new JsonObject()).endObject());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#hasNext()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then return {@code true}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#hasNext()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"boolean JsonTreeReader.hasNext()"})
-  public void testHasNext_givenJsonArrayWithCapacityIsThree_thenReturnTrue() throws IOException {
-    // Arrange, Act and Assert
-    assertTrue(new JsonTreeReader(new JsonArray(3)).hasNext());
   }
 
   /**
@@ -633,6 +615,26 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#hasNext()}.
    *
    * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonTreeReader.hasNext()"})
+  public void testHasNext_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertTrue(new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).hasNext());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#hasNext()}.
+   *
+   * <ul>
    *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
    *       JsonNull#INSTANCE}.
    *   <li>Then return {@code true}.
@@ -669,25 +671,6 @@ public class JsonTreeReaderDiffblueTest {
       throws IOException {
     // Arrange, Act and Assert
     assertTrue(new JsonTreeReader(new JsonObject()).hasNext());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#peek()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then return {@code BEGIN_ARRAY}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#peek()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonToken JsonTreeReader.peek()"})
-  public void testPeek_givenJsonArrayWithCapacityIsThree_thenReturnBeginArray() throws IOException {
-    // Arrange, Act and Assert
-    assertEquals(JsonToken.BEGIN_ARRAY, new JsonTreeReader(new JsonArray(3)).peek());
   }
 
   /**
@@ -790,24 +773,23 @@ public class JsonTreeReaderDiffblueTest {
   }
 
   /**
-   * Test {@link JsonTreeReader#nextName()}.
+   * Test {@link JsonTreeReader#peek()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then throw {@link IllegalStateException}.
+   *   <li>Then return {@code BEGIN_ARRAY}.
    * </ul>
    *
-   * <p>Method under test: {@link JsonTreeReader#nextName()}
+   * <p>Method under test: {@link JsonTreeReader#peek()}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonTreeReader.nextName()"})
-  public void testNextName_givenJsonArrayWithCapacityIsThree_thenThrowIllegalStateException()
-      throws IOException {
+  @MethodsUnderTest({"JsonToken JsonTreeReader.peek()"})
+  public void testPeek_thenReturnBeginArray() throws IOException {
     // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonTreeReader(new JsonArray(3)).nextName());
+    assertEquals(
+        JsonToken.BEGIN_ARRAY,
+        new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).peek());
   }
 
   /**
@@ -874,6 +856,28 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#nextName()}.
    *
    * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#nextName()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String JsonTreeReader.nextName()"})
+  public void testNextName_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).nextName());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#nextName()}.
+   *
+   * <ul>
    *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
    *       JsonNull#INSTANCE}.
    * </ul>
@@ -908,27 +912,6 @@ public class JsonTreeReaderDiffblueTest {
     // Arrange, Act and Assert
     assertThrows(
         IllegalStateException.class, () -> new JsonTreeReader(new JsonObject()).nextName());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#nextString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#nextString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonTreeReader.nextString()"})
-  public void testNextString_givenJsonArrayWithCapacityIsThree_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonTreeReader(new JsonArray(3)).nextString());
   }
 
   /**
@@ -1000,6 +983,29 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#nextString()}.
    *
    * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String JsonTreeReader.nextString()"})
+  public void testNextString_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).nextString());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#nextString()}.
+   *
+   * <ul>
    *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
    *       JsonNull#INSTANCE}.
    * </ul>
@@ -1034,27 +1040,6 @@ public class JsonTreeReaderDiffblueTest {
     // Arrange, Act and Assert
     assertThrows(
         IllegalStateException.class, () -> new JsonTreeReader(new JsonObject()).nextString());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#nextBoolean()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#nextBoolean()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"boolean JsonTreeReader.nextBoolean()"})
-  public void testNextBoolean_givenJsonArrayWithCapacityIsThree_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonTreeReader(new JsonArray(3)).nextBoolean());
   }
 
   /**
@@ -1154,6 +1139,29 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#nextBoolean()}.
    *
    * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#nextBoolean()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonTreeReader.nextBoolean()"})
+  public void testNextBoolean_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).nextBoolean());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#nextBoolean()}.
+   *
+   * <ul>
    *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
    *       JsonNull#INSTANCE}.
    * </ul>
@@ -1188,27 +1196,6 @@ public class JsonTreeReaderDiffblueTest {
     // Arrange, Act and Assert
     assertThrows(
         IllegalStateException.class, () -> new JsonTreeReader(new JsonObject()).nextBoolean());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#nextNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#nextNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonTreeReader.nextNull()"})
-  public void testNextNull_givenJsonArrayWithCapacityIsThree_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonTreeReader(new JsonArray(3)).nextNull());
   }
 
   /**
@@ -1277,6 +1264,28 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#nextNull()}.
    *
    * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#nextNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonTreeReader.nextNull()"})
+  public void testNextNull_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).nextNull());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#nextNull()}.
+   *
+   * <ul>
    *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
    *       JsonObject} (default constructor).
    * </ul>
@@ -1322,27 +1331,6 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#nextDouble()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#nextDouble()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"double JsonTreeReader.nextDouble()"})
-  public void testNextDouble_givenJsonArrayWithCapacityIsThree_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonTreeReader(new JsonArray(3)).nextDouble());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#nextDouble()}.
-   *
-   * <ul>
    *   <li>Given {@link JsonElement}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
@@ -1378,6 +1366,29 @@ public class JsonTreeReaderDiffblueTest {
     assertThrows(
         IllegalStateException.class,
         () -> new JsonTreeReader(new JsonPrimitive(true)).nextDouble());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#nextDouble()}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#nextDouble()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"double JsonTreeReader.nextDouble()"})
+  public void testNextDouble_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).nextDouble());
   }
 
   /**
@@ -1474,27 +1485,6 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#nextLong()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#nextLong()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"long JsonTreeReader.nextLong()"})
-  public void testNextLong_givenJsonArrayWithCapacityIsThree_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonTreeReader(new JsonArray(3)).nextLong());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#nextLong()}.
-   *
-   * <ul>
    *   <li>Given {@link JsonElement}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
@@ -1559,6 +1549,28 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#nextLong()}.
    *
    * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#nextLong()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"long JsonTreeReader.nextLong()"})
+  public void testNextLong_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).nextLong());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#nextLong()}.
+   *
+   * <ul>
    *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
    *       JsonNull#INSTANCE}.
    * </ul>
@@ -1593,26 +1605,6 @@ public class JsonTreeReaderDiffblueTest {
     // Arrange, Act and Assert
     assertThrows(
         IllegalStateException.class, () -> new JsonTreeReader(new JsonObject()).nextLong());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#nextInt()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#nextInt()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"int JsonTreeReader.nextInt()"})
-  public void testNextInt_givenJsonArrayWithCapacityIsThree_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonTreeReader(new JsonArray(3)).nextInt());
   }
 
   /**
@@ -1676,6 +1668,28 @@ public class JsonTreeReaderDiffblueTest {
     // Act and Assert
     assertEquals(42, jsonTreeReader.nextInt());
     assertFalse(jsonTreeReader.hasNext());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#nextInt()}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonTreeReader#nextInt()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"int JsonTreeReader.nextInt()"})
+  public void testNextInt_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).nextInt());
   }
 
   /**
@@ -1766,7 +1780,7 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#nextJsonElement()}.
    *
    * <ul>
-   *   <li>Then return {@link JsonArray#JsonArray(int)} with capacity is three.
+   *   <li>Then return createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonTreeReader#nextJsonElement()}
@@ -1775,9 +1789,9 @@ public class JsonTreeReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonTreeReader.nextJsonElement()"})
-  public void testNextJsonElement_thenReturnJsonArrayWithCapacityIsThree() throws IOException {
+  public void testNextJsonElement_thenReturnCreateJsonArrayWithOneElement() throws IOException {
     // Arrange
-    JsonArray element = new JsonArray(3);
+    JsonArray element = JsonArrayTestFactory.createJsonArrayWithOneElement();
 
     // Act and Assert
     assertSame(element, new JsonTreeReader(element).nextJsonElement());
@@ -1849,6 +1863,27 @@ public class JsonTreeReaderDiffblueTest {
   /**
    * Test {@link JsonTreeReader#skipValue()}.
    *
+   * <p>Method under test: {@link JsonTreeReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonTreeReader.skipValue()"})
+  public void testSkipValue() throws IOException {
+    // Arrange
+    JsonTreeReader jsonTreeReader =
+        new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    jsonTreeReader.skipValue();
+
+    // Assert
+    assertFalse(jsonTreeReader.hasNext());
+  }
+
+  /**
+   * Test {@link JsonTreeReader#skipValue()}.
+   *
    * <ul>
    *   <li>Given {@link JsonElement}.
    *   <li>Then throw {@link MalformedJsonException}.
@@ -1882,32 +1917,6 @@ public class JsonTreeReaderDiffblueTest {
   public void testSkipValue_thenNotJsonTreeReaderWithElementIsInstanceHasNext() throws IOException {
     // Arrange
     JsonTreeReader jsonTreeReader = new JsonTreeReader(JsonNull.INSTANCE);
-
-    // Act
-    jsonTreeReader.skipValue();
-
-    // Assert
-    assertFalse(jsonTreeReader.hasNext());
-  }
-
-  /**
-   * Test {@link JsonTreeReader#skipValue()}.
-   *
-   * <ul>
-   *   <li>Then not {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
-   *       JsonArray#JsonArray(int)} hasNext.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonTreeReader#skipValue()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonTreeReader.skipValue()"})
-  public void testSkipValue_thenNotJsonTreeReaderWithElementIsJsonArrayHasNext()
-      throws IOException {
-    // Arrange
-    JsonTreeReader jsonTreeReader = new JsonTreeReader(new JsonArray(3));
 
     // Act
     jsonTreeReader.skipValue();
@@ -2005,15 +2014,13 @@ public class JsonTreeReaderDiffblueTest {
   @MethodsUnderTest({"java.lang.String JsonTreeReader.toString()"})
   public void testToString() {
     // Arrange, Act and Assert
-    assertEquals("JsonTreeReader at path $", new JsonTreeReader(JsonNull.INSTANCE).toString());
+    assertEquals(
+        "JsonTreeReader at path $",
+        new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).toString());
   }
 
   /**
    * Test {@link JsonTreeReader#promoteNameToValue()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   * </ul>
    *
    * <p>Method under test: {@link JsonTreeReader#promoteNameToValue()}
    */
@@ -2021,11 +2028,13 @@ public class JsonTreeReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonTreeReader.promoteNameToValue()"})
-  public void testPromoteNameToValue_givenJsonArrayWithCapacityIsThree() throws IOException {
+  public void testPromoteNameToValue() throws IOException {
     // Arrange, Act and Assert
     assertThrows(
         IllegalStateException.class,
-        () -> new JsonTreeReader(new JsonArray(3)).promoteNameToValue());
+        () ->
+            new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement())
+                .promoteNameToValue());
   }
 
   /**
@@ -2135,7 +2144,8 @@ public class JsonTreeReaderDiffblueTest {
    * Test {@link JsonTreeReader#getPath()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonTreeReader#getPath()}
@@ -2144,9 +2154,10 @@ public class JsonTreeReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"java.lang.String JsonTreeReader.getPath()"})
-  public void testGetPath_givenJsonArrayWithCapacityIsThree() {
+  public void testGetPath_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement() {
     // Arrange, Act and Assert
-    assertEquals("$", new JsonTreeReader(new JsonArray(3)).getPath());
+    assertEquals(
+        "$", new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).getPath());
   }
 
   /**
@@ -2190,19 +2201,17 @@ public class JsonTreeReaderDiffblueTest {
   /**
    * Test {@link JsonTreeReader#getPreviousPath()}.
    *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonTreeReader#getPreviousPath()}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"java.lang.String JsonTreeReader.getPreviousPath()"})
-  public void testGetPreviousPath_givenJsonArrayWithCapacityIsThree() {
+  public void testGetPreviousPath() {
     // Arrange, Act and Assert
-    assertEquals("$", new JsonTreeReader(new JsonArray(3)).getPreviousPath());
+    assertEquals(
+        "$",
+        new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()).getPreviousPath());
   }
 
   /**

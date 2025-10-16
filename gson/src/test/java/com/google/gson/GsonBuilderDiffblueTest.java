@@ -13,6 +13,7 @@ import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.Gson.FutureTypeAdapter;
 import com.google.gson.internal.Excluder;
 import com.google.gson.internal.bind.ReflectiveTypeAdapterFactory;
+import com.google.gson.internal.reflect.ReflectionHelperTestFactory;
 import java.util.List;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -115,7 +116,9 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setVersion(double)"})
   public void testSetVersion_when10e10_thenThrowIllegalArgumentException() {
     // Arrange, Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> new GsonBuilder().setVersion(-1.0E-10d));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> GsonBuilderTestFactory.createGsonBuilder().setVersion(-1.0E-10d));
   }
 
   /**
@@ -134,7 +137,9 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setVersion(double)"})
   public void testSetVersion_whenNaN_thenThrowIllegalArgumentException() {
     // Arrange, Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> new GsonBuilder().setVersion(Double.NaN));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> GsonBuilderTestFactory.createGsonBuilder().setVersion(Double.NaN));
   }
 
   /**
@@ -142,7 +147,7 @@ public class GsonBuilderDiffblueTest {
    *
    * <ul>
    *   <li>When ten.
-   *   <li>Then return {@link GsonBuilder#GsonBuilder()}.
+   *   <li>Then return createGsonBuilder.
    * </ul>
    *
    * <p>Method under test: {@link GsonBuilder#setVersion(double)}
@@ -151,15 +156,15 @@ public class GsonBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setVersion(double)"})
-  public void testSetVersion_whenTen_thenReturnGsonBuilder() {
+  public void testSetVersion_whenTen_thenReturnCreateGsonBuilder() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
-    GsonBuilder actualSetVersionResult = gsonBuilder.setVersion(10.0d);
+    GsonBuilder actualSetVersionResult = createGsonBuilderResult.setVersion(10.0d);
 
     // Assert
-    assertSame(gsonBuilder, actualSetVersionResult);
+    assertSame(createGsonBuilderResult, actualSetVersionResult);
   }
 
   /**
@@ -173,14 +178,14 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.excludeFieldsWithModifiers(int[])"})
   public void testExcludeFieldsWithModifiers() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
     GsonBuilder actualExcludeFieldsWithModifiersResult =
-        gsonBuilder.excludeFieldsWithModifiers(1, 0, 1, 0);
+        createGsonBuilderResult.excludeFieldsWithModifiers(1, 0, 1, 0);
 
     // Assert
-    assertSame(gsonBuilder, actualExcludeFieldsWithModifiersResult);
+    assertSame(createGsonBuilderResult, actualExcludeFieldsWithModifiersResult);
   }
 
   /**
@@ -194,14 +199,14 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.excludeFieldsWithoutExposeAnnotation()"})
   public void testExcludeFieldsWithoutExposeAnnotation() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
     GsonBuilder actualExcludeFieldsWithoutExposeAnnotationResult =
-        gsonBuilder.excludeFieldsWithoutExposeAnnotation();
+        createGsonBuilderResult.excludeFieldsWithoutExposeAnnotation();
 
     // Assert
-    assertSame(gsonBuilder, actualExcludeFieldsWithoutExposeAnnotationResult);
+    assertSame(createGsonBuilderResult, actualExcludeFieldsWithoutExposeAnnotationResult);
   }
 
   /**
@@ -215,14 +220,14 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.disableInnerClassSerialization()"})
   public void testDisableInnerClassSerialization() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
     GsonBuilder actualDisableInnerClassSerializationResult =
-        gsonBuilder.disableInnerClassSerialization();
+        createGsonBuilderResult.disableInnerClassSerialization();
 
     // Assert
-    assertSame(gsonBuilder, actualDisableInnerClassSerializationResult);
+    assertSame(createGsonBuilderResult, actualDisableInnerClassSerializationResult);
   }
 
   /**
@@ -236,14 +241,14 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setFieldNamingPolicy(FieldNamingPolicy)"})
   public void testSetFieldNamingPolicy() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
     GsonBuilder actualSetFieldNamingPolicyResult =
-        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY);
+        createGsonBuilderResult.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY);
 
     // Assert
-    assertSame(gsonBuilder, actualSetFieldNamingPolicyResult);
+    assertSame(createGsonBuilderResult, actualSetFieldNamingPolicyResult);
   }
 
   /**
@@ -257,14 +262,14 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setExclusionStrategies(ExclusionStrategy[])"})
   public void testSetExclusionStrategies() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
     GsonBuilder actualSetExclusionStrategiesResult =
-        gsonBuilder.setExclusionStrategies(mock(ExclusionStrategy.class));
+        createGsonBuilderResult.setExclusionStrategies(mock(ExclusionStrategy.class));
 
     // Assert
-    assertSame(gsonBuilder, actualSetExclusionStrategiesResult);
+    assertSame(createGsonBuilderResult, actualSetExclusionStrategiesResult);
   }
 
   /**
@@ -280,14 +285,14 @@ public class GsonBuilderDiffblueTest {
   })
   public void testAddSerializationExclusionStrategy() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
     GsonBuilder actualAddSerializationExclusionStrategyResult =
-        gsonBuilder.addSerializationExclusionStrategy(mock(ExclusionStrategy.class));
+        createGsonBuilderResult.addSerializationExclusionStrategy(mock(ExclusionStrategy.class));
 
     // Assert
-    assertSame(gsonBuilder, actualAddSerializationExclusionStrategyResult);
+    assertSame(createGsonBuilderResult, actualAddSerializationExclusionStrategyResult);
   }
 
   /**
@@ -304,14 +309,14 @@ public class GsonBuilderDiffblueTest {
   })
   public void testAddDeserializationExclusionStrategy() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
     GsonBuilder actualAddDeserializationExclusionStrategyResult =
-        gsonBuilder.addDeserializationExclusionStrategy(mock(ExclusionStrategy.class));
+        createGsonBuilderResult.addDeserializationExclusionStrategy(mock(ExclusionStrategy.class));
 
     // Assert
-    assertSame(gsonBuilder, actualAddDeserializationExclusionStrategyResult);
+    assertSame(createGsonBuilderResult, actualAddDeserializationExclusionStrategyResult);
   }
 
   /**
@@ -325,13 +330,13 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setPrettyPrinting()"})
   public void testSetPrettyPrinting() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
-    GsonBuilder actualSetPrettyPrintingResult = gsonBuilder.setPrettyPrinting();
+    GsonBuilder actualSetPrettyPrintingResult = createGsonBuilderResult.setPrettyPrinting();
 
     // Assert
-    assertSame(gsonBuilder, actualSetPrettyPrintingResult);
+    assertSame(createGsonBuilderResult, actualSetPrettyPrintingResult);
   }
 
   /**
@@ -345,14 +350,14 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setLenient()"})
   public void testSetLenient() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
-    GsonBuilder actualSetLenientResult = gsonBuilder.setLenient();
+    GsonBuilder actualSetLenientResult = createGsonBuilderResult.setLenient();
 
     // Assert
-    assertEquals(Strictness.LENIENT, gsonBuilder.create().strictness);
-    assertSame(gsonBuilder, actualSetLenientResult);
+    assertEquals(Strictness.LENIENT, createGsonBuilderResult.create().strictness);
+    assertSame(createGsonBuilderResult, actualSetLenientResult);
   }
 
   /**
@@ -435,29 +440,25 @@ public class GsonBuilderDiffblueTest {
   /**
    * Test {@link GsonBuilder#setDateFormat(int, int)} with {@code dateStyle}, {@code timeStyle}.
    *
-   * <ul>
-   *   <li>Then {@link GsonBuilder#GsonBuilder()} create {@link Gson#dateStyle} is one.
-   * </ul>
-   *
    * <p>Method under test: {@link GsonBuilder#setDateFormat(int, int)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setDateFormat(int, int)"})
-  public void testSetDateFormatWithDateStyleTimeStyle_thenGsonBuilderCreateDateStyleIsOne() {
+  public void testSetDateFormatWithDateStyleTimeStyle() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
-    GsonBuilder actualSetDateFormatResult = gsonBuilder.setDateFormat(1, 1);
+    GsonBuilder actualSetDateFormatResult = createGsonBuilderResult.setDateFormat(1, 1);
 
     // Assert
-    Gson createResult = gsonBuilder.create();
+    Gson createResult = createGsonBuilderResult.create();
     assertEquals(1, createResult.dateStyle);
     assertEquals(1, createResult.timeStyle);
     assertEquals(45, createResult.factories.size());
-    assertSame(gsonBuilder, actualSetDateFormatResult);
+    assertSame(createGsonBuilderResult, actualSetDateFormatResult);
   }
 
   /**
@@ -475,7 +476,9 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setDateFormat(int, int)"})
   public void testSetDateFormatWithDateStyleTimeStyle_whenFour() {
     // Arrange, Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> new GsonBuilder().setDateFormat(0, 4));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> GsonBuilderTestFactory.createGsonBuilder().setDateFormat(0, 4));
   }
 
   /**
@@ -493,7 +496,9 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setDateFormat(int, int)"})
   public void testSetDateFormatWithDateStyleTimeStyle_whenMinusOne() {
     // Arrange, Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> new GsonBuilder().setDateFormat(0, -1));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> GsonBuilderTestFactory.createGsonBuilder().setDateFormat(0, -1));
   }
 
   /**
@@ -511,7 +516,9 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setDateFormat(int, int)"})
   public void testSetDateFormatWithDateStyleTimeStyle_whenMinusOne2() {
     // Arrange, Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> new GsonBuilder().setDateFormat(-1, 0));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> GsonBuilderTestFactory.createGsonBuilder().setDateFormat(-1, 0));
   }
 
   /**
@@ -530,7 +537,9 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setDateFormat(int)"})
   public void testSetDateFormatWithDateStyle_whenFour_thenThrowIllegalArgumentException() {
     // Arrange, Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> new GsonBuilder().setDateFormat(4));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> GsonBuilderTestFactory.createGsonBuilder().setDateFormat(4));
   }
 
   /**
@@ -549,7 +558,9 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setDateFormat(int)"})
   public void testSetDateFormatWithDateStyle_whenMinusOne_thenThrowIllegalArgumentException() {
     // Arrange, Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> new GsonBuilder().setDateFormat(-1));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> GsonBuilderTestFactory.createGsonBuilder().setDateFormat(-1));
   }
 
   /**
@@ -557,7 +568,7 @@ public class GsonBuilderDiffblueTest {
    *
    * <ul>
    *   <li>When one.
-   *   <li>Then {@link GsonBuilder#GsonBuilder()} create {@link Gson#dateStyle} is one.
+   *   <li>Then createGsonBuilder create {@link Gson#dateStyle} is one.
    * </ul>
    *
    * <p>Method under test: {@link GsonBuilder#setDateFormat(int)}
@@ -566,25 +577,26 @@ public class GsonBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setDateFormat(int)"})
-  public void testSetDateFormatWithDateStyle_whenOne_thenGsonBuilderCreateDateStyleIsOne() {
+  public void testSetDateFormatWithDateStyle_whenOne_thenCreateGsonBuilderCreateDateStyleIsOne() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
-    GsonBuilder actualSetDateFormatResult = gsonBuilder.setDateFormat(1);
+    GsonBuilder actualSetDateFormatResult = createGsonBuilderResult.setDateFormat(1);
 
     // Assert
-    Gson createResult = gsonBuilder.create();
+    Gson createResult = createGsonBuilderResult.create();
     assertEquals(1, createResult.dateStyle);
     assertEquals(45, createResult.factories.size());
-    assertSame(gsonBuilder, actualSetDateFormatResult);
+    assertSame(createGsonBuilderResult, actualSetDateFormatResult);
   }
 
   /**
    * Test {@link GsonBuilder#setDateFormat(String)} with {@code pattern}.
    *
    * <ul>
-   *   <li>Then {@link GsonBuilder#GsonBuilder()} create {@link Gson#factories} size is forty-five.
+   *   <li>When {@code 42}.
+   *   <li>Then return create {@link Gson#factories} size is forty-five.
    * </ul>
    *
    * <p>Method under test: {@link GsonBuilder#setDateFormat(String)}
@@ -593,19 +605,16 @@ public class GsonBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setDateFormat(String)"})
-  public void testSetDateFormatWithPattern_thenGsonBuilderCreateFactoriesSizeIsFortyFive() {
+  public void testSetDateFormatWithPattern_when42_thenReturnCreateFactoriesSizeIsFortyFive() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
-    // Act
-    GsonBuilder actualSetDateFormatResult = gsonBuilder.setDateFormat("42");
-
-    // Assert
-    Gson createResult = gsonBuilder.create();
+    // Act and Assert
+    Gson createResult = createGsonBuilderResult.setDateFormat("42").create();
     List<TypeAdapterFactory> typeAdapterFactoryList = createResult.factories;
     assertEquals(45, typeAdapterFactoryList.size());
     assertTrue(typeAdapterFactoryList.get(44) instanceof ReflectiveTypeAdapterFactory);
-    Gson createResult2 = actualSetDateFormatResult.create();
+    Gson createResult2 = createGsonBuilderResult.create();
     List<TypeAdapterFactory> typeAdapterFactoryList2 = createResult2.factories;
     assertEquals(45, typeAdapterFactoryList2.size());
     assertTrue(typeAdapterFactoryList2.get(44) instanceof ReflectiveTypeAdapterFactory);
@@ -629,16 +638,16 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setDateFormat(String)"})
   public void testSetDateFormatWithPattern_whenNull_thenReturnCreateFactoriesSizeIsFortyTwo() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act and Assert
-    Gson createResult = gsonBuilder.setDateFormat(null).create();
+    Gson createResult = createGsonBuilderResult.setDateFormat(null).create();
     List<TypeAdapterFactory> typeAdapterFactoryList = createResult.factories;
     assertEquals(42, typeAdapterFactoryList.size());
     assertTrue(typeAdapterFactoryList.get(41) instanceof ReflectiveTypeAdapterFactory);
-    Gson createResult2 = gsonBuilder.create();
-    assertNull(createResult2.datePattern);
     assertNull(createResult.datePattern);
+    Gson createResult2 = createGsonBuilderResult.create();
+    assertNull(createResult2.datePattern);
     assertEquals(42, createResult2.factories.size());
   }
 
@@ -658,15 +667,13 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.setDateFormat(String)"})
   public void testSetDateFormatWithPattern_whenPattern_thenThrowIllegalArgumentException() {
     // Arrange, Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> new GsonBuilder().setDateFormat("Pattern"));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> GsonBuilderTestFactory.createGsonBuilder().setDateFormat("Pattern"));
   }
 
   /**
    * Test {@link GsonBuilder#registerTypeAdapterFactory(TypeAdapterFactory)}.
-   *
-   * <ul>
-   *   <li>Then {@link GsonBuilder#GsonBuilder()} create {@link Gson#builderFactories} size is one.
-   * </ul>
    *
    * <p>Method under test: {@link GsonBuilder#registerTypeAdapterFactory(TypeAdapterFactory)}
    */
@@ -674,26 +681,26 @@ public class GsonBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"GsonBuilder GsonBuilder.registerTypeAdapterFactory(TypeAdapterFactory)"})
-  public void testRegisterTypeAdapterFactory_thenGsonBuilderCreateBuilderFactoriesSizeIsOne() {
+  public void testRegisterTypeAdapterFactory() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
     GsonBuilder actualRegisterTypeAdapterFactoryResult =
-        gsonBuilder.registerTypeAdapterFactory(mock(TypeAdapterFactory.class));
+        createGsonBuilderResult.registerTypeAdapterFactory(mock(TypeAdapterFactory.class));
 
     // Assert
-    Gson createResult = gsonBuilder.create();
+    Gson createResult = createGsonBuilderResult.create();
     assertEquals(1, createResult.builderFactories.size());
     assertEquals(43, createResult.factories.size());
-    assertSame(gsonBuilder, actualRegisterTypeAdapterFactoryResult);
+    assertSame(createGsonBuilderResult, actualRegisterTypeAdapterFactoryResult);
   }
 
   /**
    * Test {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}.
    *
    * <ul>
-   *   <li>Then {@link GsonBuilder#GsonBuilder()} create {@link Gson#builderFactories} size is one.
+   *   <li>Then return create {@link Gson#builderFactories} size is one.
    * </ul>
    *
    * <p>Method under test: {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}
@@ -702,19 +709,18 @@ public class GsonBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"GsonBuilder GsonBuilder.registerTypeHierarchyAdapter(Class, Object)"})
-  public void testRegisterTypeHierarchyAdapter_thenGsonBuilderCreateBuilderFactoriesSizeIsOne() {
+  public void testRegisterTypeHierarchyAdapter_thenReturnCreateBuilderFactoriesSizeIsOne() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
     Class<Object> baseType = Object.class;
 
-    // Act
-    GsonBuilder actualRegisterTypeHierarchyAdapterResult =
-        gsonBuilder.registerTypeHierarchyAdapter(baseType, new FutureTypeAdapter<>());
-
-    // Assert
-    Gson createResult = gsonBuilder.create();
+    // Act and Assert
+    Gson createResult =
+        createGsonBuilderResult
+            .registerTypeHierarchyAdapter(baseType, new FutureTypeAdapter<>())
+            .create();
     assertEquals(1, createResult.builderFactories.size());
-    Gson createResult2 = actualRegisterTypeHierarchyAdapterResult.create();
+    Gson createResult2 = createGsonBuilderResult.create();
     assertEquals(1, createResult2.builderFactories.size());
     assertTrue(createResult.builderHierarchyFactories.isEmpty());
     assertTrue(createResult2.builderHierarchyFactories.isEmpty());
@@ -733,15 +739,18 @@ public class GsonBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"GsonBuilder GsonBuilder.registerTypeHierarchyAdapter(Class, Object)"})
-  public void testRegisterTypeHierarchyAdapter_thenThrowIllegalArgumentException() {
+  public void testRegisterTypeHierarchyAdapter_thenThrowIllegalArgumentException()
+      throws NoSuchFieldException {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
     Class<Object> baseType = Object.class;
 
     // Act and Assert
     assertThrows(
         IllegalArgumentException.class,
-        () -> gsonBuilder.registerTypeHierarchyAdapter(baseType, "Type Adapter"));
+        () ->
+            createGsonBuilderResult.registerTypeHierarchyAdapter(
+                baseType, ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
@@ -759,17 +768,16 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.registerTypeHierarchyAdapter(Class, Object)"})
   public void testRegisterTypeHierarchyAdapter_whenJsonDeserializer() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
     Class<Object> baseType = Object.class;
 
-    // Act
-    GsonBuilder actualRegisterTypeHierarchyAdapterResult =
-        gsonBuilder.registerTypeHierarchyAdapter(baseType, mock(JsonDeserializer.class));
-
-    // Assert
-    Gson createResult = gsonBuilder.create();
+    // Act and Assert
+    Gson createResult =
+        createGsonBuilderResult
+            .registerTypeHierarchyAdapter(baseType, mock(JsonDeserializer.class))
+            .create();
     assertEquals(1, createResult.builderHierarchyFactories.size());
-    Gson createResult2 = actualRegisterTypeHierarchyAdapterResult.create();
+    Gson createResult2 = createGsonBuilderResult.create();
     assertEquals(1, createResult2.builderHierarchyFactories.size());
     assertTrue(createResult.builderFactories.isEmpty());
     assertTrue(createResult2.builderFactories.isEmpty());
@@ -790,17 +798,16 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.registerTypeHierarchyAdapter(Class, Object)"})
   public void testRegisterTypeHierarchyAdapter_whenJsonSerializer() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
     Class<Object> baseType = Object.class;
 
-    // Act
-    GsonBuilder actualRegisterTypeHierarchyAdapterResult =
-        gsonBuilder.registerTypeHierarchyAdapter(baseType, mock(JsonSerializer.class));
-
-    // Assert
-    Gson createResult = gsonBuilder.create();
+    // Act and Assert
+    Gson createResult =
+        createGsonBuilderResult
+            .registerTypeHierarchyAdapter(baseType, mock(JsonSerializer.class))
+            .create();
     assertEquals(1, createResult.builderHierarchyFactories.size());
-    Gson createResult2 = actualRegisterTypeHierarchyAdapterResult.create();
+    Gson createResult2 = createGsonBuilderResult.create();
     assertEquals(1, createResult2.builderHierarchyFactories.size());
     assertTrue(createResult.builderFactories.isEmpty());
     assertTrue(createResult2.builderFactories.isEmpty());
@@ -817,23 +824,22 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"GsonBuilder GsonBuilder.addReflectionAccessFilter(ReflectionAccessFilter)"})
   public void testAddReflectionAccessFilter() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
 
     // Act
     GsonBuilder actualAddReflectionAccessFilterResult =
-        gsonBuilder.addReflectionAccessFilter(mock(ReflectionAccessFilter.class));
+        createGsonBuilderResult.addReflectionAccessFilter(mock(ReflectionAccessFilter.class));
 
     // Assert
-    assertEquals(1, gsonBuilder.create().reflectionFilters.size());
-    assertSame(gsonBuilder, actualAddReflectionAccessFilterResult);
+    assertEquals(1, createGsonBuilderResult.create().reflectionFilters.size());
+    assertSame(createGsonBuilderResult, actualAddReflectionAccessFilterResult);
   }
 
   /**
    * Test {@link GsonBuilder#create()}.
    *
    * <ul>
-   *   <li>Given {@link GsonBuilder#GsonBuilder()} NumberToNumberStrategy is {@link
-   *       ToNumberStrategy}.
+   *   <li>Given createGsonBuilder NumberToNumberStrategy is {@link ToNumberStrategy}.
    * </ul>
    *
    * <p>Method under test: {@link GsonBuilder#create()}
@@ -842,13 +848,13 @@ public class GsonBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Gson GsonBuilder.create()"})
-  public void testCreate_givenGsonBuilderNumberToNumberStrategyIsToNumberStrategy() {
+  public void testCreate_givenCreateGsonBuilderNumberToNumberStrategyIsToNumberStrategy() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    gsonBuilder.setNumberToNumberStrategy(mock(ToNumberStrategy.class));
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
+    createGsonBuilderResult.setNumberToNumberStrategy(mock(ToNumberStrategy.class));
 
     // Act
-    Gson actualCreateResult = gsonBuilder.create();
+    Gson actualCreateResult = createGsonBuilderResult.create();
 
     // Assert
     assertNull(actualCreateResult.strictness);
@@ -879,8 +885,7 @@ public class GsonBuilderDiffblueTest {
    * Test {@link GsonBuilder#create()}.
    *
    * <ul>
-   *   <li>Given {@link GsonBuilder#GsonBuilder()} ObjectToNumberStrategy is {@link
-   *       ToNumberStrategy}.
+   *   <li>Given createGsonBuilder ObjectToNumberStrategy is {@link ToNumberStrategy}.
    * </ul>
    *
    * <p>Method under test: {@link GsonBuilder#create()}
@@ -889,13 +894,13 @@ public class GsonBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Gson GsonBuilder.create()"})
-  public void testCreate_givenGsonBuilderObjectToNumberStrategyIsToNumberStrategy() {
+  public void testCreate_givenCreateGsonBuilderObjectToNumberStrategyIsToNumberStrategy() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    gsonBuilder.setObjectToNumberStrategy(mock(ToNumberStrategy.class));
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
+    createGsonBuilderResult.setObjectToNumberStrategy(mock(ToNumberStrategy.class));
 
     // Act
-    Gson actualCreateResult = gsonBuilder.create();
+    Gson actualCreateResult = createGsonBuilderResult.create();
 
     // Assert
     assertNull(actualCreateResult.strictness);
@@ -926,7 +931,7 @@ public class GsonBuilderDiffblueTest {
    * Test {@link GsonBuilder#create()}.
    *
    * <ul>
-   *   <li>Given {@link GsonBuilder#GsonBuilder()}.
+   *   <li>Given createGsonBuilder.
    *   <li>Then return {@link Gson#longSerializationPolicy} is {@code DEFAULT}.
    * </ul>
    *
@@ -936,9 +941,9 @@ public class GsonBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Gson GsonBuilder.create()"})
-  public void testCreate_givenGsonBuilder_thenReturnLongSerializationPolicyIsDefault() {
+  public void testCreate_givenCreateGsonBuilder_thenReturnLongSerializationPolicyIsDefault() {
     // Arrange and Act
-    Gson actualCreateResult = new GsonBuilder().create();
+    Gson actualCreateResult = GsonBuilderTestFactory.createGsonBuilder().create();
 
     // Assert
     assertNull(actualCreateResult.strictness);
@@ -980,11 +985,11 @@ public class GsonBuilderDiffblueTest {
   @MethodsUnderTest({"Gson GsonBuilder.create()"})
   public void testCreate_thenReturnLongSerializationPolicyIsString() {
     // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    gsonBuilder.setLongSerializationPolicy(LongSerializationPolicy.STRING);
+    GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
+    createGsonBuilderResult.setLongSerializationPolicy(LongSerializationPolicy.STRING);
 
     // Act
-    Gson actualCreateResult = gsonBuilder.create();
+    Gson actualCreateResult = createGsonBuilderResult.create();
 
     // Assert
     assertNull(actualCreateResult.strictness);

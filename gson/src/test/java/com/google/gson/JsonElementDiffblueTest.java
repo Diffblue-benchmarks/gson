@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
-import com.google.gson.internal.LazilyParsedNumber;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -24,14 +23,14 @@ public class JsonElementDiffblueTest {
   @MethodsUnderTest({"boolean JsonElement.isJsonArray()"})
   public void testIsJsonArray() {
     // Arrange, Act and Assert
-    assertTrue(new JsonArray(3).isJsonArray());
+    assertTrue(JsonArrayTestFactory.createJsonArrayWithOneElement().isJsonArray());
   }
 
   /**
    * Test {@link JsonElement#isJsonObject()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
+   *   <li>Given createJsonArrayWithOneElement.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -41,9 +40,9 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonElement.isJsonObject()"})
-  public void testIsJsonObject_givenJsonArrayWithCapacityIsThree_thenReturnFalse() {
+  public void testIsJsonObject_givenCreateJsonArrayWithOneElement_thenReturnFalse() {
     // Arrange, Act and Assert
-    assertFalse(new JsonArray(3).isJsonObject());
+    assertFalse(JsonArrayTestFactory.createJsonArrayWithOneElement().isJsonObject());
   }
 
   /**
@@ -69,7 +68,7 @@ public class JsonElementDiffblueTest {
    * Test {@link JsonElement#isJsonPrimitive()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
+   *   <li>Given createJsonArrayWithOneElement.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -79,9 +78,9 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonElement.isJsonPrimitive()"})
-  public void testIsJsonPrimitive_givenJsonArrayWithCapacityIsThree_thenReturnFalse() {
+  public void testIsJsonPrimitive_givenCreateJsonArrayWithOneElement_thenReturnFalse() {
     // Arrange, Act and Assert
-    assertFalse(new JsonArray(3).isJsonPrimitive());
+    assertFalse(JsonArrayTestFactory.createJsonArrayWithOneElement().isJsonPrimitive());
   }
 
   /**
@@ -107,6 +106,25 @@ public class JsonElementDiffblueTest {
    * Test {@link JsonElement#isJsonNull()}.
    *
    * <ul>
+   *   <li>Given createJsonArrayWithOneElement.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#isJsonNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonElement.isJsonNull()"})
+  public void testIsJsonNull_givenCreateJsonArrayWithOneElement_thenReturnFalse() {
+    // Arrange, Act and Assert
+    assertFalse(JsonArrayTestFactory.createJsonArrayWithOneElement().isJsonNull());
+  }
+
+  /**
+   * Test {@link JsonElement#isJsonNull()}.
+   *
+   * <ul>
    *   <li>Given {@link JsonNull#INSTANCE}.
    *   <li>Then return {@code true}.
    * </ul>
@@ -123,86 +141,30 @@ public class JsonElementDiffblueTest {
   }
 
   /**
-   * Test {@link JsonElement#isJsonNull()}.
+   * Test {@link JsonElement#getAsJsonObject()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then return {@code false}.
+   *   <li>Given createJsonArrayWithBooleans.
    * </ul>
    *
-   * <p>Method under test: {@link JsonElement#isJsonNull()}
+   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"boolean JsonElement.isJsonNull()"})
-  public void testIsJsonNull_givenJsonArrayWithCapacityIsThree_thenReturnFalse() {
+  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
+  public void testGetAsJsonObject_givenCreateJsonArrayWithBooleans() {
     // Arrange, Act and Assert
-    assertFalse(new JsonArray(3).isJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("42"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("-Infinity"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject3() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("Infinity"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithBooleans().getAsJsonObject());
   }
 
   /**
    * Test {@link JsonElement#getAsJsonObject()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
+   *   <li>Given createJsonArrayWithMixedTypes.
    * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsJsonObject()}
@@ -211,16 +173,18 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThree() {
+  public void testGetAsJsonObject_givenCreateJsonArrayWithMixedTypes() {
     // Arrange, Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonArray(3).getAsJsonObject());
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithMixedTypes().getAsJsonObject());
   }
 
   /**
    * Test {@link JsonElement#getAsJsonObject()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code A}.
+   *   <li>Given createJsonArrayWithNumbers.
    * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsJsonObject()}
@@ -229,21 +193,18 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddA() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add((byte) 'A');
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
+  public void testGetAsJsonObject_givenCreateJsonArrayWithNumbers() {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithNumbers().getAsJsonObject());
   }
 
   /**
    * Test {@link JsonElement#getAsJsonObject()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add end of text.
+   *   <li>Given createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsJsonObject()}
@@ -252,20 +213,18 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddEndOfText() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add('\u0003');
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
+  public void testGetAsJsonObject_givenCreateJsonArrayWithOneElement() {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithOneElement().getAsJsonObject());
   }
 
   /**
    * Test {@link JsonElement#getAsJsonObject()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code false}.
+   *   <li>Given createJsonArrayWithOneElement add end of text.
    * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsJsonObject()}
@@ -274,300 +233,15 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddFalse() {
+  public void testGetAsJsonObject_givenCreateJsonArrayWithOneElementAddEndOfText() {
     // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(false);
-    jsonArray.add(true);
+    JsonArray createJsonArrayWithOneElementResult =
+        JsonArrayTestFactory.createJsonArrayWithOneElement();
+    createJsonArrayWithOneElementResult.add('\u0003');
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddInstance() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(JsonNull.INSTANCE);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link JsonObject}
-   *       (default constructor).
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddJsonObject() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new JsonObject());
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link Double#NaN}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddNaN() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(Double.NaN);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add space.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddSpace() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(' ');
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add ten.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddTen() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(10.0d);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add ten.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddTen2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(10.0f);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddThree() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(3L);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddThree2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add((short) 3);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code true}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddTrue() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add valueOf three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonArrayWithCapacityIsThreeAddValueOfThree() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(Integer.valueOf(3));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Not a JSON Object:} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonObjectAddNotAJsonObjectAndInstance() {
-    // Arrange
-    JsonObject element = new JsonObject();
-    element.add("Not a JSON Object: ", JsonNull.INSTANCE);
-
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(element);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code out == null} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject_givenJsonObjectAddOutNullAndInstance() {
-    // Arrange
-    JsonObject element = new JsonObject();
-    element.add("out == null", JsonNull.INSTANCE);
-    element.add("Not a JSON Object: ", JsonNull.INSTANCE);
-
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(element);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonObject());
+    assertThrows(
+        IllegalStateException.class, () -> createJsonArrayWithOneElementResult.getAsJsonObject());
   }
 
   /**
@@ -606,77 +280,21 @@ public class JsonElementDiffblueTest {
   @MethodsUnderTest({"JsonArray JsonElement.getAsJsonArray()"})
   public void testGetAsJsonArray() {
     // Arrange
-    JsonArray jsonArray = new JsonArray(3);
+    JsonArray createJsonArrayWithOneElementResult =
+        JsonArrayTestFactory.createJsonArrayWithOneElement();
 
     // Act
-    JsonArray actualAsJsonArray = jsonArray.getAsJsonArray();
+    JsonArray actualAsJsonArray = createJsonArrayWithOneElementResult.getAsJsonArray();
 
     // Assert
-    assertSame(jsonArray, actualAsJsonArray);
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("42"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("-Infinity"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive3() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("Infinity"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
+    assertSame(createJsonArrayWithOneElementResult, actualAsJsonArray);
   }
 
   /**
    * Test {@link JsonElement#getAsJsonPrimitive()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
+   *   <li>Given createJsonArrayWithBooleans.
    * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
@@ -685,16 +303,18 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThree() {
+  public void testGetAsJsonPrimitive_givenCreateJsonArrayWithBooleans() {
     // Arrange, Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonArray(3).getAsJsonPrimitive());
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithBooleans().getAsJsonPrimitive());
   }
 
   /**
    * Test {@link JsonElement#getAsJsonPrimitive()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code A}.
+   *   <li>Given createJsonArrayWithMixedTypes.
    * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
@@ -703,21 +323,83 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddA() {
+  public void testGetAsJsonPrimitive_givenCreateJsonArrayWithMixedTypes() {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithMixedTypes().getAsJsonPrimitive());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsJsonPrimitive()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithNumbers.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
+  public void testGetAsJsonPrimitive_givenCreateJsonArrayWithNumbers() {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithNumbers().getAsJsonPrimitive());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsJsonPrimitive()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
+  public void testGetAsJsonPrimitive_givenCreateJsonArrayWithOneElement() {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithOneElement().getAsJsonPrimitive());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsJsonPrimitive()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithOneElement add end of text.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
+  public void testGetAsJsonPrimitive_givenCreateJsonArrayWithOneElementAddEndOfText() {
     // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add((byte) 'A');
-    jsonArray.add(true);
+    JsonArray createJsonArrayWithOneElementResult =
+        JsonArrayTestFactory.createJsonArrayWithOneElement();
+    createJsonArrayWithOneElementResult.add('\u0003');
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
+    assertThrows(
+        IllegalStateException.class,
+        () -> createJsonArrayWithOneElementResult.getAsJsonPrimitive());
   }
 
   /**
    * Test {@link JsonElement#getAsJsonPrimitive()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add end of text.
+   *   <li>Given createJsonArrayWithOneElement add {@link JsonNull#INSTANCE}.
    * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
@@ -726,350 +408,24 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddEndOfText() {
+  public void testGetAsJsonPrimitive_givenCreateJsonArrayWithOneElementAddInstance() {
     // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add('\u0003');
+    JsonArray createJsonArrayWithOneElementResult =
+        JsonArrayTestFactory.createJsonArrayWithOneElement();
+    createJsonArrayWithOneElementResult.add(JsonNull.INSTANCE);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddFalse() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(false);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddInstance() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(JsonNull.INSTANCE);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link JsonObject}
-   *       (default constructor).
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddJsonObject() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new JsonObject());
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link Double#NaN}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddNaN() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(Double.NaN);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add space.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddSpace() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(' ');
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add ten.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddTen() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(10.0d);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add ten.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddTen2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(10.0f);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddThree() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(3L);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddThree2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add((short) 3);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code true}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddTrue() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add valueOf three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonArrayWithCapacityIsThreeAddValueOfThree() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(Integer.valueOf(3));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Not a JSON Primitive:} and
-   *       {@link JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonObjectAddNotAJsonPrimitiveAndInstance() {
-    // Arrange
-    JsonObject element = new JsonObject();
-    element.add("Not a JSON Primitive: ", JsonNull.INSTANCE);
-
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(element);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code out == null} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenJsonObjectAddOutNullAndInstance() {
-    // Arrange
-    JsonObject element = new JsonObject();
-    element.add("out == null", JsonNull.INSTANCE);
-    element.add("Not a JSON Primitive: ", JsonNull.INSTANCE);
-
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(element);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Then return {@link JsonPrimitive#JsonPrimitive(String)} with {@code String}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_thenReturnJsonPrimitiveWithString() {
-    // Arrange
-    JsonPrimitive jsonPrimitive = new JsonPrimitive("String");
-
-    // Act
-    JsonPrimitive actualAsJsonPrimitive = jsonPrimitive.getAsJsonPrimitive();
-
-    // Assert
-    assertSame(jsonPrimitive, actualAsJsonPrimitive);
+    assertThrows(
+        IllegalStateException.class,
+        () -> createJsonArrayWithOneElementResult.getAsJsonPrimitive());
   }
 
   /**
    * Test {@link JsonElement#getAsJsonNull()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithBooleans.
+   * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsJsonNull()}
    */
@@ -1077,18 +433,19 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("42"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
+  public void testGetAsJsonNull_givenCreateJsonArrayWithBooleans() {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithBooleans().getAsJsonNull());
   }
 
   /**
    * Test {@link JsonElement#getAsJsonNull()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithMixedTypes.
+   * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsJsonNull()}
    */
@@ -1096,18 +453,20 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("-Infinity"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
+  public void testGetAsJsonNull_givenCreateJsonArrayWithMixedTypes() {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithMixedTypes().getAsJsonNull());
   }
 
   /**
    * Test {@link JsonElement#getAsJsonNull()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithNumbers.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsJsonNull()}
    */
@@ -1115,14 +474,79 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull3() {
+  public void testGetAsJsonNull_givenCreateJsonArrayWithNumbers_thenThrowIllegalStateException() {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithNumbers().getAsJsonNull());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsJsonNull()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
+  public void testGetAsJsonNull_givenCreateJsonArrayWithOneElement() {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () -> JsonArrayTestFactory.createJsonArrayWithOneElement().getAsJsonNull());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsJsonNull()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithOneElement add end of text.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
+  public void testGetAsJsonNull_givenCreateJsonArrayWithOneElementAddEndOfText() {
     // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("Infinity"));
-    jsonArray.add(true);
+    JsonArray createJsonArrayWithOneElementResult =
+        JsonArrayTestFactory.createJsonArrayWithOneElement();
+    createJsonArrayWithOneElementResult.add('\u0003');
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
+    assertThrows(
+        IllegalStateException.class, () -> createJsonArrayWithOneElementResult.getAsJsonNull());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsJsonNull()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithOneElement add {@link JsonNull#INSTANCE}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
+  public void testGetAsJsonNull_givenCreateJsonArrayWithOneElementAddInstance() {
+    // Arrange
+    JsonArray createJsonArrayWithOneElementResult =
+        JsonArrayTestFactory.createJsonArrayWithOneElement();
+    createJsonArrayWithOneElementResult.add(JsonNull.INSTANCE);
+
+    // Act and Assert
+    assertThrows(
+        IllegalStateException.class, () -> createJsonArrayWithOneElementResult.getAsJsonNull());
   }
 
   /**
@@ -1145,379 +569,12 @@ public class JsonElementDiffblueTest {
   }
 
   /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThree() {
-    // Arrange, Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonArray(3).getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code A}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddA() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add((byte) 'A');
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add end of text.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddEndOfText() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add('\u0003');
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddFalse() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(false);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddInstance() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(JsonNull.INSTANCE);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link JsonObject}
-   *       (default constructor).
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddJsonObject() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new JsonObject());
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link Double#NaN}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddNaN() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(Double.NaN);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add space.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddSpace() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(' ');
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add ten.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddTen() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(10.0d);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add ten.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddTen2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(10.0f);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddThree() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(3L);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddThree2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add((short) 3);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code true}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddTrue() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add valueOf three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonArrayWithCapacityIsThreeAddValueOfThree() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(Integer.valueOf(3));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Not a JSON Null:} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonObjectAddNotAJsonNullAndInstance() {
-    // Arrange
-    JsonObject element = new JsonObject();
-    element.add("Not a JSON Null: ", JsonNull.INSTANCE);
-
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(element);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code out == null} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenJsonObjectAddOutNullAndInstance() {
-    // Arrange
-    JsonObject element = new JsonObject();
-    element.add("out == null", JsonNull.INSTANCE);
-    element.add("Not a JSON Null: ", JsonNull.INSTANCE);
-
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(element);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonArray.getAsJsonNull());
-  }
-
-  /**
    * Test {@link JsonElement#getAsBoolean()}.
+   *
+   * <ul>
+   *   <li>Given createEmptyJsonArray add {@code true}.
+   *   <li>Then return {@code true}.
+   * </ul>
    *
    * <p>Method under test: {@link JsonElement#getAsBoolean()}
    */
@@ -1525,7 +582,49 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonElement.getAsBoolean()"})
-  public void testGetAsBoolean() {
+  public void testGetAsBoolean_givenCreateEmptyJsonArrayAddTrue_thenReturnTrue() {
+    // Arrange
+    JsonArray createEmptyJsonArrayResult = JsonArrayTestFactory.createEmptyJsonArray();
+    createEmptyJsonArrayResult.add(true);
+
+    // Act and Assert
+    assertTrue(createEmptyJsonArrayResult.getAsBoolean());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsBoolean()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithOneElement.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#getAsBoolean()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonElement.getAsBoolean()"})
+  public void testGetAsBoolean_givenCreateJsonArrayWithOneElement_thenReturnFalse() {
+    // Arrange, Act and Assert
+    assertFalse(JsonArrayTestFactory.createJsonArrayWithOneElement().getAsBoolean());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsBoolean()}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonNull#INSTANCE}.
+   *   <li>Then throw {@link UnsupportedOperationException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#getAsBoolean()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonElement.getAsBoolean()"})
+  public void testGetAsBoolean_givenInstance_thenThrowUnsupportedOperationException() {
     // Arrange, Act and Assert
     assertThrows(UnsupportedOperationException.class, () -> JsonNull.INSTANCE.getAsBoolean());
   }
@@ -1688,8 +787,8 @@ public class JsonElementDiffblueTest {
    * Test {@link JsonElement#toString()}.
    *
    * <ul>
-   *   <li>Given {@link JsonNull#INSTANCE}.
-   *   <li>Then return {@code null}.
+   *   <li>Given createJsonArrayWithBooleans.
+   *   <li>Then return {@code [true,false]}.
    * </ul>
    *
    * <p>Method under test: {@link JsonElement#toString()}
@@ -1698,17 +797,17 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenInstance_thenReturnNull() {
+  public void testToString_givenCreateJsonArrayWithBooleans_thenReturnTrueFalse() {
     // Arrange, Act and Assert
-    assertEquals("null", JsonNull.INSTANCE.toString());
+    assertEquals("[true,false]", JsonArrayTestFactory.createJsonArrayWithBooleans().toString());
   }
 
   /**
    * Test {@link JsonElement#toString()}.
    *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code A}.
-   *   <li>Then return {@code [65,true]}.
+   *   <li>Given createJsonArrayWithMixedTypes.
+   *   <li>Then return {@code ["string",42,true,{}]}.
    * </ul>
    *
    * <p>Method under test: {@link JsonElement#toString()}
@@ -1717,340 +816,94 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddA_thenReturn65True() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add((byte) 'A');
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[65,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add acknowledge.
-   *   <li>Then return {@code ["\u0006",true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddAcknowledge_thenReturnU0006True() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add('\u0006');
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[\"\\u0006\",true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code ,}.
-   *   <li>Then return {@code [",",true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddComma_thenReturnTrue() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(",");
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[\",\",true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code false}.
-   *   <li>Then return {@code [false,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddFalse_thenReturnFalseTrue() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(false);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[false,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link Double#NaN}.
-   *   <li>Then return {@code [NaN,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddNaN_thenReturnNaNTrue() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(Double.NaN);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[NaN,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add ten.
-   *   <li>Then return {@code [10.0,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddTen_thenReturn100True() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(10.0d);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[10.0,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add ten.
-   *   <li>Then return {@code [10.0,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddTen_thenReturn100True2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(10.0f);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[10.0,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add thirty-two.
-   *   <li>Then return {@code [32,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddThirtyTwo_thenReturn32True() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(32L);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[32,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add thirty-two.
-   *   <li>Then return {@code [32,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddThirtyTwo_thenReturn32True2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add((short) 32);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[32,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code true}.
-   *   <li>Then return {@code [true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddTrue_thenReturnTrue() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add valueOf {@link
-   *       Integer#SIZE}.
-   *   <li>Then return {@code [32,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_givenJsonArrayWithCapacityIsThreeAddValueOfSize_thenReturn32True() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(Integer.valueOf(Integer.SIZE));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[32,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Then return {@code [42,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_thenReturn42True() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("42"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[42,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Then return {@code [-Infinity,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_thenReturnInfinityTrue() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("-Infinity"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[-Infinity,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Then return {@code [Infinity,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_thenReturnInfinityTrue2() {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(new LazilyParsedNumber("Infinity"));
-    jsonArray.add(true);
-
-    // Act and Assert
-    assertEquals("[Infinity,true]", jsonArray.toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Then return {@code []}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_thenReturnLeftSquareBracketRightSquareBracket() {
+  public void testToString_givenCreateJsonArrayWithMixedTypes_thenReturnString42True() {
     // Arrange, Act and Assert
-    assertEquals("[]", new JsonArray(3).toString());
+    assertEquals(
+        "[\"string\",42,true,{}]", JsonArrayTestFactory.createJsonArrayWithMixedTypes().toString());
+  }
+
+  /**
+   * Test {@link JsonElement#toString()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithNumbers add acknowledge.
+   *   <li>Then return {@code [1,2,3,"\u0006"]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#toString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
+  public void testToString_givenCreateJsonArrayWithNumbersAddAcknowledge_thenReturn123U0006() {
+    // Arrange
+    JsonArray createJsonArrayWithNumbersResult = JsonArrayTestFactory.createJsonArrayWithNumbers();
+    createJsonArrayWithNumbersResult.add('\u0006');
+
+    // Act and Assert
+    assertEquals("[1,2,3,\"\\u0006\"]", createJsonArrayWithNumbersResult.toString());
+  }
+
+  /**
+   * Test {@link JsonElement#toString()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithNumbers.
+   *   <li>Then return {@code [1,2,3]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#toString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
+  public void testToString_givenCreateJsonArrayWithNumbers_thenReturn123() {
+    // Arrange, Act and Assert
+    assertEquals("[1,2,3]", JsonArrayTestFactory.createJsonArrayWithNumbers().toString());
+  }
+
+  /**
+   * Test {@link JsonElement#toString()}.
+   *
+   * <ul>
+   *   <li>Given createJsonArrayWithOneElement.
+   *   <li>Then return {@code ["singleElement"]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#toString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
+  public void testToString_givenCreateJsonArrayWithOneElement_thenReturnSingleElement() {
+    // Arrange, Act and Assert
+    assertEquals(
+        "[\"singleElement\"]", JsonArrayTestFactory.createJsonArrayWithOneElement().toString());
+  }
+
+  /**
+   * Test {@link JsonElement#toString()}.
+   *
+   * <ul>
+   *   <li>Then return {@code ["singleElement",null]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#toString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
+  public void testToString_thenReturnSingleElementNull() {
+    // Arrange
+    JsonArray createJsonArrayWithOneElementResult =
+        JsonArrayTestFactory.createJsonArrayWithOneElement();
+    createJsonArrayWithOneElementResult.add(JsonNull.INSTANCE);
+
+    // Act and Assert
+    assertEquals("[\"singleElement\",null]", createJsonArrayWithOneElementResult.toString());
   }
 }

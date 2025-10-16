@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
-import com.google.gson.JsonNull;
+import com.google.gson.JsonArrayTestFactory;
 import com.google.gson.Strictness;
 import com.google.gson.internal.bind.JsonTreeReader;
 import java.io.CharArrayReader;
@@ -150,7 +150,8 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"boolean JsonReader.isLenient()"})
   public void testIsLenient_thenReturnTrue() {
     // Arrange
-    JsonTreeReader jsonTreeReader = new JsonTreeReader(JsonNull.INSTANCE);
+    JsonTreeReader jsonTreeReader =
+        new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement());
     jsonTreeReader.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
@@ -5208,8 +5209,8 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#locationString()}.
    *
    * <ul>
-   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#locationString()}
@@ -5218,11 +5219,12 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.locationString()"})
-  public void testLocationString_givenJsonTreeReaderWithElementIsInstance() {
+  public void testLocationString_givenJsonTreeReaderWithElementIsCreateJsonArrayWithOneElement() {
     // Arrange, Act and Assert
     assertEquals(
         " at line 1 column 1 path $",
-        ((JsonReader) new JsonTreeReader(JsonNull.INSTANCE)).locationString());
+        ((JsonReader) new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement()))
+            .locationString());
   }
 
   /**

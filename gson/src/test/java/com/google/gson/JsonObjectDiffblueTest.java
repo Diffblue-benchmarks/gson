@@ -9,6 +9,8 @@ import static org.junit.Assert.assertTrue;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
+import com.google.gson.internal.LazilyParsedNumber;
+import java.util.Iterator;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,8 +42,31 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#deepCopy()}.
    *
+   * <p>Method under test: {@link JsonObject#deepCopy()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonObject JsonObject.deepCopy()"})
+  public void testDeepCopy() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    JsonObject actualDeepCopyResult = jsonObject.deepCopy();
+
+    // Assert
+    assertEquals(jsonObject, actualDeepCopyResult);
+  }
+
+  /**
+   * Test {@link JsonObject#deepCopy()}.
+   *
    * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code true}.
+   *   <li>Given createJsonArrayWithOneElement add createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#deepCopy()}
@@ -50,10 +75,10 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonObject.deepCopy()"})
-  public void testDeepCopy_givenJsonArrayWithCapacityIsThreeAddTrue() {
+  public void testDeepCopy_givenCreateJsonArrayWithOneElementAddCreateJsonArrayWithOneElement() {
     // Arrange
-    JsonArray value = new JsonArray(3);
-    value.add(true);
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    value.add(JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     JsonObject jsonObject = new JsonObject();
     jsonObject.add("Property", value);
@@ -93,8 +118,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#deepCopy()}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#deepCopy()}
@@ -103,12 +128,13 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonObject.deepCopy()"})
-  public void testDeepCopy_givenJsonObjectAdd42AndInstance() {
+  public void testDeepCopy_givenJsonObjectAdd42AndCreateJsonArrayWithOneElement() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     JsonObject actualDeepCopyResult = jsonObject.deepCopy();
@@ -121,8 +147,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#deepCopy()}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#deepCopy()}
@@ -131,13 +157,15 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonObject.deepCopy()"})
-  public void testDeepCopy_givenJsonObjectAdd42AndInstance2() {
+  public void testDeepCopy_givenJsonObjectAdd42AndCreateJsonArrayWithOneElement2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     JsonObject actualDeepCopyResult = jsonObject.deepCopy();
@@ -150,8 +178,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#deepCopy()}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#deepCopy()}
@@ -160,13 +188,14 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonObject.deepCopy()"})
-  public void testDeepCopy_givenJsonObjectAdd42AndInstance3() {
+  public void testDeepCopy_givenJsonObjectAdd42AndCreateJsonArrayWithOneElement3() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     JsonObject actualDeepCopyResult = jsonObject.deepCopy();
@@ -179,8 +208,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#deepCopy()}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#deepCopy()}
@@ -189,14 +218,16 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonObject.deepCopy()"})
-  public void testDeepCopy_givenJsonObjectAdd42AndInstance4() {
+  public void testDeepCopy_givenJsonObjectAdd42AndCreateJsonArrayWithOneElement4() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     JsonObject actualDeepCopyResult = jsonObject.deepCopy();
@@ -209,8 +240,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#deepCopy()}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code JsonObject} and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonObject} (default constructor) add empty string and
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#deepCopy()}
@@ -219,11 +250,14 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonObject.deepCopy()"})
-  public void testDeepCopy_givenJsonObjectAddComGoogleGsonJsonObjectAndInstance() {
+  public void testDeepCopy_givenJsonObjectAddEmptyStringAndCreateJsonArrayWithOneElement() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     JsonObject actualDeepCopyResult = jsonObject.deepCopy();
@@ -236,8 +270,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#deepCopy()}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and
+   *       createJsonArrayWithMixedTypes.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#deepCopy()}
@@ -246,13 +280,36 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonObject.deepCopy()"})
-  public void testDeepCopy_givenJsonObjectAddEmptyStringAndInstance() {
+  public void testDeepCopy_givenJsonObjectAddPropertyAndCreateJsonArrayWithMixedTypes() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithMixedTypes());
+
+    // Act
+    JsonObject actualDeepCopyResult = jsonObject.deepCopy();
+
+    // Assert
+    assertEquals(jsonObject, actualDeepCopyResult);
+  }
+
+  /**
+   * Test {@link JsonObject#deepCopy()}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and
+   *       createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#deepCopy()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonObject JsonObject.deepCopy()"})
+  public void testDeepCopy_givenJsonObjectAddPropertyAndCreateJsonArrayWithOneElement() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     JsonObject actualDeepCopyResult = jsonObject.deepCopy();
@@ -279,32 +336,6 @@ public class JsonObjectDiffblueTest {
     // Arrange
     JsonObject jsonObject = new JsonObject();
     jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Act
-    JsonObject actualDeepCopyResult = jsonObject.deepCopy();
-
-    // Assert
-    assertEquals(jsonObject, actualDeepCopyResult);
-  }
-
-  /**
-   * Test {@link JsonObject#deepCopy()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonArray#JsonArray(int)} with capacity is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#deepCopy()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonObject JsonObject.deepCopy()"})
-  public void testDeepCopy_givenJsonObjectAddPropertyAndJsonArrayWithCapacityIsThree() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", new JsonArray(3));
 
     // Act
     JsonObject actualDeepCopyResult = jsonObject.deepCopy();
@@ -357,7 +388,7 @@ public class JsonObjectDiffblueTest {
     // Arrange
     JsonObject jsonObject = new JsonObject();
     jsonObject.addProperty("com.google.gson.JsonObject", "Value");
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     JsonObject actualDeepCopyResult = jsonObject.deepCopy();
@@ -370,10 +401,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#add(String, JsonElement)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Property}.
-   *   <li>Then {@link JsonObject} (default constructor) size is three.
+   *   <li>Given {@link JsonObject} (default constructor) add empty string and
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
@@ -382,15 +411,14 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
-  public void testAdd_givenJsonObjectAdd42AndInstance_whenProperty_thenJsonObjectSizeIsThree() {
+  public void testAdd_givenJsonObjectAddEmptyStringAndCreateJsonArrayWithOneElement() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Assert
     assertEquals(3, jsonObject.size());
@@ -401,10 +429,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#add(String, JsonElement)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Property}.
-   *   <li>Then {@link JsonObject} (default constructor) size is two.
+   *   <li>Given {@link JsonObject} (default constructor) add empty string and
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
@@ -413,42 +439,15 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
-  public void testAdd_givenJsonObjectAdd42AndInstance_whenProperty_thenJsonObjectSizeIsTwo() {
+  public void testAdd_givenJsonObjectAddEmptyStringAndCreateJsonArrayWithOneElement2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Assert
-    assertEquals(2, jsonObject.size());
-    assertFalse(jsonObject.isEmpty());
-  }
-
-  /**
-   * Test {@link JsonObject#add(String, JsonElement)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>Then {@link JsonObject} (default constructor) size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
-  public void testAdd_givenJsonObjectAddEmptyStringAndInstance_thenJsonObjectSizeIsThree() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-
-    // Act
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Assert
     assertEquals(3, jsonObject.size());
@@ -459,97 +458,9 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#add(String, JsonElement)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>Then {@link JsonObject} (default constructor) size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
-  public void testAdd_givenJsonObjectAddEmptyStringAndInstance_thenJsonObjectSizeIsThree2() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-
-    // Act
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Assert
-    assertEquals(3, jsonObject.size());
-    assertFalse(jsonObject.isEmpty());
-  }
-
-  /**
-   * Test {@link JsonObject#add(String, JsonElement)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>Then {@link JsonObject} (default constructor) size is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
-  public void testAdd_givenJsonObjectAddPropertyAndInstance_thenJsonObjectSizeIsOne() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Act
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Assert that nothing has changed
-    assertEquals(1, jsonObject.size());
-    assertFalse(jsonObject.isEmpty());
-  }
-
-  /**
-   * Test {@link JsonObject#add(String, JsonElement)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>Then {@link JsonObject} (default constructor) size is two.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
-  public void testAdd_givenJsonObjectAddPropertyAndInstance_thenJsonObjectSizeIsTwo() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Act
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Assert that nothing has changed
-    assertEquals(2, jsonObject.size());
-    assertFalse(jsonObject.isEmpty());
-  }
-
-  /**
-   * Test {@link JsonObject#add(String, JsonElement)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and
+   *       createJsonArrayWithOneElement.
    *   <li>When {@code 42}.
-   *   <li>Then {@link JsonObject} (default constructor) size is three.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
@@ -558,14 +469,15 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
-  public void testAdd_givenJsonObjectAddPropertyAndInstance_when42_thenJsonObjectSizeIsThree() {
+  public void testAdd_givenJsonObjectAddPropertyAndCreateJsonArrayWithOneElement_when42() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Assert
     assertEquals(3, jsonObject.size());
@@ -619,9 +531,35 @@ public class JsonObjectDiffblueTest {
     JsonObject jsonObject = new JsonObject();
 
     // Act
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Assert
+    assertEquals(1, jsonObject.size());
+    assertFalse(jsonObject.isEmpty());
+  }
+
+  /**
+   * Test {@link JsonObject#add(String, JsonElement)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonObject} (default constructor) size is one.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
+  public void testAdd_thenJsonObjectSizeIsOne() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Assert that nothing has changed
     assertEquals(1, jsonObject.size());
     assertFalse(jsonObject.isEmpty());
   }
@@ -642,11 +580,41 @@ public class JsonObjectDiffblueTest {
   public void testAdd_thenJsonObjectSizeIsThree() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Assert
+    assertEquals(3, jsonObject.size());
+    assertFalse(jsonObject.isEmpty());
+  }
+
+  /**
+   * Test {@link JsonObject#add(String, JsonElement)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonObject} (default constructor) size is three.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
+  public void testAdd_thenJsonObjectSizeIsThree2() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Assert
     assertEquals(3, jsonObject.size());
@@ -669,10 +637,39 @@ public class JsonObjectDiffblueTest {
   public void testAdd_thenJsonObjectSizeIsTwo() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Assert that nothing has changed
+    assertEquals(2, jsonObject.size());
+    assertFalse(jsonObject.isEmpty());
+  }
+
+  /**
+   * Test {@link JsonObject#add(String, JsonElement)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonObject} (default constructor) size is two.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
+  public void testAdd_thenJsonObjectSizeIsTwo2() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Assert
     assertEquals(2, jsonObject.size());
@@ -680,153 +677,29 @@ public class JsonObjectDiffblueTest {
   }
 
   /**
-   * Test {@link JsonObject#remove(String)}.
+   * Test {@link JsonObject#add(String, JsonElement)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code 42}.
    *   <li>Then {@link JsonObject} (default constructor) size is two.
    * </ul>
    *
-   * <p>Method under test: {@link JsonObject#remove(String)}
+   * <p>Method under test: {@link JsonObject#add(String, JsonElement)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_givenJsonObjectAdd42AndInstance_when42_thenJsonObjectSizeIsTwo() {
+  @MethodsUnderTest({"void JsonObject.add(String, JsonElement)"})
+  public void testAdd_thenJsonObjectSizeIsTwo3() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
-    JsonElement actualRemoveResult = jsonObject.remove("42");
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Assert
     assertEquals(2, jsonObject.size());
-    assertSame(((JsonNull) actualRemoveResult).INSTANCE, actualRemoveResult);
-  }
-
-  /**
-   * Test {@link JsonObject#remove(String)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Property}.
-   *   <li>Then {@link JsonObject} (default constructor) size is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#remove(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_givenJsonObjectAdd42AndInstance_whenProperty_thenJsonObjectSizeIsOne() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-
-    // Act
-    JsonElement actualRemoveResult = jsonObject.remove("Property");
-
-    // Assert
-    assertEquals(1, jsonObject.size());
-    assertSame(((JsonNull) actualRemoveResult).INSTANCE, actualRemoveResult);
-  }
-
-  /**
-   * Test {@link JsonObject#remove(String)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Property}.
-   *   <li>Then {@link JsonObject} (default constructor) size is two.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#remove(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_givenJsonObjectAdd42AndInstance_whenProperty_thenJsonObjectSizeIsTwo() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Act
-    JsonElement actualRemoveResult = jsonObject.remove("Property");
-
-    // Assert
-    assertEquals(2, jsonObject.size());
-    assertSame(((JsonNull) actualRemoveResult).INSTANCE, actualRemoveResult);
-  }
-
-  /**
-   * Test {@link JsonObject#remove(String)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Property}.
-   *   <li>Then not {@link JsonObject} (default constructor) Empty.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#remove(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_givenJsonObjectAdd42AndInstance_whenProperty_thenNotJsonObjectEmpty() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-
-    // Act and Assert
-    assertNull(jsonObject.remove("Property"));
-    assertEquals(1, jsonObject.size());
     assertFalse(jsonObject.isEmpty());
-  }
-
-  /**
-   * Test {@link JsonObject#remove(String)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>Then {@link JsonObject} (default constructor) size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#remove(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_givenJsonObjectAddEmptyStringAndInstance_thenJsonObjectSizeIsThree() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Act
-    JsonElement actualRemoveResult = jsonObject.remove("Property");
-
-    // Assert
-    assertEquals(3, jsonObject.size());
-    assertSame(((JsonNull) actualRemoveResult).INSTANCE, actualRemoveResult);
   }
 
   /**
@@ -858,7 +731,7 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#remove(String)}.
    *
    * <ul>
-   *   <li>Then {@link JsonObject} (default constructor) size is one.
+   *   <li>Then iterator next return {@link JsonPrimitive}.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#remove(String)}
@@ -867,25 +740,33 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_thenJsonObjectSizeIsOne() {
+  public void testRemove_thenIteratorNextReturnJsonPrimitive() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     JsonElement actualRemoveResult = jsonObject.remove("Property");
 
     // Assert
+    assertTrue(actualRemoveResult instanceof JsonArray);
+    Iterator<JsonElement> iteratorResult = ((JsonArray) actualRemoveResult).iterator();
+    JsonElement nextResult = iteratorResult.next();
+    assertTrue(nextResult instanceof JsonPrimitive);
+    assertTrue(nextResult.getAsNumber() instanceof LazilyParsedNumber);
     assertEquals(1, jsonObject.size());
-    assertSame(((JsonNull) actualRemoveResult).INSTANCE, actualRemoveResult);
+    assertFalse(iteratorResult.hasNext());
+    JsonArray actualAsJsonArray = actualRemoveResult.getAsJsonArray();
+    assertSame(actualRemoveResult, actualAsJsonArray);
+    assertSame(nextResult, nextResult.getAsJsonPrimitive());
   }
 
   /**
    * Test {@link JsonObject#remove(String)}.
    *
    * <ul>
-   *   <li>Then {@link JsonObject} (default constructor) size is one.
+   *   <li>Then {@link JsonObject} (default constructor) size is three.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#remove(String)}
@@ -894,19 +775,127 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_thenJsonObjectSizeIsOne2() {
+  public void testRemove_thenJsonObjectSizeIsThree() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonObject.add("", value);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     JsonElement actualRemoveResult = jsonObject.remove("Property");
 
     // Assert
-    assertEquals(1, jsonObject.size());
-    assertSame(((JsonNull) actualRemoveResult).INSTANCE, actualRemoveResult);
+    assertTrue(actualRemoveResult instanceof JsonArray);
+    assertEquals(3, jsonObject.size());
+    assertEquals(value, actualRemoveResult);
+  }
+
+  /**
+   * Test {@link JsonObject#remove(String)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonObject} (default constructor) size is three.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#remove(String)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
+  public void testRemove_thenJsonObjectSizeIsThree2() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    JsonElement actualRemoveResult = jsonObject.remove("42");
+
+    // Assert
+    assertTrue(actualRemoveResult instanceof JsonArray);
+    Iterator<JsonElement> iteratorResult = ((JsonArray) actualRemoveResult).iterator();
+    JsonElement nextResult = iteratorResult.next();
+    assertTrue(nextResult instanceof JsonPrimitive);
+    assertTrue(nextResult.getAsNumber() instanceof LazilyParsedNumber);
+    assertEquals(3, jsonObject.size());
+    assertFalse(iteratorResult.hasNext());
+    JsonArray actualAsJsonArray = actualRemoveResult.getAsJsonArray();
+    assertSame(actualRemoveResult, actualAsJsonArray);
+    assertSame(nextResult, nextResult.getAsJsonPrimitive());
+  }
+
+  /**
+   * Test {@link JsonObject#remove(String)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonObject} (default constructor) size is two.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#remove(String)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
+  public void testRemove_thenJsonObjectSizeIsTwo() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonObject.add("42", value);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    JsonElement actualRemoveResult = jsonObject.remove("Property");
+
+    // Assert
+    assertTrue(actualRemoveResult instanceof JsonArray);
+    assertEquals(2, jsonObject.size());
+    assertEquals(value, actualRemoveResult);
+  }
+
+  /**
+   * Test {@link JsonObject#remove(String)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonObject} (default constructor) size is zero.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#remove(String)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
+  public void testRemove_thenJsonObjectSizeIsZero() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    JsonElement actualRemoveResult = jsonObject.remove("Property");
+
+    // Assert
+    assertTrue(actualRemoveResult instanceof JsonArray);
+    Iterator<JsonElement> iteratorResult = ((JsonArray) actualRemoveResult).iterator();
+    JsonElement nextResult = iteratorResult.next();
+    assertTrue(nextResult instanceof JsonPrimitive);
+    assertTrue(nextResult.getAsNumber() instanceof LazilyParsedNumber);
+    assertEquals(0, jsonObject.size());
+    assertFalse(iteratorResult.hasNext());
+    assertTrue(jsonObject.isEmpty());
+    JsonArray actualAsJsonArray = actualRemoveResult.getAsJsonArray();
+    assertSame(actualRemoveResult, actualAsJsonArray);
+    assertSame(nextResult, nextResult.getAsJsonPrimitive());
   }
 
   /**
@@ -925,7 +914,8 @@ public class JsonObjectDiffblueTest {
   public void testRemove_thenNotJsonObjectEmpty() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.remove("Property"));
@@ -937,8 +927,7 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#remove(String)}.
    *
    * <ul>
-   *   <li>When {@code 42}.
-   *   <li>Then {@link JsonObject} (default constructor) size is three.
+   *   <li>Then not {@link JsonObject} (default constructor) Empty.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#remove(String)}
@@ -947,28 +936,22 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_when42_thenJsonObjectSizeIsThree() {
+  public void testRemove_thenNotJsonObjectEmpty2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
-    // Act
-    JsonElement actualRemoveResult = jsonObject.remove("42");
-
-    // Assert
-    assertEquals(3, jsonObject.size());
-    assertSame(((JsonNull) actualRemoveResult).INSTANCE, actualRemoveResult);
+    // Act and Assert
+    assertNull(jsonObject.remove("Property"));
+    assertEquals(1, jsonObject.size());
+    assertFalse(jsonObject.isEmpty());
   }
 
   /**
    * Test {@link JsonObject#remove(String)}.
    *
    * <ul>
-   *   <li>When empty string.
-   *   <li>Then {@link JsonObject} (default constructor) size is three.
+   *   <li>Then return createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#remove(String)}
@@ -977,146 +960,93 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_whenEmptyString_thenJsonObjectSizeIsThree() {
+  public void testRemove_thenReturnCreateJsonArrayWithOneElement() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Act
-    JsonElement actualRemoveResult = jsonObject.remove("");
-
-    // Assert
-    assertEquals(3, jsonObject.size());
-    assertSame(((JsonNull) actualRemoveResult).INSTANCE, actualRemoveResult);
-  }
-
-  /**
-   * Test {@link JsonObject#remove(String)}.
-   *
-   * <ul>
-   *   <li>When empty string.
-   *   <li>Then {@link JsonObject} (default constructor) size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#remove(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_whenEmptyString_thenJsonObjectSizeIsThree2() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Act
-    JsonElement actualRemoveResult = jsonObject.remove("");
-
-    // Assert
-    assertEquals(3, jsonObject.size());
-    assertSame(((JsonNull) actualRemoveResult).INSTANCE, actualRemoveResult);
-  }
-
-  /**
-   * Test {@link JsonObject#remove(String)}.
-   *
-   * <ul>
-   *   <li>When {@code Property}.
-   *   <li>Then {@link JsonObject} (default constructor) size is zero.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#remove(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
-  public void testRemove_whenProperty_thenJsonObjectSizeIsZero() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonObject.add("com.google.gson.JsonObject", value);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     JsonElement actualRemoveResult = jsonObject.remove("Property");
 
     // Assert
-    assertEquals(0, jsonObject.size());
-    assertTrue(jsonObject.isEmpty());
-    assertSame(((JsonNull) actualRemoveResult).INSTANCE, actualRemoveResult);
+    assertTrue(actualRemoveResult instanceof JsonArray);
+    assertEquals(1, jsonObject.size());
+    assertEquals(value, actualRemoveResult);
   }
 
   /**
-   * Test {@link JsonObject#addProperty(String, Boolean)} with {@code String}, {@code Boolean}.
+   * Test {@link JsonObject#remove(String)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Then return createJsonArrayWithOneElement.
    * </ul>
    *
-   * <p>Method under test: {@link JsonObject#addProperty(String, Boolean)}
+   * <p>Method under test: {@link JsonObject#remove(String)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonObject.addProperty(String, Boolean)"})
-  public void testAddPropertyWithStringBoolean_givenJsonObjectAddEmptyStringAndInstance() {
+  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
+  public void testRemove_thenReturnCreateJsonArrayWithOneElement2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonObject.add("Property", value);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
-    jsonObject.addProperty("Property", true);
+    JsonElement actualRemoveResult = jsonObject.remove("Property");
 
     // Assert
-    assertEquals(3, jsonObject.size());
-    assertFalse(jsonObject.isEmpty());
+    assertTrue(actualRemoveResult instanceof JsonArray);
+    assertEquals(1, jsonObject.size());
+    assertEquals(value, actualRemoveResult);
   }
 
   /**
-   * Test {@link JsonObject#addProperty(String, Boolean)} with {@code String}, {@code Boolean}.
+   * Test {@link JsonObject#remove(String)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#addProperty(String, Boolean)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonObject.addProperty(String, Boolean)"})
-  public void testAddPropertyWithStringBoolean_givenJsonObjectAddEmptyStringAndInstance2() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-
-    // Act
-    jsonObject.addProperty("Property", true);
-
-    // Assert
-    assertEquals(3, jsonObject.size());
-    assertFalse(jsonObject.isEmpty());
-  }
-
-  /**
-   * Test {@link JsonObject#addProperty(String, Boolean)} with {@code String}, {@code Boolean}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
    *   <li>When {@code 42}.
+   *   <li>Then {@link JsonObject} (default constructor) size is two.
    * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#remove(String)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonElement JsonObject.remove(String)"})
+  public void testRemove_when42_thenJsonObjectSizeIsTwo() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    JsonElement actualRemoveResult = jsonObject.remove("42");
+
+    // Assert
+    assertTrue(actualRemoveResult instanceof JsonArray);
+    Iterator<JsonElement> iteratorResult = ((JsonArray) actualRemoveResult).iterator();
+    JsonElement nextResult = iteratorResult.next();
+    assertTrue(nextResult instanceof JsonPrimitive);
+    assertTrue(nextResult.getAsNumber() instanceof LazilyParsedNumber);
+    assertEquals(2, jsonObject.size());
+    assertFalse(iteratorResult.hasNext());
+    JsonArray actualAsJsonArray = actualRemoveResult.getAsJsonArray();
+    assertSame(actualRemoveResult, actualAsJsonArray);
+    assertSame(nextResult, nextResult.getAsJsonPrimitive());
+  }
+
+  /**
+   * Test {@link JsonObject#addProperty(String, Boolean)} with {@code String}, {@code Boolean}.
    *
    * <p>Method under test: {@link JsonObject#addProperty(String, Boolean)}
    */
@@ -1124,14 +1054,38 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.addProperty(String, Boolean)"})
-  public void testAddPropertyWithStringBoolean_givenJsonObjectAddPropertyAndInstance_when42() {
+  public void testAddPropertyWithStringBoolean() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
-    jsonObject.addProperty("42", true);
+    jsonObject.addProperty("Property", true);
+
+    // Assert
+    assertEquals(3, jsonObject.size());
+    assertFalse(jsonObject.isEmpty());
+  }
+
+  /**
+   * Test {@link JsonObject#addProperty(String, Boolean)} with {@code String}, {@code Boolean}.
+   *
+   * <p>Method under test: {@link JsonObject#addProperty(String, Boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonObject.addProperty(String, Boolean)"})
+  public void testAddPropertyWithStringBoolean2() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    jsonObject.addProperty("Property", true);
 
     // Assert
     assertEquals(3, jsonObject.size());
@@ -1180,7 +1134,7 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringBoolean_thenJsonObjectSizeIsOne() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", true);
@@ -1206,8 +1160,9 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringBoolean_thenJsonObjectSizeIsThree() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", true);
@@ -1233,9 +1188,10 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringBoolean_thenJsonObjectSizeIsThree2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", true);
@@ -1261,8 +1217,9 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringBoolean_thenJsonObjectSizeIsTwo() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", true);
@@ -1288,7 +1245,8 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringBoolean_thenJsonObjectSizeIsTwo2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", true);
@@ -1314,13 +1272,41 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringBoolean_thenJsonObjectSizeIsTwo3() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", true);
 
     // Assert
     assertEquals(2, jsonObject.size());
+    assertFalse(jsonObject.isEmpty());
+  }
+
+  /**
+   * Test {@link JsonObject#addProperty(String, Boolean)} with {@code String}, {@code Boolean}.
+   *
+   * <ul>
+   *   <li>When {@code 42}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#addProperty(String, Boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonObject.addProperty(String, Boolean)"})
+  public void testAddPropertyWithStringBoolean_when42() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    jsonObject.addProperty("42", true);
+
+    // Assert
+    assertEquals(3, jsonObject.size());
     assertFalse(jsonObject.isEmpty());
   }
 
@@ -1353,22 +1339,17 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#addProperty(String, Character)} with {@code String}, {@code Character}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#addProperty(String, Character)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.addProperty(String, Character)"})
-  public void testAddPropertyWithStringCharacter_givenJsonObjectAddEmptyStringAndInstance() {
+  public void testAddPropertyWithStringCharacter() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", 'A');
@@ -1381,55 +1362,21 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#addProperty(String, Character)} with {@code String}, {@code Character}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#addProperty(String, Character)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.addProperty(String, Character)"})
-  public void testAddPropertyWithStringCharacter_givenJsonObjectAddEmptyStringAndInstance2() {
+  public void testAddPropertyWithStringCharacter2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", 'A');
-
-    // Assert
-    assertEquals(3, jsonObject.size());
-    assertFalse(jsonObject.isEmpty());
-  }
-
-  /**
-   * Test {@link JsonObject#addProperty(String, Character)} with {@code String}, {@code Character}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code 42}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#addProperty(String, Character)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonObject.addProperty(String, Character)"})
-  public void testAddPropertyWithStringCharacter_givenJsonObjectAddPropertyAndInstance_when42() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Act
-    jsonObject.addProperty("42", 'A');
 
     // Assert
     assertEquals(3, jsonObject.size());
@@ -1478,7 +1425,7 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringCharacter_thenJsonObjectSizeIsOne() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", 'A');
@@ -1504,8 +1451,9 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringCharacter_thenJsonObjectSizeIsThree() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", 'A');
@@ -1531,9 +1479,10 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringCharacter_thenJsonObjectSizeIsThree2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", 'A');
@@ -1559,8 +1508,9 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringCharacter_thenJsonObjectSizeIsTwo() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", 'A');
@@ -1586,7 +1536,8 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringCharacter_thenJsonObjectSizeIsTwo2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", 'A');
@@ -1612,13 +1563,41 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringCharacter_thenJsonObjectSizeIsTwo3() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", 'A');
 
     // Assert
     assertEquals(2, jsonObject.size());
+    assertFalse(jsonObject.isEmpty());
+  }
+
+  /**
+   * Test {@link JsonObject#addProperty(String, Character)} with {@code String}, {@code Character}.
+   *
+   * <ul>
+   *   <li>When {@code 42}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#addProperty(String, Character)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonObject.addProperty(String, Character)"})
+  public void testAddPropertyWithStringCharacter_when42() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    jsonObject.addProperty("42", 'A');
+
+    // Assert
+    assertEquals(3, jsonObject.size());
     assertFalse(jsonObject.isEmpty());
   }
 
@@ -1651,22 +1630,17 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#addProperty(String, Number)} with {@code String}, {@code Number}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#addProperty(String, Number)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.addProperty(String, Number)"})
-  public void testAddPropertyWithStringNumber_givenJsonObjectAddEmptyStringAndInstance() {
+  public void testAddPropertyWithStringNumber() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", Integer.valueOf(1));
@@ -1679,55 +1653,21 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#addProperty(String, Number)} with {@code String}, {@code Number}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#addProperty(String, Number)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.addProperty(String, Number)"})
-  public void testAddPropertyWithStringNumber_givenJsonObjectAddEmptyStringAndInstance2() {
+  public void testAddPropertyWithStringNumber2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", Integer.valueOf(1));
-
-    // Assert
-    assertEquals(3, jsonObject.size());
-    assertFalse(jsonObject.isEmpty());
-  }
-
-  /**
-   * Test {@link JsonObject#addProperty(String, Number)} with {@code String}, {@code Number}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code 42}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#addProperty(String, Number)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonObject.addProperty(String, Number)"})
-  public void testAddPropertyWithStringNumber_givenJsonObjectAddPropertyAndInstance_when42() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Act
-    jsonObject.addProperty("42", Integer.valueOf(1));
 
     // Assert
     assertEquals(3, jsonObject.size());
@@ -1803,7 +1743,7 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringNumber_thenJsonObjectSizeIsOne() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", Integer.valueOf(1));
@@ -1829,8 +1769,9 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringNumber_thenJsonObjectSizeIsThree() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", Integer.valueOf(1));
@@ -1856,9 +1797,10 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringNumber_thenJsonObjectSizeIsThree2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", Integer.valueOf(1));
@@ -1884,8 +1826,9 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringNumber_thenJsonObjectSizeIsTwo() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", Integer.valueOf(1));
@@ -1911,7 +1854,8 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringNumber_thenJsonObjectSizeIsTwo2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", Integer.valueOf(1));
@@ -1937,7 +1881,7 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringNumber_thenJsonObjectSizeIsTwo3() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", Integer.valueOf(1));
@@ -1948,12 +1892,35 @@ public class JsonObjectDiffblueTest {
   }
 
   /**
-   * Test {@link JsonObject#addProperty(String, String)} with {@code String}, {@code String}.
+   * Test {@link JsonObject#addProperty(String, Number)} with {@code String}, {@code Number}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>When {@code 42}.
    * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#addProperty(String, Number)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonObject.addProperty(String, Number)"})
+  public void testAddPropertyWithStringNumber_when42() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act
+    jsonObject.addProperty("42", Integer.valueOf(1));
+
+    // Assert
+    assertEquals(3, jsonObject.size());
+    assertFalse(jsonObject.isEmpty());
+  }
+
+  /**
+   * Test {@link JsonObject#addProperty(String, String)} with {@code String}, {@code String}.
    *
    * <p>Method under test: {@link JsonObject#addProperty(String, String)}
    */
@@ -1961,11 +1928,11 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.addProperty(String, String)"})
-  public void testAddPropertyWithStringString_givenJsonObjectAddEmptyStringAndInstance() {
+  public void testAddPropertyWithStringString() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", "42");
@@ -1978,23 +1945,18 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#addProperty(String, String)} with {@code String}, {@code String}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add empty string and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#addProperty(String, String)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.addProperty(String, String)"})
-  public void testAddPropertyWithStringString_givenJsonObjectAddEmptyStringAndInstance2() {
+  public void testAddPropertyWithStringString2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", "42");
@@ -2007,22 +1969,18 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#addProperty(String, String)} with {@code String}, {@code String}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#addProperty(String, String)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonObject.addProperty(String, String)"})
-  public void testAddPropertyWithStringString_givenJsonObjectAddPropertyAndInstance() {
+  public void testAddPropertyWithStringString3() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("42", "42");
@@ -2101,7 +2059,7 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringString_thenJsonObjectSizeIsOne() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", "42");
@@ -2127,8 +2085,9 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringString_thenJsonObjectSizeIsThree() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", "42");
@@ -2154,9 +2113,10 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringString_thenJsonObjectSizeIsThree2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", "42");
@@ -2182,8 +2142,9 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringString_thenJsonObjectSizeIsTwo() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", "42");
@@ -2209,7 +2170,8 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringString_thenJsonObjectSizeIsTwo2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", "42");
@@ -2235,7 +2197,7 @@ public class JsonObjectDiffblueTest {
   public void testAddPropertyWithStringString_thenJsonObjectSizeIsTwo3() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act
     jsonObject.addProperty("Property", "42");
@@ -2291,30 +2253,6 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#isEmpty()}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonObject#isEmpty()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"boolean JsonObject.isEmpty()"})
-  public void testIsEmpty_givenJsonObjectAddPropertyAndInstance_thenReturnFalse() {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
-
-    // Act and Assert
-    assertFalse(jsonObject.isEmpty());
-  }
-
-  /**
-   * Test {@link JsonObject#isEmpty()}.
-   *
-   * <ul>
    *   <li>Given {@link JsonObject} (default constructor).
    *   <li>Then return {@code true}.
    * </ul>
@@ -2331,14 +2269,29 @@ public class JsonObjectDiffblueTest {
   }
 
   /**
-   * Test {@link JsonObject#has(String)}.
+   * Test {@link JsonObject#isEmpty()}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Member Name}.
    *   <li>Then return {@code false}.
    * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#isEmpty()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonObject.isEmpty()"})
+  public void testIsEmpty_thenReturnFalse() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act and Assert
+    assertFalse(jsonObject.isEmpty());
+  }
+
+  /**
+   * Test {@link JsonObject#has(String)}.
    *
    * <p>Method under test: {@link JsonObject#has(String)}
    */
@@ -2346,12 +2299,12 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonObject.has(String)"})
-  public void testHas_givenJsonObjectAdd42AndInstance_whenMemberName_thenReturnFalse() {
+  public void testHas() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertFalse(jsonObject.has("Member Name"));
@@ -2361,8 +2314,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#has(String)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code JsonObject} and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and
+   *       createJsonArrayWithOneElement.
    *   <li>When {@code Member Name}.
    * </ul>
    *
@@ -2372,11 +2325,13 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonObject.has(String)"})
-  public void testHas_givenJsonObjectAddComGoogleGsonJsonObjectAndInstance_whenMemberName() {
+  public void testHas_givenJsonObjectAdd42AndCreateJsonArrayWithOneElement_whenMemberName() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertFalse(jsonObject.has("Member Name"));
@@ -2386,10 +2341,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#has(String)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Member Name}.
-   *   <li>Then return {@code false}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#has(String)}
@@ -2398,10 +2351,10 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonObject.has(String)"})
-  public void testHas_givenJsonObjectAddPropertyAndInstance_whenMemberName_thenReturnFalse() {
+  public void testHas_givenJsonObjectAddPropertyAndCreateJsonArrayWithOneElement() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertFalse(jsonObject.has("Member Name"));
@@ -2464,8 +2417,9 @@ public class JsonObjectDiffblueTest {
   public void testHas_whenComGoogleGsonJsonObject_thenReturnTrue() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertTrue(jsonObject.has("com.google.gson.JsonObject"));
@@ -2474,25 +2428,18 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#get(String)}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Member Name}.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#get(String)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonObject.get(String)"})
-  public void testGet_givenJsonObjectAdd42AndInstance_whenMemberName_thenReturnNull() {
+  public void testGet() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.get("Member Name"));
@@ -2502,8 +2449,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#get(String)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code JsonObject} and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and
+   *       createJsonArrayWithOneElement.
    *   <li>When {@code Member Name}.
    * </ul>
    *
@@ -2513,11 +2460,13 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonObject.get(String)"})
-  public void testGet_givenJsonObjectAddComGoogleGsonJsonObjectAndInstance_whenMemberName() {
+  public void testGet_givenJsonObjectAdd42AndCreateJsonArrayWithOneElement_whenMemberName() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.get("Member Name"));
@@ -2527,10 +2476,8 @@ public class JsonObjectDiffblueTest {
    * Test {@link JsonObject#get(String)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Member Name}.
-   *   <li>Then return {@code null}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and
+   *       createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#get(String)}
@@ -2539,10 +2486,10 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonObject.get(String)"})
-  public void testGet_givenJsonObjectAddPropertyAndInstance_whenMemberName_thenReturnNull() {
+  public void testGet_givenJsonObjectAddPropertyAndCreateJsonArrayWithOneElement() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.get("Member Name"));
@@ -2593,7 +2540,7 @@ public class JsonObjectDiffblueTest {
    *
    * <ul>
    *   <li>When {@code JsonObject}.
-   *   <li>Then return {@link JsonNull#INSTANCE}.
+   *   <li>Then return createJsonArrayWithOneElement.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#get(String)}
@@ -2602,17 +2549,15 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonObject.get(String)"})
-  public void testGet_whenComGoogleGsonJsonObject_thenReturnInstance() {
+  public void testGet_whenComGoogleGsonJsonObject_thenReturnCreateJsonArrayWithOneElement() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonObject.add("com.google.gson.JsonObject", value);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
-    // Act
-    JsonElement actualGetResult = jsonObject.get("com.google.gson.JsonObject");
-
-    // Assert
-    assertSame(((JsonNull) actualGetResult).INSTANCE, actualGetResult);
+    // Act and Assert
+    assertSame(value, jsonObject.get("com.google.gson.JsonObject"));
   }
 
   /**
@@ -2623,12 +2568,11 @@ public class JsonObjectDiffblueTest {
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"com.google.gson.JsonPrimitive JsonObject.getAsJsonPrimitive(String)"})
+  @MethodsUnderTest({"JsonPrimitive JsonObject.getAsJsonPrimitive(String)"})
   public void testGetAsJsonPrimitiveWithString() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.getAsJsonPrimitive("Member Name"));
@@ -2637,24 +2581,18 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#getAsJsonPrimitive(String)} with {@code String}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Member Name}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#getAsJsonPrimitive(String)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"com.google.gson.JsonPrimitive JsonObject.getAsJsonPrimitive(String)"})
-  public void testGetAsJsonPrimitiveWithString_givenJsonObjectAdd42AndInstance_whenMemberName() {
+  @MethodsUnderTest({"JsonPrimitive JsonObject.getAsJsonPrimitive(String)"})
+  public void testGetAsJsonPrimitiveWithString2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.getAsJsonPrimitive("Member Name"));
@@ -2663,21 +2601,19 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#getAsJsonPrimitive(String)} with {@code String}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#getAsJsonPrimitive(String)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"com.google.gson.JsonPrimitive JsonObject.getAsJsonPrimitive(String)"})
-  public void testGetAsJsonPrimitiveWithString_givenJsonObjectAddPropertyAndInstance() {
+  @MethodsUnderTest({"JsonPrimitive JsonObject.getAsJsonPrimitive(String)"})
+  public void testGetAsJsonPrimitiveWithString3() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.getAsJsonPrimitive("Member Name"));
@@ -2696,7 +2632,7 @@ public class JsonObjectDiffblueTest {
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"com.google.gson.JsonPrimitive JsonObject.getAsJsonPrimitive(String)"})
+  @MethodsUnderTest({"JsonPrimitive JsonObject.getAsJsonPrimitive(String)"})
   public void testGetAsJsonPrimitiveWithString_givenJsonObject_whenMemberName() {
     // Arrange, Act and Assert
     assertNull(new JsonObject().getAsJsonPrimitive("Member Name"));
@@ -2715,7 +2651,7 @@ public class JsonObjectDiffblueTest {
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"com.google.gson.JsonPrimitive JsonObject.getAsJsonPrimitive(String)"})
+  @MethodsUnderTest({"JsonPrimitive JsonObject.getAsJsonPrimitive(String)"})
   public void testGetAsJsonPrimitiveWithString_givenJsonObject_whenNull() {
     // Arrange, Act and Assert
     assertNull(new JsonObject().getAsJsonPrimitive(null));
@@ -2733,8 +2669,7 @@ public class JsonObjectDiffblueTest {
   public void testGetAsJsonArrayWithString() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.getAsJsonArray("Member Name"));
@@ -2743,24 +2678,18 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#getAsJsonArray(String)} with {@code String}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Member Name}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#getAsJsonArray(String)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonArray JsonObject.getAsJsonArray(String)"})
-  public void testGetAsJsonArrayWithString_givenJsonObjectAdd42AndInstance_whenMemberName() {
+  public void testGetAsJsonArrayWithString2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.getAsJsonArray("Member Name"));
@@ -2769,21 +2698,19 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#getAsJsonArray(String)} with {@code String}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#getAsJsonArray(String)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonArray JsonObject.getAsJsonArray(String)"})
-  public void testGetAsJsonArrayWithString_givenJsonObjectAddPropertyAndInstance() {
+  public void testGetAsJsonArrayWithString3() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.getAsJsonArray("Member Name"));
@@ -2795,6 +2722,7 @@ public class JsonObjectDiffblueTest {
    * <ul>
    *   <li>Given {@link JsonObject} (default constructor).
    *   <li>When {@code Member Name}.
+   *   <li>Then return {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#getAsJsonArray(String)}
@@ -2803,7 +2731,7 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonArray JsonObject.getAsJsonArray(String)"})
-  public void testGetAsJsonArrayWithString_givenJsonObject_whenMemberName() {
+  public void testGetAsJsonArrayWithString_givenJsonObject_whenMemberName_thenReturnNull() {
     // Arrange, Act and Assert
     assertNull(new JsonObject().getAsJsonArray("Member Name"));
   }
@@ -2814,6 +2742,7 @@ public class JsonObjectDiffblueTest {
    * <ul>
    *   <li>Given {@link JsonObject} (default constructor).
    *   <li>When {@code null}.
+   *   <li>Then return {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link JsonObject#getAsJsonArray(String)}
@@ -2822,9 +2751,33 @@ public class JsonObjectDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonArray JsonObject.getAsJsonArray(String)"})
-  public void testGetAsJsonArrayWithString_givenJsonObject_whenNull() {
+  public void testGetAsJsonArrayWithString_givenJsonObject_whenNull_thenReturnNull() {
     // Arrange, Act and Assert
     assertNull(new JsonObject().getAsJsonArray(null));
+  }
+
+  /**
+   * Test {@link JsonObject#getAsJsonArray(String)} with {@code String}.
+   *
+   * <ul>
+   *   <li>Then return createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonObject#getAsJsonArray(String)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonArray JsonObject.getAsJsonArray(String)"})
+  public void testGetAsJsonArrayWithString_thenReturnCreateJsonArrayWithOneElement() {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    JsonArray value = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonObject.add("com.google.gson.JsonObject", value);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act and Assert
+    assertSame(value, jsonObject.getAsJsonArray("com.google.gson.JsonObject"));
   }
 
   /**
@@ -2839,8 +2792,7 @@ public class JsonObjectDiffblueTest {
   public void testGetAsJsonObjectWithString() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.getAsJsonObject("Member Name"));
@@ -2849,24 +2801,18 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#getAsJsonObject(String)} with {@code String}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@code Member Name}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#getAsJsonObject(String)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonObject.getAsJsonObject(String)"})
-  public void testGetAsJsonObjectWithString_givenJsonObjectAdd42AndInstance_whenMemberName() {
+  public void testGetAsJsonObjectWithString2() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-    jsonObject.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.getAsJsonObject("Member Name"));
@@ -2875,21 +2821,19 @@ public class JsonObjectDiffblueTest {
   /**
    * Test {@link JsonObject#getAsJsonObject(String)} with {@code String}.
    *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonObject#getAsJsonObject(String)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonObject.getAsJsonObject(String)"})
-  public void testGetAsJsonObjectWithString_givenJsonObjectAddPropertyAndInstance() {
+  public void testGetAsJsonObjectWithString3() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("42", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add(
+        "com.google.gson.JsonObject", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNull(jsonObject.getAsJsonObject("Member Name"));
@@ -3022,7 +2966,7 @@ public class JsonObjectDiffblueTest {
   public void testEquals_whenOtherIsDifferent_thenReturnNotEqual() {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
     assertNotEquals(jsonObject, new JsonObject());

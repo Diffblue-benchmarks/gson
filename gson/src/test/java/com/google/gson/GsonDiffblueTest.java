@@ -7,7 +7,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,15 +18,15 @@ import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.Gson.FutureTypeAdapter;
-import com.google.gson.internal.ConstructorConstructor;
 import com.google.gson.internal.Excluder;
 import com.google.gson.internal.LazilyParsedNumber;
-import com.google.gson.internal.bind.CollectionTypeAdapterFactory;
+import com.google.gson.internal.bind.ArrayTypeAdapter;
 import com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory;
 import com.google.gson.internal.bind.JsonTreeReader;
 import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.internal.bind.ObjectTypeAdapter;
 import com.google.gson.internal.bind.ReflectiveTypeAdapterFactory;
+import com.google.gson.internal.reflect.ReflectionHelperTestFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -40,17 +43,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.GenericMetadataSupport;
-import org.mockito.internal.util.reflection.GenericMetadataSupport.TypeVarBoundedType;
 
 public class GsonDiffblueTest {
   /**
@@ -156,9 +155,7 @@ public class GsonDiffblueTest {
    * Test FutureTypeAdapter {@link FutureTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>Given {@link ObjectTypeAdapter} {@link ObjectTypeAdapter#read(JsonReader)} return {@code
-   *       Read}.
-   *   <li>Then return {@code Read}.
+   *   <li>Then return createPublicField.
    * </ul>
    *
    * <p>Method under test: {@link FutureTypeAdapter#read(JsonReader)}
@@ -167,11 +164,12 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object FutureTypeAdapter.read(JsonReader)"})
-  public void testFutureTypeAdapterRead_givenObjectTypeAdapterReadReturnRead_thenReturnRead()
-      throws IOException {
+  public void testFutureTypeAdapterRead_thenReturnCreatePublicField()
+      throws IOException, NoSuchFieldException {
     // Arrange
     ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
-    when(typeAdapter.read(Mockito.<JsonReader>any())).thenReturn("Read");
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    when(typeAdapter.read(Mockito.<JsonReader>any())).thenReturn(createPublicFieldResult);
 
     FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
     futureTypeAdapter.setDelegate(typeAdapter);
@@ -181,7 +179,7 @@ public class GsonDiffblueTest {
 
     // Assert
     verify(typeAdapter).read(isA(JsonReader.class));
-    assertEquals("Read", actualReadResult);
+    assertSame(createPublicFieldResult, actualReadResult);
   }
 
   /**
@@ -199,15 +197,16 @@ public class GsonDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void FutureTypeAdapter.write(JsonWriter, Object)"})
   public void testFutureTypeAdapterWrite_givenFutureTypeAdapterDelegateIsFutureTypeAdapter()
-      throws IOException {
+      throws IOException, NoSuchFieldException {
     // Arrange
     FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
     futureTypeAdapter.setDelegate(new FutureTypeAdapter<>());
+    JsonWriter out = new JsonWriter(new StringWriter());
 
     // Act and Assert
     assertThrows(
         IllegalStateException.class,
-        () -> futureTypeAdapter.write(new JsonWriter(new StringWriter()), "Value"));
+        () -> futureTypeAdapter.write(out, ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
@@ -225,14 +224,15 @@ public class GsonDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void FutureTypeAdapter.write(JsonWriter, Object)"})
   public void testFutureTypeAdapterWrite_givenFutureTypeAdapter_thenThrowIllegalStateException()
-      throws IOException {
+      throws IOException, NoSuchFieldException {
     // Arrange
     FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
+    JsonWriter out = new JsonWriter(new StringWriter());
 
     // Act and Assert
     assertThrows(
         IllegalStateException.class,
-        () -> futureTypeAdapter.write(new JsonWriter(new StringWriter()), "Value"));
+        () -> futureTypeAdapter.write(out, ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
@@ -251,16 +251,17 @@ public class GsonDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void FutureTypeAdapter.write(JsonWriter, Object)"})
   public void testFutureTypeAdapterWrite_givenObjectTypeAdapterWriteDoesNothing_thenCallsWrite()
-      throws IOException {
+      throws IOException, NoSuchFieldException {
     // Arrange
     ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
     doNothing().when(typeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
 
     FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
     futureTypeAdapter.setDelegate(typeAdapter);
+    JsonWriter out = new JsonWriter(new StringWriter());
 
     // Act
-    futureTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
+    futureTypeAdapter.write(out, ReflectionHelperTestFactory.createPublicField());
 
     // Assert
     verify(typeAdapter).write(isA(JsonWriter.class), isA(Object.class));
@@ -1154,6 +1155,30 @@ public class GsonDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@code Long}.
+   *   <li>Then return toJson {@code null} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#getAdapter(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapter Gson.getAdapter(Class)"})
+  public void testGetAdapterWithClass_givenGson_whenJavaLangLong_thenReturnToJsonNullIsNull() {
+    // Arrange
+    Gson gson = new Gson();
+    Class<Long> type = Long.class;
+
+    // Act and Assert
+    assertEquals("null", gson.getAdapter(type).toJson(null));
+  }
+
+  /**
+   * Test {@link Gson#getAdapter(Class)} with {@code Class}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
    *   <li>When {@code Object}.
    *   <li>Then return {@link ObjectTypeAdapter}.
    * </ul>
@@ -1171,6 +1196,50 @@ public class GsonDiffblueTest {
 
     // Act and Assert
     assertTrue(gson.getAdapter(type) instanceof ObjectTypeAdapter);
+  }
+
+  /**
+   * Test {@link Gson#getAdapter(Class)} with {@code Class}.
+   *
+   * <ul>
+   *   <li>Then return toJson {@code null} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#getAdapter(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapter Gson.getAdapter(Class)"})
+  public void testGetAdapterWithClass_thenReturnToJsonNullIsNull() {
+    // Arrange
+    Gson gson = new Gson();
+    Class<TypeAdapterFactory> type = TypeAdapterFactory.class;
+
+    // Act and Assert
+    assertEquals("null", gson.getAdapter(type).toJson(null));
+  }
+
+  /**
+   * Test {@link Gson#getAdapter(Class)} with {@code Class}.
+   *
+   * <ul>
+   *   <li>When {@code LazilyParsedNumber}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#getAdapter(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapter Gson.getAdapter(Class)"})
+  public void testGetAdapterWithClass_whenComGoogleGsonInternalLazilyParsedNumber() {
+    // Arrange
+    Gson gson = new Gson();
+    Class<LazilyParsedNumber> type = LazilyParsedNumber.class;
+
+    // Act and Assert
+    assertEquals("null", gson.getAdapter(type).toJson(null));
   }
 
   /**
@@ -1202,6 +1271,31 @@ public class GsonDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@link Excluder#DEFAULT}.
+   *   <li>Then return toJson {@code null} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#getDelegateAdapter(TypeAdapterFactory, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapter Gson.getDelegateAdapter(TypeAdapterFactory, TypeToken)"})
+  public void testGetDelegateAdapter_givenGson_whenDefault_thenReturnToJsonNullIsNull() {
+    // Arrange
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> type2 = TypeToken.get(type);
+
+    // Act and Assert
+    assertEquals("null", gson.getDelegateAdapter(Excluder.DEFAULT, type2).toJson(null));
+  }
+
+  /**
+   * Test {@link Gson#getDelegateAdapter(TypeAdapterFactory, TypeToken)}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
    *   <li>When {@code Object}.
    *   <li>Then return {@link ObjectTypeAdapter}.
    * </ul>
@@ -1224,158 +1318,69 @@ public class GsonDiffblueTest {
   }
 
   /**
-   * Test {@link Gson#getDelegateAdapter(TypeAdapterFactory, TypeToken)}.
+   * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
    *
-   * <ul>
-   *   <li>When {@link Excluder#DEFAULT}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#getDelegateAdapter(TypeAdapterFactory, TypeToken)}
+   * <p>Method under test: {@link Gson#toJsonTree(Object, Type)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"TypeAdapter Gson.getDelegateAdapter(TypeAdapterFactory, TypeToken)"})
-  public void testGetDelegateAdapter_whenDefault() {
+  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
+  public void testToJsonTreeWithSrcTypeOfSrc() throws IOException, NoSuchFieldException {
     // Arrange
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> type2 = TypeToken.get(type);
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
 
-    // Act and Assert
-    assertEquals("{}", gson.getDelegateAdapter(Excluder.DEFAULT, type2).toJson("Value"));
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object)} with {@code src}.
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object)"})
-  public void testToJsonTreeWithSrc() {
-    // Arrange
-    Gson gson = new Gson();
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            null,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
 
     // Act
     JsonElement actualToJsonTreeResult =
-        gson.toJsonTree(
-            new CollectionTypeAdapterFactory(
-                new ConstructorConstructor(instanceCreators, true, new ArrayList<>())));
+        gson.toJsonTree(createPublicFieldResult, GsonBuilderTestFactory.createType());
 
     // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(1, ((JsonObject) actualToJsonTreeResult).size());
-    assertFalse(((JsonObject) actualToJsonTreeResult).isEmpty());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
-  public void testToJsonTreeWithSrcTypeOfSrc() {
-    // Arrange
-    Gson gson = new Gson();
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    CollectionTypeAdapterFactory collectionTypeAdapterFactory =
-        new CollectionTypeAdapterFactory(
-            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(collectionTypeAdapterFactory, typeOfSrc);
-
-    // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(1, ((JsonObject) actualToJsonTreeResult).size());
-    assertFalse(((JsonObject) actualToJsonTreeResult).isEmpty());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertSame(((JsonNull) actualToJsonTreeResult).INSTANCE, actualToJsonTreeResult);
   }
 
   /**
    * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
    *
    * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@link Excluder#DEFAULT}.
-   *   <li>Then return size is six.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
-  public void testToJsonTreeWithSrcTypeOfSrc_givenGson_whenDefault_thenReturnSizeIsSix() {
-    // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(Excluder.DEFAULT, typeOfSrc);
-
-    // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(6, ((JsonObject) actualToJsonTreeResult).size());
-    assertFalse(((JsonObject) actualToJsonTreeResult).isEmpty());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
-   *
-   * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@link HashMap#HashMap()}.
-   *   <li>Then return size is zero.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
-  public void testToJsonTreeWithSrcTypeOfSrc_givenGson_whenHashMap_thenReturnSizeIsZero() {
-    // Arrange
-    Gson gson = new Gson();
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(objectObjectMap, typeOfSrc);
-
-    // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(0, ((JsonObject) actualToJsonTreeResult).size());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    assertTrue(((JsonObject) actualToJsonTreeResult).isEmpty());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
-   *
-   * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@code null}.
    *   <li>Then return {@link JsonNull#INSTANCE}.
    * </ul>
    *
@@ -1385,15 +1390,55 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
-  public void testToJsonTreeWithSrcTypeOfSrc_givenGson_whenNull_thenReturnInstance() {
+  public void testToJsonTreeWithSrcTypeOfSrc_thenReturnInstance()
+      throws IOException, NoSuchFieldException {
     // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
 
     // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(null, typeOfSrc);
+    JsonElement actualToJsonTreeResult =
+        gson.toJsonTree(createPublicFieldResult, GsonBuilderTestFactory.createType());
 
     // Assert
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
     assertSame(((JsonNull) actualToJsonTreeResult).INSTANCE, actualToJsonTreeResult);
   }
 
@@ -1401,9 +1446,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
    *
    * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@code Src}.
-   *   <li>Then return {@link JsonPrimitive}.
+   *   <li>Then throw {@link IllegalArgumentException}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJsonTree(Object, Type)}
@@ -1412,82 +1455,18 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
-  public void testToJsonTreeWithSrcTypeOfSrc_givenGson_whenSrc_thenReturnJsonPrimitive() {
+  public void testToJsonTreeWithSrcTypeOfSrc_thenThrowIllegalArgumentException()
+      throws IOException, NoSuchFieldException {
     // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doThrow(new IllegalArgumentException())
+        .when(futureTypeAdapter)
+        .write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
 
-    // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree("Src", typeOfSrc);
-
-    // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonPrimitive);
-    Number asNumber = actualToJsonTreeResult.getAsNumber();
-    assertTrue(asNumber instanceof LazilyParsedNumber);
-    assertEquals("Src", actualToJsonTreeResult.getAsString());
-    assertEquals("Src", asNumber.toString());
-    assertEquals('S', actualToJsonTreeResult.getAsCharacter());
-    assertFalse(actualToJsonTreeResult.getAsBoolean());
-    assertFalse(((JsonPrimitive) actualToJsonTreeResult).isBoolean());
-    assertFalse(((JsonPrimitive) actualToJsonTreeResult).isNumber());
-    assertTrue(actualToJsonTreeResult.isJsonPrimitive());
-    assertTrue(((JsonPrimitive) actualToJsonTreeResult).isString());
-    JsonPrimitive actualAsJsonPrimitive = actualToJsonTreeResult.getAsJsonPrimitive();
-    assertSame(actualToJsonTreeResult, actualAsJsonPrimitive);
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
-   *
-   * <ul>
-   *   <li>Given {@code Key}.
-   *   <li>When {@link HashMap#HashMap()} {@code Key} is {@code Value}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
-  public void testToJsonTreeWithSrcTypeOfSrc_givenKey_whenHashMapKeyIsValue() {
-    // Arrange
-    Gson gson = new Gson();
-
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    objectObjectMap.put("Key", "Value");
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(objectObjectMap, typeOfSrc);
-
-    // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(1, ((JsonObject) actualToJsonTreeResult).size());
-    assertFalse(((JsonObject) actualToJsonTreeResult).isEmpty());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
-   *
-   * <ul>
-   *   <li>Then calls {@link FieldNamingStrategy#alternateNames(Field)}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
-  public void testToJsonTreeWithSrcTypeOfSrc_thenCallsAlternateNames() {
-    // Arrange
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
@@ -1497,7 +1476,7 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
@@ -1518,28 +1497,21 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
     Class<Object> typeOfSrc = Object.class;
 
-    // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(futureTypeAdapter, typeOfSrc);
-
-    // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(1, ((JsonObject) actualToJsonTreeResult).size());
-    assertFalse(((JsonObject) actualToJsonTreeResult).isEmpty());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class, () -> gson.toJsonTree(createPublicFieldResult, typeOfSrc));
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
   }
 
   /**
    * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
    *
    * <ul>
-   *   <li>Then return {@link JsonPrimitive}.
+   *   <li>Then throw {@link JsonIOException}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJsonTree(Object, Type)}
@@ -1548,8 +1520,17 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
-  public void testToJsonTreeWithSrcTypeOfSrc_thenReturnJsonPrimitive() {
+  public void testToJsonTreeWithSrcTypeOfSrc_thenThrowJsonIOException()
+      throws IOException, NoSuchFieldException {
     // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doThrow(new IOException())
+        .when(futureTypeAdapter)
+        .write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
@@ -1560,7 +1541,7 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
@@ -1581,33 +1562,21 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    Class<Object> typeOfSrc = Object.class;
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
 
-    // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree("Src", typeOfSrc);
-
-    // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonPrimitive);
-    Number asNumber = actualToJsonTreeResult.getAsNumber();
-    assertTrue(asNumber instanceof LazilyParsedNumber);
-    assertEquals("Src", actualToJsonTreeResult.getAsString());
-    assertEquals("Src", asNumber.toString());
-    assertEquals('S', actualToJsonTreeResult.getAsCharacter());
-    assertFalse(actualToJsonTreeResult.getAsBoolean());
-    assertFalse(((JsonPrimitive) actualToJsonTreeResult).isBoolean());
-    assertFalse(((JsonPrimitive) actualToJsonTreeResult).isNumber());
-    assertTrue(actualToJsonTreeResult.isJsonPrimitive());
-    assertTrue(((JsonPrimitive) actualToJsonTreeResult).isString());
-    JsonPrimitive actualAsJsonPrimitive = actualToJsonTreeResult.getAsJsonPrimitive();
-    assertSame(actualToJsonTreeResult, actualAsJsonPrimitive);
+    // Act and Assert
+    assertThrows(
+        JsonIOException.class,
+        () -> gson.toJsonTree(createPublicFieldResult, GsonBuilderTestFactory.createType()));
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
   }
 
   /**
    * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
    *
    * <ul>
-   *   <li>When {@link FutureTypeAdapter} (default constructor).
-   *   <li>Then return size is zero.
+   *   <li>Then throw {@link JsonIOException}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJsonTree(Object, Type)}
@@ -1616,22 +1585,121 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
-  public void testToJsonTreeWithSrcTypeOfSrc_whenFutureTypeAdapter_thenReturnSizeIsZero() {
+  public void testToJsonTreeWithSrcTypeOfSrc_thenThrowJsonIOException2()
+      throws IOException, NoSuchFieldException {
     // Arrange
-    Gson gson = new Gson();
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doThrow(new IOException())
+        .when(futureTypeAdapter)
+        .write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Class<Object> typeOfSrc = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonIOException.class, () -> gson.toJsonTree(createPublicFieldResult, typeOfSrc));
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+  }
+
+  /**
+   * Test {@link Gson#toJsonTree(Object, Type)} with {@code src}, {@code typeOfSrc}.
+   *
+   * <ul>
+   *   <li>When {@code Object}.
+   *   <li>Then return {@link JsonNull#INSTANCE}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJsonTree(Object, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object, Type)"})
+  public void testToJsonTreeWithSrcTypeOfSrc_whenJavaLangObject_thenReturnInstance()
+      throws IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
     Class<Object> typeOfSrc = Object.class;
 
     // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(futureTypeAdapter, typeOfSrc);
+    JsonElement actualToJsonTreeResult = gson.toJsonTree(createPublicFieldResult, typeOfSrc);
 
     // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(0, ((JsonObject) actualToJsonTreeResult).size());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    assertTrue(((JsonObject) actualToJsonTreeResult).isEmpty());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertSame(((JsonNull) actualToJsonTreeResult).INSTANCE, actualToJsonTreeResult);
   }
 
   /**
@@ -1639,8 +1707,8 @@ public class GsonDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@link Excluder#DEFAULT}.
-   *   <li>Then return size is six.
+   *   <li>When createPublicField.
+   *   <li>Then return {@link JsonObject}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJsonTree(Object)}
@@ -1649,75 +1717,19 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object)"})
-  public void testToJsonTreeWithSrc_givenGson_whenDefault_thenReturnSizeIsSix() {
-    // Arrange and Act
-    JsonElement actualToJsonTreeResult = new Gson().toJsonTree(Excluder.DEFAULT);
-
-    // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(6, ((JsonObject) actualToJsonTreeResult).size());
-    assertFalse(((JsonObject) actualToJsonTreeResult).isEmpty());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object)} with {@code src}.
-   *
-   * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@link FutureTypeAdapter} (default constructor).
-   *   <li>Then return size is zero.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object)"})
-  public void testToJsonTreeWithSrc_givenGson_whenFutureTypeAdapter_thenReturnSizeIsZero() {
+  public void testToJsonTreeWithSrc_givenGson_whenCreatePublicField_thenReturnJsonObject()
+      throws NoSuchFieldException {
     // Arrange
     Gson gson = new Gson();
 
     // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(new FutureTypeAdapter<>());
+    JsonElement actualToJsonTreeResult =
+        gson.toJsonTree(ReflectionHelperTestFactory.createPublicField());
 
     // Assert
     assertTrue(actualToJsonTreeResult instanceof JsonObject);
     assertEquals(0, ((JsonObject) actualToJsonTreeResult).size());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    assertTrue(((JsonObject) actualToJsonTreeResult).isEmpty());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object)} with {@code src}.
-   *
-   * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@link HashMap#HashMap()}.
-   *   <li>Then return size is zero.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object)"})
-  public void testToJsonTreeWithSrc_givenGson_whenHashMap_thenReturnSizeIsZero() {
-    // Arrange
-    Gson gson = new Gson();
-
-    // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(new HashMap<>());
-
-    // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(0, ((JsonObject) actualToJsonTreeResult).size());
+    assertFalse(actualToJsonTreeResult.isJsonNull());
     assertTrue(actualToJsonTreeResult.isJsonObject());
     assertTrue(((JsonObject) actualToJsonTreeResult).isEmpty());
     JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
@@ -1751,9 +1763,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#toJsonTree(Object)} with {@code src}.
    *
    * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@code Src}.
-   *   <li>Then return {@link JsonPrimitive}.
+   *   <li>Then return {@link JsonObject}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJsonTree(Object)}
@@ -1762,137 +1772,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object)"})
-  public void testToJsonTreeWithSrc_givenGson_whenSrc_thenReturnJsonPrimitive() {
-    // Arrange and Act
-    JsonElement actualToJsonTreeResult = new Gson().toJsonTree("Src");
-
-    // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonPrimitive);
-    Number asNumber = actualToJsonTreeResult.getAsNumber();
-    assertTrue(asNumber instanceof LazilyParsedNumber);
-    assertEquals("Src", actualToJsonTreeResult.getAsString());
-    assertEquals("Src", asNumber.toString());
-    assertEquals('S', actualToJsonTreeResult.getAsCharacter());
-    assertFalse(actualToJsonTreeResult.getAsBoolean());
-    assertFalse(((JsonPrimitive) actualToJsonTreeResult).isBoolean());
-    assertFalse(((JsonPrimitive) actualToJsonTreeResult).isNumber());
-    assertTrue(actualToJsonTreeResult.isJsonPrimitive());
-    assertTrue(((JsonPrimitive) actualToJsonTreeResult).isString());
-    JsonPrimitive actualAsJsonPrimitive = actualToJsonTreeResult.getAsJsonPrimitive();
-    assertSame(actualToJsonTreeResult, actualAsJsonPrimitive);
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object)} with {@code src}.
-   *
-   * <ul>
-   *   <li>Given {@code Key}.
-   *   <li>When {@link HashMap#HashMap()} {@code Key} is {@code Value}.
-   *   <li>Then return size is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object)"})
-  public void testToJsonTreeWithSrc_givenKey_whenHashMapKeyIsValue_thenReturnSizeIsOne() {
-    // Arrange
-    Gson gson = new Gson();
-
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    objectObjectMap.put("Key", "Value");
-
-    // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(objectObjectMap);
-
-    // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(1, ((JsonObject) actualToJsonTreeResult).size());
-    assertFalse(((JsonObject) actualToJsonTreeResult).isEmpty());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object)} with {@code src}.
-   *
-   * <ul>
-   *   <li>Then calls {@link FieldNamingStrategy#alternateNames(Field)}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object)"})
-  public void testToJsonTreeWithSrc_thenCallsAlternateNames() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
-    // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree(new FutureTypeAdapter<>());
-
-    // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
-    assertTrue(actualToJsonTreeResult instanceof JsonObject);
-    assertEquals(1, ((JsonObject) actualToJsonTreeResult).size());
-    assertFalse(((JsonObject) actualToJsonTreeResult).isEmpty());
-    assertTrue(actualToJsonTreeResult.isJsonObject());
-    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
-    assertSame(actualToJsonTreeResult, actualAsJsonObject);
-  }
-
-  /**
-   * Test {@link Gson#toJsonTree(Object)} with {@code src}.
-   *
-   * <ul>
-   *   <li>Then return {@link JsonPrimitive}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJsonTree(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonElement Gson.toJsonTree(Object)"})
-  public void testToJsonTreeWithSrc_thenReturnJsonPrimitive() {
+  public void testToJsonTreeWithSrc_thenReturnJsonObject() throws NoSuchFieldException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
@@ -1927,22 +1807,17 @@ public class GsonDiffblueTest {
             new ArrayList<>());
 
     // Act
-    JsonElement actualToJsonTreeResult = gson.toJsonTree("Src");
+    JsonElement actualToJsonTreeResult =
+        gson.toJsonTree(ReflectionHelperTestFactory.createPublicField());
 
     // Assert
-    assertTrue(actualToJsonTreeResult instanceof JsonPrimitive);
-    Number asNumber = actualToJsonTreeResult.getAsNumber();
-    assertTrue(asNumber instanceof LazilyParsedNumber);
-    assertEquals("Src", actualToJsonTreeResult.getAsString());
-    assertEquals("Src", asNumber.toString());
-    assertEquals('S', actualToJsonTreeResult.getAsCharacter());
-    assertFalse(actualToJsonTreeResult.getAsBoolean());
-    assertFalse(((JsonPrimitive) actualToJsonTreeResult).isBoolean());
-    assertFalse(((JsonPrimitive) actualToJsonTreeResult).isNumber());
-    assertTrue(actualToJsonTreeResult.isJsonPrimitive());
-    assertTrue(((JsonPrimitive) actualToJsonTreeResult).isString());
-    JsonPrimitive actualAsJsonPrimitive = actualToJsonTreeResult.getAsJsonPrimitive();
-    assertSame(actualToJsonTreeResult, actualAsJsonPrimitive);
+    assertTrue(actualToJsonTreeResult instanceof JsonObject);
+    assertEquals(0, ((JsonObject) actualToJsonTreeResult).size());
+    assertFalse(actualToJsonTreeResult.isJsonNull());
+    assertTrue(actualToJsonTreeResult.isJsonObject());
+    assertTrue(((JsonObject) actualToJsonTreeResult).isEmpty());
+    JsonObject actualAsJsonObject = actualToJsonTreeResult.getAsJsonObject();
+    assertSame(actualToJsonTreeResult, actualAsJsonObject);
   }
 
   /**
@@ -1989,19 +1864,20 @@ public class GsonDiffblueTest {
             new ArrayList<>());
 
     // Act and Assert
-    assertEquals("null", gson.toJson(JsonNull.INSTANCE));
+    assertEquals(
+        "[\"singleElement\"]", gson.toJson(JsonArrayTestFactory.createJsonArrayWithOneElement()));
   }
 
   /**
-   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
+   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
    *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
+   * <p>Method under test: {@link Gson#toJson(JsonElement)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable() throws JsonIOException {
+  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
+  public void testToJsonWithJsonElement2() {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
@@ -2019,28 +1895,26 @@ public class GsonDiffblueTest {
             true,
             true,
             true,
-            true,
-            FormattingStyle.PRETTY,
+            false,
+            Gson.DEFAULT_FORMATTING_STYLE,
             Strictness.LENIENT,
             true,
             true,
             LongSerializationPolicy.DEFAULT,
             "2020-03-01",
-            1,
-            1,
+            Integer.SIZE,
+            Integer.SIZE,
             builderFactories,
             builderHierarchyFactories,
             factoriesToBeAdded,
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    CharArrayWriter writer = new CharArrayWriter();
 
-    // Act
-    gson.toJson(JsonNull.INSTANCE, writer);
-
-    // Assert
-    assertEquals(9, writer.size());
+    // Act and Assert
+    assertEquals(
+        ")]}'\n[\"singleElement\"]",
+        gson.toJson(JsonArrayTestFactory.createJsonArrayWithOneElement()));
   }
 
   /**
@@ -2052,7 +1926,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable2() throws JsonIOException {
+  public void testToJsonWithJsonElementAppendable() throws JsonIOException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
@@ -2085,24 +1959,21 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.add(":", JsonNull.INSTANCE);
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
     gson.toJson(jsonElement, writer);
 
     // Assert
-    assertEquals(15, writer.size());
+    assertEquals(22, writer.size());
   }
 
   /**
    * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
    *
    * <ul>
-   *   <li>Given {@code 42}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is thirty.
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is eight.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
@@ -2111,132 +1982,11 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_given42_thenCharArrayWriterSizeIsThirty()
+  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsEight()
       throws JsonIOException {
     // Arrange
     Gson gson = new Gson();
-
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.addProperty("out == null", "42");
-    jsonElement.add(":", JsonNull.INSTANCE);
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    assertEquals(30, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Given {@code ,}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_givenComma() throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.addProperty(":", ",");
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    assertEquals(9, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Given {@code false}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is twelve.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_givenFalse_thenCharArrayWriterSizeIsTwelve()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonArray jsonElement = new JsonArray(3);
-    jsonElement.add(false);
-    jsonElement.add(true);
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    assertEquals(12, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Given {@code true}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is six.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_givenTrue_thenCharArrayWriterSizeIsSix()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonArray jsonElement = new JsonArray(3);
-    jsonElement.add(true);
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    assertEquals(6, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Given valueOf one.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_givenValueOfOne() throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonArray jsonElement = new JsonArray(3);
-    jsonElement.add(Integer.valueOf(1));
-    jsonElement.add(true);
+    JsonPrimitive jsonElement = new JsonPrimitive('\u0001');
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
@@ -2244,36 +1994,6 @@ public class GsonDiffblueTest {
 
     // Assert
     assertEquals(8, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is eleven.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsEleven()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonArray jsonElement = new JsonArray(3);
-    jsonElement.add(JsonNull.INSTANCE);
-    jsonElement.add(true);
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    assertEquals(11, writer.size());
   }
 
   /**
@@ -2339,7 +2059,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
    *
    * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is nine.
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is seven.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
@@ -2348,84 +2068,25 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsNine()
-      throws JsonIOException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(JsonNull.INSTANCE, writer);
-
-    // Assert
-    assertEquals(9, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is thirty-seven.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsThirtySeven()
+  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsSeven()
       throws JsonIOException {
     // Arrange
     Gson gson = new Gson();
-
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.addProperty(",", "out == null");
-    jsonElement.addProperty(":", ",");
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithNumbers();
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
     gson.toJson(jsonElement, writer);
 
     // Assert
-    assertEquals(37, writer.size());
+    assertEquals(7, writer.size());
   }
 
   /**
    * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
    *
    * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is twenty.
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is seventeen.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
@@ -2434,7 +2095,147 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsTwenty()
+  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsSeventeen()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(jsonElement, writer);
+
+    // Assert
+    assertEquals(17, writer.size());
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
+   *
+   * <ul>
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is sixty-five.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
+  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsSixtyFive()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+
+    JsonObject jsonElement = new JsonObject();
+    jsonElement.add("out == null", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonElement.add(":", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(jsonElement, writer);
+
+    // Assert
+    assertEquals(65, writer.size());
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
+   *
+   * <ul>
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is thirty-five.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
+  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsThirtyFive()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonElement.add(JsonArrayTestFactory.createJsonArrayWithOneElement());
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(jsonElement, writer);
+
+    // Assert
+    assertEquals(35, writer.size());
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
+   *
+   * <ul>
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is twelve.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
+  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsTwelve()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithBooleans();
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(jsonElement, writer);
+
+    // Assert
+    assertEquals(12, writer.size());
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
+   *
+   * <ul>
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is twenty-one.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
+  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsTwentyOne()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithMixedTypes();
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(jsonElement, writer);
+
+    // Assert
+    assertEquals(21, writer.size());
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
+   *
+   * <ul>
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is twenty-six.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
+  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsTwentySix()
       throws JsonIOException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
@@ -2468,16 +2269,14 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.add(":", JsonNull.INSTANCE);
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
     gson.toJson(jsonElement, writer);
 
     // Assert
-    assertEquals(20, writer.size());
+    assertEquals(26, writer.size());
   }
 
   /**
@@ -2497,7 +2296,9 @@ public class GsonDiffblueTest {
       throws JsonIOException {
     // Arrange
     Gson gson = new Gson();
-    JsonPrimitive jsonElement = new JsonPrimitive("out == null");
+
+    JsonObject jsonElement = new JsonObject();
+    jsonElement.add(":", JsonArrayTestFactory.createJsonArrayWithOneElement());
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
@@ -2505,6 +2306,63 @@ public class GsonDiffblueTest {
 
     // Assert
     assertEquals(23, writer.size());
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
+   *
+   * <ul>
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is twenty-two.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
+  public void testToJsonWithJsonElementAppendable_thenCharArrayWriterSizeIsTwentyTwo()
+      throws JsonIOException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(jsonElement, writer);
+
+    // Assert
+    assertEquals(22, writer.size());
   }
 
   /**
@@ -2540,7 +2398,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
    *
    * <ul>
-   *   <li>Then {@link StringWriter#StringWriter()} toString is {@code null}.
+   *   <li>Then {@link StringWriter#StringWriter()} toString is {@code ["singleElement"]}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
@@ -2549,7 +2407,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_thenStringWriterToStringIsNull()
+  public void testToJsonWithJsonElementAppendable_thenStringWriterToStringIsSingleElement()
       throws JsonIOException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
@@ -2583,13 +2441,43 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
     StringWriter writer = new StringWriter();
 
     // Act
-    gson.toJson(JsonNull.INSTANCE, writer);
+    gson.toJson(jsonElement, writer);
 
     // Assert
-    assertEquals("null", writer.toString());
+    assertEquals("[\"singleElement\"]", writer.toString());
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
+   *
+   * <ul>
+   *   <li>When createJsonArrayWithOneElement add {@link JsonNull#INSTANCE}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
+  public void testToJsonWithJsonElementAppendable_whenCreateJsonArrayWithOneElementAddInstance()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonElement.add(JsonNull.INSTANCE);
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(jsonElement, writer);
+
+    // Assert
+    assertEquals(22, writer.size());
   }
 
   /**
@@ -2617,33 +2505,6 @@ public class GsonDiffblueTest {
 
     // Assert
     assertEquals(4, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>When {@link JsonArray#JsonArray(int)} with capacity is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_whenJsonArrayWithCapacityIsThree()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonArray jsonElement = new JsonArray(3);
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    assertEquals(2, writer.size());
   }
 
   /**
@@ -2678,7 +2539,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
    *
    * <ul>
-   *   <li>When {@link JsonPrimitive#JsonPrimitive(Boolean)} with bool is {@code true}.
+   *   <li>When {@link JsonPrimitive#JsonPrimitive(String)} with string is {@code out == null}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
@@ -2687,45 +2548,18 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_whenJsonPrimitiveWithBoolIsTrue()
+  public void testToJsonWithJsonElementAppendable_whenJsonPrimitiveWithStringIsOutNull()
       throws JsonIOException {
     // Arrange
     Gson gson = new Gson();
-    JsonPrimitive jsonElement = new JsonPrimitive(true);
+    JsonPrimitive jsonElement = new JsonPrimitive("out == null");
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
     gson.toJson(jsonElement, writer);
 
     // Assert
-    assertEquals(4, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, Appendable)} with {@code JsonElement}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>When {@link JsonPrimitive#JsonPrimitive(Character)} with c is start of heading.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, Appendable)"})
-  public void testToJsonWithJsonElementAppendable_whenJsonPrimitiveWithCIsStartOfHeading()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonPrimitive jsonElement = new JsonPrimitive('\u0001');
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    assertEquals(8, writer.size());
+    assertEquals(23, writer.size());
   }
 
   /**
@@ -2746,9 +2580,10 @@ public class GsonDiffblueTest {
       throws JsonIOException {
     // Arrange
     Gson gson = new Gson();
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
 
     // Act and Assert
-    assertThrows(JsonIOException.class, () -> gson.toJson(JsonNull.INSTANCE, new PipedWriter()));
+    assertThrows(JsonIOException.class, () -> gson.toJson(jsonElement, new PipedWriter()));
   }
 
   /**
@@ -2799,9 +2634,10 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
 
     // Act and Assert
-    assertThrows(JsonIOException.class, () -> gson.toJson(JsonNull.INSTANCE, new PipedWriter()));
+    assertThrows(JsonIOException.class, () -> gson.toJson(jsonElement, new PipedWriter()));
   }
 
   /**
@@ -2815,17 +2651,44 @@ public class GsonDiffblueTest {
   @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
   public void testToJsonWithJsonElementJsonWriter() throws JsonIOException {
     // Arrange
-    Gson gson = new Gson();
-    JsonPrimitive jsonElement = new JsonPrimitive("null");
-    JsonTreeWriter writer = new JsonTreeWriter();
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
 
-    // Act
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
+
+    JsonWriter writer = new JsonWriter(new StringWriter());
+    writer.setStrictness(Strictness.LEGACY_STRICT);
+
+    // Act and Assert
     gson.toJson(jsonElement, writer);
-
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals(jsonElement, getResult);
   }
 
   /**
@@ -2840,16 +2703,15 @@ public class GsonDiffblueTest {
   public void testToJsonWithJsonElementJsonWriter2() throws JsonIOException {
     // Arrange
     Gson gson = new Gson();
-    JsonPrimitive jsonElement = new JsonPrimitive(true);
-    JsonTreeWriter writer = new JsonTreeWriter();
 
-    // Act
-    gson.toJson(jsonElement, writer);
+    JsonArray jsonElement = mock(JsonArray.class);
+    when(jsonElement.isJsonNull()).thenThrow(new IllegalArgumentException());
 
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals(jsonElement, getResult);
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gson.toJson(jsonElement, new JsonWriter(new StringWriter())));
+    verify(jsonElement).isJsonNull();
   }
 
   /**
@@ -2861,146 +2723,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter3() throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
-    jsonElement.add("Property", JsonNull.INSTANCE);
-    jsonElement.addProperty("name == null", "42");
-    jsonElement.addProperty("com.google.gson.JsonObject", "Value");
-    jsonElement.addProperty("Property", "42");
-    JsonTreeWriter writer = new JsonTreeWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonElement, getResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
-   *
-   * <ul>
-   *   <li>Given {@code Value}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_givenValue() throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.addProperty("com.google.gson.JsonObject", "Value");
-    jsonElement.addProperty("Property", "42");
-    JsonTreeWriter writer = new JsonTreeWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonElement, getResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
-   *
-   * <ul>
-   *   <li>Given {@code Value}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_givenValue2() throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.addProperty("name == null", "42");
-    jsonElement.addProperty("com.google.gson.JsonObject", "Value");
-    jsonElement.addProperty("Property", "42");
-    JsonTreeWriter writer = new JsonTreeWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonElement, getResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) AsString is {@code 3}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_thenJsonTreeWriterAsStringIs3()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonArray jsonElement = new JsonArray();
-    Integer number = Integer.valueOf(3);
-    jsonElement.add(number);
-    JsonTreeWriter writer = new JsonTreeWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonArray);
-    assertEquals("3", getResult.getAsString());
-    assertEquals('3', getResult.getAsCharacter());
-    assertEquals(3.0d, getResult.getAsDouble(), 0.0);
-    assertEquals(3.0f, getResult.getAsFloat(), 0.0f);
-    assertEquals(3L, getResult.getAsLong());
-    assertEquals((byte) 3, getResult.getAsByte());
-    assertEquals((short) 3, getResult.getAsShort());
-    assertEquals(new BigDecimal("3"), getResult.getAsBigDecimal());
-    assertSame(number, getResult.getAsInt());
-    assertSame(number, getResult.getAsNumber());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_thenJsonTreeWriterIsInstance()
-      throws JsonIOException {
+  public void testToJsonWithJsonElementJsonWriter3() throws JsonIOException, IOException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
@@ -3033,20 +2756,79 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    JsonTreeWriter writer = new JsonTreeWriter();
+
+    JsonArray jsonElement = mock(JsonArray.class);
+    when(jsonElement.isJsonNull()).thenReturn(true);
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.nullValue()).thenReturn(new JsonWriter(new StringWriter()));
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
 
     // Act
-    gson.toJson(JsonNull.INSTANCE, writer);
+    gson.toJson(jsonElement, writer);
 
-    // Assert that nothing has changed
-    assertSame(JsonNull.INSTANCE, writer.get());
+    // Assert
+    verify(jsonElement).isJsonNull();
+    verify(writer).getSerializeNulls();
+    verify(writer).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer).nullValue();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(true);
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
+  public void testToJsonWithJsonElementJsonWriter4() throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+
+    JsonArray jsonElement = mock(JsonArray.class);
+    when(jsonElement.getAsJsonPrimitive()).thenThrow(new IllegalArgumentException());
+    when(jsonElement.isJsonNull()).thenReturn(false);
+    when(jsonElement.isJsonPrimitive()).thenReturn(true);
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
+
+    // Act and Assert
+    assertThrows(IllegalArgumentException.class, () -> gson.toJson(jsonElement, writer));
+    verify(jsonElement).getAsJsonPrimitive();
+    verify(jsonElement).isJsonNull();
+    verify(jsonElement).isJsonPrimitive();
+    verify(writer).getSerializeNulls();
+    verify(writer, atLeast(1)).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(anyBoolean());
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
   }
 
   /**
    * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
    *
    * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) iterator next {@link JsonPrimitive}.
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@link JsonNull#INSTANCE}.
+   *   <li>Then does not throw.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
@@ -3055,136 +2837,22 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_thenJsonTreeWriterIteratorNextJsonPrimitive()
+  public void testToJsonWithJsonElementJsonWriter_givenGson_whenInstance_thenDoesNotThrow()
       throws JsonIOException {
     // Arrange
     Gson gson = new Gson();
 
-    JsonArray jsonElement = new JsonArray();
-    jsonElement.add(false);
-    JsonTreeWriter writer = new JsonTreeWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonArray);
-    Iterator<JsonElement> iteratorResult = ((JsonArray) getResult).iterator();
-    JsonElement nextResult = iteratorResult.next();
-    assertTrue(nextResult instanceof JsonPrimitive);
-    assertEquals('f', getResult.getAsCharacter());
-    assertEquals('f', nextResult.getAsCharacter());
-    assertFalse(((JsonPrimitive) nextResult).isNumber());
-    assertFalse(iteratorResult.hasNext());
-    assertTrue(((JsonPrimitive) nextResult).isBoolean());
-    assertEquals(Boolean.FALSE.toString(), getResult.getAsString());
-    assertEquals(Boolean.FALSE.toString(), nextResult.getAsString());
+    // Act and Assert
+    gson.toJson(JsonNull.INSTANCE, new JsonWriter(new StringWriter()));
   }
 
   /**
    * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
    *
    * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) size is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_thenJsonTreeWriterSizeIsOne()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonArray jsonElement = new JsonArray();
-    jsonElement.add(JsonNull.INSTANCE);
-    JsonTreeWriter writer = new JsonTreeWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonArray);
-    assertEquals(1, ((JsonArray) getResult).size());
-    assertFalse(((JsonArray) getResult).isEmpty());
-    assertFalse(getResult.isJsonObject());
-    assertFalse(getResult.isJsonPrimitive());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) size is zero.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_thenJsonTreeWriterSizeIsZero()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.add("Property", JsonNull.INSTANCE);
-    JsonTreeWriter writer = new JsonTreeWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(0, ((JsonObject) getResult).size());
-    assertTrue(getResult.isJsonObject());
-    assertTrue(((JsonObject) getResult).isEmpty());
-    assertSame(getResult, getResult.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
-   *
-   * <ul>
-   *   <li>When {@link JsonArray#JsonArray()}.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link JsonArray#JsonArray()}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_whenJsonArray_thenJsonTreeWriterIsJsonArray()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonArray jsonElement = new JsonArray();
-    JsonTreeWriter writer = new JsonTreeWriter();
-
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonArray);
-    assertEquals(jsonElement, getResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
-   *
-   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
    *   <li>When {@link JsonObject} (default constructor).
+   *   <li>Then does not throw.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
@@ -3193,27 +2861,21 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_whenJsonObject() throws JsonIOException {
+  public void testToJsonWithJsonElementJsonWriter_givenGson_whenJsonObject_thenDoesNotThrow()
+      throws JsonIOException {
     // Arrange
     Gson gson = new Gson();
     JsonObject jsonElement = new JsonObject();
-    JsonTreeWriter writer = new JsonTreeWriter();
 
-    // Act
-    gson.toJson(jsonElement, writer);
-
-    // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonElement, getResult);
+    // Act and Assert
+    gson.toJson(jsonElement, new JsonWriter(new StringWriter()));
   }
 
   /**
    * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
    *
    * <ul>
-   *   <li>When {@link JsonObject} (default constructor) add {@code Property} and {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@code LENIENT}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
@@ -3222,33 +2884,42 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_whenJsonObjectAddPropertyAndInstance()
-      throws JsonIOException {
+  public void testToJsonWithJsonElementJsonWriter_givenLenient()
+      throws JsonIOException, IOException {
     // Arrange
     Gson gson = new Gson();
 
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.add("Property", JsonNull.INSTANCE);
-    jsonElement.addProperty("name == null", "42");
-    jsonElement.addProperty("com.google.gson.JsonObject", "Value");
-    jsonElement.addProperty("Property", "42");
-    JsonTreeWriter writer = new JsonTreeWriter();
+    JsonArray jsonElement = mock(JsonArray.class);
+    when(jsonElement.isJsonNull()).thenReturn(true);
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.nullValue()).thenReturn(new JsonWriter(new StringWriter()));
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    when(writer.getStrictness()).thenReturn(Strictness.LENIENT);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
 
     // Act
     gson.toJson(jsonElement, writer);
 
     // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonElement, getResult);
+    verify(jsonElement).isJsonNull();
+    verify(writer).getSerializeNulls();
+    verify(writer, atLeast(1)).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer).nullValue();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(anyBoolean());
+    verify(writer).setStrictness(Strictness.LENIENT);
   }
 
   /**
    * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
    *
    * <ul>
-   *   <li>When {@link JsonObject} (default constructor) addProperty {@code Property} and {@code
-   *       42}.
+   *   <li>Then calls {@link JsonWriter#nullValue()}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
@@ -3257,110 +2928,258 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
-  public void testToJsonWithJsonElementJsonWriter_whenJsonObjectAddPropertyPropertyAnd42()
-      throws JsonIOException {
+  public void testToJsonWithJsonElementJsonWriter_thenCallsNullValue()
+      throws JsonIOException, IOException {
     // Arrange
     Gson gson = new Gson();
 
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.addProperty("Property", "42");
-    JsonTreeWriter writer = new JsonTreeWriter();
+    JsonArray jsonElement = mock(JsonArray.class);
+    when(jsonElement.isJsonNull()).thenReturn(true);
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.nullValue()).thenReturn(new JsonWriter(new StringWriter()));
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
 
     // Act
     gson.toJson(jsonElement, writer);
 
     // Assert
-    JsonElement getResult = writer.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonElement, getResult);
+    verify(jsonElement).isJsonNull();
+    verify(writer).getSerializeNulls();
+    verify(writer, atLeast(1)).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer).nullValue();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(anyBoolean());
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
   }
 
   /**
-   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
+   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
    *
    * <ul>
-   *   <li>Given {@code 42}.
-   *   <li>Then return {@code {"out \u003d\u003d null":"42"}}.
+   *   <li>Then throw {@link JsonIOException}.
    * </ul>
    *
-   * <p>Method under test: {@link Gson#toJson(JsonElement)}
+   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_given42_thenReturnOutU003dU003dNull42() {
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
+  public void testToJsonWithJsonElementJsonWriter_thenThrowJsonIOException()
+      throws JsonIOException, IOException {
     // Arrange
     Gson gson = new Gson();
 
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.addProperty("out == null", "42");
+    JsonArray jsonElement = mock(JsonArray.class);
+    when(jsonElement.getAsJsonPrimitive()).thenReturn(new JsonPrimitive("String"));
+    when(jsonElement.isJsonNull()).thenReturn(false);
+    when(jsonElement.isJsonPrimitive()).thenReturn(true);
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.value(Mockito.<String>any())).thenThrow(new IOException());
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
 
     // Act and Assert
-    assertEquals("{\"out \\u003d\\u003d null\":\"42\"}", gson.toJson(jsonElement));
+    assertThrows(JsonIOException.class, () -> gson.toJson(jsonElement, writer));
+    verify(jsonElement).getAsJsonPrimitive();
+    verify(jsonElement).isJsonNull();
+    verify(jsonElement).isJsonPrimitive();
+    verify(writer).getSerializeNulls();
+    verify(writer, atLeast(1)).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(anyBoolean());
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
+    verify(writer).value("String");
   }
 
   /**
-   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
+   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
    *
    * <ul>
-   *   <li>Given acknowledge.
-   *   <li>Then return {@code ["\u0006",true]}.
+   *   <li>When createJsonArrayWithBooleans.
    * </ul>
    *
-   * <p>Method under test: {@link Gson#toJson(JsonElement)}
+   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_givenAcknowledge_thenReturnU0006True() {
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
+  public void testToJsonWithJsonElementJsonWriter_whenCreateJsonArrayWithBooleans()
+      throws JsonIOException {
     // Arrange
     Gson gson = new Gson();
-
-    JsonArray jsonElement = new JsonArray(3);
-    jsonElement.add('\u0006');
-    jsonElement.add(true);
-
-    // Act
-    String actualToJsonResult = gson.toJson(jsonElement);
-
-    // Assert
-    assertEquals("[\"\\u0006\",true]", actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>Given {@code :}.
-   *   <li>Then return {@code {":":",","out \u003d\u003d null":"42"}}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_givenColon_thenReturnOutU003dU003dNull42() {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.addProperty(":", ",");
-    jsonElement.addProperty("out == null", "42");
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithBooleans();
 
     // Act and Assert
-    assertEquals("{\":\":\",\",\"out \\u003d\\u003d null\":\"42\"}", gson.toJson(jsonElement));
+    gson.toJson(jsonElement, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
+   *
+   * <ul>
+   *   <li>When createJsonArrayWithMixedTypes.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
+  public void testToJsonWithJsonElementJsonWriter_whenCreateJsonArrayWithMixedTypes()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithMixedTypes();
+
+    // Act and Assert
+    gson.toJson(jsonElement, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
+   *
+   * <ul>
+   *   <li>When createJsonArrayWithNumbers.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
+  public void testToJsonWithJsonElementJsonWriter_whenCreateJsonArrayWithNumbers()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithNumbers();
+
+    // Act and Assert
+    gson.toJson(jsonElement, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
+   *
+   * <ul>
+   *   <li>When createJsonArrayWithOneElement.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
+  public void testToJsonWithJsonElementJsonWriter_whenCreateJsonArrayWithOneElement()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
+
+    // Act and Assert
+    gson.toJson(jsonElement, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
+   *
+   * <ul>
+   *   <li>When {@link JsonPrimitive#JsonPrimitive(Character)} with c is end of text.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
+  public void testToJsonWithJsonElementJsonWriter_whenJsonPrimitiveWithCIsEndOfText()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonPrimitive jsonElement = new JsonPrimitive('\u0003');
+
+    // Act and Assert
+    gson.toJson(jsonElement, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
+   *
+   * <ul>
+   *   <li>When {@link JsonPrimitive#JsonPrimitive(String)} with {@code String}.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
+  public void testToJsonWithJsonElementJsonWriter_whenJsonPrimitiveWithString_thenDoesNotThrow()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonPrimitive jsonElement = new JsonPrimitive("String");
+
+    // Act and Assert
+    gson.toJson(jsonElement, new JsonWriter(new StringWriter()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement, JsonWriter)} with {@code JsonElement}, {@code JsonWriter}.
+   *
+   * <ul>
+   *   <li>When {@link JsonTreeWriter} (default constructor).
+   *   <li>Then calls {@link JsonArray#isJsonNull()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(JsonElement, JsonWriter)"})
+  public void testToJsonWithJsonElementJsonWriter_whenJsonTreeWriter_thenCallsIsJsonNull()
+      throws JsonIOException {
+    // Arrange
+    Gson gson = new Gson();
+
+    JsonArray jsonElement = mock(JsonArray.class);
+    when(jsonElement.isJsonNull()).thenReturn(true);
+
+    // Act
+    gson.toJson(jsonElement, new JsonTreeWriter());
+
+    // Assert
+    verify(jsonElement).isJsonNull();
   }
 
   /**
    * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
    *
    * <ul>
-   *   <li>Given {@code false}.
-   *   <li>Then return {@code [false,true]}.
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When createJsonArrayWithNumbers.
+   *   <li>Then return {@code [1,2,3]}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement)}
@@ -3369,19 +3188,12 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_givenFalse_thenReturnFalseTrue() {
+  public void testToJsonWithJsonElement_givenGson_whenCreateJsonArrayWithNumbers_thenReturn123() {
     // Arrange
     Gson gson = new Gson();
 
-    JsonArray jsonElement = new JsonArray(3);
-    jsonElement.add(false);
-    jsonElement.add(true);
-
-    // Act
-    String actualToJsonResult = gson.toJson(jsonElement);
-
-    // Assert
-    assertEquals("[false,true]", actualToJsonResult);
+    // Act and Assert
+    assertEquals("[1,2,3]", gson.toJson(JsonArrayTestFactory.createJsonArrayWithNumbers()));
   }
 
   /**
@@ -3408,63 +3220,6 @@ public class GsonDiffblueTest {
    * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
    *
    * <ul>
-   *   <li>Given {@code true}.
-   *   <li>Then return {@code [true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_givenTrue_thenReturnTrue() {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonArray jsonElement = new JsonArray(3);
-    jsonElement.add(true);
-
-    // Act
-    String actualToJsonResult = gson.toJson(jsonElement);
-
-    // Assert
-    assertEquals("[true]", actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>Given valueOf {@link Integer#SIZE}.
-   *   <li>Then return {@code [32,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_givenValueOfSize_thenReturn32True() {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonArray jsonElement = new JsonArray(3);
-    jsonElement.add(Integer.valueOf(Integer.SIZE));
-    jsonElement.add(true);
-
-    // Act
-    String actualToJsonResult = gson.toJson(jsonElement);
-
-    // Assert
-    assertEquals("[32,true]", actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
-   *
-   * <ul>
    *   <li>Then return {@code {}}.
    * </ul>
    *
@@ -3479,7 +3234,7 @@ public class GsonDiffblueTest {
     Gson gson = new Gson();
 
     JsonObject jsonElement = new JsonObject();
-    jsonElement.add("out == null", JsonNull.INSTANCE);
+    jsonElement.add(":", JsonNull.INSTANCE);
 
     // Act and Assert
     assertEquals("{}", gson.toJson(jsonElement));
@@ -3489,31 +3244,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
    *
    * <ul>
-   *   <li>Then return {@code []}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_thenReturnLeftSquareBracketRightSquareBracket() {
-    // Arrange
-    Gson gson = new Gson();
-
-    // Act
-    String actualToJsonResult = gson.toJson(new JsonArray(3));
-
-    // Assert
-    assertEquals("[]", actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>Then return {@code )]}' null}.
+   *   <li>Then return {@code )]}' {":":null}}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement)}
@@ -3556,141 +3287,11 @@ public class GsonDiffblueTest {
             numberToNumberStrategy,
             new ArrayList<>());
 
-    // Act and Assert
-    assertEquals(")]}'\nnull", gson.toJson(JsonNull.INSTANCE));
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>Then return {@code )]}' null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_thenReturnNull2() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            FormattingStyle.PRETTY,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
-    // Act and Assert
-    assertEquals(")]}'\nnull", gson.toJson(JsonNull.INSTANCE));
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>Then return {@code [null,true]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_thenReturnNullTrue() {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonArray jsonElement = new JsonArray(3);
-    jsonElement.add(JsonNull.INSTANCE);
-    jsonElement.add(true);
-
-    // Act
-    String actualToJsonResult = gson.toJson(jsonElement);
-
-    // Assert
-    assertEquals("[null,true]", actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
-   *
-   * <ul>
-   *   <li>Then return {@code )]}' {"out == null":null}}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_thenReturnOutNullNull() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            false,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
     JsonObject jsonElement = new JsonObject();
-    jsonElement.add("out == null", JsonNull.INSTANCE);
+    jsonElement.add(":", JsonNull.INSTANCE);
 
     // Act and Assert
-    assertEquals(")]}'\n{\"out == null\":null}", gson.toJson(jsonElement));
+    assertEquals(")]}'\n{\":\":null}", gson.toJson(jsonElement));
   }
 
   /**
@@ -3721,7 +3322,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
    *
    * <ul>
-   *   <li>Then return {@code {",":"out \u003d\u003d null"}}.
+   *   <li>Then return {@code {"out \u003d\u003d null":["singleElement"],":":["singleElement"]}}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement)}
@@ -3730,23 +3331,25 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_thenReturnOutU003dU003dNull2() {
+  public void testToJsonWithJsonElement_thenReturnOutU003dU003dNullSingleElementSingleElement() {
     // Arrange
     Gson gson = new Gson();
 
     JsonObject jsonElement = new JsonObject();
-    jsonElement.addProperty(",", "out == null");
-    jsonElement.add("out == null", JsonNull.INSTANCE);
+    jsonElement.add("out == null", JsonArrayTestFactory.createJsonArrayWithOneElement());
+    jsonElement.add(":", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
-    assertEquals("{\",\":\"out \\u003d\\u003d null\"}", gson.toJson(jsonElement));
+    assertEquals(
+        "{\"out \\u003d\\u003d null\":[\"singleElement\"],\":\":[\"singleElement\"]}",
+        gson.toJson(jsonElement));
   }
 
   /**
    * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
    *
    * <ul>
-   *   <li>Then return {@code )]}' {"out \u003d\u003d null":null}}.
+   *   <li>Then return {@code ["singleElement"]}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement)}
@@ -3755,7 +3358,29 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_thenReturnOutU003dU003dNullNull() {
+  public void testToJsonWithJsonElement_thenReturnSingleElement() {
+    // Arrange
+    Gson gson = new Gson();
+
+    // Act and Assert
+    assertEquals(
+        "[\"singleElement\"]", gson.toJson(JsonArrayTestFactory.createJsonArrayWithOneElement()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
+   *
+   * <ul>
+   *   <li>Then return {@code )]}' ["singleElement"]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
+  public void testToJsonWithJsonElement_thenReturnSingleElement2() {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
@@ -3789,18 +3414,17 @@ public class GsonDiffblueTest {
             numberToNumberStrategy,
             new ArrayList<>());
 
-    JsonObject jsonElement = new JsonObject();
-    jsonElement.add("out == null", JsonNull.INSTANCE);
-
     // Act and Assert
-    assertEquals(")]}'\n{\"out \\u003d\\u003d null\":null}", gson.toJson(jsonElement));
+    assertEquals(
+        ")]}'\n[\"singleElement\"]",
+        gson.toJson(JsonArrayTestFactory.createJsonArrayWithOneElement()));
   }
 
   /**
    * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
    *
    * <ul>
-   *   <li>Then return {@code )]}' { "out \u003d\u003d null": null }}.
+   *   <li>Then return {@code )]}' [ "singleElement" ]}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(JsonElement)}
@@ -3809,7 +3433,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_thenReturnOutU003dU003dNullNull2() {
+  public void testToJsonWithJsonElement_thenReturnSingleElement3() {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
@@ -3843,11 +3467,152 @@ public class GsonDiffblueTest {
             numberToNumberStrategy,
             new ArrayList<>());
 
+    // Act and Assert
+    assertEquals(
+        ")]}'\n[\n  \"singleElement\"\n]",
+        gson.toJson(JsonArrayTestFactory.createJsonArrayWithOneElement()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
+   *
+   * <ul>
+   *   <li>Then return {@code {":":["singleElement"]}}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
+  public void testToJsonWithJsonElement_thenReturnSingleElement4() {
+    // Arrange
+    Gson gson = new Gson();
+
     JsonObject jsonElement = new JsonObject();
-    jsonElement.add("out == null", JsonNull.INSTANCE);
+    jsonElement.add(":", JsonArrayTestFactory.createJsonArrayWithOneElement());
 
     // Act and Assert
-    assertEquals(")]}'\n{\n  \"out \\u003d\\u003d null\": null\n}", gson.toJson(jsonElement));
+    assertEquals("{\":\":[\"singleElement\"]}", gson.toJson(jsonElement));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
+   *
+   * <ul>
+   *   <li>Then return {@code ["singleElement",null]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
+  public void testToJsonWithJsonElement_thenReturnSingleElementNull() {
+    // Arrange
+    Gson gson = new Gson();
+
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonElement.add(JsonNull.INSTANCE);
+
+    // Act and Assert
+    assertEquals("[\"singleElement\",null]", gson.toJson(jsonElement));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
+   *
+   * <ul>
+   *   <li>Then return {@code ["singleElement",["singleElement"]]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
+  public void testToJsonWithJsonElement_thenReturnSingleElementSingleElement() {
+    // Arrange
+    Gson gson = new Gson();
+
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonElement.add(JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act and Assert
+    assertEquals("[\"singleElement\",[\"singleElement\"]]", gson.toJson(jsonElement));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
+   *
+   * <ul>
+   *   <li>Then return {@code ["singleElement","\u0006",["singleElement"]]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
+  public void testToJsonWithJsonElement_thenReturnSingleElementU0006SingleElement() {
+    // Arrange
+    Gson gson = new Gson();
+
+    JsonArray jsonElement = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    jsonElement.add('\u0006');
+    jsonElement.add(JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act and Assert
+    assertEquals("[\"singleElement\",\"\\u0006\",[\"singleElement\"]]", gson.toJson(jsonElement));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
+   *
+   * <ul>
+   *   <li>Then return {@code ["string",42,true,{}]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
+  public void testToJsonWithJsonElement_thenReturnString42True() {
+    // Arrange
+    Gson gson = new Gson();
+
+    // Act and Assert
+    assertEquals(
+        "[\"string\",42,true,{}]",
+        gson.toJson(JsonArrayTestFactory.createJsonArrayWithMixedTypes()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
+   *
+   * <ul>
+   *   <li>When createJsonArrayWithBooleans.
+   *   <li>Then return {@code [true,false]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
+  public void testToJsonWithJsonElement_whenCreateJsonArrayWithBooleans_thenReturnTrueFalse() {
+    // Arrange
+    Gson gson = new Gson();
+
+    // Act and Assert
+    assertEquals("[true,false]", gson.toJson(JsonArrayTestFactory.createJsonArrayWithBooleans()));
   }
 
   /**
@@ -3872,250 +3637,177 @@ public class GsonDiffblueTest {
   }
 
   /**
-   * Test {@link Gson#toJson(JsonElement)} with {@code JsonElement}.
+   * Test {@link Gson#toJson(Object)} with {@code Object}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object)"})
+  public void testToJsonWithObject() throws NoSuchFieldException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    // Act and Assert
+    assertEquals(")]}'\n{}", gson.toJson(ReflectionHelperTestFactory.createPublicField()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object)} with {@code Object}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object)"})
+  public void testToJsonWithObject2() throws NoSuchFieldException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            FormattingStyle.PRETTY,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    // Act and Assert
+    assertEquals(")]}'\n{}", gson.toJson(ReflectionHelperTestFactory.createPublicField()));
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
+  public void testToJsonWithObjectAppendable() throws JsonIOException, NoSuchFieldException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            FormattingStyle.PRETTY,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(createPublicFieldResult, writer);
+
+    // Assert
+    assertEquals(7, writer.size());
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
    *
    * <ul>
-   *   <li>When {@link JsonPrimitive#JsonPrimitive(Boolean)} with bool is {@code true}.
-   *   <li>Then return {@link Boolean#TRUE} toString.
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is two.
    * </ul>
    *
-   * <p>Method under test: {@link Gson#toJson(JsonElement)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(JsonElement)"})
-  public void testToJsonWithJsonElement_whenJsonPrimitiveWithBoolIsTrue_thenReturnTrueToString() {
-    // Arrange
-    Gson gson = new Gson();
-
-    // Act
-    String actualToJsonResult = gson.toJson(new JsonPrimitive(true));
-
-    // Assert
-    assertEquals(Boolean.TRUE.toString(), actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            false,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
-    // Act and Assert
-    assertEquals(")]}'\n\"Src\"", gson.toJson("Src"));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject2() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            FormattingStyle.PRETTY,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
-    // Act and Assert
-    assertEquals(")]}'\n\"Src\"", gson.toJson("Src"));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject3() {
-    // Arrange
-    Gson gson = new Gson();
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-
-    // Act
-    String actualToJsonResult =
-        gson.toJson(
-            new CollectionTypeAdapterFactory(
-                new ConstructorConstructor(instanceCreators, true, new ArrayList<>())));
-
-    // Assert
-    assertEquals(
-        "{\"constructorConstructor\":{\"instanceCreators\":{},\"useJdkUnsafe\":true,\"reflectionFilters\":[]}}",
-        actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
-   *
    * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable() throws JsonIOException {
+  public void testToJsonWithObjectAppendable_givenGson_thenCharArrayWriterSizeIsTwo()
+      throws JsonIOException, NoSuchFieldException {
     // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            false,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
+    Gson gson = new Gson();
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
-    gson.toJson("Src", writer);
+    gson.toJson(createPublicFieldResult, writer);
 
     // Assert
-    assertEquals(10, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable2() throws JsonIOException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            FormattingStyle.PRETTY,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson("Src", writer);
-
-    // Assert
-    assertEquals(10, writer.size());
+    assertEquals(2, writer.size());
   }
 
   /**
@@ -4150,9 +3842,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
    *
    * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@code Src}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is five.
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is seven.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
@@ -4161,120 +3851,424 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_givenGson_whenSrc_thenCharArrayWriterSizeIsFive()
-      throws JsonIOException {
+  public void testToJsonWithObjectAppendable_thenCharArrayWriterSizeIsSeven()
+      throws JsonIOException, NoSuchFieldException {
     // Arrange
-    Gson gson = new Gson();
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
-    gson.toJson("Src", writer);
+    gson.toJson(createPublicFieldResult, writer);
 
     // Assert
+    assertEquals(7, writer.size());
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
+  public void testToJsonWithObjectType() throws IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+
+    // Act
+    String actualToJsonResult =
+        gson.toJson(createPublicFieldResult, GsonBuilderTestFactory.createType());
+
+    // Assert
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(")]}'\n", actualToJsonResult);
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
+  public void testToJsonWithObjectType2() throws IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            FormattingStyle.PRETTY,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+
+    // Act
+    String actualToJsonResult =
+        gson.toJson(createPublicFieldResult, GsonBuilderTestFactory.createType());
+
+    // Assert
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(")]}'\n", actualToJsonResult);
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
+  public void testToJsonWithObjectType3() throws IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            null,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+
+    // Act
+    String actualToJsonResult =
+        gson.toJson(createPublicFieldResult, GsonBuilderTestFactory.createType());
+
+    // Assert
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(")]}'\n", actualToJsonResult);
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
+  public void testToJsonWithObjectType4() throws NoSuchFieldException {
+    // Arrange
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
+    when(formattingStyle.usesSpaceAfterSeparators()).thenThrow(new IllegalArgumentException());
+    Excluder excluder = mock(Excluder.class);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            formattingStyle,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gson.toJson(createPublicFieldResult, GsonBuilderTestFactory.createType()));
+    verify(formattingStyle).usesSpaceAfterSeparators();
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
+  public void testToJsonWithObjectType5() throws NoSuchFieldException {
+    // Arrange
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
+    when(formattingStyle.getIndent()).thenThrow(new IllegalArgumentException());
+    when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
+    when(formattingStyle.getNewline()).thenReturn("");
+    Excluder excluder = mock(Excluder.class);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            formattingStyle,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gson.toJson(createPublicFieldResult, GsonBuilderTestFactory.createType()));
+    verify(formattingStyle).getIndent();
+    verify(formattingStyle, atLeast(1)).getNewline();
+    verify(formattingStyle).usesSpaceAfterSeparators();
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
+   * Appendable}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
+  public void testToJsonWithObjectTypeAppendable()
+      throws JsonIOException, IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(createPublicFieldResult, typeOfSrc, writer);
+
+    // Assert
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
     assertEquals(5, writer.size());
   }
 
   /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
+   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
+   * Appendable}.
    *
-   * <ul>
-   *   <li>Given {@code Key}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is fifteen.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
+   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_givenKey_thenCharArrayWriterSizeIsFifteen()
-      throws JsonIOException {
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
+  public void testToJsonWithObjectTypeAppendable2()
+      throws JsonIOException, IOException, NoSuchFieldException {
     // Arrange
-    Gson gson = new Gson();
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
 
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    objectObjectMap.put("Key", "Value");
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(objectObjectMap, writer);
-
-    // Assert
-    assertEquals(15, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is ninety-three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_thenCharArrayWriterSizeIsNinetyThree()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    CollectionTypeAdapterFactory collectionTypeAdapterFactory =
-        new CollectionTypeAdapterFactory(
-            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(collectionTypeAdapterFactory, writer);
-
-    // Assert
-    assertEquals(93, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is one hundred forty-three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_thenCharArrayWriterSizeIsOneHundredFortyThree()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(Excluder.DEFAULT, writer);
-
-    // Assert
-    assertEquals(143, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is ten.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_thenCharArrayWriterSizeIsTen() throws JsonIOException {
-    // Arrange
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
@@ -4285,65 +4279,7 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson("Src", writer);
-
-    // Assert
-    assertEquals(10, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is thirty-three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_thenCharArrayWriterSizeIsThirtyThree()
-      throws JsonIOException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
@@ -4364,37 +4300,39 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
-    gson.toJson(futureTypeAdapter, writer);
+    gson.toJson(createPublicFieldResult, typeOfSrc, writer);
 
     // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
-    assertEquals(33, writer.size());
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(5, writer.size());
   }
 
   /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
+   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
+   * Appendable}.
    *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is twenty-eight.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
+   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_thenCharArrayWriterSizeIsTwentyEight()
-      throws JsonIOException {
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
+  public void testToJsonWithObjectTypeAppendable3()
+      throws JsonIOException, IOException, NoSuchFieldException {
     // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
@@ -4404,7 +4342,267 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            null,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(createPublicFieldResult, typeOfSrc, writer);
+
+    // Assert
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(5, writer.size());
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
+   * Appendable}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
+  public void testToJsonWithObjectTypeAppendable4() throws JsonIOException, NoSuchFieldException {
+    // Arrange
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
+    when(formattingStyle.usesSpaceAfterSeparators()).thenThrow(new IllegalArgumentException());
+    Excluder excluder = mock(Excluder.class);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            formattingStyle,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gson.toJson(createPublicFieldResult, typeOfSrc, new CharArrayWriter()));
+    verify(formattingStyle).usesSpaceAfterSeparators();
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
+   * Appendable}.
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
+  public void testToJsonWithObjectTypeAppendable5() throws JsonIOException, NoSuchFieldException {
+    // Arrange
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
+    when(formattingStyle.getIndent()).thenThrow(new IllegalArgumentException());
+    when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
+    when(formattingStyle.getNewline()).thenReturn("");
+    Excluder excluder = mock(Excluder.class);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            formattingStyle,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gson.toJson(createPublicFieldResult, typeOfSrc, new CharArrayWriter()));
+    verify(formattingStyle).getIndent();
+    verify(formattingStyle, atLeast(1)).getNewline();
+    verify(formattingStyle).usesSpaceAfterSeparators();
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
+   * Appendable}.
+   *
+   * <ul>
+   *   <li>Given {@link FormattingStyle} {@link FormattingStyle#getNewline()} return {@code
+   *       Newline}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
+  public void testToJsonWithObjectTypeAppendable_givenFormattingStyleGetNewlineReturnNewline()
+      throws JsonIOException, IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
+    when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
+    when(formattingStyle.getNewline()).thenReturn("Newline");
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            formattingStyle,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
+    CharArrayWriter writer = new CharArrayWriter();
+
+    // Act
+    gson.toJson(createPublicFieldResult, typeOfSrc, writer);
+
+    // Assert
+    verify(formattingStyle, atLeast(1)).getNewline();
+    verify(formattingStyle).usesSpaceAfterSeparators();
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(5, writer.size());
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
+   * Appendable}.
+   *
+   * <ul>
+   *   <li>Given {@link FutureTypeAdapter} {@link FutureTypeAdapter#write(JsonWriter, Object)} throw
+   *       {@link IOException#IOException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
+  public void testToJsonWithObjectTypeAppendable_givenFutureTypeAdapterWriteThrowIOException()
+      throws JsonIOException, IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doThrow(new IOException())
+        .when(futureTypeAdapter)
+        .write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
@@ -4425,60 +4623,45 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
-    CharArrayWriter writer = new CharArrayWriter();
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
 
-    // Act
-    gson.toJson(futureTypeAdapter, writer);
-
-    // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
-    assertEquals(28, writer.size());
+    // Act and Assert
+    assertThrows(
+        JsonIOException.class,
+        () -> gson.toJson(createPublicFieldResult, typeOfSrc, new CharArrayWriter()));
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
   }
 
   /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
+   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
+   * Appendable}.
    *
    * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is two.
+   *   <li>Then calls {@link FormattingStyle#getIndent()}.
    * </ul>
    *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
+   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_thenCharArrayWriterSizeIsTwo() throws JsonIOException {
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
+  public void testToJsonWithObjectTypeAppendable_thenCallsGetIndent()
+      throws JsonIOException, IOException, NoSuchFieldException {
     // Arrange
-    Gson gson = new Gson();
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
-    CharArrayWriter writer = new CharArrayWriter();
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
 
-    // Act
-    gson.toJson(futureTypeAdapter, writer);
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
 
-    // Assert
-    assertEquals(2, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link StringWriter#StringWriter()} toString is {@code )]}' null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_thenStringWriterToStringIsNull()
-      throws JsonIOException {
-    // Arrange
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
+    when(formattingStyle.getIndent()).thenReturn("Indent");
+    when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
+    when(formattingStyle.getNewline()).thenReturn("");
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
@@ -4489,14 +4672,14 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
             true,
             true,
             true,
-            Gson.DEFAULT_FORMATTING_STYLE,
+            formattingStyle,
             Strictness.LENIENT,
             true,
             true,
@@ -4510,108 +4693,45 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    StringWriter writer = new StringWriter();
-
-    // Act
-    gson.toJson((Object) null, writer);
-
-    // Assert
-    assertEquals(")]}'\nnull", writer.toString());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>When empty string.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is two.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_whenEmptyString_thenCharArrayWriterSizeIsTwo()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
-    gson.toJson("", writer);
+    gson.toJson(createPublicFieldResult, typeOfSrc, writer);
 
     // Assert
-    assertEquals(2, writer.size());
+    verify(formattingStyle).getIndent();
+    verify(formattingStyle, atLeast(1)).getNewline();
+    verify(formattingStyle).usesSpaceAfterSeparators();
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(5, writer.size());
   }
 
   /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
+   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
+   * Appendable}.
    *
    * <ul>
-   *   <li>When {@link HashMap#HashMap()}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is two.
+   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is zero.
    * </ul>
    *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
+   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_whenHashMap_thenCharArrayWriterSizeIsTwo()
-      throws JsonIOException {
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
+  public void testToJsonWithObjectTypeAppendable_thenCharArrayWriterSizeIsZero()
+      throws JsonIOException, IOException, NoSuchFieldException {
     // Arrange
-    Gson gson = new Gson();
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    CharArrayWriter writer = new CharArrayWriter();
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
 
-    // Act
-    gson.toJson(objectObjectMap, writer);
-
-    // Assert
-    assertEquals(2, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Appendable)} with {@code Object}, {@code Appendable}.
-   *
-   * <ul>
-   *   <li>When {@code out == null}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is twenty-three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Appendable)"})
-  public void testToJsonWithObjectAppendable_whenOutNull_thenCharArrayWriterSizeIsTwentyThree()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson("out == null", writer);
-
-    // Assert
-    assertEquals(23, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType() {
-    // Arrange
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
@@ -4622,235 +4742,12 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
-            true,
             true,
             true,
             false,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act and Assert
-    assertEquals(")]}'\n\"Src\"", gson.toJson("Src", typeOfSrc));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType2() {
-    // Arrange
-    Gson gson = new Gson();
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    CollectionTypeAdapterFactory collectionTypeAdapterFactory =
-        new CollectionTypeAdapterFactory(
-            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act and Assert
-    assertEquals(
-        "{\"constructorConstructor\":{\"instanceCreators\":{},\"useJdkUnsafe\":true,\"reflectionFilters\":[]}}",
-        gson.toJson(collectionTypeAdapterFactory, typeOfSrc));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable() throws JsonIOException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            false,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson("Src", typeOfSrc, writer);
-
-    // Assert
-    assertEquals(10, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>Given {@code Key}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is fifteen.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_givenKey_thenCharArrayWriterSizeIsFifteen()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    objectObjectMap.put("Key", "Value");
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(objectObjectMap, typeOfSrc, writer);
-
-    // Assert
-    assertEquals(15, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is ninety-three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_thenCharArrayWriterSizeIsNinetyThree()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    CollectionTypeAdapterFactory collectionTypeAdapterFactory =
-        new CollectionTypeAdapterFactory(
-            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(collectionTypeAdapterFactory, typeOfSrc, writer);
-
-    // Assert
-    assertEquals(93, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is one hundred forty-three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_thenCharArrayWriterSizeIsOneHundredFortyThree()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(Excluder.DEFAULT, typeOfSrc, writer);
-
-    // Assert
-    assertEquals(143, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is ten.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_thenCharArrayWriterSizeIsTen()
-      throws JsonIOException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
             true,
             Gson.DEFAULT_FORMATTING_STYLE,
             Strictness.LENIENT,
@@ -4866,14 +4763,17 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    Class<Object> typeOfSrc = Object.class;
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
-    gson.toJson("Src", typeOfSrc, writer);
+    gson.toJson(createPublicFieldResult, typeOfSrc, writer);
 
-    // Assert
-    assertEquals(10, writer.size());
+    // Assert that nothing has changed
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(0, writer.size());
   }
 
   /**
@@ -4881,7 +4781,8 @@ public class GsonDiffblueTest {
    * Appendable}.
    *
    * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is ten.
+   *   <li>When {@code Object}.
+   *   <li>Then calls {@link FormattingStyle#getIndent()}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
@@ -4890,9 +4791,20 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_thenCharArrayWriterSizeIsTen2()
-      throws JsonIOException {
+  public void testToJsonWithObjectTypeAppendable_whenJavaLangObject_thenCallsGetIndent()
+      throws JsonIOException, IOException, NoSuchFieldException {
     // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
+    when(formattingStyle.getIndent()).thenReturn("Indent");
+    when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
+    when(formattingStyle.getNewline()).thenReturn("");
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
@@ -4903,14 +4815,14 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
             true,
             true,
             true,
-            FormattingStyle.PRETTY,
+            formattingStyle,
             Strictness.LENIENT,
             true,
             true,
@@ -4924,285 +4836,20 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
     Class<Object> typeOfSrc = Object.class;
     CharArrayWriter writer = new CharArrayWriter();
 
     // Act
-    gson.toJson("Src", typeOfSrc, writer);
+    gson.toJson(createPublicFieldResult, typeOfSrc, writer);
 
     // Assert
-    assertEquals(10, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is thirty-three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_thenCharArrayWriterSizeIsThirtyThree()
-      throws JsonIOException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            FormattingStyle.PRETTY,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(futureTypeAdapter, typeOfSrc, writer);
-
-    // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
-    assertEquals(33, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is twenty-eight.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_thenCharArrayWriterSizeIsTwentyEight()
-      throws JsonIOException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(futureTypeAdapter, typeOfSrc, writer);
-
-    // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
-    assertEquals(28, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is twenty-three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_thenCharArrayWriterSizeIsTwentyThree()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson("out == null", typeOfSrc, writer);
-
-    // Assert
-    assertEquals(23, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is two.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_thenCharArrayWriterSizeIsTwo()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(futureTypeAdapter, typeOfSrc, writer);
-
-    // Assert
-    assertEquals(2, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>When empty string.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is two.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_whenEmptyString_thenCharArrayWriterSizeIsTwo()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson("", typeOfSrc, writer);
-
-    // Assert
-    assertEquals(2, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>When {@link HashMap#HashMap()}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is two.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_whenHashMap_thenCharArrayWriterSizeIsTwo()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(objectObjectMap, typeOfSrc, writer);
-
-    // Assert
-    assertEquals(2, writer.size());
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>When {@code null}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is four.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_whenNull_thenCharArrayWriterSizeIsFour()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson(null, typeOfSrc, writer);
-
-    // Assert
-    assertEquals(4, writer.size());
+    verify(formattingStyle).getIndent();
+    verify(formattingStyle, atLeast(1)).getNewline();
+    verify(formattingStyle).usesSpaceAfterSeparators();
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(5, writer.size());
   }
 
   /**
@@ -5221,10 +4868,12 @@ public class GsonDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
   public void testToJsonWithObjectTypeAppendable_whenPipedWriter_thenThrowJsonIOException()
-      throws JsonIOException {
+      throws JsonIOException, NoSuchFieldException {
     // Arrange
+    Excluder excluder = mock(Excluder.class);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
@@ -5233,14 +4882,14 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
             true,
             true,
             true,
-            Gson.DEFAULT_FORMATTING_STYLE,
+            formattingStyle,
             Strictness.LENIENT,
             true,
             true,
@@ -5254,39 +4903,13 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    TypeVarBoundedType typeOfSrc = new TypeVarBoundedType(null);
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
 
     // Act and Assert
-    assertThrows(JsonIOException.class, () -> gson.toJson("Src", typeOfSrc, new PipedWriter()));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type, Appendable)} with {@code Object}, {@code Type}, {@code
-   * Appendable}.
-   *
-   * <ul>
-   *   <li>When {@code Src}.
-   *   <li>Then {@link CharArrayWriter#CharArrayWriter()} size is five.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type, Appendable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Gson.toJson(Object, Type, Appendable)"})
-  public void testToJsonWithObjectTypeAppendable_whenSrc_thenCharArrayWriterSizeIsFive()
-      throws JsonIOException {
-    // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
-    CharArrayWriter writer = new CharArrayWriter();
-
-    // Act
-    gson.toJson("Src", typeOfSrc, writer);
-
-    // Assert
-    assertEquals(5, writer.size());
+    assertThrows(
+        JsonIOException.class,
+        () -> gson.toJson(createPublicFieldResult, typeOfSrc, new PipedWriter()));
   }
 
   /**
@@ -5299,11 +4922,9 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(Object, Type, JsonWriter)"})
-  public void testToJsonWithObjectTypeJsonWriter() throws JsonIOException {
+  public void testToJsonWithObjectTypeJsonWriter() throws JsonIOException, IOException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
@@ -5334,20 +4955,38 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
-    Class<Object> typeOfSrc = Object.class;
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.value(Mockito.<String>any())).thenReturn(new JsonWriter(new StringWriter()));
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
 
     // Act
-    gson.toJson(futureTypeAdapter, typeOfSrc, new JsonWriter(new StringWriter()));
+    gson.toJson("type must not be null", typeOfSrc, writer);
 
     // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
+    verify(writer).getSerializeNulls();
+    verify(writer).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(true);
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
+    verify(writer).value("type must not be null");
   }
 
   /**
    * Test {@link Gson#toJson(Object, Type, JsonWriter)} with {@code Object}, {@code Type}, {@code
    * JsonWriter}.
+   *
+   * <ul>
+   *   <li>Given {@code Object}.
+   *   <li>Then calls {@link JsonWriter#beginArray()}.
+   * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(Object, Type, JsonWriter)}
    */
@@ -5355,14 +4994,19 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(Object, Type, JsonWriter)"})
-  public void testToJsonWithObjectTypeJsonWriter2() throws JsonIOException {
+  public void testToJsonWithObjectTypeJsonWriter_givenJavaLangObject_thenCallsBeginArray()
+      throws JsonIOException, IOException {
     // Arrange
+    Excluder excluder = mock(Excluder.class);
+    Gson context = new Gson();
+    FutureTypeAdapter<Object> componentTypeAdapter = new FutureTypeAdapter<>();
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> arrayTypeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(arrayTypeAdapter);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any()))
-        .thenReturn(
-            "Abstract classes can't be instantiated! Adjust the R8 configuration or register an InstanceCreator or"
-                + " a TypeAdapter for this type. Class name: ");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
@@ -5372,7 +5016,7 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
@@ -5393,20 +5037,37 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
-    Class<Object> typeOfSrc = Object.class;
+    Type typeOfSrc = GsonBuilderTestFactory.createIntegerType();
 
-    // Act
-    gson.toJson(futureTypeAdapter, typeOfSrc, new JsonWriter(new StringWriter()));
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.beginArray()).thenThrow(new IOException());
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
 
-    // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
+    // Act and Assert
+    assertThrows(
+        JsonIOException.class, () -> gson.toJson("type must not be null", typeOfSrc, writer));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    verify(writer).beginArray();
+    verify(writer).getSerializeNulls();
+    verify(writer).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(true);
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
   }
 
   /**
    * Test {@link Gson#toJson(Object, Type, JsonWriter)} with {@code Object}, {@code Type}, {@code
    * JsonWriter}.
+   *
+   * <ul>
+   *   <li>Given {@code LENIENT}.
+   * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(Object, Type, JsonWriter)}
    */
@@ -5414,11 +5075,100 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Gson.toJson(Object, Type, JsonWriter)"})
-  public void testToJsonWithObjectTypeJsonWriter3() throws JsonIOException {
+  public void testToJsonWithObjectTypeJsonWriter_givenLenient()
+      throws JsonIOException, IOException {
     // Arrange
+    Gson gson = new Gson();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.value(Mockito.<String>any())).thenReturn(new JsonWriter(new StringWriter()));
+    when(writer.getStrictness()).thenReturn(Strictness.LENIENT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
+
+    // Act
+    gson.toJson("type must not be null", typeOfSrc, writer);
+
+    // Assert
+    verify(writer).getSerializeNulls();
+    verify(writer, atLeast(1)).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(anyBoolean());
+    verify(writer).setStrictness(Strictness.LENIENT);
+    verify(writer).value("type must not be null");
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, JsonWriter)} with {@code Object}, {@code Type}, {@code
+   * JsonWriter}.
+   *
+   * <ul>
+   *   <li>Then calls {@link JsonWriter#value(String)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, JsonWriter)"})
+  public void testToJsonWithObjectTypeJsonWriter_thenCallsValue()
+      throws JsonIOException, IOException {
+    // Arrange
+    Gson gson = new Gson();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.value(Mockito.<String>any())).thenReturn(new JsonWriter(new StringWriter()));
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
+
+    // Act
+    gson.toJson("type must not be null", typeOfSrc, writer);
+
+    // Assert
+    verify(writer).getSerializeNulls();
+    verify(writer, atLeast(1)).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(anyBoolean());
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
+    verify(writer).value("type must not be null");
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, JsonWriter)} with {@code Object}, {@code Type}, {@code
+   * JsonWriter}.
+   *
+   * <ul>
+   *   <li>Then calls {@link FutureTypeAdapter#write(JsonWriter, Object)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, JsonWriter)"})
+  public void testToJsonWithObjectTypeJsonWriter_thenCallsWrite()
+      throws JsonIOException, IOException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("\nSee ");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
@@ -5428,7 +5178,7 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
@@ -5449,181 +5199,53 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
-    Class<Object> typeOfSrc = Object.class;
+    Type typeOfSrc = GsonBuilderTestFactory.createIntegerType();
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
 
     // Act
-    gson.toJson(futureTypeAdapter, typeOfSrc, new JsonWriter(new StringWriter()));
+    gson.toJson("type must not be null", typeOfSrc, writer);
 
     // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    verify(writer).getSerializeNulls();
+    verify(writer).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(true);
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
   }
 
   /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
+   * Test {@link Gson#toJson(Object, Type, JsonWriter)} with {@code Object}, {@code Type}, {@code
+   * JsonWriter}.
    *
    * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@link Excluder#DEFAULT}.
-   *   <li>Then return a string.
+   *   <li>Then calls {@link FutureTypeAdapter#write(JsonWriter, Object)}.
    * </ul>
    *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
+   * <p>Method under test: {@link Gson#toJson(Object, Type, JsonWriter)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_givenGson_whenDefault_thenReturnAString() {
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, JsonWriter)"})
+  public void testToJsonWithObjectTypeJsonWriter_thenCallsWrite2()
+      throws JsonIOException, IOException {
     // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
 
-    // Act and Assert
-    assertEquals(
-        "{\"version\":-1.0,\"modifiers\":136,\"serializeInnerClasses\":true,\"requireExpose\":false,\"serializationStrategies"
-            + "\":[],\"deserializationStrategies\":[]}",
-        gson.toJson(Excluder.DEFAULT, typeOfSrc));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@code null}.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_givenGson_whenNull_thenReturnNull() {
-    // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act and Assert
-    assertEquals("null", gson.toJson(null, typeOfSrc));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@code out == null}.
-   *   <li>Then return {@code "out \u003d\u003d null"}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_givenGson_whenOutNull_thenReturnOutU003dU003dNull() {
-    // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act and Assert
-    assertEquals("\"out \\u003d\\u003d null\"", gson.toJson("out == null", typeOfSrc));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@code Src}.
-   *   <li>Then return {@code "Src"}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_givenGson_whenSrc_thenReturnSrc() {
-    // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act and Assert
-    assertEquals("\"Src\"", gson.toJson("Src", typeOfSrc));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Given {@code Key}.
-   *   <li>When {@link HashMap#HashMap()} {@code Key} is {@code Value}.
-   *   <li>Then return {@code {"Key":"Value"}}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_givenKey_whenHashMapKeyIsValue_thenReturnKeyValue() {
-    // Arrange
-    Gson gson = new Gson();
-
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    objectObjectMap.put("Key", "Value");
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act and Assert
-    assertEquals("{\"Key\":\"Value\"}", gson.toJson(objectObjectMap, typeOfSrc));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Then return {@code {}}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_thenReturnLeftCurlyBracketRightCurlyBracket() {
-    // Arrange
-    Gson gson = new Gson();
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act and Assert
-    assertEquals("{}", gson.toJson(futureTypeAdapter, typeOfSrc));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Then return {@code )]}' "Src"}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_thenReturnSrc() {
-    // Arrange
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
@@ -5634,7 +5256,465 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Class<Object> typeOfSrc = Object.class;
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
+
+    // Act
+    gson.toJson("type must not be null", typeOfSrc, writer);
+
+    // Assert
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    verify(writer).getSerializeNulls();
+    verify(writer).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(true);
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, JsonWriter)} with {@code Object}, {@code Type}, {@code
+   * JsonWriter}.
+   *
+   * <ul>
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, JsonWriter)"})
+  public void testToJsonWithObjectTypeJsonWriter_thenThrowIllegalArgumentException()
+      throws JsonIOException, IOException {
+    // Arrange
+    Gson gson = new Gson();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.value(Mockito.<String>any())).thenThrow(new IllegalArgumentException());
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gson.toJson("type must not be null", typeOfSrc, writer));
+    verify(writer).getSerializeNulls();
+    verify(writer, atLeast(1)).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(anyBoolean());
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
+    verify(writer).value("type must not be null");
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, JsonWriter)} with {@code Object}, {@code Type}, {@code
+   * JsonWriter}.
+   *
+   * <ul>
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, JsonWriter)"})
+  public void testToJsonWithObjectTypeJsonWriter_thenThrowIllegalArgumentException2()
+      throws JsonIOException, IOException {
+    // Arrange
+    Gson gson = new Gson();
+    Class<Object> typeOfSrc = Object.class;
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.value(Mockito.<String>any())).thenThrow(new IllegalArgumentException());
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gson.toJson("type must not be null", typeOfSrc, writer));
+    verify(writer).getSerializeNulls();
+    verify(writer, atLeast(1)).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(anyBoolean());
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
+    verify(writer).value("type must not be null");
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, JsonWriter)} with {@code Object}, {@code Type}, {@code
+   * JsonWriter}.
+   *
+   * <ul>
+   *   <li>When {@code Object}.
+   *   <li>Then calls {@link JsonWriter#value(String)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, JsonWriter)"})
+  public void testToJsonWithObjectTypeJsonWriter_whenJavaLangObject_thenCallsValue()
+      throws JsonIOException, IOException {
+    // Arrange
+    Gson gson = new Gson();
+    Class<Object> typeOfSrc = Object.class;
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.value(Mockito.<String>any())).thenReturn(new JsonWriter(new StringWriter()));
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
+
+    // Act
+    gson.toJson("type must not be null", typeOfSrc, writer);
+
+    // Assert
+    verify(writer).getSerializeNulls();
+    verify(writer, atLeast(1)).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(anyBoolean());
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
+    verify(writer).value("type must not be null");
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type, JsonWriter)} with {@code Object}, {@code Type}, {@code
+   * JsonWriter}.
+   *
+   * <ul>
+   *   <li>When {@link JsonWriter} {@link JsonWriter#value(String)} throw {@link
+   *       IOException#IOException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Gson.toJson(Object, Type, JsonWriter)"})
+  public void testToJsonWithObjectTypeJsonWriter_whenJsonWriterValueThrowIOException()
+      throws JsonIOException, IOException {
+    // Arrange
+    Gson gson = new Gson();
+    Type typeOfSrc = GsonBuilderTestFactory.createType();
+
+    JsonWriter writer = mock(JsonWriter.class);
+    when(writer.value(Mockito.<String>any())).thenThrow(new IOException());
+    when(writer.getStrictness()).thenReturn(Strictness.LEGACY_STRICT);
+    when(writer.getSerializeNulls()).thenReturn(true);
+    when(writer.isHtmlSafe()).thenReturn(true);
+    doNothing().when(writer).setHtmlSafe(anyBoolean());
+    doNothing().when(writer).setSerializeNulls(anyBoolean());
+    doNothing().when(writer).setStrictness(Mockito.<Strictness>any());
+
+    // Act and Assert
+    assertThrows(
+        JsonIOException.class, () -> gson.toJson("type must not be null", typeOfSrc, writer));
+    verify(writer).getSerializeNulls();
+    verify(writer, atLeast(1)).getStrictness();
+    verify(writer).isHtmlSafe();
+    verify(writer, atLeast(1)).setHtmlSafe(true);
+    verify(writer, atLeast(1)).setSerializeNulls(anyBoolean());
+    verify(writer, atLeast(1)).setStrictness(Mockito.<Strictness>any());
+    verify(writer).value("type must not be null");
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link FormattingStyle} {@link FormattingStyle#getNewline()} return {@code
+   *       Newline}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
+  public void testToJsonWithObjectType_givenFormattingStyleGetNewlineReturnNewline()
+      throws IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
+    when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
+    when(formattingStyle.getNewline()).thenReturn("Newline");
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            formattingStyle,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+
+    // Act
+    String actualToJsonResult =
+        gson.toJson(createPublicFieldResult, GsonBuilderTestFactory.createType());
+
+    // Assert
+    verify(formattingStyle, atLeast(1)).getNewline();
+    verify(formattingStyle).usesSpaceAfterSeparators();
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(")]}'\n", actualToJsonResult);
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Then calls {@link FormattingStyle#getIndent()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
+  public void testToJsonWithObjectType_thenCallsGetIndent()
+      throws IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
+    when(formattingStyle.getIndent()).thenReturn("Indent");
+    when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
+    when(formattingStyle.getNewline()).thenReturn("");
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            formattingStyle,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+
+    // Act
+    String actualToJsonResult =
+        gson.toJson(createPublicFieldResult, GsonBuilderTestFactory.createType());
+
+    // Assert
+    verify(formattingStyle).getIndent();
+    verify(formattingStyle, atLeast(1)).getNewline();
+    verify(formattingStyle).usesSpaceAfterSeparators();
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(")]}'\n", actualToJsonResult);
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Then return empty string.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
+  public void testToJsonWithObjectType_thenReturnEmptyString()
+      throws IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            false,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            Integer.SIZE,
+            Integer.SIZE,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+
+    // Act
+    String actualToJsonResult =
+        gson.toJson(createPublicFieldResult, GsonBuilderTestFactory.createType());
+
+    // Assert
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals("", actualToJsonResult);
+  }
+
+  /**
+   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Then throw {@link JsonIOException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#toJson(Object, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
+  public void testToJsonWithObjectType_thenThrowJsonIOException()
+      throws IOException, NoSuchFieldException {
+    // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doThrow(new IOException())
+        .when(futureTypeAdapter)
+        .write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
@@ -5655,17 +5735,22 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    Class<Object> typeOfSrc = Object.class;
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
 
     // Act and Assert
-    assertEquals(")]}'\n\"Src\"", gson.toJson("Src", typeOfSrc));
+    assertThrows(
+        JsonIOException.class,
+        () -> gson.toJson(createPublicFieldResult, GsonBuilderTestFactory.createType()));
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
   }
 
   /**
    * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
    *
    * <ul>
-   *   <li>Then return {@code )]}' "Src"}.
+   *   <li>When {@code Object}.
+   *   <li>Then calls {@link FormattingStyle#getIndent()}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(Object, Type)}
@@ -5674,8 +5759,20 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_thenReturnSrc2() {
+  public void testToJsonWithObjectType_whenJavaLangObject_thenCallsGetIndent()
+      throws IOException, NoSuchFieldException {
     // Arrange
+    FutureTypeAdapter<Object> futureTypeAdapter = mock(FutureTypeAdapter.class);
+    doNothing().when(futureTypeAdapter).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+
+    Excluder excluder = mock(Excluder.class);
+    when(excluder.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(futureTypeAdapter);
+
+    FormattingStyle formattingStyle = mock(FormattingStyle.class);
+    when(formattingStyle.getIndent()).thenReturn("Indent");
+    when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
+    when(formattingStyle.getNewline()).thenReturn("");
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
@@ -5686,14 +5783,14 @@ public class GsonDiffblueTest {
 
     Gson gson =
         new Gson(
-            Excluder.DEFAULT,
+            excluder,
             fieldNamingStrategy,
             instanceCreators,
             true,
             true,
             true,
             true,
-            FormattingStyle.PRETTY,
+            formattingStyle,
             Strictness.LENIENT,
             true,
             true,
@@ -5707,177 +5804,19 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act and Assert
-    assertEquals(")]}'\n\"Src\"", gson.toJson("Src", typeOfSrc));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Then return {@code )]}' {"Translate Name":null}}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_thenReturnTranslateNameNull() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
     Class<Object> typeOfSrc = Object.class;
 
     // Act
-    String actualToJsonResult = gson.toJson(futureTypeAdapter, typeOfSrc);
+    String actualToJsonResult = gson.toJson(createPublicFieldResult, typeOfSrc);
 
     // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
-    assertEquals(")]}'\n{\"Translate Name\":null}", actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Then return {@code )]}' { "Translate Name": null }}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_thenReturnTranslateNameNull2() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            FormattingStyle.PRETTY,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    FutureTypeAdapter<Object> futureTypeAdapter = new FutureTypeAdapter<>();
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act
-    String actualToJsonResult = gson.toJson(futureTypeAdapter, typeOfSrc);
-
-    // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
-    assertEquals(")]}'\n{\n  \"Translate Name\": null\n}", actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <ul>
-   *   <li>When empty string.
-   *   <li>Then return {@code ""}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_whenEmptyString_thenReturnQuotationMarkQuotationMark() {
-    // Arrange
-    Gson gson = new Gson();
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act and Assert
-    assertEquals("\"\"", gson.toJson("", typeOfSrc));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object, Type)} with {@code Object}, {@code Type}.
-   *
-   * <ul>
-   *   <li>When {@link HashMap#HashMap()}.
-   *   <li>Then return {@code {}}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object, Type)"})
-  public void testToJsonWithObjectType_whenHashMap_thenReturnLeftCurlyBracketRightCurlyBracket() {
-    // Arrange
-    Gson gson = new Gson();
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    Class<Object> typeOfSrc = Object.class;
-
-    // Act and Assert
-    assertEquals("{}", gson.toJson(objectObjectMap, typeOfSrc));
+    verify(formattingStyle).getIndent();
+    verify(formattingStyle, atLeast(1)).getNewline();
+    verify(formattingStyle).usesSpaceAfterSeparators();
+    verify(futureTypeAdapter).write(isA(JsonWriter.class), isA(Object.class));
+    verify(excluder).create(isA(Gson.class), isA(TypeToken.class));
+    assertEquals(")]}'\n", actualToJsonResult);
   }
 
   /**
@@ -5885,8 +5824,7 @@ public class GsonDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@link Excluder#DEFAULT}.
-   *   <li>Then return a string.
+   *   <li>Then return {@code {}}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#toJson(Object)}
@@ -5895,12 +5833,13 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_givenGson_whenDefault_thenReturnAString() {
-    // Arrange, Act and Assert
-    assertEquals(
-        "{\"version\":-1.0,\"modifiers\":136,\"serializeInnerClasses\":true,\"requireExpose\":false,\"serializationStrategies"
-            + "\":[],\"deserializationStrategies\":[]}",
-        new Gson().toJson(Excluder.DEFAULT));
+  public void testToJsonWithObject_givenGson_thenReturnLeftCurlyBracketRightCurlyBracket()
+      throws NoSuchFieldException {
+    // Arrange
+    Gson gson = new Gson();
+
+    // Act and Assert
+    assertEquals("{}", gson.toJson(ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
@@ -5921,352 +5860,6 @@ public class GsonDiffblueTest {
   public void testToJsonWithObject_givenGson_whenNull_thenReturnNull() {
     // Arrange, Act and Assert
     assertEquals("null", new Gson().toJson((Object) null));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@code out == null}.
-   *   <li>Then return {@code "out \u003d\u003d null"}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_givenGson_whenOutNull_thenReturnOutU003dU003dNull() {
-    // Arrange, Act and Assert
-    assertEquals("\"out \\u003d\\u003d null\"", new Gson().toJson("out == null"));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@code Src}.
-   *   <li>Then return {@code "Src"}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_givenGson_whenSrc_thenReturnSrc() {
-    // Arrange, Act and Assert
-    assertEquals("\"Src\"", new Gson().toJson("Src"));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Given {@code Key}.
-   *   <li>When {@link HashMap#HashMap()} {@code Key} is {@code Value}.
-   *   <li>Then return {@code {"Key":"Value"}}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_givenKey_whenHashMapKeyIsValue_thenReturnKeyValue() {
-    // Arrange
-    Gson gson = new Gson();
-
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    objectObjectMap.put("Key", "Value");
-
-    // Act and Assert
-    assertEquals("{\"Key\":\"Value\"}", gson.toJson(objectObjectMap));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Then return {@code {}}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_thenReturnLeftCurlyBracketRightCurlyBracket() {
-    // Arrange
-    Gson gson = new Gson();
-
-    // Act and Assert
-    assertEquals("{}", gson.toJson(new FutureTypeAdapter<>()));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Then return {@code )]}' null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_thenReturnNull() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
-    // Act and Assert
-    assertEquals(")]}'\nnull", gson.toJson((Object) null));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Then return {@code )]}' "Src"}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_thenReturnSrc() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
-    // Act and Assert
-    assertEquals(")]}'\n\"Src\"", gson.toJson("Src"));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Then return {@code )]}' {"Translate Name":null}}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_thenReturnTranslateNameNull() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
-    // Act
-    String actualToJsonResult = gson.toJson(new FutureTypeAdapter<>());
-
-    // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
-    assertEquals(")]}'\n{\"Translate Name\":null}", actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Then return {@code )]}' { "Translate Name": null }}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_thenReturnTranslateNameNull2() {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    when(fieldNamingStrategy.translateName(Mockito.<Field>any())).thenReturn("Translate Name");
-    when(fieldNamingStrategy.alternateNames(Mockito.<Field>any())).thenReturn(new ArrayList<>());
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            FormattingStyle.PRETTY,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            Integer.SIZE,
-            Integer.SIZE,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
-    // Act
-    String actualToJsonResult = gson.toJson(new FutureTypeAdapter<>());
-
-    // Assert
-    verify(fieldNamingStrategy).alternateNames(isA(Field.class));
-    verify(fieldNamingStrategy).translateName(isA(Field.class));
-    assertEquals(")]}'\n{\n  \"Translate Name\": null\n}", actualToJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>When empty string.
-   *   <li>Then return {@code ""}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_whenEmptyString_thenReturnQuotationMarkQuotationMark() {
-    // Arrange, Act and Assert
-    assertEquals("\"\"", new Gson().toJson(""));
-  }
-
-  /**
-   * Test {@link Gson#toJson(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>When {@link HashMap#HashMap()}.
-   *   <li>Then return {@code {}}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#toJson(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String Gson.toJson(Object)"})
-  public void testToJsonWithObject_whenHashMap_thenReturnLeftCurlyBracketRightCurlyBracket() {
-    // Arrange
-    Gson gson = new Gson();
-
-    // Act and Assert
-    assertEquals("{}", gson.toJson(new HashMap<>()));
   }
 
   /**
@@ -6596,15 +6189,96 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", Integer.valueOf(1));
-    json.add("in == null", JsonNull.INSTANCE);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithNumbers();
     Class<Object> classOfT = Object.class;
 
     // Act and Assert
     assertThrows(JsonSyntaxException.class, () -> gson.fromJson(json, classOfT));
     verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
+  public void testFromJsonWithJsonElementClass2() throws JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenThrow(new IllegalStateException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithNumbers();
+    Class<Object> classOfT = Object.class;
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(json, classOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>Then return size is three.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
+  public void testFromJsonWithJsonElementClass_givenGson_thenReturnSizeIsThree()
+      throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithNumbers();
+    Class<Object> classOfT = Object.class;
+
+    // Act
+    Object actualFromJsonResult = gson.fromJson(json, classOfT);
+
+    // Assert
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(3, ((List<Double>) actualFromJsonResult).size());
+    assertEquals(1.0d, ((List<Double>) actualFromJsonResult).get(0).doubleValue(), 0.0);
+    assertEquals(2.0d, ((List<Double>) actualFromJsonResult).get(1).doubleValue(), 0.0);
+    assertEquals(3.0d, ((List<Double>) actualFromJsonResult).get(2).doubleValue(), 0.0);
   }
 
   /**
@@ -6638,7 +6312,7 @@ public class GsonDiffblueTest {
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
    *   <li>When {@link JsonObject} (default constructor).
-   *   <li>Then return Empty.
+   *   <li>Then return {@link Map}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
@@ -6647,7 +6321,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_givenGson_whenJsonObject_thenReturnEmpty()
+  public void testFromJsonWithJsonElementClass_givenGson_whenJsonObject_thenReturnMap()
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
@@ -6685,149 +6359,6 @@ public class GsonDiffblueTest {
 
     // Act and Assert
     assertNull(gson.fromJson((JsonElement) null, classOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
-   *
-   * <ul>
-   *   <li>Given {@code in == null}.
-   *   <li>Then return size is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_givenInNull_thenReturnSizeIsOne()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> classOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, classOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(1, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_givenProperty_thenReturnSizeIsThree()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("Property", JsonNull.INSTANCE);
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> classOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, classOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(3, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("Property"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-    assertTrue(((Map<String, Object>) actualFromJsonResult).containsKey("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_givenProperty_thenReturnSizeIsThree2()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("in == null", JsonNull.INSTANCE);
-    json.add("Property", JsonNull.INSTANCE);
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> classOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, classOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(3, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("Property"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-    assertTrue(((Map<String, Object>) actualFromJsonResult).containsKey("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_givenProperty_thenReturnSizeIsThree3()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    json.add("Property", JsonNull.INSTANCE);
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> classOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, classOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(3, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("Property"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-    assertTrue(((Map<String, Object>) actualFromJsonResult).containsKey("in == null"));
   }
 
   /**
@@ -6879,98 +6410,12 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", Integer.valueOf(1));
-    json.add("in == null", JsonNull.INSTANCE);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithNumbers();
     Class<Object> classOfT = Object.class;
 
     // Act and Assert
     assertThrows(JsonSyntaxException.class, () -> gson.fromJson(json, classOfT));
     verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
-   *
-   * <ul>
-   *   <li>Then calls {@link ToNumberStrategy#readNumber(JsonReader)}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_thenCallsReadNumber()
-      throws JsonSyntaxException, IOException {
-    // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
-        .thenReturn(Integer.valueOf(1));
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", Integer.valueOf(1));
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> classOfT = Object.class;
-
-    // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(json, classOfT));
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
-   *
-   * <ul>
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_thenReturnFalse() throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonPrimitive json = new JsonPrimitive(false);
-    Class<Object> classOfT = Object.class;
-
-    // Act and Assert
-    assertFalse((Boolean) gson.fromJson(json, classOfT));
   }
 
   /**
@@ -7000,7 +6445,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
    *
    * <ul>
-   *   <li>Then return not first.
+   *   <li>Then return size is four.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
@@ -7009,12 +6454,10 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_thenReturnNotFirst() throws JsonSyntaxException {
+  public void testFromJsonWithJsonElementClass_thenReturnSizeIsFour() throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-
-    JsonArray json = new JsonArray(3);
-    json.add(false);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithMixedTypes();
     Class<Object> classOfT = Object.class;
 
     // Act
@@ -7022,15 +6465,20 @@ public class GsonDiffblueTest {
 
     // Assert
     assertTrue(actualFromJsonResult instanceof List);
-    assertEquals(1, ((List<Boolean>) actualFromJsonResult).size());
-    assertFalse(((List<Boolean>) actualFromJsonResult).get(0));
+    assertEquals(4, ((List<Object>) actualFromJsonResult).size());
+    Object getResult = ((List<Object>) actualFromJsonResult).get(3);
+    assertTrue(getResult instanceof Map);
+    assertEquals("string", ((List<Object>) actualFromJsonResult).get(0));
+    assertEquals(42.0d, ((Double) ((List<Object>) actualFromJsonResult).get(1)).doubleValue(), 0.0);
+    assertTrue(((Map<Object, Object>) getResult).isEmpty());
+    assertTrue((Boolean) ((List<Object>) actualFromJsonResult).get(2));
   }
 
   /**
    * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
    *
    * <ul>
-   *   <li>Then return not {@code type must not be null}.
+   *   <li>Then return size is one.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
@@ -7039,24 +6487,77 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_thenReturnNotTypeMustNotBeNull()
-      throws JsonSyntaxException {
+  public void testFromJsonWithJsonElementClass_thenReturnSizeIsOne() throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", false);
-    json.add("in == null", JsonNull.INSTANCE);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
     Class<Object> classOfT = Object.class;
 
     // Act
     Object actualFromJsonResult = gson.fromJson(json, classOfT);
 
     // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, Boolean>) actualFromJsonResult).size());
-    assertNull(((Map<String, Boolean>) actualFromJsonResult).get("in == null"));
-    assertFalse(((Map<String, Boolean>) actualFromJsonResult).get("type must not be null"));
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(1, ((List<String>) actualFromJsonResult).size());
+    assertEquals("singleElement", ((List<String>) actualFromJsonResult).get(0));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
+   *
+   * <ul>
+   *   <li>Then return size is one.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
+  public void testFromJsonWithJsonElementClass_thenReturnSizeIsOne2() throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    Class<Object> classOfT = Object.class;
+
+    // Act
+    Object actualFromJsonResult = gson.fromJson(json, classOfT);
+
+    // Assert
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(1, ((List<String>) actualFromJsonResult).size());
+    assertEquals("singleElement", ((List<String>) actualFromJsonResult).get(0));
   }
 
   /**
@@ -7076,89 +6577,20 @@ public class GsonDiffblueTest {
     // Arrange
     Gson gson = new Gson();
 
-    JsonObject json = new JsonObject();
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    json.add(JsonArrayTestFactory.createJsonArrayWithOneElement());
     Class<Object> classOfT = Object.class;
 
     // Act
     Object actualFromJsonResult = gson.fromJson(json, classOfT);
 
     // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("in == null"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
-   *
-   * <ul>
-   *   <li>Then return {@code type must not be null} doubleValue is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_thenReturnTypeMustNotBeNullDoubleValueIsOne()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", Integer.valueOf(1));
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> classOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, classOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, Double>) actualFromJsonResult).size());
-    assertNull(((Map<String, Double>) actualFromJsonResult).get("in == null"));
-    assertEquals(
-        1.0d,
-        ((Map<String, Double>) actualFromJsonResult).get("type must not be null").doubleValue(),
-        0.0);
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
-   *
-   * <ul>
-   *   <li>Then return {@code type must not be null} is {@code in == null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_thenReturnTypeMustNotBeNullIsInNull()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", "in == null");
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> classOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, classOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, String>) actualFromJsonResult).size());
-    assertEquals(
-        "in == null", ((Map<String, String>) actualFromJsonResult).get("type must not be null"));
-    assertNull(((Map<String, String>) actualFromJsonResult).get("in == null"));
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(2, ((List<Object>) actualFromJsonResult).size());
+    Object getResult = ((List<Object>) actualFromJsonResult).get(1);
+    assertTrue(getResult instanceof List);
+    assertEquals(1, ((List<String>) getResult).size());
+    assertEquals("singleElement", ((List<String>) getResult).get(0));
   }
 
   /**
@@ -7208,97 +6640,11 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", Integer.valueOf(1));
-    json.add("in == null", JsonNull.INSTANCE);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithNumbers();
     Class<LazilyParsedNumber> classOfT = LazilyParsedNumber.class;
 
     // Act and Assert
     assertThrows(JsonSyntaxException.class, () -> gson.fromJson(json, classOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
-   *
-   * <ul>
-   *   <li>When {@link JsonNull#INSTANCE}.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_whenInstance_thenReturnNull()
-      throws JsonSyntaxException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    Class<Object> classOfT = Object.class;
-
-    // Act and Assert
-    assertNull(gson.fromJson(JsonNull.INSTANCE, classOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Class)} with {@code JsonElement}, {@code Class}.
-   *
-   * <ul>
-   *   <li>When {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then return {@link List}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Class)"})
-  public void testFromJsonWithJsonElementClass_whenJsonArrayWithCapacityIsThree_thenReturnList()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonArray json = new JsonArray(3);
-    Class<Object> classOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, classOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof List);
-    assertTrue(((List<Object>) actualFromJsonResult).isEmpty());
   }
 
   /**
@@ -7335,95 +6681,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken() throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", Integer.valueOf(255));
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, Double>) actualFromJsonResult).size());
-    assertNull(((Map<String, Double>) actualFromJsonResult).get("in == null"));
-    assertEquals(
-        255.0d,
-        ((Map<String, Double>) actualFromJsonResult).get("type must not be null").doubleValue(),
-        0.0);
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken2() throws JsonSyntaxException, IOException {
-    // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
-        .thenReturn(Integer.valueOf(1));
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            255,
-            255,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", Integer.valueOf(255));
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(json, typeOfT));
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken3() throws JsonSyntaxException, IOException {
+  public void testFromJsonWithJsonElementTypeToken() throws JsonSyntaxException, IOException {
     // Arrange
     ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
     when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenThrow(new IOException());
@@ -7457,10 +6715,7 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", Integer.valueOf(255));
-    json.add("in == null", JsonNull.INSTANCE);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithNumbers();
     Class<Object> type = Object.class;
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
@@ -7478,7 +6733,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken4() throws JsonSyntaxException, IOException {
+  public void testFromJsonWithJsonElementTypeToken2() throws JsonSyntaxException, IOException {
     // Arrange
     ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
     when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
@@ -7513,16 +6768,99 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", Integer.valueOf(255));
-    json.add("in == null", JsonNull.INSTANCE);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithNumbers();
     Class<Object> type = Object.class;
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
     // Act and Assert
     assertThrows(JsonSyntaxException.class, () -> gson.fromJson(json, typeOfT));
     verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
+  public void testFromJsonWithJsonElementTypeToken3() throws JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenThrow(new IllegalStateException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            255,
+            255,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithNumbers();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(json, typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>Then return size is three.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
+  public void testFromJsonWithJsonElementTypeToken_givenGson_thenReturnSizeIsThree()
+      throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithNumbers();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act
+    Object actualFromJsonResult = gson.fromJson(json, typeOfT);
+
+    // Assert
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(3, ((List<Double>) actualFromJsonResult).size());
+    assertEquals(1.0d, ((List<Double>) actualFromJsonResult).get(0).doubleValue(), 0.0);
+    assertEquals(2.0d, ((List<Double>) actualFromJsonResult).get(1).doubleValue(), 0.0);
+    assertEquals(3.0d, ((List<Double>) actualFromJsonResult).get(2).doubleValue(), 0.0);
   }
 
   /**
@@ -7557,7 +6895,7 @@ public class GsonDiffblueTest {
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
    *   <li>When {@link JsonObject} (default constructor).
-   *   <li>Then return Empty.
+   *   <li>Then return {@link Map}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
@@ -7566,7 +6904,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_givenGson_whenJsonObject_thenReturnEmpty()
+  public void testFromJsonWithJsonElementTypeToken_givenGson_whenJsonObject_thenReturnMap()
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
@@ -7612,177 +6950,6 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
    *
    * <ul>
-   *   <li>Given {@code in == null}.
-   *   <li>Then return size is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_givenInNull_thenReturnSizeIsOne()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(1, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_givenProperty_thenReturnSizeIsThree()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("Property", JsonNull.INSTANCE);
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(3, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("Property"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-    assertTrue(((Map<String, Object>) actualFromJsonResult).containsKey("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_givenProperty_thenReturnSizeIsThree2()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("in == null", JsonNull.INSTANCE);
-    json.add("Property", JsonNull.INSTANCE);
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(3, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("Property"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-    assertTrue(((Map<String, Object>) actualFromJsonResult).containsKey("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_givenProperty_thenReturnSizeIsThree3()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    json.add("Property", JsonNull.INSTANCE);
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(3, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("Property"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-    assertTrue(((Map<String, Object>) actualFromJsonResult).containsKey("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_thenReturnFalse() throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonPrimitive json = new JsonPrimitive(false);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act and Assert
-    assertFalse((Boolean) gson.fromJson(json, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <ul>
    *   <li>Then return {@code in == null}.
    * </ul>
    *
@@ -7807,7 +6974,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
    *
    * <ul>
-   *   <li>Then return not first.
+   *   <li>Then return size is four.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
@@ -7816,12 +6983,11 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_thenReturnNotFirst() throws JsonSyntaxException {
+  public void testFromJsonWithJsonElementTypeToken_thenReturnSizeIsFour()
+      throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-
-    JsonArray json = new JsonArray(3);
-    json.add(false);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithMixedTypes();
     Class<Object> type = Object.class;
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
@@ -7830,15 +6996,20 @@ public class GsonDiffblueTest {
 
     // Assert
     assertTrue(actualFromJsonResult instanceof List);
-    assertEquals(1, ((List<Boolean>) actualFromJsonResult).size());
-    assertFalse(((List<Boolean>) actualFromJsonResult).get(0));
+    assertEquals(4, ((List<Object>) actualFromJsonResult).size());
+    Object getResult = ((List<Object>) actualFromJsonResult).get(3);
+    assertTrue(getResult instanceof Map);
+    assertEquals("string", ((List<Object>) actualFromJsonResult).get(0));
+    assertEquals(42.0d, ((Double) ((List<Object>) actualFromJsonResult).get(1)).doubleValue(), 0.0);
+    assertTrue(((Map<Object, Object>) getResult).isEmpty());
+    assertTrue((Boolean) ((List<Object>) actualFromJsonResult).get(2));
   }
 
   /**
    * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
    *
    * <ul>
-   *   <li>Then return not {@code type must not be null}.
+   *   <li>Then return size is one.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
@@ -7847,14 +7018,11 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_thenReturnNotTypeMustNotBeNull()
+  public void testFromJsonWithJsonElementTypeToken_thenReturnSizeIsOne()
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", false);
-    json.add("in == null", JsonNull.INSTANCE);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
     Class<Object> type = Object.class;
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
@@ -7862,17 +7030,16 @@ public class GsonDiffblueTest {
     Object actualFromJsonResult = gson.fromJson(json, typeOfT);
 
     // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, Boolean>) actualFromJsonResult).size());
-    assertNull(((Map<String, Boolean>) actualFromJsonResult).get("in == null"));
-    assertFalse(((Map<String, Boolean>) actualFromJsonResult).get("type must not be null"));
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(1, ((List<String>) actualFromJsonResult).size());
+    assertEquals("singleElement", ((List<String>) actualFromJsonResult).get(0));
   }
 
   /**
    * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
    *
    * <ul>
-   *   <li>Then return size is two.
+   *   <li>Then return size is one.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
@@ -7881,101 +7048,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_thenReturnSizeIsTwo()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("in == null"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>Then return {@code true}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_thenReturnTrue() throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonPrimitive json = new JsonPrimitive(true);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act and Assert
-    assertTrue((Boolean) gson.fromJson(json, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>Then return {@code type must not be null} is {@code in == null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_thenReturnTypeMustNotBeNullIsInNull()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", "in == null");
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, String>) actualFromJsonResult).size());
-    assertEquals(
-        "in == null", ((Map<String, String>) actualFromJsonResult).get("type must not be null"));
-    assertNull(((Map<String, String>) actualFromJsonResult).get("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>When {@link JsonNull#INSTANCE}.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_whenInstance_thenReturnNull()
+  public void testFromJsonWithJsonElementTypeToken_thenReturnSizeIsOne2()
       throws JsonSyntaxException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
@@ -8009,31 +7082,7 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act and Assert
-    assertNull(gson.fromJson(JsonNull.INSTANCE, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>When {@link JsonArray#JsonArray(int)} with capacity is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
-  public void testFromJsonWithJsonElementTypeToken_whenJsonArrayWithCapacityIsThree()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonArray json = new JsonArray(3);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
     Class<Object> type = Object.class;
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
@@ -8042,7 +7091,67 @@ public class GsonDiffblueTest {
 
     // Assert
     assertTrue(actualFromJsonResult instanceof List);
-    assertTrue(((List<Object>) actualFromJsonResult).isEmpty());
+    assertEquals(1, ((List<String>) actualFromJsonResult).size());
+    assertEquals("singleElement", ((List<String>) actualFromJsonResult).get(0));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
+   *
+   * <ul>
+   *   <li>Then return size is two.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
+  public void testFromJsonWithJsonElementTypeToken_thenReturnSizeIsTwo()
+      throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    json.add(JsonArrayTestFactory.createJsonArrayWithOneElement());
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act
+    Object actualFromJsonResult = gson.fromJson(json, typeOfT);
+
+    // Assert
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(2, ((List<Object>) actualFromJsonResult).size());
+    Object getResult = ((List<Object>) actualFromJsonResult).get(1);
+    assertTrue(getResult instanceof List);
+    assertEquals(1, ((List<String>) getResult).size());
+    assertEquals("singleElement", ((List<String>) getResult).get(0));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, TypeToken)} with {@code JsonElement}, {@code TypeToken}.
+   *
+   * <ul>
+   *   <li>Then return {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, TypeToken)"})
+  public void testFromJsonWithJsonElementTypeToken_thenReturnTrue() throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonPrimitive json = new JsonPrimitive(true);
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act and Assert
+    assertTrue((Boolean) gson.fromJson(json, typeOfT));
   }
 
   /**
@@ -8064,6 +7173,30 @@ public class GsonDiffblueTest {
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
+
+    // Act and Assert
+    assertNull(gson.fromJson(JsonNull.INSTANCE, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@link JsonNull#INSTANCE}.
+   *   <li>Then return {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
+  public void testFromJsonWithJsonElementType_givenGson_whenInstance_thenReturnNull2()
+      throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
     Class<Object> typeOfT = Object.class;
 
     // Act and Assert
@@ -8076,7 +7209,7 @@ public class GsonDiffblueTest {
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
    *   <li>When {@link JsonObject} (default constructor).
-   *   <li>Then return Empty.
+   *   <li>Then return {@link Map}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
@@ -8085,7 +7218,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_givenGson_whenJsonObject_thenReturnEmpty()
+  public void testFromJsonWithJsonElementType_givenGson_whenJsonObject_thenReturnMap()
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
@@ -8119,153 +7252,9 @@ public class GsonDiffblueTest {
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertNull(gson.fromJson((JsonElement) null, (Type) typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Given {@code in == null}.
-   *   <li>Then return size is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_givenInNull_thenReturnSizeIsOne()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> typeOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(1, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_givenProperty_thenReturnSizeIsThree()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("Property", JsonNull.INSTANCE);
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> typeOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(3, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("Property"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-    assertTrue(((Map<String, Object>) actualFromJsonResult).containsKey("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_givenProperty_thenReturnSizeIsThree2()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("in == null", JsonNull.INSTANCE);
-    json.add("Property", JsonNull.INSTANCE);
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> typeOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(3, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("Property"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-    assertTrue(((Map<String, Object>) actualFromJsonResult).containsKey("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_givenProperty_thenReturnSizeIsThree3()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    json.add("Property", JsonNull.INSTANCE);
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> typeOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(3, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("Property"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
-    assertTrue(((Map<String, Object>) actualFromJsonResult).containsKey("in == null"));
+    assertNull(gson.fromJson((JsonElement) null, GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -8295,7 +7284,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
    *
    * <ul>
-   *   <li>Then return not first.
+   *   <li>Then return size is four.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
@@ -8304,12 +7293,10 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_thenReturnNotFirst() throws JsonSyntaxException {
+  public void testFromJsonWithJsonElementType_thenReturnSizeIsFour() throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-
-    JsonArray json = new JsonArray(3);
-    json.add(false);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithMixedTypes();
     Class<Object> typeOfT = Object.class;
 
     // Act
@@ -8317,15 +7304,20 @@ public class GsonDiffblueTest {
 
     // Assert
     assertTrue(actualFromJsonResult instanceof List);
-    assertEquals(1, ((List<Boolean>) actualFromJsonResult).size());
-    assertFalse(((List<Boolean>) actualFromJsonResult).get(0));
+    assertEquals(4, ((List<Object>) actualFromJsonResult).size());
+    Object getResult = ((List<Object>) actualFromJsonResult).get(3);
+    assertTrue(getResult instanceof Map);
+    assertEquals("string", ((List<Object>) actualFromJsonResult).get(0));
+    assertEquals(42.0d, ((Double) ((List<Object>) actualFromJsonResult).get(1)).doubleValue(), 0.0);
+    assertTrue(((Map<Object, Object>) getResult).isEmpty());
+    assertTrue((Boolean) ((List<Object>) actualFromJsonResult).get(2));
   }
 
   /**
    * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
    *
    * <ul>
-   *   <li>Then return not {@code type must not be null}.
+   *   <li>Then return size is one.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
@@ -8334,24 +7326,49 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_thenReturnNotTypeMustNotBeNull()
-      throws JsonSyntaxException {
+  public void testFromJsonWithJsonElementType_thenReturnSizeIsOne() throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", false);
-    json.add("in == null", JsonNull.INSTANCE);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
     Class<Object> typeOfT = Object.class;
 
     // Act
     Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
 
     // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, Boolean>) actualFromJsonResult).size());
-    assertNull(((Map<String, Boolean>) actualFromJsonResult).get("in == null"));
-    assertFalse(((Map<String, Boolean>) actualFromJsonResult).get("type must not be null"));
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(1, ((List<String>) actualFromJsonResult).size());
+    assertEquals("singleElement", ((List<String>) actualFromJsonResult).get(0));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Then return size is three.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
+  public void testFromJsonWithJsonElementType_thenReturnSizeIsThree() throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithNumbers();
+    Class<Object> typeOfT = Object.class;
+
+    // Act
+    Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
+
+    // Assert
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(3, ((List<Double>) actualFromJsonResult).size());
+    assertEquals(1.0d, ((List<Double>) actualFromJsonResult).get(0).doubleValue(), 0.0);
+    assertEquals(2.0d, ((List<Double>) actualFromJsonResult).get(1).doubleValue(), 0.0);
+    assertEquals(3.0d, ((List<Double>) actualFromJsonResult).get(2).doubleValue(), 0.0);
   }
 
   /**
@@ -8371,26 +7388,27 @@ public class GsonDiffblueTest {
     // Arrange
     Gson gson = new Gson();
 
-    JsonObject json = new JsonObject();
-    json.add("type must not be null", JsonNull.INSTANCE);
-    json.add("in == null", JsonNull.INSTANCE);
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
+    json.add(JsonArrayTestFactory.createJsonArrayWithOneElement());
     Class<Object> typeOfT = Object.class;
 
     // Act
     Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
 
     // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, Object>) actualFromJsonResult).size());
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("in == null"));
-    assertNull(((Map<String, Object>) actualFromJsonResult).get("type must not be null"));
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(2, ((List<Object>) actualFromJsonResult).size());
+    Object getResult = ((List<Object>) actualFromJsonResult).get(1);
+    assertTrue(getResult instanceof List);
+    assertEquals(1, ((List<String>) getResult).size());
+    assertEquals("singleElement", ((List<String>) getResult).get(0));
   }
 
   /**
    * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
    *
    * <ul>
-   *   <li>Then return {@code type must not be null} doubleValue is one.
+   *   <li>When createIntegerType.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
@@ -8399,34 +7417,48 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_thenReturnTypeMustNotBeNullDoubleValueIsOne()
+  public void testFromJsonWithJsonElementType_whenCreateIntegerType() throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson(json, GsonBuilderTestFactory.createIntegerType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When createType.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
+  public void testFromJsonWithJsonElementType_whenCreateType_thenThrowJsonSyntaxException()
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
 
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", Integer.valueOf(1));
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> typeOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, Double>) actualFromJsonResult).size());
-    assertNull(((Map<String, Double>) actualFromJsonResult).get("in == null"));
-    assertEquals(
-        1.0d,
-        ((Map<String, Double>) actualFromJsonResult).get("type must not be null").doubleValue(),
-        0.0);
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
   }
 
   /**
    * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
    *
    * <ul>
-   *   <li>Then return {@code type must not be null} is {@code in == null}.
+   *   <li>When createType.
+   *   <li>Then throw {@link JsonSyntaxException}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
@@ -8435,42 +7467,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_thenReturnTypeMustNotBeNullIsInNull()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-
-    JsonObject json = new JsonObject();
-    json.addProperty("type must not be null", "in == null");
-    json.add("in == null", JsonNull.INSTANCE);
-    Class<Object> typeOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof Map);
-    assertEquals(2, ((Map<String, String>) actualFromJsonResult).size());
-    assertEquals(
-        "in == null", ((Map<String, String>) actualFromJsonResult).get("type must not be null"));
-    assertNull(((Map<String, String>) actualFromJsonResult).get("in == null"));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
-   *
-   * <ul>
-   *   <li>When {@link JsonNull#INSTANCE}.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_whenInstance_thenReturnNull()
+  public void testFromJsonWithJsonElementType_whenCreateType_thenThrowJsonSyntaxException2()
       throws JsonSyntaxException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
@@ -8504,18 +7501,19 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    Class<Object> typeOfT = Object.class;
+    JsonArray json = JsonArrayTestFactory.createJsonArrayWithOneElement();
 
     // Act and Assert
-    assertNull(gson.fromJson(JsonNull.INSTANCE, (Type) typeOfT));
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
   }
 
   /**
    * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
    *
    * <ul>
-   *   <li>When {@link JsonArray#JsonArray(int)} with capacity is three.
-   *   <li>Then return {@link List}.
+   *   <li>When {@link JsonObject} (default constructor).
+   *   <li>Then throw {@link JsonSyntaxException}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
@@ -8524,44 +7522,15 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_whenJsonArrayWithCapacityIsThree_thenReturnList()
+  public void testFromJsonWithJsonElementType_whenJsonObject_thenThrowJsonSyntaxException()
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-    JsonArray json = new JsonArray(3);
-    Class<Object> typeOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof List);
-    assertTrue(((List<Object>) actualFromJsonResult).isEmpty());
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonElement, Type)} with {@code JsonElement}, {@code Type}.
-   *
-   * <ul>
-   *   <li>When {@link JsonPrimitive#JsonPrimitive(Boolean)} with bool is {@code false}.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonElement, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonElement, Type)"})
-  public void testFromJsonWithJsonElementType_whenJsonPrimitiveWithBoolIsFalse_thenReturnFalse()
-      throws JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonPrimitive json = new JsonPrimitive(false);
-    Class<Object> typeOfT = Object.class;
+    JsonObject json = new JsonObject();
 
     // Act and Assert
-    assertFalse((Boolean) gson.fromJson(json, (Type) typeOfT));
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -8632,10 +7601,11 @@ public class GsonDiffblueTest {
             numberToNumberStrategy,
             new ArrayList<>());
     JsonReader reader = new JsonReader(new StringReader("foo"));
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson(reader, GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -8681,10 +7651,11 @@ public class GsonDiffblueTest {
             numberToNumberStrategy,
             new ArrayList<>());
     JsonReader reader = new JsonReader(new StringReader("foo"));
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson(reader, GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -8696,17 +7667,19 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType3()
-      throws JsonIOException, JsonSyntaxException, IOException {
+  public void testFromJsonWithJsonReaderType3() throws JsonIOException, JsonSyntaxException {
     // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
-        .thenThrow(new IllegalStateException());
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(new FutureTypeAdapter<>());
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
     ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
 
     Gson gson =
@@ -8732,12 +7705,69 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    JsonReader reader = new JsonReader(new StringReader("42"));
-    Class<Object> typeOfT = Object.class;
+    JsonReader reader = new JsonReader(new StringReader("foo"));
 
     // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
+  public void testFromJsonWithJsonReaderType4() throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenThrow(new IllegalStateException());
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonReader reader = new JsonReader(new StringReader("foo"));
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
   }
 
   /**
@@ -8769,7 +7799,7 @@ public class GsonDiffblueTest {
             true,
             true,
             Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LEGACY_STRICT,
+            Strictness.LENIENT,
             true,
             true,
             LongSerializationPolicy.DEFAULT,
@@ -8787,7 +7817,7 @@ public class GsonDiffblueTest {
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
     // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
+    assertEquals("foo", gson.fromJson(reader, typeOfT));
   }
 
   /**
@@ -8852,6 +7882,167 @@ public class GsonDiffblueTest {
   public void testFromJsonWithJsonReaderTypeToken3()
       throws JsonIOException, JsonSyntaxException, IOException {
     // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenThrow(new IOException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonTreeReader reader = new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithNumbers());
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
+  public void testFromJsonWithJsonReaderTypeToken4()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenThrow(new EOFException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonTreeReader reader = new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithNumbers());
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
+  public void testFromJsonWithJsonReaderTypeToken5()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
+        .thenThrow(new IllegalStateException());
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonTreeReader reader = new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithNumbers());
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
+    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
+  public void testFromJsonWithJsonReaderTypeToken6()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
@@ -8883,17 +8074,25 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    JsonTreeReader reader = new JsonTreeReader(JsonNull.INSTANCE);
+    JsonTreeReader reader = new JsonTreeReader(new JsonPrimitive(true));
     Class<Object> type = Object.class;
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
-    // Act and Assert
-    assertNull(gson.fromJson(reader, typeOfT));
+    // Act
+    Object actualFromJsonResult = gson.fromJson(reader, typeOfT);
+
+    // Assert
     assertFalse(reader.hasNext());
+    assertTrue((Boolean) actualFromJsonResult);
   }
 
   /**
    * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>Then return size is three.
+   * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
    */
@@ -8901,156 +8100,23 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken4()
-      throws JsonIOException, JsonSyntaxException, IOException {
+  public void testFromJsonWithJsonReaderTypeToken_givenGson_thenReturnSizeIsThree()
+      throws JsonIOException, JsonSyntaxException {
     // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenThrow(new IOException());
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    JsonReader reader = new JsonReader(new StringReader("42"));
+    Gson gson = new Gson();
+    JsonTreeReader reader = new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithNumbers());
     Class<Object> type = Object.class;
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
-    // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
-  }
+    // Act
+    Object actualFromJsonResult = gson.fromJson(reader, typeOfT);
 
-  /**
-   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken5()
-      throws JsonIOException, JsonSyntaxException, IOException {
-    // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
-        .thenThrow(new EOFException());
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    JsonReader reader = new JsonReader(new StringReader("42"));
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken6()
-      throws JsonIOException, JsonSyntaxException, IOException {
-    // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
-        .thenThrow(new IllegalStateException());
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    JsonReader reader = new JsonReader(new StringReader("42"));
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+    // Assert
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(3, ((List<Double>) actualFromJsonResult).size());
+    assertEquals(1.0d, ((List<Double>) actualFromJsonResult).get(0).doubleValue(), 0.0);
+    assertEquals(2.0d, ((List<Double>) actualFromJsonResult).get(1).doubleValue(), 0.0);
+    assertEquals(3.0d, ((List<Double>) actualFromJsonResult).get(2).doubleValue(), 0.0);
   }
 
   /**
@@ -9078,31 +8144,6 @@ public class GsonDiffblueTest {
 
     // Act and Assert
     assertEquals("foo", gson.fromJson(reader, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>Then return doubleValue is forty-two.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken_thenReturnDoubleValueIsFortyTwo()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonReader reader = new JsonReader(new StringReader("42"));
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act and Assert
-    assertEquals(42.0d, ((Double) gson.fromJson(reader, typeOfT)).doubleValue(), 0.0);
   }
 
   /**
@@ -9165,7 +8206,7 @@ public class GsonDiffblueTest {
    * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
    *
    * <ul>
-   *   <li>Then return {@code false}.
+   *   <li>Then return {@link Map}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
@@ -9174,7 +8215,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken_thenReturnFalse2()
+  public void testFromJsonWithJsonReaderTypeToken_thenReturnMap()
       throws JsonIOException, JsonSyntaxException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
@@ -9195,7 +8236,7 @@ public class GsonDiffblueTest {
             true,
             true,
             Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
+            Strictness.LEGACY_STRICT,
             true,
             true,
             LongSerializationPolicy.DEFAULT,
@@ -9208,65 +8249,7 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-    JsonReader reader = new JsonReader(in);
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act and Assert
-    assertFalse((Boolean) gson.fromJson(reader, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>Then return intValue is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken_thenReturnIntValueIsOne()
-      throws JsonIOException, JsonSyntaxException, IOException {
-    // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    Integer valueOfResult = Integer.valueOf(1);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenReturn(valueOfResult);
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    JsonReader reader = new JsonReader(new StringReader("42"));
+    JsonTreeReader reader = new JsonTreeReader(new JsonObject());
     Class<Object> type = Object.class;
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
@@ -9274,16 +8257,15 @@ public class GsonDiffblueTest {
     Object actualFromJsonResult = gson.fromJson(reader, typeOfT);
 
     // Assert
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
-    assertEquals(1, ((Integer) actualFromJsonResult).intValue());
-    assertSame(valueOfResult, actualFromJsonResult);
+    assertTrue(actualFromJsonResult instanceof Map);
+    assertTrue(((Map<Object, Object>) actualFromJsonResult).isEmpty());
   }
 
   /**
    * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
    *
    * <ul>
-   *   <li>Then return {@code type}.
+   *   <li>Then return {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
@@ -9292,24 +8274,54 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken_thenReturnType()
-      throws JsonIOException, JsonSyntaxException {
+  public void testFromJsonWithJsonReaderTypeToken_thenReturnNull()
+      throws JsonIOException, JsonSyntaxException, IOException {
     // Arrange
-    Gson gson = new Gson();
-    JsonReader reader = new JsonReader(new StringReader("type must not be null"));
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonTreeReader reader = new JsonTreeReader(JsonNull.INSTANCE);
     Class<Object> type = Object.class;
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
     // Act and Assert
-    assertEquals("type", gson.fromJson(reader, typeOfT));
+    assertNull(gson.fromJson(reader, typeOfT));
+    assertFalse(reader.hasNext());
   }
 
   /**
    * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
    *
    * <ul>
-   *   <li>When {@link FileReader#FileReader(FileDescriptor)} with {@link
-   *       FileDescriptor#FileDescriptor()}.
+   *   <li>Then return size is one.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
@@ -9318,7 +8330,69 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken_whenFileReaderWithFileDescriptor()
+  public void testFromJsonWithJsonReaderTypeToken_thenReturnSizeIsOne()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonTreeReader reader =
+        new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement());
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act
+    Object actualFromJsonResult = gson.fromJson(reader, typeOfT);
+
+    // Assert
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(1, ((List<String>) actualFromJsonResult).size());
+    assertEquals("singleElement", ((List<String>) actualFromJsonResult).get(0));
+    assertFalse(reader.hasNext());
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
+   *
+   * <ul>
+   *   <li>Then return size is two.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
+  public void testFromJsonWithJsonReaderTypeToken_thenReturnSizeIsTwo()
       throws JsonIOException, JsonSyntaxException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
@@ -9339,7 +8413,7 @@ public class GsonDiffblueTest {
             true,
             true,
             Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
+            Strictness.LEGACY_STRICT,
             true,
             true,
             LongSerializationPolicy.DEFAULT,
@@ -9352,63 +8426,129 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    JsonReader reader = new JsonReader(new FileReader(new FileDescriptor()));
+    JsonTreeReader reader = new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithBooleans());
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act
+    Object actualFromJsonResult = gson.fromJson(reader, typeOfT);
+
+    // Assert
+    assertTrue(actualFromJsonResult instanceof List);
+    assertEquals(2, ((List<Boolean>) actualFromJsonResult).size());
+    assertFalse(((List<Boolean>) actualFromJsonResult).get(1));
+    assertTrue(((List<Boolean>) actualFromJsonResult).get(0));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
+   *
+   * <ul>
+   *   <li>Then return {@code type must not be null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
+  public void testFromJsonWithJsonReaderTypeToken_thenReturnTypeMustNotBeNull()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonTreeReader reader = new JsonTreeReader(new JsonPrimitive("type must not be null"));
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeOfT = TypeToken.get(type);
+
+    // Act and Assert
+    assertEquals("type must not be null", gson.fromJson(reader, typeOfT));
+    assertFalse(reader.hasNext());
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
+   *
+   * <ul>
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
+  public void testFromJsonWithJsonReaderTypeToken_thenThrowJsonSyntaxException()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonReader reader = new JsonReader(new StringReader("foo"));
     Class<Object> type = Object.class;
     TypeToken<Object> typeOfT = TypeToken.get(type);
 
     // Act and Assert
     assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with empty string.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken_whenStringReaderWithEmptyString()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonReader reader = new JsonReader(new StringReader(""));
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act and Assert
-    assertNull(gson.fromJson(reader, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
-   *
-   * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@code FALSE}.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken_whenStringReaderWithFalse_thenReturnFalse()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonReader reader = new JsonReader(new StringReader("FALSE"));
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
-
-    // Act and Assert
-    assertFalse((Boolean) gson.fromJson(reader, typeOfT));
   }
 
   /**
@@ -9438,59 +8578,54 @@ public class GsonDiffblueTest {
   }
 
   /**
-   * Test {@link Gson#fromJson(JsonReader, TypeToken)} with {@code JsonReader}, {@code TypeToken}.
+   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
    *
    * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@code foo}.
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@code Object}.
    *   <li>Then return {@code foo}.
    * </ul>
    *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, TypeToken)}
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, TypeToken)"})
-  public void testFromJsonWithJsonReaderTypeToken_whenStringReaderWithFoo_thenReturnFoo2()
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
+  public void testFromJsonWithJsonReaderType_givenGson_whenJavaLangObject_thenReturnFoo()
       throws JsonIOException, JsonSyntaxException {
     // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
+    Gson gson = new Gson();
     JsonReader reader = new JsonReader(new StringReader("foo"));
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeOfT = TypeToken.get(type);
+    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
     assertEquals("foo", gson.fromJson(reader, typeOfT));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code 42}.
+   *   <li>Then return {@code 42}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
+  public void testFromJsonWithJsonReaderType_givenGson_whenStringReaderWith42_thenReturn42()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonReader reader = new JsonReader(new StringReader("42"));
+
+    // Act and Assert
+    assertEquals("42", gson.fromJson(reader, GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -9513,10 +8648,77 @@ public class GsonDiffblueTest {
     // Arrange
     Gson gson = new Gson();
     JsonReader reader = new JsonReader(new StringReader("foo"));
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertEquals("foo", gson.fromJson(reader, typeOfT));
+    assertEquals("foo", gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@code Object}.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
+  public void testFromJsonWithJsonReaderType_givenJavaLangObject_thenThrowJsonSyntaxException()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    Gson context = new Gson();
+    FutureTypeAdapter<Object> componentTypeAdapter = new FutureTypeAdapter<>();
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> arrayTypeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(arrayTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonReader reader = new JsonReader(new StringReader("foo"));
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
   }
 
   /**
@@ -9539,18 +8741,17 @@ public class GsonDiffblueTest {
 
     JsonReader reader = new JsonReader(new StringReader("foo"));
     reader.setStrictness(Strictness.LENIENT);
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertEquals("foo", gson.fromJson(reader, typeOfT));
+    assertEquals("foo", gson.fromJson(reader, GsonBuilderTestFactory.createType()));
   }
 
   /**
    * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
    *
    * <ul>
-   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} throw
-   *       {@link EOFException#EOFException()}.
+   *   <li>Given {@link ObjectTypeAdapter} {@link ObjectTypeAdapter#read(JsonReader)} throw {@link
+   *       EOFException#EOFException()}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
@@ -9559,17 +8760,23 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_givenToNumberStrategyReadNumberThrowEOFException()
+  public void testFromJsonWithJsonReaderType_givenObjectTypeAdapterReadThrowEOFException()
       throws JsonIOException, JsonSyntaxException, IOException {
     // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any()))
-        .thenThrow(new EOFException());
+    ObjectTypeAdapter objectTypeAdapter = mock(ObjectTypeAdapter.class);
+    when(objectTypeAdapter.read(Mockito.<JsonReader>any())).thenThrow(new EOFException());
+
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(objectTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
     ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
 
     Gson gson =
@@ -9595,20 +8802,22 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    JsonReader reader = new JsonReader(new StringReader("42"));
-    Class<Object> typeOfT = Object.class;
+    JsonReader reader = new JsonReader(new StringReader("foo"));
 
     // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    verify(objectTypeAdapter).read(isA(JsonReader.class));
   }
 
   /**
    * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
    *
    * <ul>
-   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} throw
-   *       {@link IOException#IOException()}.
+   *   <li>Given {@link ObjectTypeAdapter} {@link ObjectTypeAdapter#read(JsonReader)} throw {@link
+   *       IOException#IOException()}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
@@ -9617,71 +8826,22 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_givenToNumberStrategyReadNumberThrowIOException()
+  public void testFromJsonWithJsonReaderType_givenObjectTypeAdapterReadThrowIOException()
       throws JsonIOException, JsonSyntaxException, IOException {
     // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenThrow(new IOException());
+    ObjectTypeAdapter objectTypeAdapter = mock(ObjectTypeAdapter.class);
+    when(objectTypeAdapter.read(Mockito.<JsonReader>any())).thenThrow(new IOException());
+
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(objectTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    JsonReader reader = new JsonReader(new StringReader("42"));
-    Class<Object> typeOfT = Object.class;
-
-    // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Then not {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
-   *       JsonNull#INSTANCE} hasNext.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_thenNotJsonTreeReaderWithElementIsInstanceHasNext()
-      throws JsonIOException, JsonSyntaxException, IOException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
     ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
     ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
 
@@ -9708,317 +8868,20 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    JsonTreeReader reader = new JsonTreeReader(JsonNull.INSTANCE);
-    Class<Object> typeOfT = Object.class;
+    JsonReader reader = new JsonReader(new StringReader("foo"));
 
     // Act and Assert
-    assertNull(gson.fromJson(reader, typeOfT));
-    assertFalse(reader.hasNext());
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    verify(objectTypeAdapter).read(isA(JsonReader.class));
   }
 
   /**
    * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
    *
    * <ul>
-   *   <li>Then return doubleValue is forty-two.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_thenReturnDoubleValueIsFortyTwo()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonReader reader = new JsonReader(new StringReader("42"));
-    Class<Object> typeOfT = Object.class;
-
-    // Act and Assert
-    assertEquals(42.0d, ((Double) gson.fromJson(reader, typeOfT)).doubleValue(), 0.0);
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Then return intValue is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_thenReturnIntValueIsOne()
-      throws JsonIOException, JsonSyntaxException, IOException {
-    // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    Integer valueOfResult = Integer.valueOf(1);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenReturn(valueOfResult);
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    JsonReader reader = new JsonReader(new StringReader("42"));
-    Class<Object> typeOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(reader, typeOfT);
-
-    // Assert
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
-    assertEquals(1, ((Integer) actualFromJsonResult).intValue());
-    assertSame(valueOfResult, actualFromJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Then return {@link LazilyParsedNumber}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_thenReturnLazilyParsedNumber()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    JsonReader reader = new JsonReader(new StringReader("42"));
-    Class<LazilyParsedNumber> typeOfT = LazilyParsedNumber.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(reader, typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof LazilyParsedNumber);
-    assertEquals("42", actualFromJsonResult.toString());
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Then return {@code type}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_thenReturnType()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonReader reader = new JsonReader(new StringReader("type must not be null"));
-    Class<Object> typeOfT = Object.class;
-
-    // Act and Assert
-    assertEquals("type", gson.fromJson(reader, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>When {@link FileReader#FileReader(FileDescriptor)} with {@link
-   *       FileDescriptor#FileDescriptor()}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_whenFileReaderWithFileDescriptor()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    JsonReader reader = new JsonReader(new FileReader(new FileDescriptor()));
-    Class<Object> typeOfT = Object.class;
-
-    // Act and Assert
-    assertThrows(JsonSyntaxException.class, () -> gson.fromJson(reader, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with empty string.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_whenStringReaderWithEmptyString_thenReturnNull()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonReader reader = new JsonReader(new StringReader(""));
-    Class<Object> typeOfT = Object.class;
-
-    // Act and Assert
-    assertNull(gson.fromJson(reader, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_whenStringReaderWithFalseToString_thenReturnFalse()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-    JsonReader reader = new JsonReader(in);
-    Class<Object> typeOfT = Object.class;
-
-    // Act and Assert
-    assertFalse((Boolean) gson.fromJson(reader, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@code FALSE}.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_whenStringReaderWithFalse_thenReturnFalse()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    JsonReader reader = new JsonReader(new StringReader("FALSE"));
-    Class<Object> typeOfT = Object.class;
-
-    // Act and Assert
-    assertFalse((Boolean) gson.fromJson(reader, typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@code foo}.
    *   <li>Then return {@code foo}.
    * </ul>
    *
@@ -10028,7 +8891,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
-  public void testFromJsonWithJsonReaderType_whenStringReaderWithFoo_thenReturnFoo()
+  public void testFromJsonWithJsonReaderType_thenReturnFoo()
       throws JsonIOException, JsonSyntaxException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
@@ -10063,10 +8926,238 @@ public class GsonDiffblueTest {
             numberToNumberStrategy,
             new ArrayList<>());
     JsonReader reader = new JsonReader(new StringReader("foo"));
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertEquals("foo", gson.fromJson(reader, typeOfT));
+    assertEquals("foo", gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Then return {@code type}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
+  public void testFromJsonWithJsonReaderType_thenReturnType()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonReader reader = new JsonReader(new StringReader("type must not be null"));
+
+    // Act and Assert
+    assertEquals("type", gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
+  public void testFromJsonWithJsonReaderType_thenThrowIllegalArgumentException()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    ObjectTypeAdapter objectTypeAdapter = mock(ObjectTypeAdapter.class);
+    when(objectTypeAdapter.read(Mockito.<JsonReader>any()))
+        .thenThrow(new IllegalArgumentException());
+
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(objectTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonReader reader = new JsonReader(new StringReader("foo"));
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    verify(objectTypeAdapter).read(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Then throw {@link JsonIOException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
+  public void testFromJsonWithJsonReaderType_thenThrowJsonIOException()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    ObjectTypeAdapter objectTypeAdapter = mock(ObjectTypeAdapter.class);
+    when(objectTypeAdapter.read(Mockito.<JsonReader>any()))
+        .thenThrow(new JsonIOException(Boolean.FALSE.toString()));
+
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(objectTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    JsonTreeReader reader =
+        new JsonTreeReader(JsonArrayTestFactory.createJsonArrayWithOneElement());
+
+    // Act and Assert
+    assertThrows(
+        JsonIOException.class, () -> gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    verify(objectTypeAdapter).read(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with empty string.
+   *   <li>Then return {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
+  public void testFromJsonWithJsonReaderType_whenStringReaderWithEmptyString_thenReturnNull()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonReader reader = new JsonReader(new StringReader(""));
+
+    // Act and Assert
+    assertNull(gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
+  public void testFromJsonWithJsonReaderType_whenStringReaderWithFalseToString()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    StringReader in = new StringReader(Boolean.FALSE.toString());
+    JsonReader reader = new JsonReader(in);
+
+    // Act and Assert
+    assertEquals(
+        Boolean.FALSE.toString(), gson.fromJson(reader, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(JsonReader, Type)} with {@code JsonReader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code FALSE}.
+   *   <li>Then return {@link Boolean#FALSE} toString.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(JsonReader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(JsonReader, Type)"})
+  public void testFromJsonWithJsonReaderType_whenStringReaderWithFalse_thenReturnFalseToString()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    JsonReader reader = new JsonReader(new StringReader("FALSE"));
+
+    // Act and Assert
+    assertEquals(
+        Boolean.FALSE.toString(), gson.fromJson(reader, GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -10962,6 +10053,159 @@ public class GsonDiffblueTest {
   }
 
   /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType() throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("foo");
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType2() throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("foo");
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType3() throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenThrow(new IllegalStateException());
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("foo");
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+  }
+
+  /**
    * Test {@link Gson#fromJson(Reader, TypeToken)} with {@code Reader}, {@code TypeToken}.
    *
    * <p>Method under test: {@link Gson#fromJson(Reader, TypeToken)}
@@ -11761,7 +11005,8 @@ public class GsonDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
-   *   <li>Then return doubleValue is forty-two.
+   *   <li>When {@code Object}.
+   *   <li>Then return {@code foo}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
@@ -11770,15 +11015,15 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
-  public void testFromJsonWithReaderType_givenGson_thenReturnDoubleValueIsFortyTwo()
+  public void testFromJsonWithReaderType_givenGson_whenJavaLangObject_thenReturnFoo()
       throws JsonIOException, JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-    StringReader json = new StringReader("42");
+    StringReader json = new StringReader("foo");
     Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertEquals(42.0d, ((Double) gson.fromJson(json, (Type) typeOfT)).doubleValue(), 0.0);
+    assertEquals("foo", gson.fromJson(json, (Type) typeOfT));
   }
 
   /**
@@ -11786,8 +11031,8 @@ public class GsonDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
-   *   <li>When {@link StringReader#StringReader(String)} with {@code FALSE}.
-   *   <li>Then return {@code false}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code 42}.
+   *   <li>Then return {@code 42}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
@@ -11796,15 +11041,14 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
-  public void testFromJsonWithReaderType_givenGson_whenStringReaderWithFalse_thenReturnFalse()
+  public void testFromJsonWithReaderType_givenGson_whenStringReaderWith42_thenReturn42()
       throws JsonIOException, JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-    StringReader json = new StringReader("FALSE");
-    Class<Object> typeOfT = Object.class;
+    StringReader json = new StringReader("42");
 
     // Act and Assert
-    assertFalse((Boolean) gson.fromJson(json, (Type) typeOfT));
+    assertEquals("42", gson.fromJson(json, GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -11827,18 +11071,17 @@ public class GsonDiffblueTest {
     // Arrange
     Gson gson = new Gson();
     StringReader json = new StringReader("foo");
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertEquals("foo", gson.fromJson(json, (Type) typeOfT));
+    assertEquals("foo", gson.fromJson(json, GsonBuilderTestFactory.createType()));
   }
 
   /**
    * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
    *
    * <ul>
-   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} return
-   *       {@code null}.
+   *   <li>Given {@code Object}.
+   *   <li>Then calls {@link TypeAdapterFactory#create(Gson, TypeToken)}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
@@ -11847,73 +11090,89 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
-  public void testFromJsonWithReaderType_givenToNumberStrategyReadNumberReturnNull()
+  public void testFromJsonWithReaderType_givenJavaLangObject_thenCallsCreate()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    Gson context = new Gson();
+    FutureTypeAdapter<Object> componentTypeAdapter = new FutureTypeAdapter<>();
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> arrayTypeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(arrayTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("foo");
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link ObjectTypeAdapter} {@link ObjectTypeAdapter#read(JsonReader)} throw {@link
+   *       EOFException#EOFException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_givenObjectTypeAdapterReadThrowEOFException()
       throws JsonIOException, JsonSyntaxException, IOException {
     // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenReturn(null);
+    ObjectTypeAdapter objectTypeAdapter = mock(ObjectTypeAdapter.class);
+    when(objectTypeAdapter.read(Mockito.<JsonReader>any())).thenThrow(new EOFException());
+
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(objectTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
-    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
-
-    Gson gson =
-        new Gson(
-            Excluder.DEFAULT,
-            fieldNamingStrategy,
-            instanceCreators,
-            true,
-            true,
-            true,
-            true,
-            Gson.DEFAULT_FORMATTING_STYLE,
-            Strictness.LENIENT,
-            true,
-            true,
-            LongSerializationPolicy.DEFAULT,
-            "2020-03-01",
-            1,
-            1,
-            builderFactories,
-            builderHierarchyFactories,
-            factoriesToBeAdded,
-            objectToNumberStrategy,
-            numberToNumberStrategy,
-            new ArrayList<>());
-    StringReader json = new StringReader("42");
-    Class<Object> typeOfT = Object.class;
-
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
-
-    // Assert
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
-    assertNull(actualFromJsonResult);
-  }
-
-  /**
-   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>Then return {@link LazilyParsedNumber}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
-  public void testFromJsonWithReaderType_thenReturnLazilyParsedNumber()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
     ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
     ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
 
@@ -11940,22 +11199,21 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    StringReader json = new StringReader("42");
-    Class<LazilyParsedNumber> typeOfT = LazilyParsedNumber.class;
+    StringReader json = new StringReader("foo");
 
-    // Act
-    Object actualFromJsonResult = gson.fromJson(json, (Type) typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof LazilyParsedNumber);
-    assertEquals("42", actualFromJsonResult.toString());
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    verify(objectTypeAdapter).read(isA(JsonReader.class));
   }
 
   /**
    * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
    *
    * <ul>
-   *   <li>Then return ÿ start of heading ÿ.
+   *   <li>Given {@link ObjectTypeAdapter} {@link ObjectTypeAdapter#read(JsonReader)} throw {@link
+   *       IOException#IOException()}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
@@ -11964,14 +11222,22 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
-  public void testFromJsonWithReaderType_thenReturnŸStartOfHeadingŸ()
+  public void testFromJsonWithReaderType_givenObjectTypeAdapterReadThrowIOException()
       throws JsonIOException, JsonSyntaxException, IOException {
     // Arrange
+    ObjectTypeAdapter objectTypeAdapter = mock(ObjectTypeAdapter.class);
+    when(objectTypeAdapter.read(Mockito.<JsonReader>any())).thenThrow(new IOException());
+
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(objectTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
     ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
     ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
 
@@ -11998,20 +11264,21 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    CharArrayReader json = new CharArrayReader("\u0001ÿ\u0001ÿ".toCharArray());
-    Class<Object> typeOfT = Object.class;
+    StringReader json = new StringReader("foo");
 
     // Act and Assert
-    assertEquals("\u0001ÿ\u0001ÿ", gson.fromJson(json, (Type) typeOfT));
-    assertFalse(json.ready());
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    verify(objectTypeAdapter).read(isA(JsonReader.class));
   }
 
   /**
    * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
    *
    * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with empty string.
-   *   <li>Then return {@code null}.
+   *   <li>Given {@link TypeAdapterFactory} {@link TypeAdapterFactory#create(Gson, TypeToken)}
+   *       return {@link FutureTypeAdapter} (default constructor).
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
@@ -12020,47 +11287,57 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
-  public void testFromJsonWithReaderType_whenStringReaderWithEmptyString_thenReturnNull()
+  public void testFromJsonWithReaderType_givenTypeAdapterFactoryCreateReturnFutureTypeAdapter()
       throws JsonIOException, JsonSyntaxException {
     // Arrange
-    Gson gson = new Gson();
-    StringReader json = new StringReader("");
-    Class<Object> typeOfT = Object.class;
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(new FutureTypeAdapter<>());
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("foo");
 
     // Act and Assert
-    assertNull(gson.fromJson(json, (Type) typeOfT));
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
   }
 
   /**
    * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
    *
    * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
-  public void testFromJsonWithReaderType_whenStringReaderWithFalseToString_thenReturnFalse()
-      throws JsonIOException, JsonSyntaxException {
-    // Arrange
-    Gson gson = new Gson();
-    StringReader json = new StringReader(Boolean.FALSE.toString());
-    Class<Object> typeOfT = Object.class;
-
-    // Act and Assert
-    assertFalse((Boolean) gson.fromJson(json, (Type) typeOfT));
-  }
-
-  /**
-   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
-   *
-   * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@code foo}.
    *   <li>Then return {@code foo}.
    * </ul>
    *
@@ -12070,7 +11347,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
-  public void testFromJsonWithReaderType_whenStringReaderWithFoo_thenReturnFoo()
+  public void testFromJsonWithReaderType_thenReturnFoo()
       throws JsonIOException, JsonSyntaxException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
@@ -12105,10 +11382,353 @@ public class GsonDiffblueTest {
             numberToNumberStrategy,
             new ArrayList<>());
     StringReader json = new StringReader("foo");
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertEquals("foo", gson.fromJson(json, (Type) typeOfT));
+    assertEquals("foo", gson.fromJson(json, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Then return ÿ start of heading ÿ.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_thenReturnŸStartOfHeadingŸ()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    Gson gson = new Gson();
+    CharArrayReader json = new CharArrayReader("\u0001ÿ\u0001ÿ".toCharArray());
+
+    // Act and Assert
+    assertEquals("\u0001ÿ\u0001ÿ", gson.fromJson(json, GsonBuilderTestFactory.createType()));
+    assertFalse(json.ready());
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_thenThrowIllegalArgumentException()
+      throws JsonIOException, JsonSyntaxException, IOException {
+    // Arrange
+    ObjectTypeAdapter objectTypeAdapter = mock(ObjectTypeAdapter.class);
+    when(objectTypeAdapter.read(Mockito.<JsonReader>any()))
+        .thenThrow(new IllegalArgumentException());
+
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(objectTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("foo");
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    verify(objectTypeAdapter).read(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link FileReader#FileReader(FileDescriptor)} with {@link
+   *       FileDescriptor#FileDescriptor()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenFileReaderWithFileDescriptor()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    FileReader json = new FileReader(new FileDescriptor());
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with empty string.
+   *   <li>Then return {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenStringReaderWithEmptyString_thenReturnNull()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    StringReader json = new StringReader("");
+
+    // Act and Assert
+    assertNull(gson.fromJson(json, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenStringReaderWithFalseToString()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    StringReader json = new StringReader(Boolean.FALSE.toString());
+
+    // Act and Assert
+    assertEquals(
+        Boolean.FALSE.toString(), gson.fromJson(json, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code FALSE}.
+   *   <li>Then return {@link Boolean#FALSE} toString.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenStringReaderWithFalse_thenReturnFalseToString()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    StringReader json = new StringReader("FALSE");
+
+    // Act and Assert
+    assertEquals(
+        Boolean.FALSE.toString(), gson.fromJson(json, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code in == null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenStringReaderWithInNull()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    StringReader json = new StringReader("in == null");
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code in == null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenStringReaderWithInNull2()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("in == null");
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code type must not be null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenStringReaderWithTypeMustNotBeNull()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+    StringReader json = new StringReader("type must not be null");
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(Reader, Type)} with {@code Reader}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code type must not be null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(Reader, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(Reader, Type)"})
+  public void testFromJsonWithReaderType_whenStringReaderWithTypeMustNotBeNull2()
+      throws JsonIOException, JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+    StringReader json = new StringReader("type must not be null");
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class, () -> gson.fromJson(json, GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -12807,6 +12427,159 @@ public class GsonDiffblueTest {
   }
 
   /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType() throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LEGACY_STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("Json", GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType2() throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.STRICT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("type must not be null", GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType3() throws JsonSyntaxException {
+    // Arrange
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenThrow(new IllegalStateException());
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("Json", GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+  }
+
+  /**
    * Test {@link Gson#fromJson(String, TypeToken)} with {@code String}, {@code TypeToken}.
    *
    * <p>Method under test: {@link Gson#fromJson(String, TypeToken)}
@@ -13461,7 +13234,7 @@ public class GsonDiffblueTest {
    * <ul>
    *   <li>Given {@link Gson#Gson()}.
    *   <li>When {@code 42}.
-   *   <li>Then return doubleValue is forty-two.
+   *   <li>Then return {@code 42}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(String, Type)}
@@ -13470,14 +13243,13 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
-  public void testFromJsonWithStringType_givenGson_when42_thenReturnDoubleValueIsFortyTwo()
+  public void testFromJsonWithStringType_givenGson_when42_thenReturn42()
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertEquals(42.0d, ((Double) gson.fromJson("42", (Type) typeOfT)).doubleValue(), 0.0);
+    assertEquals("42", gson.fromJson("42", GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -13499,10 +13271,60 @@ public class GsonDiffblueTest {
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
+
+    // Act and Assert
+    assertNull(gson.fromJson("", GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@code in == null}.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_givenGson_whenInNull_thenThrowJsonSyntaxException()
+      throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("in == null", GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@code Object}.
+   *   <li>Then return {@code Json}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_givenGson_whenJavaLangObject_thenReturnJson()
+      throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
     Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertNull(gson.fromJson("", (Type) typeOfT));
+    assertEquals("Json", gson.fromJson("Json", (Type) typeOfT));
   }
 
   /**
@@ -13524,10 +13346,9 @@ public class GsonDiffblueTest {
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertEquals("Json", gson.fromJson("Json", (Type) typeOfT));
+    assertEquals("Json", gson.fromJson("Json", GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -13549,18 +13370,17 @@ public class GsonDiffblueTest {
       throws JsonSyntaxException {
     // Arrange
     Gson gson = new Gson();
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertNull(gson.fromJson((String) null, (Type) typeOfT));
+    assertNull(gson.fromJson((String) null, GsonBuilderTestFactory.createType()));
   }
 
   /**
    * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
    *
    * <ul>
-   *   <li>Given {@link ToNumberStrategy} {@link ToNumberStrategy#readNumber(JsonReader)} return
-   *       {@code null}.
+   *   <li>Given {@link Gson#Gson()}.
+   *   <li>When {@code type must not be null}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(String, Type)}
@@ -13569,16 +13389,116 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
-  public void testFromJsonWithStringType_givenToNumberStrategyReadNumberReturnNull()
+  public void testFromJsonWithStringType_givenGson_whenTypeMustNotBeNull()
+      throws JsonSyntaxException {
+    // Arrange
+    Gson gson = new Gson();
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("type must not be null", GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@code Object}.
+   *   <li>When {@code Json}.
+   *   <li>Then calls {@link TypeAdapterFactory#create(Gson, TypeToken)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_givenJavaLangObject_whenJson_thenCallsCreate()
+      throws JsonSyntaxException {
+    // Arrange
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    Gson context = new Gson();
+    FutureTypeAdapter<Object> componentTypeAdapter = new FutureTypeAdapter<>();
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> arrayTypeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(arrayTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("Json", GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Given {@link ObjectTypeAdapter} {@link ObjectTypeAdapter#read(JsonReader)} throw {@link
+   *       EOFException#EOFException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_givenObjectTypeAdapterReadThrowEOFException()
       throws JsonSyntaxException, IOException {
     // Arrange
-    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
-    when(objectToNumberStrategy.readNumber(Mockito.<JsonReader>any())).thenReturn(null);
+    ObjectTypeAdapter objectTypeAdapter = mock(ObjectTypeAdapter.class);
+    when(objectTypeAdapter.read(Mockito.<JsonReader>any())).thenThrow(new EOFException());
+
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(objectTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
     ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
 
     Gson gson =
@@ -13604,21 +13524,21 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    Class<Object> typeOfT = Object.class;
 
-    // Act
-    Object actualFromJsonResult = gson.fromJson("42", (Type) typeOfT);
-
-    // Assert
-    verify(objectToNumberStrategy).readNumber(isA(JsonReader.class));
-    assertNull(actualFromJsonResult);
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("Json", GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    verify(objectTypeAdapter).read(isA(JsonReader.class));
   }
 
   /**
    * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
    *
    * <ul>
-   *   <li>Then return {@link LazilyParsedNumber}.
+   *   <li>Given {@link ObjectTypeAdapter} {@link ObjectTypeAdapter#read(JsonReader)} throw {@link
+   *       IOException#IOException()}.
    * </ul>
    *
    * <p>Method under test: {@link Gson#fromJson(String, Type)}
@@ -13627,13 +13547,22 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
-  public void testFromJsonWithStringType_thenReturnLazilyParsedNumber() throws JsonSyntaxException {
+  public void testFromJsonWithStringType_givenObjectTypeAdapterReadThrowIOException()
+      throws JsonSyntaxException, IOException {
     // Arrange
+    ObjectTypeAdapter objectTypeAdapter = mock(ObjectTypeAdapter.class);
+    when(objectTypeAdapter.read(Mockito.<JsonReader>any())).thenThrow(new IOException());
+
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(objectTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
     ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
-    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
     ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
     ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
 
@@ -13660,21 +13589,80 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    Class<LazilyParsedNumber> typeOfT = LazilyParsedNumber.class;
 
-    // Act
-    Object actualFromJsonResult = gson.fromJson("42", (Type) typeOfT);
-
-    // Assert
-    assertTrue(actualFromJsonResult instanceof LazilyParsedNumber);
-    assertEquals("42", actualFromJsonResult.toString());
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("Json", GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    verify(objectTypeAdapter).read(isA(JsonReader.class));
   }
 
   /**
    * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
    *
    * <ul>
-   *   <li>When {@code Json}.
+   *   <li>Given {@link TypeAdapterFactory} {@link TypeAdapterFactory#create(Gson, TypeToken)}
+   *       return {@link FutureTypeAdapter} (default constructor).
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_givenTypeAdapterFactoryCreateReturnFutureTypeAdapter()
+      throws JsonSyntaxException {
+    // Arrange
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(new FutureTypeAdapter<>());
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("Json", GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
    *   <li>Then return {@code Json}.
    * </ul>
    *
@@ -13684,7 +13672,7 @@ public class GsonDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
-  public void testFromJsonWithStringType_whenJson_thenReturnJson() throws JsonSyntaxException {
+  public void testFromJsonWithStringType_thenReturnJson() throws JsonSyntaxException {
     // Arrange
     FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
@@ -13717,9 +13705,179 @@ public class GsonDiffblueTest {
             objectToNumberStrategy,
             numberToNumberStrategy,
             new ArrayList<>());
-    Class<Object> typeOfT = Object.class;
 
     // Act and Assert
-    assertEquals("Json", gson.fromJson("Json", (Type) typeOfT));
+    assertEquals("Json", gson.fromJson("Json", GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_thenThrowIllegalArgumentException()
+      throws JsonSyntaxException, IOException {
+    // Arrange
+    ObjectTypeAdapter objectTypeAdapter = mock(ObjectTypeAdapter.class);
+    when(objectTypeAdapter.read(Mockito.<JsonReader>any()))
+        .thenThrow(new IllegalArgumentException());
+
+    TypeAdapterFactory typeAdapterFactory = mock(TypeAdapterFactory.class);
+    when(typeAdapterFactory.create(Mockito.<Gson>any(), Mockito.<TypeToken<Object>>any()))
+        .thenReturn(objectTypeAdapter);
+
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    factoriesToBeAdded.add(typeAdapterFactory);
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gson.fromJson("Json", GsonBuilderTestFactory.createType()));
+    verify(typeAdapterFactory).create(isA(Gson.class), isA(TypeToken.class));
+    verify(objectTypeAdapter).read(isA(JsonReader.class));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@code in == null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_whenInNull() throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("in == null", GsonBuilderTestFactory.createType()));
+  }
+
+  /**
+   * Test {@link Gson#fromJson(String, Type)} with {@code String}, {@code Type}.
+   *
+   * <ul>
+   *   <li>When {@code type must not be null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Gson#fromJson(String, Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Gson.fromJson(String, Type)"})
+  public void testFromJsonWithStringType_whenTypeMustNotBeNull() throws JsonSyntaxException {
+    // Arrange
+    FieldNamingStrategy fieldNamingStrategy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ArrayList<TypeAdapterFactory> builderFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> builderHierarchyFactories = new ArrayList<>();
+    ArrayList<TypeAdapterFactory> factoriesToBeAdded = new ArrayList<>();
+    ToNumberStrategy objectToNumberStrategy = mock(ToNumberStrategy.class);
+    ToNumberStrategy numberToNumberStrategy = mock(ToNumberStrategy.class);
+
+    Gson gson =
+        new Gson(
+            Excluder.DEFAULT,
+            fieldNamingStrategy,
+            instanceCreators,
+            true,
+            true,
+            true,
+            true,
+            Gson.DEFAULT_FORMATTING_STYLE,
+            Strictness.LENIENT,
+            true,
+            true,
+            LongSerializationPolicy.DEFAULT,
+            "2020-03-01",
+            1,
+            1,
+            builderFactories,
+            builderHierarchyFactories,
+            factoriesToBeAdded,
+            objectToNumberStrategy,
+            numberToNumberStrategy,
+            new ArrayList<>());
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () -> gson.fromJson("type must not be null", GsonBuilderTestFactory.createType()));
   }
 }

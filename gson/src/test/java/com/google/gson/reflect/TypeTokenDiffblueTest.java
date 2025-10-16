@@ -3,6 +3,7 @@ package com.google.gson.reflect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -11,13 +12,13 @@ import static org.mockito.Mockito.when;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
+import com.google.gson.GsonBuilderTestFactory;
+import com.google.gson.internal.reflect.ReflectionHelperTestFactory;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.mockito.internal.util.reflection.GenericMetadataSupport;
-import org.mockito.internal.util.reflection.GenericMetadataSupport.TypeVarBoundedType;
 
 public class TypeTokenDiffblueTest {
   /**
@@ -87,6 +88,7 @@ public class TypeTokenDiffblueTest {
    *
    * <ul>
    *   <li>Given {@code Object}.
+   *   <li>When createType.
    *   <li>Then return {@code true}.
    * </ul>
    *
@@ -96,14 +98,13 @@ public class TypeTokenDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean TypeToken.isAssignableFrom(Type)"})
-  public void testIsAssignableFromWithFrom_givenJavaLangObject_thenReturnTrue() {
+  public void testIsAssignableFromWithFrom_givenJavaLangObject_whenCreateType_thenReturnTrue() {
     // Arrange
     Class<Object> type = Object.class;
     TypeToken<Object> getResult = TypeToken.get(type);
-    Class<Object> from = Object.class;
 
     // Act and Assert
-    assertTrue(getResult.isAssignableFrom((Type) from));
+    assertTrue(getResult.isAssignableFrom(GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -128,6 +129,30 @@ public class TypeTokenDiffblueTest {
 
     // Act and Assert
     assertFalse(getResult.isAssignableFrom((Type) null));
+  }
+
+  /**
+   * Test {@link TypeToken#isAssignableFrom(Type)} with {@code from}.
+   *
+   * <ul>
+   *   <li>When {@code Object}.
+   *   <li>Then return {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeToken#isAssignableFrom(Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean TypeToken.isAssignableFrom(Type)"})
+  public void testIsAssignableFromWithFrom_whenJavaLangObject_thenReturnTrue() {
+    // Arrange
+    Class<Object> type = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+    Class<Object> from = Object.class;
+
+    // Act and Assert
+    assertTrue(getResult.isAssignableFrom((Type) from));
   }
 
   /**
@@ -169,13 +194,13 @@ public class TypeTokenDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean TypeToken.equals(Object)", "int TypeToken.hashCode()"})
-  public void testEquals_whenOtherIsDifferent_thenReturnNotEqual() {
+  public void testEquals_whenOtherIsDifferent_thenReturnNotEqual() throws NoSuchFieldException {
     // Arrange
     Class<Object> type = Object.class;
     TypeToken<Object> getResult = TypeToken.get(type);
 
     // Act and Assert
-    assertNotEquals(getResult, "42");
+    assertNotEquals(getResult, ReflectionHelperTestFactory.createPublicField());
   }
 
   /**
@@ -208,8 +233,8 @@ public class TypeTokenDiffblueTest {
    * Test {@link TypeToken#get(Type)} with {@code Type}.
    *
    * <ul>
-   *   <li>When {@code Object}.
-   *   <li>Then return RawType is {@link Object}.
+   *   <li>When createType.
+   *   <li>Then return RawType is {@link String}.
    * </ul>
    *
    * <p>Method under test: {@link TypeToken#get(Type)}
@@ -218,16 +243,17 @@ public class TypeTokenDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeToken TypeToken.get(Type)"})
-  public void testGetWithType_whenJavaLangObject_thenReturnRawTypeIsObject() {
+  public void testGetWithType_whenCreateType_thenReturnRawTypeIsString() {
     // Arrange
-    Class<Object> type = Object.class;
+    Type type = GsonBuilderTestFactory.createType();
 
     // Act
     TypeToken<?> actualGetResult = TypeToken.get(type);
 
     // Assert
-    Class<Object> expectedRawType = Object.class;
+    Class<String> expectedRawType = String.class;
     assertEquals(expectedRawType, actualGetResult.getRawType());
+    assertSame(type, actualGetResult.getType());
   }
 
   /**
@@ -242,14 +268,14 @@ public class TypeTokenDiffblueTest {
   public void testGetParameterized() {
     // Arrange
     Class<TypeToken> rawType = TypeToken.class;
-    Class<Object> forNameResult = Object.class;
 
     // Act
-    TypeToken<?> actualParameterized = TypeToken.getParameterized(rawType, forNameResult);
+    TypeToken<?> actualParameterized =
+        TypeToken.getParameterized(rawType, GsonBuilderTestFactory.createType());
 
     // Assert
     assertEquals(
-        "com.google.gson.reflect.TypeToken<java.lang.Object>",
+        "com.google.gson.reflect.TypeToken<java.lang.String>",
         actualParameterized.getType().getTypeName());
     Class<TypeToken> expectedRawType = TypeToken.class;
     assertEquals(expectedRawType, actualParameterized.getRawType());
@@ -259,8 +285,8 @@ public class TypeTokenDiffblueTest {
    * Test {@link TypeToken#getParameterized(Type, Type[])}.
    *
    * <ul>
-   *   <li>When {@code Object}.
-   *   <li>Then return RawType is {@link Object}.
+   *   <li>When createType.
+   *   <li>Then return RawType is {@link String}.
    * </ul>
    *
    * <p>Method under test: {@link TypeToken#getParameterized(Type, Type[])}
@@ -269,23 +295,24 @@ public class TypeTokenDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeToken TypeToken.getParameterized(Type, Type[])"})
-  public void testGetParameterized_whenJavaLangObject_thenReturnRawTypeIsObject() {
+  public void testGetParameterized_whenCreateType_thenReturnRawTypeIsString() {
     // Arrange
-    Class<Object> rawType = Object.class;
+    Type rawType = GsonBuilderTestFactory.createType();
 
     // Act
     TypeToken<?> actualParameterized = TypeToken.getParameterized(rawType);
 
     // Assert
-    Class<Object> expectedRawType = Object.class;
+    Class<String> expectedRawType = String.class;
     assertEquals(expectedRawType, actualParameterized.getRawType());
+    assertSame(rawType, actualParameterized.getType());
   }
 
   /**
    * Test {@link TypeToken#getParameterized(Type, Type[])}.
    *
    * <ul>
-   *   <li>When {@code Object}.
+   *   <li>When createType.
    *   <li>Then throw {@link IllegalArgumentException}.
    * </ul>
    *
@@ -295,14 +322,14 @@ public class TypeTokenDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeToken TypeToken.getParameterized(Type, Type[])"})
-  public void testGetParameterized_whenJavaLangObject_thenThrowIllegalArgumentException() {
+  public void testGetParameterized_whenCreateType_thenThrowIllegalArgumentException() {
     // Arrange
-    Class<Object> rawType = Object.class;
+    Type rawType = GsonBuilderTestFactory.createType();
 
     // Act and Assert
     assertThrows(
         IllegalArgumentException.class,
-        () -> TypeToken.getParameterized(rawType, new TypeVarBoundedType(null)));
+        () -> TypeToken.getParameterized(rawType, GsonBuilderTestFactory.createType()));
   }
 
   /**
@@ -321,19 +348,19 @@ public class TypeTokenDiffblueTest {
   public void testGetParameterized_whenJavaLangReflectTypeVariable() {
     // Arrange
     Class<TypeVariable> rawType = TypeVariable.class;
-    Class<Object> forNameResult = Object.class;
 
     // Act and Assert
     assertThrows(
-        IllegalArgumentException.class, () -> TypeToken.getParameterized(rawType, forNameResult));
+        IllegalArgumentException.class,
+        () -> TypeToken.getParameterized(rawType, GsonBuilderTestFactory.createType()));
   }
 
   /**
    * Test {@link TypeToken#getArray(Type)}.
    *
    * <ul>
-   *   <li>Given {@code Object}.
-   *   <li>Then return RawType Name is {@code [[LObject;}.
+   *   <li>Given createType.
+   *   <li>Then return RawType Name is {@code [[LString;}.
    * </ul>
    *
    * <p>Method under test: {@link TypeToken#getArray(Type)}
@@ -342,27 +369,26 @@ public class TypeTokenDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeToken TypeToken.getArray(Type)"})
-  public void testGetArray_givenJavaLangObject_thenReturnRawTypeNameIsLjavaLangObject() {
+  public void testGetArray_givenCreateType_thenReturnRawTypeNameIsLjavaLangString() {
     // Arrange
     GenericArrayType componentType = mock(GenericArrayType.class);
-    Class<Object> forNameResult = Object.class;
-    when(componentType.getGenericComponentType()).thenReturn(forNameResult);
+    when(componentType.getGenericComponentType()).thenReturn(GsonBuilderTestFactory.createType());
 
     // Act
     TypeToken<?> actualArray = TypeToken.getArray(componentType);
 
     // Assert
     verify(componentType).getGenericComponentType();
-    assertEquals("[[Ljava.lang.Object;", actualArray.getRawType().getName());
-    assertEquals("java.lang.Object[][]", actualArray.getType().getTypeName());
+    assertEquals("[[Ljava.lang.String;", actualArray.getRawType().getName());
+    assertEquals("java.lang.String[][]", actualArray.getType().getTypeName());
   }
 
   /**
    * Test {@link TypeToken#getArray(Type)}.
    *
    * <ul>
-   *   <li>When {@code Object}.
-   *   <li>Then return RawType Name is {@code [LObject;}.
+   *   <li>When createType.
+   *   <li>Then return RawType Name is {@code [LString;}.
    * </ul>
    *
    * <p>Method under test: {@link TypeToken#getArray(Type)}
@@ -371,15 +397,12 @@ public class TypeTokenDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeToken TypeToken.getArray(Type)"})
-  public void testGetArray_whenJavaLangObject_thenReturnRawTypeNameIsLjavaLangObject() {
-    // Arrange
-    Class<Object> componentType = Object.class;
-
-    // Act
-    TypeToken<?> actualArray = TypeToken.getArray(componentType);
+  public void testGetArray_whenCreateType_thenReturnRawTypeNameIsLjavaLangString() {
+    // Arrange and Act
+    TypeToken<?> actualArray = TypeToken.getArray(GsonBuilderTestFactory.createType());
 
     // Assert
-    assertEquals("[Ljava.lang.Object;", actualArray.getRawType().getName());
-    assertEquals("java.lang.Object[]", actualArray.getType().getTypeName());
+    assertEquals("[Ljava.lang.String;", actualArray.getRawType().getName());
+    assertEquals("java.lang.String[]", actualArray.getType().getTypeName());
   }
 }

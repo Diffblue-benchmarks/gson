@@ -13,6 +13,8 @@ import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.internal.LinkedTreeMap.EntrySet;
 import com.google.gson.internal.LinkedTreeMap.KeySet;
 import com.google.gson.internal.LinkedTreeMap.Node;
+import com.google.gson.internal.reflect.ReflectionHelperTestFactory;
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
@@ -40,7 +42,7 @@ public class LinkedTreeMapDiffblueTest {
    * Test KeySet {@link KeySet#contains(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code Value}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
    *   <li>When forName {@code UTF-8}.
    * </ul>
    *
@@ -50,10 +52,11 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean KeySet.contains(Object)"})
-  public void testKeySetContains_givenLinkedTreeMapKeyIsValue_whenForNameUtf8() {
+  public void testKeySetContains_givenLinkedTreeMapOneIsCreatePublicField_whenForNameUtf8()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap linkedTreeMap = new LinkedTreeMap();
-    linkedTreeMap.put("Key", "Value");
+    linkedTreeMap.put(1, ReflectionHelperTestFactory.createPublicField());
     KeySet keySet = linkedTreeMap.new KeySet();
 
     // Act and Assert
@@ -238,13 +241,14 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean Node.equals(Object)", "int Node.hashCode()"})
-  public void testNodeEqualsAndHashCode_whenOtherIsEqual_thenReturnEqual2() {
+  public void testNodeEqualsAndHashCode_whenOtherIsEqual_thenReturnEqual2()
+      throws NoSuchFieldException {
     // Arrange
     Node<Object, Object> node = new Node<>(true);
-    node.setValue("Value");
+    node.setValue(ReflectionHelperTestFactory.createPublicField());
 
     Node<Object, Object> node2 = new Node<>(true);
-    node2.setValue("Value");
+    node2.setValue(ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
     assertEquals(node, node2);
@@ -270,14 +274,20 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean Node.equals(Object)", "int Node.hashCode()"})
-  public void testNodeEqualsAndHashCode_whenOtherIsEqual_thenReturnEqual3() {
+  public void testNodeEqualsAndHashCode_whenOtherIsEqual_thenReturnEqual3()
+      throws NoSuchFieldException {
     // Arrange
     Node<Object, Object> parent = new Node<>(true);
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
     Node<Object, Object> next = new Node<>(true);
 
-    Node<Object, Object> node = new Node<>(true, parent, "Key", next, new Node<>(true));
-    node.setValue("Value");
-    SimpleEntry<Object, Object> simpleEntry = new SimpleEntry<>("Key", "Value");
+    Node<Object, Object> node =
+        new Node<>(true, parent, createPublicFieldResult, next, new Node<>(true));
+    node.setValue(ReflectionHelperTestFactory.createPublicField());
+    Field createPublicFieldResult2 = ReflectionHelperTestFactory.createPublicField();
+    SimpleEntry<Object, Object> simpleEntry =
+        new SimpleEntry<>(
+            createPublicFieldResult2, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
     assertEquals(node, simpleEntry);
@@ -327,12 +337,14 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean Node.equals(Object)", "int Node.hashCode()"})
-  public void testNodeEquals_whenOtherIsDifferent_thenReturnNotEqual() {
+  public void testNodeEquals_whenOtherIsDifferent_thenReturnNotEqual() throws NoSuchFieldException {
     // Arrange
     Node<Object, Object> parent = new Node<>(true);
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
     Node<Object, Object> next = new Node<>(true);
 
-    Node<Object, Object> node = new Node<>(true, parent, "Key", next, new Node<>(true));
+    Node<Object, Object> node =
+        new Node<>(true, parent, createPublicFieldResult, next, new Node<>(true));
 
     // Act and Assert
     assertNotEquals(node, new Node<>(true));
@@ -352,12 +364,17 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean Node.equals(Object)", "int Node.hashCode()"})
-  public void testNodeEquals_whenOtherIsDifferent_thenReturnNotEqual2() {
+  public void testNodeEquals_whenOtherIsDifferent_thenReturnNotEqual2()
+      throws NoSuchFieldException {
     // Arrange
     Node<Object, Object> node = new Node<>(true);
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
 
     // Act and Assert
-    assertNotEquals(node, new SimpleEntry<>("Key", "Value"));
+    assertNotEquals(
+        node,
+        new SimpleEntry<>(
+            createPublicFieldResult, ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
@@ -374,10 +391,11 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean Node.equals(Object)", "int Node.hashCode()"})
-  public void testNodeEquals_whenOtherIsDifferent_thenReturnNotEqual3() {
+  public void testNodeEquals_whenOtherIsDifferent_thenReturnNotEqual3()
+      throws NoSuchFieldException {
     // Arrange
     Node<Object, Object> node = new Node<>(true);
-    node.setValue("Value");
+    node.setValue(ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
     assertNotEquals(node, new Node<>(true));
@@ -423,15 +441,22 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean Node.equals(Object)", "int Node.hashCode()"})
-  public void testNodeEquals_whenOtherIsDifferent_thenReturnNotEqual5() {
+  public void testNodeEquals_whenOtherIsDifferent_thenReturnNotEqual5()
+      throws NoSuchFieldException {
     // Arrange
     Node<Object, Object> parent = new Node<>(true);
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
     Node<Object, Object> next = new Node<>(true);
 
-    Node<Object, Object> node = new Node<>(true, parent, "Key", next, new Node<>(true));
+    Node<Object, Object> node =
+        new Node<>(true, parent, createPublicFieldResult, next, new Node<>(true));
+    Field createPublicFieldResult2 = ReflectionHelperTestFactory.createPublicField();
 
     // Act and Assert
-    assertNotEquals(node, new SimpleEntry<>("Key", "Value"));
+    assertNotEquals(
+        node,
+        new SimpleEntry<>(
+            createPublicFieldResult2, ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
@@ -603,7 +628,7 @@ public class LinkedTreeMapDiffblueTest {
    *
    * <ul>
    *   <li>When {@link Node#Node(boolean)} with allowNullValue is {@code true}.
-   *   <li>Then return {@code Key}.
+   *   <li>Then Key return {@link Field}.
    * </ul>
    *
    * <p>Method under test: {@link Node#Node(boolean, Node, Object, Node, Node)}
@@ -612,16 +637,20 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Node.<init>(boolean, Node, Object, Node, Node)"})
-  public void testNodeNewNode_whenNodeWithAllowNullValueIsTrue_thenReturnKey() {
+  public void testNodeNewNode_whenNodeWithAllowNullValueIsTrue_thenKeyReturnField()
+      throws NoSuchFieldException {
     // Arrange
     Node<Object, Object> parent = new Node<>(true);
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
     Node<Object, Object> next = new Node<>(true);
 
     // Act
-    Node<Object, Object> actualNode = new Node<>(true, parent, "Key", next, new Node<>(true));
+    Node<Object, Object> actualNode =
+        new Node<>(true, parent, createPublicFieldResult, next, new Node<>(true));
 
     // Assert
-    assertEquals("Key", actualNode.getKey());
+    Object key = actualNode.getKey();
+    assertTrue(key instanceof Field);
     assertNull(actualNode.left);
     assertNull(actualNode.right);
     assertNull(actualNode.getValue());
@@ -629,8 +658,36 @@ public class LinkedTreeMapDiffblueTest {
     assertTrue(actualNode.allowNullValue);
     Node<Object, Object> actualFirstResult = actualNode.first();
     assertSame(actualNode, actualFirstResult);
+    assertSame(createPublicFieldResult, key);
     Node<Object, Object> expectedFirstResult = actualNode.parent;
     assertSame(expectedFirstResult, parent.first());
+  }
+
+  /**
+   * Test Node {@link Node#setValue(Object)}.
+   *
+   * <ul>
+   *   <li>Then {@link Node#Node(boolean)} with allowNullValue is {@code true} Value is
+   *       createPublicField.
+   * </ul>
+   *
+   * <p>Method under test: {@link Node#setValue(Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object Node.setValue(Object)"})
+  public void testNodeSetValue_thenNodeWithAllowNullValueIsTrueValueIsCreatePublicField()
+      throws NoSuchFieldException {
+    // Arrange
+    Node<Object, Object> node = new Node<>(true);
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+
+    // Act and Assert
+    assertNull(node.setValue(createPublicFieldResult));
+    assertSame(createPublicFieldResult, node.getValue());
+    assertSame(createPublicFieldResult, node.next.getValue());
+    assertSame(createPublicFieldResult, node.prev.getValue());
   }
 
   /**
@@ -662,34 +719,6 @@ public class LinkedTreeMapDiffblueTest {
   }
 
   /**
-   * Test Node {@link Node#setValue(Object)}.
-   *
-   * <ul>
-   *   <li>When {@code Value}.
-   *   <li>Then {@link Node#Node(boolean)} with allowNullValue is {@code true} Value is {@code
-   *       Value}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Node#setValue(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object Node.setValue(Object)"})
-  public void testNodeSetValue_whenValue_thenNodeWithAllowNullValueIsTrueValueIsValue() {
-    // Arrange
-    Node<Object, Object> node = new Node<>(true);
-
-    // Act
-    node.setValue("Value");
-
-    // Assert
-    assertEquals("Value", node.getValue());
-    assertEquals("Value", node.next.getValue());
-    assertEquals("Value", node.prev.getValue());
-  }
-
-  /**
    * Test {@link LinkedTreeMap#size()}.
    *
    * <p>Method under test: {@link LinkedTreeMap#size()}
@@ -710,8 +739,8 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#get(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>When {@code Key}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code false} is createPublicField.
+   *   <li>When {@code true}.
    *   <li>Then return {@code null}.
    * </ul>
    *
@@ -721,20 +750,22 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.get(Object)"})
-  public void testGet_givenLinkedTreeMap42IsValue_whenKey_thenReturnNull() {
+  public void testGet_givenLinkedTreeMapFalseIsCreatePublicField_whenTrue_thenReturnNull()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
+    objectObjectMap.put(false, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertNull(objectObjectMap.get("Key"));
+    assertNull(objectObjectMap.get(true));
   }
 
   /**
    * Test {@link LinkedTreeMap#get(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code LinkedTreeMap} is {@code Value}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
+   *   <li>When createPublicField.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#get(Object)}
@@ -743,21 +774,72 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.get(Object)"})
-  public void testGet_givenLinkedTreeMapComGoogleGsonInternalLinkedTreeMapIsValue() {
+  public void testGet_givenLinkedTreeMapOneIsCreatePublicField_whenCreatePublicField()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertNull(objectObjectMap.get("Key"));
+    assertNull(objectObjectMap.get(ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
    * Test {@link LinkedTreeMap#get(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code false}.
-   *   <li>When {@code Key}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
+   *   <li>When {@code true}.
+   *   <li>Then return {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link LinkedTreeMap#get(Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object LinkedTreeMap.get(Object)"})
+  public void testGet_givenLinkedTreeMapOneIsCreatePublicField_whenTrue_thenReturnNull()
+      throws NoSuchFieldException {
+    // Arrange
+    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
+
+    // Act and Assert
+    assertNull(objectObjectMap.get(true));
+  }
+
+  /**
+   * Test {@link LinkedTreeMap#get(Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
+   *   <li>When zero.
+   *   <li>Then return {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link LinkedTreeMap#get(Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object LinkedTreeMap.get(Object)"})
+  public void testGet_givenLinkedTreeMapOneIsCreatePublicField_whenZero_thenReturnNull()
+      throws NoSuchFieldException {
+    // Arrange
+    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
+
+    // Act and Assert
+    assertNull(objectObjectMap.get(0));
+  }
+
+  /**
+   * Test {@link LinkedTreeMap#get(Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is {@code false}.
+   *   <li>When one.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -767,21 +849,21 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.get(Object)"})
-  public void testGet_givenLinkedTreeMapKeyIsFalse_whenKey_thenReturnFalse() {
+  public void testGet_givenLinkedTreeMapOneIsFalse_whenOne_thenReturnFalse() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", false);
+    objectObjectMap.put(1, false);
 
     // Act and Assert
-    assertFalse((Boolean) objectObjectMap.get("Key"));
+    assertFalse((Boolean) objectObjectMap.get(1));
   }
 
   /**
    * Test {@link LinkedTreeMap#get(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code true}.
-   *   <li>When {@code Key}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is {@code true}.
+   *   <li>When one.
    *   <li>Then return {@code true}.
    * </ul>
    *
@@ -791,61 +873,13 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.get(Object)"})
-  public void testGet_givenLinkedTreeMapKeyIsTrue_whenKey_thenReturnTrue() {
+  public void testGet_givenLinkedTreeMapOneIsTrue_whenOne_thenReturnTrue() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", true);
+    objectObjectMap.put(1, true);
 
     // Act and Assert
-    assertTrue((Boolean) objectObjectMap.get("Key"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#get(Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then return {@code Value}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#get(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.get(Object)"})
-  public void testGet_givenLinkedTreeMapKeyIsValue_whenKey_thenReturnValue() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
-
-    // Act and Assert
-    assertEquals("Value", objectObjectMap.get("Key"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#get(Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code true} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#get(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.get(Object)"})
-  public void testGet_givenLinkedTreeMapTrueIsValue_whenKey_thenReturnNull() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put(true, "Value");
-
-    // Act and Assert
-    assertNull(objectObjectMap.get("Key"));
+    assertTrue((Boolean) objectObjectMap.get(1));
   }
 
   /**
@@ -853,7 +887,7 @@ public class LinkedTreeMapDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@code Key}.
+   *   <li>When createPublicField.
    *   <li>Then return {@code null}.
    * </ul>
    *
@@ -863,12 +897,13 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.get(Object)"})
-  public void testGet_givenLinkedTreeMap_whenKey_thenReturnNull() {
+  public void testGet_givenLinkedTreeMap_whenCreatePublicField_thenReturnNull()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
 
     // Act and Assert
-    assertNull(objectObjectMap.get("Key"));
+    assertNull(objectObjectMap.get(ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
@@ -898,7 +933,8 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#get(Object)}.
    *
    * <ul>
-   *   <li>Then return {@code Value}.
+   *   <li>When one.
+   *   <li>Then return createPublicField.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#get(Object)}
@@ -907,23 +943,22 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.get(Object)"})
-  public void testGet_thenReturnValue() {
+  public void testGet_whenOne_thenReturnCreatePublicField() throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-    objectObjectMap.put("Key", "Value");
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    objectObjectMap.put(1, createPublicFieldResult);
 
     // Act and Assert
-    assertEquals("Value", objectObjectMap.get("Key"));
+    assertSame(createPublicFieldResult, objectObjectMap.get(1));
   }
 
   /**
    * Test {@link LinkedTreeMap#containsKey(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then return {@code false}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code false} is createPublicField.
+   *   <li>When {@code true}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#containsKey(Object)}
@@ -932,20 +967,22 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean LinkedTreeMap.containsKey(Object)"})
-  public void testContainsKey_givenLinkedTreeMap42IsValue_whenKey_thenReturnFalse() {
+  public void testContainsKey_givenLinkedTreeMapFalseIsCreatePublicField_whenTrue()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
+    objectObjectMap.put(false, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertFalse(objectObjectMap.containsKey("Key"));
+    assertFalse(objectObjectMap.containsKey(true));
   }
 
   /**
    * Test {@link LinkedTreeMap#containsKey(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code LinkedTreeMap} is {@code Value}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
+   *   <li>When createPublicField.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#containsKey(Object)}
@@ -954,21 +991,22 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean LinkedTreeMap.containsKey(Object)"})
-  public void testContainsKey_givenLinkedTreeMapComGoogleGsonInternalLinkedTreeMapIsValue() {
+  public void testContainsKey_givenLinkedTreeMapOneIsCreatePublicField_whenCreatePublicField()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertFalse(objectObjectMap.containsKey("Key"));
+    assertFalse(objectObjectMap.containsKey(ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
    * Test {@link LinkedTreeMap#containsKey(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code Value}.
-   *   <li>When {@code Key}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
+   *   <li>When one.
    *   <li>Then return {@code true}.
    * </ul>
    *
@@ -978,22 +1016,22 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean LinkedTreeMap.containsKey(Object)"})
-  public void testContainsKey_givenLinkedTreeMapKeyIsValue_whenKey_thenReturnTrue() {
+  public void testContainsKey_givenLinkedTreeMapOneIsCreatePublicField_whenOne_thenReturnTrue()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertTrue(objectObjectMap.containsKey("Key"));
+    assertTrue(objectObjectMap.containsKey(1));
   }
 
   /**
    * Test {@link LinkedTreeMap#containsKey(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code true} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then return {@code false}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
+   *   <li>When {@code true}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#containsKey(Object)}
@@ -1002,13 +1040,38 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean LinkedTreeMap.containsKey(Object)"})
-  public void testContainsKey_givenLinkedTreeMapTrueIsValue_whenKey_thenReturnFalse() {
+  public void testContainsKey_givenLinkedTreeMapOneIsCreatePublicField_whenTrue()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put(true, "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertFalse(objectObjectMap.containsKey("Key"));
+    assertFalse(objectObjectMap.containsKey(true));
+  }
+
+  /**
+   * Test {@link LinkedTreeMap#containsKey(Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
+   *   <li>When zero.
+   * </ul>
+   *
+   * <p>Method under test: {@link LinkedTreeMap#containsKey(Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean LinkedTreeMap.containsKey(Object)"})
+  public void testContainsKey_givenLinkedTreeMapOneIsCreatePublicField_whenZero()
+      throws NoSuchFieldException {
+    // Arrange
+    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
+
+    // Act and Assert
+    assertFalse(objectObjectMap.containsKey(0));
   }
 
   /**
@@ -1016,7 +1079,7 @@ public class LinkedTreeMapDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@code Key}.
+   *   <li>When createPublicField.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -1026,12 +1089,13 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean LinkedTreeMap.containsKey(Object)"})
-  public void testContainsKey_givenLinkedTreeMap_whenKey_thenReturnFalse() {
+  public void testContainsKey_givenLinkedTreeMap_whenCreatePublicField_thenReturnFalse()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
 
     // Act and Assert
-    assertFalse(objectObjectMap.containsKey("Key"));
+    assertFalse(objectObjectMap.containsKey(ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
@@ -1058,94 +1122,35 @@ public class LinkedTreeMapDiffblueTest {
   }
 
   /**
-   * Test {@link LinkedTreeMap#containsKey(Object)}.
+   * Test {@link LinkedTreeMap#put(Object, Object)}.
    *
    * <ul>
-   *   <li>Then return {@code true}.
+   *   <li>When forName {@code UTF-8}.
+   *   <li>Then return {@code null}.
    * </ul>
    *
-   * <p>Method under test: {@link LinkedTreeMap#containsKey(Object)}
+   * <p>Method under test: {@link LinkedTreeMap#put(Object, Object)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"boolean LinkedTreeMap.containsKey(Object)"})
-  public void testContainsKey_thenReturnTrue() {
+  @MethodsUnderTest({"Object LinkedTreeMap.put(Object, Object)"})
+  public void testPut_whenForNameUtf8_thenReturnNull() throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-    objectObjectMap.put("Key", "Value");
+    Charset forNameResult = Charset.forName("UTF-8");
 
     // Act and Assert
-    assertTrue(objectObjectMap.containsKey("Key"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#put(Object, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey {@code 42}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#put(Object, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.put(Object, Object)"})
-  public void testPut_givenLinkedTreeMap42IsValue_whenKey_thenLinkedTreeMapContainsKey42() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
-
-    // Act
-    Object actualPutResult = objectObjectMap.put("Key", "Value");
-
-    // Assert
-    assertEquals(2, objectObjectMap.size());
-    assertEquals("Value", objectObjectMap.get("Key"));
-    assertNull(actualPutResult);
-    assertTrue(objectObjectMap.containsKey("42"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#put(Object, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then return {@code Value}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#put(Object, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.put(Object, Object)"})
-  public void testPut_givenLinkedTreeMapKeyIsValue_whenKey_thenReturnValue() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
-
-    // Act
-    Object actualPutResult = objectObjectMap.put("Key", "Value");
-
-    // Assert
+    assertNull(objectObjectMap.put(forNameResult, ReflectionHelperTestFactory.createPublicField()));
     assertEquals(1, objectObjectMap.size());
-    assertEquals("Value", actualPutResult);
-    assertTrue(objectObjectMap.containsKey("Key"));
   }
 
   /**
    * Test {@link LinkedTreeMap#put(Object, Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
    *   <li>When forName {@code UTF-8}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is one.
+   *   <li>Then return {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#put(Object, Object)}
@@ -1154,7 +1159,7 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.put(Object, Object)"})
-  public void testPut_givenLinkedTreeMap_whenForNameUtf8_thenLinkedTreeMapSizeIsOne() {
+  public void testPut_whenForNameUtf8_thenReturnNull2() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
 
@@ -1164,230 +1169,11 @@ public class LinkedTreeMapDiffblueTest {
   }
 
   /**
-   * Test {@link LinkedTreeMap#put(Object, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@code Key}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#put(Object, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.put(Object, Object)"})
-  public void testPut_givenLinkedTreeMap_whenKey_thenLinkedTreeMapSizeIsOne() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-
-    // Act
-    Object actualPutResult = objectObjectMap.put("Key", "Value");
-
-    // Assert
-    assertEquals(1, objectObjectMap.size());
-    assertEquals("Value", objectObjectMap.get("Key"));
-    assertNull(actualPutResult);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#put(Object, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey {@code LinkedTreeMap}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#put(Object, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.put(Object, Object)"})
-  public void testPut_thenLinkedTreeMapContainsKeyComGoogleGsonInternalLinkedTreeMap() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-
-    // Act
-    Object actualPutResult = objectObjectMap.put("Key", "Value");
-
-    // Assert
-    assertEquals(2, objectObjectMap.size());
-    assertEquals("Value", objectObjectMap.get("Key"));
-    assertNull(actualPutResult);
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-    objectObjectMap.put("Key", "Value");
-
-    // Act
-    Object actualRemoveResult = objectObjectMap.remove("Key");
-
-    // Assert
-    assertEquals(1, objectObjectMap.size());
-    assertEquals("Value", actualRemoveResult);
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject2() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-
-    // Act
-    Object actualRemoveResult = objectObjectMap.remove("Key");
-
-    // Assert
-    assertEquals(1, objectObjectMap.size());
-    assertEquals("Value", actualRemoveResult);
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-  }
-
-  /**
    * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey {@code 42}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMap42IsValue_thenLinkedTreeMapContainsKey42() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
-    objectObjectMap.put("Key", "Value");
-
-    // Act
-    Object actualRemoveResult = objectObjectMap.remove("Key");
-
-    // Assert
-    assertEquals(1, objectObjectMap.size());
-    assertEquals("Value", actualRemoveResult);
-    assertTrue(objectObjectMap.containsKey("42"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey {@code 42}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMap42IsValue_thenLinkedTreeMapContainsKey422() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("42", "Value");
-
-    // Act
-    Object actualRemoveResult = objectObjectMap.remove("Key");
-
-    // Assert
-    assertEquals(1, objectObjectMap.size());
-    assertEquals("Value", actualRemoveResult);
-    assertTrue(objectObjectMap.containsKey("42"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is two.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMap42IsValue_thenLinkedTreeMapSizeIsTwo() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-
-    // Act
-    Object actualRemoveResult = objectObjectMap.remove("Key");
-
-    // Assert
-    assertEquals(2, objectObjectMap.size());
-    assertEquals("Value", actualRemoveResult);
-    assertTrue(objectObjectMap.containsKey("42"));
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMap42IsValue_whenKey_thenReturnNull() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
-
-    // Act and Assert
-    assertNull(objectObjectMap.remove("Key"));
-    assertEquals(1, objectObjectMap.size());
-    assertTrue(objectObjectMap.containsKey("42"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code false}.
-   *   <li>When {@code Key}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is {@code false}.
+   *   <li>When one.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -1397,13 +1183,13 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMapKeyIsFalse_whenKey_thenReturnFalse() {
+  public void testRemoveWithObject_givenLinkedTreeMapOneIsFalse_whenOne_thenReturnFalse() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", false);
+    objectObjectMap.put(1, false);
 
     // Act and Assert
-    assertFalse((Boolean) objectObjectMap.remove("Key"));
+    assertFalse((Boolean) objectObjectMap.remove(1));
     assertTrue(objectObjectMap.isEmpty());
   }
 
@@ -1411,8 +1197,8 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code true}.
-   *   <li>When {@code Key}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is {@code true}.
+   *   <li>When one.
    *   <li>Then return {@code true}.
    * </ul>
    *
@@ -1422,13 +1208,13 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMapKeyIsTrue_whenKey_thenReturnTrue() {
+  public void testRemoveWithObject_givenLinkedTreeMapOneIsTrue_whenOne_thenReturnTrue() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", true);
+    objectObjectMap.put(1, true);
 
     // Act
-    Object actualRemoveResult = objectObjectMap.remove("Key");
+    Object actualRemoveResult = objectObjectMap.remove(1);
 
     // Assert
     assertTrue(objectObjectMap.isEmpty());
@@ -1439,34 +1225,8 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} Empty.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMapKeyIsValue_whenKey_thenLinkedTreeMapEmpty() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
-
-    // Act and Assert
-    assertEquals("Value", objectObjectMap.remove("Key"));
-    assertTrue(objectObjectMap.isEmpty());
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@code Key}.
-   *   <li>Then return {@code null}.
+   *   <li>When createPublicField.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
@@ -1475,12 +1235,13 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMap_whenKey_thenReturnNull() {
+  public void testRemoveWithObject_givenLinkedTreeMap_whenCreatePublicField()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
 
     // Act and Assert
-    assertNull(objectObjectMap.remove("Key"));
+    assertNull(objectObjectMap.remove(ReflectionHelperTestFactory.createPublicField()));
     assertTrue(objectObjectMap.isEmpty());
   }
 
@@ -1490,7 +1251,7 @@ public class LinkedTreeMapDiffblueTest {
    * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
    *   <li>When {@code null}.
-   *   <li>Then return {@code null}.
+   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} Empty.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
@@ -1499,7 +1260,7 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMap_whenNull_thenReturnNull() {
+  public void testRemoveWithObject_givenLinkedTreeMap_whenNull_thenLinkedTreeMapEmpty() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
 
@@ -1512,7 +1273,7 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
    *
    * <ul>
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey {@code true}.
+   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey {@code false}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
@@ -1521,22 +1282,23 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_thenLinkedTreeMapContainsKeyTrue() {
+  public void testRemoveWithObject_thenLinkedTreeMapContainsKeyFalse() throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put(true, "Value");
+    objectObjectMap.put(false, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertNull(objectObjectMap.remove("Key"));
+    assertNull(objectObjectMap.remove(true));
     assertEquals(1, objectObjectMap.size());
-    assertTrue(objectObjectMap.containsKey(true));
+    assertTrue(objectObjectMap.containsKey(false));
   }
 
   /**
    * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
    *
    * <ul>
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is three.
+   *   <li>When createPublicField.
+   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey one.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
@@ -1545,153 +1307,97 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_thenLinkedTreeMapSizeIsThree() {
+  public void testRemoveWithObject_whenCreatePublicField_thenLinkedTreeMapContainsKeyOne()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.putIfAbsent("foo", "Value");
-    objectObjectMap.put("42", "Value");
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-
-    // Act
-    Object actualRemoveResult = objectObjectMap.remove("Key");
-
-    // Assert
-    assertEquals(3, objectObjectMap.size());
-    assertEquals("Value", actualRemoveResult);
-    assertTrue(objectObjectMap.containsKey("42"));
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-    assertTrue(objectObjectMap.containsKey("foo"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is two.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_thenLinkedTreeMapSizeIsTwo() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.putIfAbsent("foo", "Value");
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-
-    // Act
-    Object actualRemoveResult = objectObjectMap.remove("Key");
-
-    // Assert
-    assertEquals(2, objectObjectMap.size());
-    assertEquals("Value", actualRemoveResult);
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-    assertTrue(objectObjectMap.containsKey("foo"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_thenReturnNull() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertNull(objectObjectMap.remove("Key"));
+    assertNull(objectObjectMap.remove(ReflectionHelperTestFactory.createPublicField()));
     assertEquals(1, objectObjectMap.size());
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
+    assertTrue(objectObjectMap.containsKey(1));
   }
 
   /**
-   * Test {@link LinkedTreeMap#find(Object, boolean)}.
+   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then return {@link Node#parent} Key is {@code 42}.
+   *   <li>When one.
+   *   <li>Then return createPublicField.
    * </ul>
    *
-   * <p>Method under test: {@link LinkedTreeMap#find(Object, boolean)}
+   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.find(Object, boolean)"})
-  public void testFind_givenLinkedTreeMap42IsValue_whenKey_thenReturnParentKeyIs42() {
+  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
+  public void testRemoveWithObject_whenOne_thenReturnCreatePublicField()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    objectObjectMap.put(1, createPublicFieldResult);
 
-    // Act
-    Node<Object, Object> actualFindResult = objectObjectMap.find("Key", true);
-
-    // Assert
-    Node<Object, Object> node = actualFindResult.parent;
-    assertEquals("42", node.getKey());
-    Node<Object, Object> node2 = actualFindResult.prev;
-    assertEquals("42", node2.getKey());
-    assertNull(node.left);
-    assertSame(actualFindResult, node.right);
-    assertSame(actualFindResult, node2.right);
-    Node<Object, Object> expectedFirstResult = actualFindResult.parent;
-    assertSame(expectedFirstResult, node2.first());
-    Node<Object, Object> expectedFirstResult2 = actualFindResult.prev;
-    assertSame(expectedFirstResult2, node.first());
+    // Act and Assert
+    assertSame(createPublicFieldResult, objectObjectMap.remove(1));
   }
 
   /**
-   * Test {@link LinkedTreeMap#find(Object, boolean)}.
+   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is one.
+   *   <li>When {@code true}.
+   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey one.
    * </ul>
    *
-   * <p>Method under test: {@link LinkedTreeMap#find(Object, boolean)}
+   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.find(Object, boolean)"})
-  public void testFind_givenLinkedTreeMapKeyIsValue_whenKey_thenLinkedTreeMapSizeIsOne() {
+  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
+  public void testRemoveWithObject_whenTrue_thenLinkedTreeMapContainsKeyOne()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
-    // Act
-    Node<Object, Object> actualFindResult = objectObjectMap.find("Key", true);
-
-    // Assert
+    // Act and Assert
+    assertNull(objectObjectMap.remove(true));
     assertEquals(1, objectObjectMap.size());
-    assertTrue(objectObjectMap.containsKey("Key"));
-    assertSame(objectObjectMap.root, actualFindResult);
+    assertTrue(objectObjectMap.containsKey(1));
+  }
+
+  /**
+   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
+   *
+   * <ul>
+   *   <li>When zero.
+   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey one.
+   * </ul>
+   *
+   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
+  public void testRemoveWithObject_whenZero_thenLinkedTreeMapContainsKeyOne()
+      throws NoSuchFieldException {
+    // Arrange
+    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
+
+    // Act and Assert
+    assertNull(objectObjectMap.remove(0));
+    assertEquals(1, objectObjectMap.size());
+    assertTrue(objectObjectMap.containsKey(1));
   }
 
   /**
    * Test {@link LinkedTreeMap#find(Object, boolean)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When forName {@code UTF-8}.
-   *   <li>Then return {@code null}.
-   * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#find(Object, boolean)}
    */
@@ -1699,83 +1405,20 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.find(Object, boolean)"})
-  public void testFind_givenLinkedTreeMap_whenForNameUtf8_thenReturnNull() {
+  public void testFind() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
 
     // Act and Assert
     assertNull(objectObjectMap.find(Charset.forName("UTF-8"), false));
-    assertTrue(objectObjectMap.isEmpty());
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#find(Object, boolean)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@code Key}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#find(Object, boolean)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.find(Object, boolean)"})
-  public void testFind_givenLinkedTreeMap_whenKey_thenLinkedTreeMapSizeIsOne() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-
-    // Act
-    Node<Object, Object> actualFindResult = objectObjectMap.find("Key", true);
-
-    // Assert
-    assertEquals(1, objectObjectMap.size());
-    assertTrue(objectObjectMap.containsKey("Key"));
-    assertSame(objectObjectMap.root, actualFindResult);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#find(Object, boolean)}.
-   *
-   * <ul>
-   *   <li>Then return {@link Node#parent} Key is {@code LinkedTreeMap}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#find(Object, boolean)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.find(Object, boolean)"})
-  public void testFind_thenReturnParentKeyIsComGoogleGsonInternalLinkedTreeMap() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-
-    // Act
-    Node<Object, Object> actualFindResult = objectObjectMap.find("Key", true);
-
-    // Assert
-    Node<Object, Object> node = actualFindResult.parent;
-    assertEquals("com.google.gson.internal.LinkedTreeMap", node.getKey());
-    Node<Object, Object> node2 = actualFindResult.prev;
-    assertEquals("com.google.gson.internal.LinkedTreeMap", node2.getKey());
-    assertNull(node.right);
-    assertSame(actualFindResult, node.first());
-    assertSame(actualFindResult, node2.first());
-    assertSame(actualFindResult, node.left);
-    assertSame(actualFindResult, node2.left);
   }
 
   /**
    * Test {@link LinkedTreeMap#findByObject(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then return {@code null}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code false} is createPublicField.
+   *   <li>When {@code true}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#findByObject(Object)}
@@ -1784,20 +1427,22 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.findByObject(Object)"})
-  public void testFindByObject_givenLinkedTreeMap42IsValue_whenKey_thenReturnNull() {
+  public void testFindByObject_givenLinkedTreeMapFalseIsCreatePublicField_whenTrue()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
+    objectObjectMap.put(false, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertNull(objectObjectMap.findByObject("Key"));
+    assertNull(objectObjectMap.findByObject(true));
   }
 
   /**
    * Test {@link LinkedTreeMap#findByObject(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code LinkedTreeMap} is {@code Value}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
+   *   <li>When createPublicField.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#findByObject(Object)}
@@ -1806,21 +1451,22 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.findByObject(Object)"})
-  public void testFindByObject_givenLinkedTreeMapComGoogleGsonInternalLinkedTreeMapIsValue() {
+  public void testFindByObject_givenLinkedTreeMapOneIsCreatePublicField_whenCreatePublicField()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertNull(objectObjectMap.findByObject("Key"));
+    assertNull(objectObjectMap.findByObject(ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
    * Test {@link LinkedTreeMap#findByObject(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code Value}.
-   *   <li>Then return {@link LinkedTreeMap#LinkedTreeMap()} {@link LinkedTreeMap#root}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
+   *   <li>When {@code true}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#findByObject(Object)}
@@ -1829,40 +1475,38 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.findByObject(Object)"})
-  public void testFindByObject_givenLinkedTreeMapKeyIsValue_thenReturnLinkedTreeMapRoot() {
+  public void testFindByObject_givenLinkedTreeMapOneIsCreatePublicField_whenTrue()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
-
-    // Act
-    Node<Object, Object> actualFindByObjectResult = objectObjectMap.findByObject("Key");
-
-    // Assert
-    assertSame(objectObjectMap.root, actualFindByObjectResult);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#findByObject(Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code true} is {@code Value}.
-   *   <li>When {@code Key}.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#findByObject(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.findByObject(Object)"})
-  public void testFindByObject_givenLinkedTreeMapTrueIsValue_whenKey_thenReturnNull() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put(true, "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertNull(objectObjectMap.findByObject("Key"));
+    assertNull(objectObjectMap.findByObject(true));
+  }
+
+  /**
+   * Test {@link LinkedTreeMap#findByObject(Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is createPublicField.
+   *   <li>When zero.
+   * </ul>
+   *
+   * <p>Method under test: {@link LinkedTreeMap#findByObject(Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Node LinkedTreeMap.findByObject(Object)"})
+  public void testFindByObject_givenLinkedTreeMapOneIsCreatePublicField_whenZero()
+      throws NoSuchFieldException {
+    // Arrange
+    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
+
+    // Act and Assert
+    assertNull(objectObjectMap.findByObject(0));
   }
 
   /**
@@ -1870,7 +1514,7 @@ public class LinkedTreeMapDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@code Key}.
+   *   <li>When createPublicField.
    *   <li>Then return {@code null}.
    * </ul>
    *
@@ -1880,12 +1524,13 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.findByObject(Object)"})
-  public void testFindByObject_givenLinkedTreeMap_whenKey_thenReturnNull() {
+  public void testFindByObject_givenLinkedTreeMap_whenCreatePublicField_thenReturnNull()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
 
     // Act and Assert
-    assertNull(objectObjectMap.findByObject("Key"));
+    assertNull(objectObjectMap.findByObject(ReflectionHelperTestFactory.createPublicField()));
   }
 
   /**
@@ -1915,7 +1560,8 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#findByObject(Object)}.
    *
    * <ul>
-   *   <li>Then return {@link Node#parent} Value is {@code Value}.
+   *   <li>When one.
+   *   <li>Then return {@link LinkedTreeMap#LinkedTreeMap()} {@link LinkedTreeMap#root}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#findByObject(Object)}
@@ -1924,45 +1570,23 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.findByObject(Object)"})
-  public void testFindByObject_thenReturnParentValueIsValue() {
+  public void testFindByObject_whenOne_thenReturnLinkedTreeMapRoot() throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-    objectObjectMap.put("Key", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
     // Act
-    Node<Object, Object> actualFindByObjectResult = objectObjectMap.findByObject("Key");
+    Node<Object, Object> actualFindByObjectResult = objectObjectMap.findByObject(1);
 
     // Assert
-    Node<Object, Object> node = actualFindByObjectResult.parent;
-    assertEquals("Value", node.getValue());
-    Node<Object, Object> node2 = actualFindByObjectResult.prev;
-    assertEquals("Value", node2.getValue());
-    assertEquals("com.google.gson.internal.LinkedTreeMap", node.getKey());
-    assertEquals("com.google.gson.internal.LinkedTreeMap", node2.getKey());
-    assertNull(node.parent);
-    assertNull(node.right);
-    assertEquals(2, node.height);
-    assertEquals(2, node2.height);
-    assertTrue(node.allowNullValue);
-    assertSame(actualFindByObjectResult, node.first());
-    assertSame(actualFindByObjectResult, node2.first());
-    assertSame(actualFindByObjectResult, node.left);
-    assertSame(actualFindByObjectResult, node2.left);
-    assertSame(actualFindByObjectResult, node.next);
-    Node<Object, Object> node3 = actualFindByObjectResult.next;
-    assertSame(node3, node.prev);
-    assertSame(node3, node2.prev);
-    Node<Object, Object> expectedNode = actualFindByObjectResult.prev;
-    assertSame(expectedNode, actualFindByObjectResult.next.next);
+    assertSame(objectObjectMap.root, actualFindByObjectResult);
   }
 
   /**
    * Test {@link LinkedTreeMap#findByEntry(Entry)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>Then return {@code null}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code false} is createPublicField.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
@@ -1971,14 +1595,16 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
-  public void testFindByEntry_givenLinkedTreeMap42IsValue_thenReturnNull() {
+  public void testFindByEntry_givenLinkedTreeMapFalseIsCreatePublicField()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
+    objectObjectMap.put(false, ReflectionHelperTestFactory.createPublicField());
 
     // Act
     Node<Object, Object> actualFindByEntryResult =
-        objectObjectMap.findByEntry(new SimpleEntry<>("Key", "Value"));
+        objectObjectMap.findByEntry(
+            new SimpleEntry<>(true, ReflectionHelperTestFactory.createPublicField()));
 
     // Assert
     assertNull(actualFindByEntryResult);
@@ -1988,7 +1614,7 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#findByEntry(Entry)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code LinkedTreeMap} is {@code Value}.
+   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} one is {@code 42}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
@@ -1997,95 +1623,15 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
-  public void testFindByEntry_givenLinkedTreeMapComGoogleGsonInternalLinkedTreeMapIsValue() {
+  public void testFindByEntry_givenLinkedTreeMapOneIs42() throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
+    objectObjectMap.put(1, "42");
 
     // Act
     Node<Object, Object> actualFindByEntryResult =
-        objectObjectMap.findByEntry(new SimpleEntry<>("Key", "Value"));
-
-    // Assert
-    assertNull(actualFindByEntryResult);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#findByEntry(Entry)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code 42}.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
-  public void testFindByEntry_givenLinkedTreeMapKeyIs42_thenReturnNull() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "42");
-
-    // Act
-    Node<Object, Object> actualFindByEntryResult =
-        objectObjectMap.findByEntry(new SimpleEntry<>("Key", "Value"));
-
-    // Assert
-    assertNull(actualFindByEntryResult);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#findByEntry(Entry)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code Value}.
-   *   <li>Then return {@link LinkedTreeMap#LinkedTreeMap()} {@link LinkedTreeMap#root}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
-  public void testFindByEntry_givenLinkedTreeMapKeyIsValue_thenReturnLinkedTreeMapRoot() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
-
-    // Act
-    Node<Object, Object> actualFindByEntryResult =
-        objectObjectMap.findByEntry(new SimpleEntry<>("Key", "Value"));
-
-    // Assert
-    assertSame(objectObjectMap.root, actualFindByEntryResult);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#findByEntry(Entry)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code true} is {@code Value}.
-   *   <li>Then return {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
-  public void testFindByEntry_givenLinkedTreeMapTrueIsValue_thenReturnNull() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put(true, "Value");
-
-    // Act
-    Node<Object, Object> actualFindByEntryResult =
-        objectObjectMap.findByEntry(new SimpleEntry<>("Key", "Value"));
+        objectObjectMap.findByEntry(
+            new SimpleEntry<>(1, ReflectionHelperTestFactory.createPublicField()));
 
     // Assert
     assertNull(actualFindByEntryResult);
@@ -2121,8 +1667,8 @@ public class LinkedTreeMapDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@link SimpleEntry#SimpleEntry(Object, Object)} with {@code Key} and {@code Value}.
-   *   <li>Then return {@code null}.
+   *   <li>When {@link SimpleEntry#SimpleEntry(Object, Object)} with {@code null} and
+   *       createPublicField.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
@@ -2131,13 +1677,15 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
-  public void testFindByEntry_givenLinkedTreeMap_whenSimpleEntryWithKeyAndValue_thenReturnNull() {
+  public void testFindByEntry_givenLinkedTreeMap_whenSimpleEntryWithNullAndCreatePublicField()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
 
     // Act
     Node<Object, Object> actualFindByEntryResult =
-        objectObjectMap.findByEntry(new SimpleEntry<>("Key", "Value"));
+        objectObjectMap.findByEntry(
+            new SimpleEntry<>(null, ReflectionHelperTestFactory.createPublicField()));
 
     // Assert
     assertNull(actualFindByEntryResult);
@@ -2147,8 +1695,7 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#findByEntry(Entry)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@link SimpleEntry#SimpleEntry(Object, Object)} with {@code null} and {@code Value}.
+   *   <li>Then return {@link LinkedTreeMap#LinkedTreeMap()} {@link LinkedTreeMap#root}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
@@ -2157,13 +1704,45 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
-  public void testFindByEntry_givenLinkedTreeMap_whenSimpleEntryWithNullAndValue() {
+  public void testFindByEntry_thenReturnLinkedTreeMapRoot() throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
     // Act
     Node<Object, Object> actualFindByEntryResult =
-        objectObjectMap.findByEntry(new SimpleEntry<>(null, "Value"));
+        objectObjectMap.findByEntry(
+            new SimpleEntry<>(1, ReflectionHelperTestFactory.createPublicField()));
+
+    // Assert
+    assertSame(objectObjectMap.root, actualFindByEntryResult);
+  }
+
+  /**
+   * Test {@link LinkedTreeMap#findByEntry(Entry)}.
+   *
+   * <ul>
+   *   <li>When {@link SimpleEntry#SimpleEntry(Object, Object)} with createPublicField and
+   *       createPublicField.
+   * </ul>
+   *
+   * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
+  public void testFindByEntry_whenSimpleEntryWithCreatePublicFieldAndCreatePublicField()
+      throws NoSuchFieldException {
+    // Arrange
+    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+
+    // Act
+    Node<Object, Object> actualFindByEntryResult =
+        objectObjectMap.findByEntry(
+            new SimpleEntry<>(
+                createPublicFieldResult, ReflectionHelperTestFactory.createPublicField()));
 
     // Assert
     assertNull(actualFindByEntryResult);
@@ -2173,8 +1752,8 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#findByEntry(Entry)}.
    *
    * <ul>
-   *   <li>Then return {@link SimpleEntry#SimpleEntry(Object, Object)} with {@code Key} and {@code
-   *       Value}.
+   *   <li>When {@link SimpleEntry#SimpleEntry(Object, Object)} with createPublicField and
+   *       createPublicField.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
@@ -2183,18 +1762,78 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
-  public void testFindByEntry_thenReturnSimpleEntryWithKeyAndValue() {
+  public void testFindByEntry_whenSimpleEntryWithCreatePublicFieldAndCreatePublicField2()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-    objectObjectMap.put("Key", "Value");
-    SimpleEntry<Object, Object> entry = new SimpleEntry<>("Key", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
 
     // Act
-    Node<Object, Object> actualFindByEntryResult = objectObjectMap.findByEntry(entry);
+    Node<Object, Object> actualFindByEntryResult =
+        objectObjectMap.findByEntry(
+            new SimpleEntry<>(
+                createPublicFieldResult, ReflectionHelperTestFactory.createPublicField()));
 
     // Assert
-    assertEquals(entry, actualFindByEntryResult);
+    assertNull(actualFindByEntryResult);
+  }
+
+  /**
+   * Test {@link LinkedTreeMap#findByEntry(Entry)}.
+   *
+   * <ul>
+   *   <li>When {@link SimpleEntry#SimpleEntry(Object, Object)} with {@code true} and
+   *       createPublicField.
+   * </ul>
+   *
+   * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
+  public void testFindByEntry_whenSimpleEntryWithTrueAndCreatePublicField()
+      throws NoSuchFieldException {
+    // Arrange
+    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
+
+    // Act
+    Node<Object, Object> actualFindByEntryResult =
+        objectObjectMap.findByEntry(
+            new SimpleEntry<>(true, ReflectionHelperTestFactory.createPublicField()));
+
+    // Assert
+    assertNull(actualFindByEntryResult);
+  }
+
+  /**
+   * Test {@link LinkedTreeMap#findByEntry(Entry)}.
+   *
+   * <ul>
+   *   <li>When {@link SimpleEntry#SimpleEntry(Object, Object)} with zero and createPublicField.
+   * </ul>
+   *
+   * <p>Method under test: {@link LinkedTreeMap#findByEntry(Entry)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Node LinkedTreeMap.findByEntry(Entry)"})
+  public void testFindByEntry_whenSimpleEntryWithZeroAndCreatePublicField()
+      throws NoSuchFieldException {
+    // Arrange
+    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
+
+    // Act
+    Node<Object, Object> actualFindByEntryResult =
+        objectObjectMap.findByEntry(
+            new SimpleEntry<>(0, ReflectionHelperTestFactory.createPublicField()));
+
+    // Assert
+    assertNull(actualFindByEntryResult);
   }
 
   /**
@@ -2225,181 +1864,8 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is one.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_givenLinkedTreeMap42IsValue_thenLinkedTreeMapSizeIsOne() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
-
-    // Act and Assert
-    assertNull(objectObjectMap.removeInternalByKey("Key"));
-    assertEquals(1, objectObjectMap.size());
-    assertTrue(objectObjectMap.containsKey("42"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>Then return {@link Node#next} Key is {@code 42}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_givenLinkedTreeMap42IsValue_thenReturnNextKeyIs42() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("42", "Value");
-
-    // Act
-    Node<Object, Object> actualRemoveInternalByKeyResult =
-        objectObjectMap.removeInternalByKey("Key");
-
-    // Assert
-    Node<Object, Object> node = actualRemoveInternalByKeyResult.next;
-    assertEquals("42", node.getKey());
-    Node<Object, Object> node2 = actualRemoveInternalByKeyResult.prev;
-    assertNull(node2.getKey());
-    assertNull(node2.getValue());
-    assertEquals(0, node2.height);
-    assertEquals(1, node.height);
-    Node<Object, Object> node3 = objectObjectMap.header;
-    assertSame(node3, node2.first());
-    assertSame(node3, node.prev);
-    Node<Object, Object> node4 = objectObjectMap.root;
-    assertSame(node4, node.first());
-    assertSame(node4, node2.prev);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>Then return {@link Node#next} {@link Node#left} is {@link Node#prev}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_givenLinkedTreeMap42IsValue_thenReturnNextLeftIsPrev() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-
-    // Act
-    Node<Object, Object> actualRemoveInternalByKeyResult =
-        objectObjectMap.removeInternalByKey("Key");
-
-    // Assert
-    assertEquals(2, objectObjectMap.size());
-    assertTrue(objectObjectMap.containsKey("42"));
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-    Node<Object, Object> node = actualRemoveInternalByKeyResult.prev;
-    Node<Object, Object> node2 = actualRemoveInternalByKeyResult.next;
-    assertSame(node, node2.left);
-    assertSame(node, node2.next.next);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>Then return {@link Node#prev} Key is {@code 42}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_givenLinkedTreeMap42IsValue_thenReturnPrevKeyIs42() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("42", "Value");
-    objectObjectMap.put("Key", "Value");
-
-    // Act
-    Node<Object, Object> actualRemoveInternalByKeyResult =
-        objectObjectMap.removeInternalByKey("Key");
-
-    // Assert
-    Node<Object, Object> node = actualRemoveInternalByKeyResult.prev;
-    assertEquals("42", node.getKey());
-    Node<Object, Object> node2 = actualRemoveInternalByKeyResult.next;
-    assertNull(node2.getKey());
-    assertNull(node2.getValue());
-    assertEquals(0, node2.height);
-    Node<Object, Object> node3 = objectObjectMap.header;
-    assertSame(node3, node2.first());
-    assertSame(node3, node.next);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code Value}.
-   *   <li>Then return {@link Node#prev} first is {@link Node#next}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_givenLinkedTreeMapKeyIsValue_thenReturnPrevFirstIsNext() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
-
-    // Act
-    Node<Object, Object> actualRemoveInternalByKeyResult =
-        objectObjectMap.removeInternalByKey("Key");
-
-    // Assert
-    assertTrue(objectObjectMap.isEmpty());
-    Node<Object, Object> node = actualRemoveInternalByKeyResult.next;
-    Node<Object, Object> node2 = actualRemoveInternalByKeyResult.prev;
-    assertSame(node, node2.first());
-    Node<Object, Object> node3 = actualRemoveInternalByKeyResult.next;
-    assertSame(node, node3.next);
-    assertSame(node, node3.prev);
-    Node<Object, Object> node4 = actualRemoveInternalByKeyResult.prev;
-    assertSame(node4, node2.next);
-    assertSame(node4, node2.prev);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
-   *
-   * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@code Key}.
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} Empty.
+   *   <li>When createPublicField.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
@@ -2408,12 +1874,14 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_givenLinkedTreeMap_whenKey_thenLinkedTreeMapEmpty() {
+  public void testRemoveInternalByKey_givenLinkedTreeMap_whenCreatePublicField()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
 
     // Act and Assert
-    assertNull(objectObjectMap.removeInternalByKey("Key"));
+    assertNull(
+        objectObjectMap.removeInternalByKey(ReflectionHelperTestFactory.createPublicField()));
     assertTrue(objectObjectMap.isEmpty());
   }
 
@@ -2445,7 +1913,7 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
    *
    * <ul>
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey {@code true}.
+   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey {@code false}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
@@ -2454,22 +1922,24 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_thenLinkedTreeMapContainsKeyTrue() {
+  public void testRemoveInternalByKey_thenLinkedTreeMapContainsKeyFalse()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put(true, "Value");
+    objectObjectMap.put(false, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertNull(objectObjectMap.removeInternalByKey("Key"));
+    assertNull(objectObjectMap.removeInternalByKey(true));
     assertEquals(1, objectObjectMap.size());
-    assertTrue(objectObjectMap.containsKey(true));
+    assertTrue(objectObjectMap.containsKey(false));
   }
 
   /**
    * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
    *
    * <ul>
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is one.
+   *   <li>When createPublicField.
+   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey one.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
@@ -2478,22 +1948,25 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_thenLinkedTreeMapSizeIsOne() {
+  public void testRemoveInternalByKey_whenCreatePublicField_thenLinkedTreeMapContainsKeyOne()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
     // Act and Assert
-    assertNull(objectObjectMap.removeInternalByKey("Key"));
+    assertNull(
+        objectObjectMap.removeInternalByKey(ReflectionHelperTestFactory.createPublicField()));
     assertEquals(1, objectObjectMap.size());
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
+    assertTrue(objectObjectMap.containsKey(1));
   }
 
   /**
    * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
    *
    * <ul>
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is three.
+   *   <li>When one.
+   *   <li>Then Value return {@link Field}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
@@ -2502,40 +1975,36 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_thenLinkedTreeMapSizeIsThree() {
+  public void testRemoveInternalByKey_whenOne_thenValueReturnField() throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.putIfAbsent("foo", "Value");
-    objectObjectMap.put("42", "Value");
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
+    Field createPublicFieldResult = ReflectionHelperTestFactory.createPublicField();
+    objectObjectMap.put(1, createPublicFieldResult);
 
     // Act
-    Node<Object, Object> actualRemoveInternalByKeyResult =
-        objectObjectMap.removeInternalByKey("Key");
+    Node<Object, Object> actualRemoveInternalByKeyResult = objectObjectMap.removeInternalByKey(1);
 
     // Assert
-    assertEquals(3, objectObjectMap.size());
-    Node<Object, Object> node = actualRemoveInternalByKeyResult.next.right;
-    assertEquals("Value", node.getValue());
-    assertEquals("foo", node.getKey());
-    assertNull(node.left);
-    assertNull(node.right);
-    assertEquals(1, node.height);
-    assertTrue(objectObjectMap.containsKey("42"));
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-    assertTrue(objectObjectMap.containsKey("foo"));
-    assertTrue(node.allowNullValue);
-    assertSame(objectObjectMap.header, node.prev);
-    assertSame(actualRemoveInternalByKeyResult.next, node.parent);
-    assertSame(actualRemoveInternalByKeyResult.prev, node.next);
+    Object value = actualRemoveInternalByKeyResult.getValue();
+    assertTrue(value instanceof Field);
+    assertNull(actualRemoveInternalByKeyResult.left);
+    assertNull(actualRemoveInternalByKeyResult.parent);
+    assertNull(actualRemoveInternalByKeyResult.right);
+    assertEquals(1, ((Integer) actualRemoveInternalByKeyResult.getKey()).intValue());
+    assertEquals(1, actualRemoveInternalByKeyResult.height);
+    assertTrue(objectObjectMap.isEmpty());
+    assertTrue(actualRemoveInternalByKeyResult.allowNullValue);
+    Node<Object, Object> actualFirstResult = actualRemoveInternalByKeyResult.first();
+    assertSame(actualRemoveInternalByKeyResult, actualFirstResult);
+    assertSame(createPublicFieldResult, value);
   }
 
   /**
    * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
    *
    * <ul>
-   *   <li>Then return {@link Node#prev} Key is {@code LinkedTreeMap}.
+   *   <li>When {@code true}.
+   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey one.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
@@ -2544,31 +2013,24 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_thenReturnPrevKeyIsComGoogleGsonInternalLinkedTreeMap() {
+  public void testRemoveInternalByKey_whenTrue_thenLinkedTreeMapContainsKeyOne()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-    objectObjectMap.put("Key", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
-    // Act
-    Node<Object, Object> actualRemoveInternalByKeyResult =
-        objectObjectMap.removeInternalByKey("Key");
-
-    // Assert
-    Node<Object, Object> node = actualRemoveInternalByKeyResult.prev;
-    assertEquals("com.google.gson.internal.LinkedTreeMap", node.getKey());
-    Node<Object, Object> node2 = objectObjectMap.root;
-    assertSame(node2, node.first());
-    Node<Object, Object> node3 = actualRemoveInternalByKeyResult.next;
-    assertSame(node2, node3.next);
-    assertSame(node2, node3.prev);
+    // Act and Assert
+    assertNull(objectObjectMap.removeInternalByKey(true));
+    assertEquals(1, objectObjectMap.size());
+    assertTrue(objectObjectMap.containsKey(1));
   }
 
   /**
    * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
    *
    * <ul>
-   *   <li>Then return {@link Node#prev} Key is {@code foo}.
+   *   <li>When zero.
+   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey one.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
@@ -2577,64 +2039,16 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_thenReturnPrevKeyIsFoo() {
+  public void testRemoveInternalByKey_whenZero_thenLinkedTreeMapContainsKeyOne()
+      throws NoSuchFieldException {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.putIfAbsent("foo", "Value");
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
+    objectObjectMap.put(1, ReflectionHelperTestFactory.createPublicField());
 
-    // Act
-    Node<Object, Object> actualRemoveInternalByKeyResult =
-        objectObjectMap.removeInternalByKey("Key");
-
-    // Assert
-    assertEquals(2, objectObjectMap.size());
-    assertEquals("foo", actualRemoveInternalByKeyResult.prev.getKey());
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-    assertTrue(objectObjectMap.containsKey("foo"));
-    Node<Object, Object> node = actualRemoveInternalByKeyResult.prev;
-    Node<Object, Object> node2 = actualRemoveInternalByKeyResult.next;
-    assertSame(node, node2.next.next);
-    assertSame(node, node2.right);
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#removeInternalByKey(Object)}.
-   *
-   * <ul>
-   *   <li>Then return {@link Node#prev} Key is {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#removeInternalByKey(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Node LinkedTreeMap.removeInternalByKey(Object)"})
-  public void testRemoveInternalByKey_thenReturnPrevKeyIsNull() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-
-    // Act
-    Node<Object, Object> actualRemoveInternalByKeyResult =
-        objectObjectMap.removeInternalByKey("Key");
-
-    // Assert
-    Node<Object, Object> node = actualRemoveInternalByKeyResult.prev;
-    assertNull(node.getKey());
-    assertNull(node.getValue());
-    assertEquals(0, node.height);
-    Node<Object, Object> node2 = actualRemoveInternalByKeyResult.next;
-    assertEquals(1, node2.height);
-    Node<Object, Object> node3 = objectObjectMap.header;
-    assertSame(node3, node.first());
-    assertSame(node3, node2.prev);
-    Node<Object, Object> node4 = objectObjectMap.root;
-    assertSame(node4, node2.first());
-    assertSame(node4, node.prev);
+    // Act and Assert
+    assertNull(objectObjectMap.removeInternalByKey(0));
+    assertEquals(1, objectObjectMap.size());
+    assertTrue(objectObjectMap.containsKey(1));
   }
 
   /**
