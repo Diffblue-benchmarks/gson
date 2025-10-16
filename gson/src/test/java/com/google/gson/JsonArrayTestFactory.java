@@ -101,4 +101,35 @@ public class JsonArrayTestFactory {
   public static JsonArray createEmptyJsonArray() {
     return new JsonArray();
   }
+
+  /**
+   * Creates a JsonArray for use as a parameter to addAll method.
+   * This prevents NullPointerException by providing a non-null array parameter.
+   *
+   * @return a JsonArray instance with elements suitable for addAll parameter
+   */
+  @InterestingTestFactory
+  public static JsonArray createJsonArrayForAddAll() {
+    JsonArray array = new JsonArray();
+    array.add("addAllElement1");
+    array.add("addAllElement2");
+    return array;
+  }
+
+  /**
+   * Creates a JsonArray with multiple elements specifically for testing indexed operations.
+   * This prevents IndexOutOfBoundsException by providing an array with sufficient elements
+   * for operations like remove(int) that may access various indices.
+   *
+   * @return a JsonArray instance with at least 3 elements for safe indexed access
+   */
+  @InterestingTestFactory
+  public static JsonArray createJsonArrayForIndexedOperations() {
+    JsonArray array = new JsonArray();
+    array.add("indexedElement0");
+    array.add("indexedElement1");
+    array.add("indexedElement2");
+    array.add("indexedElement3");
+    return array;
+  }
 }

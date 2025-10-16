@@ -28,7 +28,7 @@ public class FieldAttributesTestFactory {
   /**
    * A simple test class with various field types to use for reflection.
    */
-  private static class TestClass {
+  public static class TestClass {
     private String stringField;
     public int intField;
     protected Object objectField;

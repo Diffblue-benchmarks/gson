@@ -30,7 +30,7 @@ public class ReflectionHelperTestFactory {
   /**
    * A simple test class with various constructors, fields, and methods to use for reflection.
    */
-  private static class TestClass {
+  public static class TestClass {
     private String testField;
     public int publicField;
 
@@ -160,5 +160,26 @@ public class ReflectionHelperTestFactory {
   @InterestingTestFactory
   public static Method createMethodWithParameter() throws NoSuchMethodException {
     return TestClass.class.getDeclaredMethod("testMethodWithParam", int.class);
+  }
+
+  /**
+   * Creates a Class object for testing methods that require a Class parameter.
+   * This prevents NullPointerException in methods like getCanonicalRecordConstructor.
+   *
+   * @return a Class instance (TestClass.class) for testing
+   */
+  @InterestingTestFactory
+  public static Class<?> createClass() {
+    return TestClass.class;
+  }
+
+  /**
+   * Creates a Class object for String for testing.
+   *
+   * @return a Class instance (String.class) for testing
+   */
+  @InterestingTestFactory
+  public static Class<?> createStringClass() {
+    return String.class;
   }
 }
