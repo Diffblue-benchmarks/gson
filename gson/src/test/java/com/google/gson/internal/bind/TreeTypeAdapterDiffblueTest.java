@@ -2152,13 +2152,18 @@ public class TreeTypeAdapterDiffblueTest {
   /**
    * Test {@link TreeTypeAdapter#newFactory(TypeToken, Object)}.
    *
+   * <ul>
+   *   <li>When {@code Object}.
+   *   <li>Then create {@link Gson#Gson()} and {@link Object} return {@link TreeTypeAdapter}.
+   * </ul>
+   *
    * <p>Method under test: {@link TreeTypeAdapter#newFactory(TypeToken, Object)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapterFactory TreeTypeAdapter.newFactory(TypeToken, Object)"})
-  public void testNewFactory() {
+  public void testNewFactory_whenJavaLangObject_thenCreateGsonAndObjectReturnTreeTypeAdapter() {
     // Arrange
     Class<Object> type = Object.class;
     TypeToken<?> exactType = TypeToken.get(type);
@@ -2184,15 +2189,20 @@ public class TreeTypeAdapterDiffblueTest {
   /**
    * Test {@link TreeTypeAdapter#newFactory(TypeToken, Object)}.
    *
+   * <ul>
+   *   <li>When {@link JsonDeserializer}.
+   *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.
+   * </ul>
+   *
    * <p>Method under test: {@link TreeTypeAdapter#newFactory(TypeToken, Object)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapterFactory TreeTypeAdapter.newFactory(TypeToken, Object)"})
-  public void testNewFactory2() {
+  public void testNewFactory_whenJsonDeserializer_thenReturnCreateGsonAndObjectIsNull() {
     // Arrange
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
     TypeToken<?> exactType = TypeToken.get(type);
 
     // Act
@@ -2201,16 +2211,9 @@ public class TreeTypeAdapterDiffblueTest {
     Gson gson = new Gson();
     Class<Object> type2 = Object.class;
     TypeToken<Object> getResult = TypeToken.get(type2);
-    TypeAdapter<Object> actualCreateResult = actualNewFactoryResult.create(gson, getResult);
 
     // Assert
-    assertTrue(
-        ((TreeTypeAdapter<Object>) actualCreateResult).getSerializationDelegate()
-            instanceof ObjectTypeAdapter);
-    assertTrue(actualCreateResult instanceof TreeTypeAdapter);
-    Gson gson2 = ((TreeTypeAdapter<Object>) actualCreateResult).gson;
-    assertFalse(gson2.serializeNulls());
-    assertTrue(gson2.htmlSafe());
+    assertNull(actualNewFactoryResult.create(gson, getResult));
   }
 
   /**
@@ -2229,7 +2232,7 @@ public class TreeTypeAdapterDiffblueTest {
   @MethodsUnderTest({"TypeAdapterFactory TreeTypeAdapter.newFactory(TypeToken, Object)"})
   public void testNewFactory_whenJsonSerializer_thenReturnCreateGsonAndNullIsNull() {
     // Arrange
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
     TypeToken<?> exactType = TypeToken.get(type);
 
     // Act
@@ -2241,7 +2244,41 @@ public class TreeTypeAdapterDiffblueTest {
   }
 
   /**
+   * Test {@link TreeTypeAdapter#newFactory(TypeToken, Object)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonSerializer}.
+   *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TreeTypeAdapter#newFactory(TypeToken, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory TreeTypeAdapter.newFactory(TypeToken, Object)"})
+  public void testNewFactory_whenJsonSerializer_thenReturnCreateGsonAndObjectIsNull() {
+    // Arrange
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
+    TypeToken<?> exactType = TypeToken.get(type);
+
+    // Act
+    TypeAdapterFactory actualNewFactoryResult =
+        TreeTypeAdapter.newFactory(exactType, mock(JsonSerializer.class));
+    Gson gson = new Gson();
+    Class<Object> type2 = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type2);
+
+    // Assert
+    assertNull(actualNewFactoryResult.create(gson, getResult));
+  }
+
+  /**
    * Test {@link TreeTypeAdapter#newFactoryWithMatchRawType(TypeToken, Object)}.
+   *
+   * <ul>
+   *   <li>Then create {@link Gson#Gson()} and {@link Object} return {@link TreeTypeAdapter}.
+   * </ul>
    *
    * <p>Method under test: {@link TreeTypeAdapter#newFactoryWithMatchRawType(TypeToken, Object)}
    */
@@ -2251,7 +2288,7 @@ public class TreeTypeAdapterDiffblueTest {
   @MethodsUnderTest({
     "TypeAdapterFactory TreeTypeAdapter.newFactoryWithMatchRawType(TypeToken, Object)"
   })
-  public void testNewFactoryWithMatchRawType() {
+  public void testNewFactoryWithMatchRawType_thenCreateGsonAndObjectReturnTreeTypeAdapter() {
     // Arrange
     Class<Object> type = Object.class;
     TypeToken<?> exactType = TypeToken.get(type);
@@ -2278,6 +2315,10 @@ public class TreeTypeAdapterDiffblueTest {
   /**
    * Test {@link TreeTypeAdapter#newFactoryWithMatchRawType(TypeToken, Object)}.
    *
+   * <ul>
+   *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.
+   * </ul>
+   *
    * <p>Method under test: {@link TreeTypeAdapter#newFactoryWithMatchRawType(TypeToken, Object)}
    */
   @Test
@@ -2286,9 +2327,40 @@ public class TreeTypeAdapterDiffblueTest {
   @MethodsUnderTest({
     "TypeAdapterFactory TreeTypeAdapter.newFactoryWithMatchRawType(TypeToken, Object)"
   })
-  public void testNewFactoryWithMatchRawType2() {
+  public void testNewFactoryWithMatchRawType_thenReturnCreateGsonAndObjectIsNull() {
     // Arrange
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
+    TypeToken<?> exactType = TypeToken.get(type);
+
+    // Act
+    TypeAdapterFactory actualNewFactoryWithMatchRawTypeResult =
+        TreeTypeAdapter.newFactoryWithMatchRawType(exactType, mock(JsonSerializer.class));
+    Gson gson = new Gson();
+    Class<Object> type2 = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type2);
+
+    // Assert
+    assertNull(actualNewFactoryWithMatchRawTypeResult.create(gson, getResult));
+  }
+
+  /**
+   * Test {@link TreeTypeAdapter#newFactoryWithMatchRawType(TypeToken, Object)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonDeserializer}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TreeTypeAdapter#newFactoryWithMatchRawType(TypeToken, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "TypeAdapterFactory TreeTypeAdapter.newFactoryWithMatchRawType(TypeToken, Object)"
+  })
+  public void testNewFactoryWithMatchRawType_whenJsonDeserializer() {
+    // Arrange
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
     TypeToken<?> exactType = TypeToken.get(type);
 
     // Act
@@ -2297,21 +2369,17 @@ public class TreeTypeAdapterDiffblueTest {
     Gson gson = new Gson();
     Class<Object> type2 = Object.class;
     TypeToken<Object> getResult = TypeToken.get(type2);
-    TypeAdapter<Object> actualCreateResult =
-        actualNewFactoryWithMatchRawTypeResult.create(gson, getResult);
 
     // Assert
-    assertTrue(
-        ((TreeTypeAdapter<Object>) actualCreateResult).getSerializationDelegate()
-            instanceof ObjectTypeAdapter);
-    assertTrue(actualCreateResult instanceof TreeTypeAdapter);
-    Gson gson2 = ((TreeTypeAdapter<Object>) actualCreateResult).gson;
-    assertFalse(gson2.serializeNulls());
-    assertTrue(gson2.htmlSafe());
+    assertNull(actualNewFactoryWithMatchRawTypeResult.create(gson, getResult));
   }
 
   /**
    * Test {@link TreeTypeAdapter#newTypeHierarchyFactory(Class, Object)}.
+   *
+   * <ul>
+   *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.
+   * </ul>
    *
    * <p>Method under test: {@link TreeTypeAdapter#newTypeHierarchyFactory(Class, Object)}
    */
@@ -2319,9 +2387,9 @@ public class TreeTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapterFactory TreeTypeAdapter.newTypeHierarchyFactory(Class, Object)"})
-  public void testNewTypeHierarchyFactory() {
+  public void testNewTypeHierarchyFactory_thenReturnCreateGsonAndObjectIsNull() {
     // Arrange
-    Class<Object> hierarchyType = Object.class;
+    Class<?> hierarchyType = ReflectionHelperTestFactory.createStringClass();
 
     // Act
     TypeAdapterFactory actualNewTypeHierarchyFactoryResult =
@@ -2329,21 +2397,17 @@ public class TreeTypeAdapterDiffblueTest {
     Gson gson = new Gson();
     Class<Object> type = Object.class;
     TypeToken<Object> getResult = TypeToken.get(type);
-    TypeAdapter<Object> actualCreateResult =
-        actualNewTypeHierarchyFactoryResult.create(gson, getResult);
 
     // Assert
-    assertTrue(actualCreateResult instanceof TreeTypeAdapter);
-    Gson gson2 = ((TreeTypeAdapter<Object>) actualCreateResult).gson;
-    assertFalse(gson2.serializeNulls());
-    assertTrue(gson2.htmlSafe());
-    assertSame(
-        actualCreateResult,
-        ((TreeTypeAdapter<Object>) actualCreateResult).getSerializationDelegate());
+    assertNull(actualNewTypeHierarchyFactoryResult.create(gson, getResult));
   }
 
   /**
    * Test {@link TreeTypeAdapter#newTypeHierarchyFactory(Class, Object)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonDeserializer}.
+   * </ul>
    *
    * <p>Method under test: {@link TreeTypeAdapter#newTypeHierarchyFactory(Class, Object)}
    */
@@ -2351,9 +2415,9 @@ public class TreeTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapterFactory TreeTypeAdapter.newTypeHierarchyFactory(Class, Object)"})
-  public void testNewTypeHierarchyFactory2() {
+  public void testNewTypeHierarchyFactory_whenJsonDeserializer() {
     // Arrange
-    Class<Object> hierarchyType = Object.class;
+    Class<?> hierarchyType = ReflectionHelperTestFactory.createStringClass();
 
     // Act
     TypeAdapterFactory actualNewTypeHierarchyFactoryResult =
@@ -2361,16 +2425,8 @@ public class TreeTypeAdapterDiffblueTest {
     Gson gson = new Gson();
     Class<Object> type = Object.class;
     TypeToken<Object> getResult = TypeToken.get(type);
-    TypeAdapter<Object> actualCreateResult =
-        actualNewTypeHierarchyFactoryResult.create(gson, getResult);
 
     // Assert
-    assertTrue(
-        ((TreeTypeAdapter<Object>) actualCreateResult).getSerializationDelegate()
-            instanceof ObjectTypeAdapter);
-    assertTrue(actualCreateResult instanceof TreeTypeAdapter);
-    Gson gson2 = ((TreeTypeAdapter<Object>) actualCreateResult).gson;
-    assertFalse(gson2.serializeNulls());
-    assertTrue(gson2.htmlSafe());
+    assertNull(actualNewTypeHierarchyFactoryResult.create(gson, getResult));
   }
 }

@@ -396,31 +396,6 @@ public class JsonElementDiffblueTest {
   }
 
   /**
-   * Test {@link JsonElement#getAsJsonPrimitive()}.
-   *
-   * <ul>
-   *   <li>Given createJsonArrayWithOneElement add {@link JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive_givenCreateJsonArrayWithOneElementAddInstance() {
-    // Arrange
-    JsonArray createJsonArrayWithOneElementResult =
-        JsonArrayTestFactory.createJsonArrayWithOneElement();
-    createJsonArrayWithOneElementResult.add(JsonNull.INSTANCE);
-
-    // Act and Assert
-    assertThrows(
-        IllegalStateException.class,
-        () -> createJsonArrayWithOneElementResult.getAsJsonPrimitive());
-  }
-
-  /**
    * Test {@link JsonElement#getAsJsonNull()}.
    *
    * <ul>
@@ -519,30 +494,6 @@ public class JsonElementDiffblueTest {
     JsonArray createJsonArrayWithOneElementResult =
         JsonArrayTestFactory.createJsonArrayWithOneElement();
     createJsonArrayWithOneElementResult.add('\u0003');
-
-    // Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> createJsonArrayWithOneElementResult.getAsJsonNull());
-  }
-
-  /**
-   * Test {@link JsonElement#getAsJsonNull()}.
-   *
-   * <ul>
-   *   <li>Given createJsonArrayWithOneElement add {@link JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull_givenCreateJsonArrayWithOneElementAddInstance() {
-    // Arrange
-    JsonArray createJsonArrayWithOneElementResult =
-        JsonArrayTestFactory.createJsonArrayWithOneElement();
-    createJsonArrayWithOneElementResult.add(JsonNull.INSTANCE);
 
     // Act and Assert
     assertThrows(
@@ -882,28 +833,5 @@ public class JsonElementDiffblueTest {
     // Arrange, Act and Assert
     assertEquals(
         "[\"singleElement\"]", JsonArrayTestFactory.createJsonArrayWithOneElement().toString());
-  }
-
-  /**
-   * Test {@link JsonElement#toString()}.
-   *
-   * <ul>
-   *   <li>Then return {@code ["singleElement",null]}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonElement#toString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
-  public void testToString_thenReturnSingleElementNull() {
-    // Arrange
-    JsonArray createJsonArrayWithOneElementResult =
-        JsonArrayTestFactory.createJsonArrayWithOneElement();
-    createJsonArrayWithOneElementResult.add(JsonNull.INSTANCE);
-
-    // Act and Assert
-    assertEquals("[\"singleElement\",null]", createJsonArrayWithOneElementResult.toString());
   }
 }

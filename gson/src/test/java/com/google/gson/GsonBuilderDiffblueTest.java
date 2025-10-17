@@ -712,7 +712,7 @@ public class GsonBuilderDiffblueTest {
   public void testRegisterTypeHierarchyAdapter_thenReturnCreateBuilderFactoriesSizeIsOne() {
     // Arrange
     GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     Gson createResult =
@@ -743,7 +743,7 @@ public class GsonBuilderDiffblueTest {
       throws NoSuchFieldException {
     // Arrange
     GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     assertThrows(
@@ -769,7 +769,7 @@ public class GsonBuilderDiffblueTest {
   public void testRegisterTypeHierarchyAdapter_whenJsonDeserializer() {
     // Arrange
     GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     Gson createResult =
@@ -799,7 +799,7 @@ public class GsonBuilderDiffblueTest {
   public void testRegisterTypeHierarchyAdapter_whenJsonSerializer() {
     // Arrange
     GsonBuilder createGsonBuilderResult = GsonBuilderTestFactory.createGsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     Gson createResult =

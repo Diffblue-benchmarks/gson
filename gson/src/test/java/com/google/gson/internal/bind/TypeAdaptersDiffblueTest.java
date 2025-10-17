@@ -11,6 +11,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
+import com.google.gson.internal.reflect.ReflectionHelperTestFactory;
 import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -148,7 +149,7 @@ public class TypeAdaptersDiffblueTest {
   public void testNewFactoryForMultipleTypes() {
     // Arrange
     Class<Object> base = Object.class;
-    Class<Object> sub = Object.class;
+    Class<?> sub = ReflectionHelperTestFactory.createStringClass();
     Gson context = new Gson();
     JsonSerializer<Object> serializer = mock(JsonSerializer.class);
     JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);

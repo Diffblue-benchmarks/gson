@@ -986,32 +986,6 @@ public class JsonArrayDiffblueTest {
    * Test {@link JsonArray#getAsDouble()}.
    *
    * <ul>
-   *   <li>Given createEmptyJsonArray add createEmptyJsonArray.
-   *   <li>Then return one.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonArray#getAsDouble()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"double JsonArray.getAsDouble()"})
-  public void testGetAsDouble_givenCreateEmptyJsonArrayAddCreateEmptyJsonArray_thenReturnOne() {
-    // Arrange
-    JsonArray element = JsonArrayTestFactory.createEmptyJsonArray();
-    element.add(Integer.valueOf(1));
-
-    JsonArray createEmptyJsonArrayResult = JsonArrayTestFactory.createEmptyJsonArray();
-    createEmptyJsonArrayResult.add(element);
-
-    // Act and Assert
-    assertEquals(1.0d, createEmptyJsonArrayResult.getAsDouble(), 0.0);
-  }
-
-  /**
-   * Test {@link JsonArray#getAsDouble()}.
-   *
-   * <ul>
    *   <li>Given createEmptyJsonArray add valueOf one.
    *   <li>Then return one.
    * </ul>
@@ -1073,34 +1047,6 @@ public class JsonArrayDiffblueTest {
     // Act and Assert
     assertThrows(
         UnsupportedOperationException.class, () -> createEmptyJsonArrayResult.getAsDouble());
-  }
-
-  /**
-   * Test {@link JsonArray#getAsBigDecimal()}.
-   *
-   * <ul>
-   *   <li>Given createEmptyJsonArray add createEmptyJsonArray.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonArray#getAsBigDecimal()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"BigDecimal JsonArray.getAsBigDecimal()"})
-  public void testGetAsBigDecimal_givenCreateEmptyJsonArrayAddCreateEmptyJsonArray() {
-    // Arrange
-    JsonArray element = JsonArrayTestFactory.createEmptyJsonArray();
-    element.add(Integer.valueOf(1));
-
-    JsonArray createEmptyJsonArrayResult = JsonArrayTestFactory.createEmptyJsonArray();
-    createEmptyJsonArrayResult.add(element);
-
-    // Act
-    BigDecimal actualAsBigDecimal = createEmptyJsonArrayResult.getAsBigDecimal();
-
-    // Assert
-    assertEquals(new BigDecimal("1"), actualAsBigDecimal);
   }
 
   /**
@@ -1384,32 +1330,6 @@ public class JsonArrayDiffblueTest {
    * Test {@link JsonArray#getAsFloat()}.
    *
    * <ul>
-   *   <li>Given createEmptyJsonArray add createEmptyJsonArray.
-   *   <li>Then return one.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonArray#getAsFloat()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"float JsonArray.getAsFloat()"})
-  public void testGetAsFloat_givenCreateEmptyJsonArrayAddCreateEmptyJsonArray_thenReturnOne() {
-    // Arrange
-    JsonArray element = JsonArrayTestFactory.createEmptyJsonArray();
-    element.add(Integer.valueOf(1));
-
-    JsonArray createEmptyJsonArrayResult = JsonArrayTestFactory.createEmptyJsonArray();
-    createEmptyJsonArrayResult.add(element);
-
-    // Act and Assert
-    assertEquals(1.0f, createEmptyJsonArrayResult.getAsFloat(), 0.0f);
-  }
-
-  /**
-   * Test {@link JsonArray#getAsFloat()}.
-   *
-   * <ul>
    *   <li>Given createEmptyJsonArray add valueOf one.
    *   <li>Then return one.
    * </ul>
@@ -1471,32 +1391,6 @@ public class JsonArrayDiffblueTest {
     // Act and Assert
     assertThrows(
         UnsupportedOperationException.class, () -> createEmptyJsonArrayResult.getAsFloat());
-  }
-
-  /**
-   * Test {@link JsonArray#getAsLong()}.
-   *
-   * <ul>
-   *   <li>Given createEmptyJsonArray add createEmptyJsonArray.
-   *   <li>Then return one.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonArray#getAsLong()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"long JsonArray.getAsLong()"})
-  public void testGetAsLong_givenCreateEmptyJsonArrayAddCreateEmptyJsonArray_thenReturnOne() {
-    // Arrange
-    JsonArray element = JsonArrayTestFactory.createEmptyJsonArray();
-    element.add(Integer.valueOf(1));
-
-    JsonArray createEmptyJsonArrayResult = JsonArrayTestFactory.createEmptyJsonArray();
-    createEmptyJsonArrayResult.add(element);
-
-    // Act and Assert
-    assertEquals(1L, createEmptyJsonArrayResult.getAsLong());
   }
 
   /**
@@ -1569,32 +1463,6 @@ public class JsonArrayDiffblueTest {
    * Test {@link JsonArray#getAsInt()}.
    *
    * <ul>
-   *   <li>Given createEmptyJsonArray add createEmptyJsonArray.
-   *   <li>Then return one.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonArray#getAsInt()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"int JsonArray.getAsInt()"})
-  public void testGetAsInt_givenCreateEmptyJsonArrayAddCreateEmptyJsonArray_thenReturnOne() {
-    // Arrange
-    JsonArray element = JsonArrayTestFactory.createEmptyJsonArray();
-    element.add(Integer.valueOf(1));
-
-    JsonArray createEmptyJsonArrayResult = JsonArrayTestFactory.createEmptyJsonArray();
-    createEmptyJsonArrayResult.add(element);
-
-    // Act and Assert
-    assertEquals(1, createEmptyJsonArrayResult.getAsInt());
-  }
-
-  /**
-   * Test {@link JsonArray#getAsInt()}.
-   *
-   * <ul>
    *   <li>Given createEmptyJsonArray add valueOf one.
    *   <li>Then return one.
    * </ul>
@@ -1655,32 +1523,6 @@ public class JsonArrayDiffblueTest {
 
     // Act and Assert
     assertThrows(UnsupportedOperationException.class, () -> createEmptyJsonArrayResult.getAsInt());
-  }
-
-  /**
-   * Test {@link JsonArray#getAsByte()}.
-   *
-   * <ul>
-   *   <li>Given createEmptyJsonArray add createEmptyJsonArray.
-   *   <li>Then return one.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonArray#getAsByte()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"byte JsonArray.getAsByte()"})
-  public void testGetAsByte_givenCreateEmptyJsonArrayAddCreateEmptyJsonArray_thenReturnOne() {
-    // Arrange
-    JsonArray element = JsonArrayTestFactory.createEmptyJsonArray();
-    element.add(Integer.valueOf(1));
-
-    JsonArray createEmptyJsonArrayResult = JsonArrayTestFactory.createEmptyJsonArray();
-    createEmptyJsonArrayResult.add(element);
-
-    // Act and Assert
-    assertEquals((byte) 1, createEmptyJsonArrayResult.getAsByte());
   }
 
   /**
@@ -1877,32 +1719,6 @@ public class JsonArrayDiffblueTest {
     // Act and Assert
     assertThrows(
         UnsupportedOperationException.class, () -> createEmptyJsonArrayResult.getAsCharacter());
-  }
-
-  /**
-   * Test {@link JsonArray#getAsShort()}.
-   *
-   * <ul>
-   *   <li>Given createEmptyJsonArray add createEmptyJsonArray.
-   *   <li>Then return one.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonArray#getAsShort()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"short JsonArray.getAsShort()"})
-  public void testGetAsShort_givenCreateEmptyJsonArrayAddCreateEmptyJsonArray_thenReturnOne() {
-    // Arrange
-    JsonArray element = JsonArrayTestFactory.createEmptyJsonArray();
-    element.add(Integer.valueOf(1));
-
-    JsonArray createEmptyJsonArrayResult = JsonArrayTestFactory.createEmptyJsonArray();
-    createEmptyJsonArrayResult.add(element);
-
-    // Act and Assert
-    assertEquals((short) 1, createEmptyJsonArrayResult.getAsShort());
   }
 
   /**

@@ -2,6 +2,7 @@ package com.example;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -10,6 +11,7 @@ import static org.mockito.Mockito.when;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
+import com.example.NoSerializedNameMain.TestClassHasArgsConstructor;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import org.junit.Test;
@@ -118,7 +120,13 @@ public class TestExecutorDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"Object TestExecutor.same(Object)"})
   public void testSame() {
-    // Arrange, Act and Assert
-    assertEquals("42", TestExecutor.same("42"));
+    // Arrange and Act
+    Object actualSameResult =
+        TestExecutor.same(
+            NoSerializedNameMainTestFactory.createTestClassHasArgsConstructorMultiWord());
+
+    // Assert
+    assertTrue(actualSameResult instanceof TestClassHasArgsConstructor);
+    assertEquals("value with spaces", ((TestClassHasArgsConstructor) actualSameResult).s);
   }
 }

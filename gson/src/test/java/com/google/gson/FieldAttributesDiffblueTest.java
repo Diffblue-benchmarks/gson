@@ -8,13 +8,65 @@ import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.internal.reflect.ReflectionHelperTestFactory;
+import com.google.gson.internal.reflect.ReflectionHelperTestFactory.TestClass;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class FieldAttributesDiffblueTest {
+  /**
+   * Test {@link FieldAttributes#FieldAttributes(Field)}.
+   *
+   * <ul>
+   *   <li>When createPublicField.
+   *   <li>Then Annotations return {@link List}.
+   * </ul>
+   *
+   * <p>Method under test: {@link FieldAttributes#FieldAttributes(Field)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void FieldAttributes.<init>(Field)"})
+  public void testNewFieldAttributes_whenCreatePublicField_thenAnnotationsReturnList()
+      throws NoSuchFieldException {
+    // Arrange and Act
+    FieldAttributes actualFieldAttributes =
+        new FieldAttributes(ReflectionHelperTestFactory.createPublicField());
+
+    // Assert
+    Collection<Annotation> annotations = actualFieldAttributes.getAnnotations();
+    assertTrue(annotations instanceof List);
+    assertEquals("int", actualFieldAttributes.getDeclaredClass().getName());
+    assertEquals("publicField", actualFieldAttributes.getName());
+    assertTrue(annotations.isEmpty());
+    Class<TestClass> expectedDeclaringClass = TestClass.class;
+    assertEquals(expectedDeclaringClass, actualFieldAttributes.getDeclaringClass());
+  }
+
+  /**
+   * Test {@link FieldAttributes#getDeclaringClass()}.
+   *
+   * <p>Method under test: {@link FieldAttributes#getDeclaringClass()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Class FieldAttributes.getDeclaringClass()"})
+  public void testGetDeclaringClass() throws NoSuchFieldException {
+    // Arrange and Act
+    Class<?> actualDeclaringClass =
+        FieldAttributesTestFactory.createFieldAttributesWithPublicField().getDeclaringClass();
+
+    // Assert
+    Class<FieldAttributesTestFactory.TestClass> expectedDeclaringClass =
+        FieldAttributesTestFactory.TestClass.class;
+    assertEquals(expectedDeclaringClass, actualDeclaringClass);
+  }
+
   /**
    * Test {@link FieldAttributes#getName()}.
    *

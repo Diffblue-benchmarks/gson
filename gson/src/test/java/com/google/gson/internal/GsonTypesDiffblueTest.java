@@ -13,6 +13,7 @@ import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.GsonBuilderTestFactory;
+import com.google.gson.internal.reflect.ReflectionHelperTestFactory;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -39,17 +40,16 @@ public class GsonTypesDiffblueTest {
   public void testNewParameterizedTypeWithOwner() {
     // Arrange
     Type ownerType = GsonBuilderTestFactory.createType();
-    Class<Object> rawType = Object.class;
+    Class<?> rawType = ReflectionHelperTestFactory.createStringClass();
+    Type createTypeResult = GsonBuilderTestFactory.createType();
+    Type[] typeArguments = new Type[] {createTypeResult};
 
-    // Act
-    ParameterizedType actualNewParameterizedTypeWithOwnerResult =
-        GsonTypes.newParameterizedTypeWithOwner(
-            ownerType, rawType, GsonBuilderTestFactory.createType());
-
-    // Assert
+    // Act and Assert
     assertEquals(
-        "java.lang.Object<java.lang.String>",
-        actualNewParameterizedTypeWithOwnerResult.getTypeName());
+        "java.lang.String<java.lang.String>",
+        GsonTypes.newParameterizedTypeWithOwner(ownerType, rawType, typeArguments).getTypeName());
+    assertEquals(1, typeArguments.length);
+    assertSame(createTypeResult, typeArguments[0]);
   }
 
   /**
@@ -65,16 +65,81 @@ public class GsonTypesDiffblueTest {
   })
   public void testNewParameterizedTypeWithOwner2() {
     // Arrange
-    Class<Object> rawType = Object.class;
+    Class<?> rawType = ReflectionHelperTestFactory.createStringClass();
+    Type createTypeResult = GsonBuilderTestFactory.createType();
+    Type[] typeArguments = new Type[] {createTypeResult};
 
     // Act
     ParameterizedType actualNewParameterizedTypeWithOwnerResult =
-        GsonTypes.newParameterizedTypeWithOwner(null, rawType, GsonBuilderTestFactory.createType());
+        GsonTypes.newParameterizedTypeWithOwner(null, rawType, typeArguments);
 
     // Assert
     assertEquals(
-        "java.lang.Object<java.lang.String>",
+        "java.lang.String<java.lang.String>",
         actualNewParameterizedTypeWithOwnerResult.getTypeName());
+    assertEquals(1, typeArguments.length);
+    assertSame(createTypeResult, typeArguments[0]);
+  }
+
+  /**
+   * Test {@link GsonTypes#newParameterizedTypeWithOwner(Type, Class, Type[])}.
+   *
+   * <p>Method under test: {@link GsonTypes#newParameterizedTypeWithOwner(Type, Class, Type[])}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "ParameterizedType GsonTypes.newParameterizedTypeWithOwner(Type, Class, Type[])"
+  })
+  public void testNewParameterizedTypeWithOwner3() {
+    // Arrange
+    Class<?> rawType = ReflectionHelperTestFactory.createClass();
+    Type createTypeResult = GsonBuilderTestFactory.createType();
+    Type[] typeArguments = new Type[] {createTypeResult};
+
+    // Act
+    ParameterizedType actualNewParameterizedTypeWithOwnerResult =
+        GsonTypes.newParameterizedTypeWithOwner(null, rawType, typeArguments);
+
+    // Assert
+    assertEquals(
+        "com.google.gson.internal.reflect.ReflectionHelperTestFactory$TestClass<java.lang.String>",
+        actualNewParameterizedTypeWithOwnerResult.getTypeName());
+    assertEquals(1, typeArguments.length);
+    assertSame(createTypeResult, typeArguments[0]);
+  }
+
+  /**
+   * Test {@link GsonTypes#newParameterizedTypeWithOwner(Type, Class, Type[])}.
+   *
+   * <ul>
+   *   <li>Then first element {@link GenericMetadataSupport.TypeVarBoundedType}.
+   * </ul>
+   *
+   * <p>Method under test: {@link GsonTypes#newParameterizedTypeWithOwner(Type, Class, Type[])}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "ParameterizedType GsonTypes.newParameterizedTypeWithOwner(Type, Class, Type[])"
+  })
+  public void testNewParameterizedTypeWithOwner_thenFirstElementTypeVarBoundedType() {
+    // Arrange
+    Type ownerType = GsonBuilderTestFactory.createType();
+    Class<?> rawType = ReflectionHelperTestFactory.createStringClass();
+    TypeVarBoundedType typeVarBoundedType = new TypeVarBoundedType(null);
+    Type[] typeArguments = new Type[] {typeVarBoundedType};
+
+    // Act
+    GsonTypes.newParameterizedTypeWithOwner(ownerType, rawType, typeArguments);
+
+    // Assert that nothing has changed
+    Type type = typeArguments[0];
+    assertTrue(type instanceof TypeVarBoundedType);
+    assertEquals(1, typeArguments.length);
+    assertSame(typeVarBoundedType, type);
   }
 
   /**
@@ -96,17 +161,16 @@ public class GsonTypesDiffblueTest {
   public void testNewParameterizedTypeWithOwner_whenTypeVarBoundedTypeWithTypeVariableIsNull() {
     // Arrange
     TypeVarBoundedType ownerType = new TypeVarBoundedType(null);
-    Class<Object> rawType = Object.class;
+    Class<?> rawType = ReflectionHelperTestFactory.createStringClass();
+    Type createTypeResult = GsonBuilderTestFactory.createType();
+    Type[] typeArguments = new Type[] {createTypeResult};
 
-    // Act
-    ParameterizedType actualNewParameterizedTypeWithOwnerResult =
-        GsonTypes.newParameterizedTypeWithOwner(
-            ownerType, rawType, GsonBuilderTestFactory.createType());
-
-    // Assert
+    // Act and Assert
     assertEquals(
-        "java.lang.Object<java.lang.String>",
-        actualNewParameterizedTypeWithOwnerResult.getTypeName());
+        "java.lang.String<java.lang.String>",
+        GsonTypes.newParameterizedTypeWithOwner(ownerType, rawType, typeArguments).getTypeName());
+    assertEquals(1, typeArguments.length);
+    assertSame(createTypeResult, typeArguments[0]);
   }
 
   /**
@@ -683,7 +747,7 @@ public class GsonTypesDiffblueTest {
   public void testGetCollectionElementType_thenThrowIllegalArgumentException() {
     // Arrange
     Type context = GsonBuilderTestFactory.createType();
-    Class<Object> contextRawType = Object.class;
+    Class<?> contextRawType = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     assertThrows(
@@ -740,34 +804,6 @@ public class GsonTypesDiffblueTest {
    * Test {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}.
    *
    * <ul>
-   *   <li>Then return first element is createType.
-   * </ul>
-   *
-   * <p>Method under test: {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Type[] GsonTypes.getMapKeyAndValueTypes(Type, Class)"})
-  public void testGetMapKeyAndValueTypes_thenReturnFirstElementIsCreateType() {
-    // Arrange
-    Type context = GsonBuilderTestFactory.createType();
-    Class<Properties> contextRawType = Properties.class;
-
-    // Act
-    Type[] actualMapKeyAndValueTypes = GsonTypes.getMapKeyAndValueTypes(context, contextRawType);
-
-    // Assert
-    assertEquals(2, actualMapKeyAndValueTypes.length);
-    assertSame(context, actualMapKeyAndValueTypes[0]);
-    assertSame(context, actualMapKeyAndValueTypes[1]);
-  }
-
-  /**
-   * Test {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}.
-   *
-   * <ul>
-   *   <li>When {@code Object}.
    *   <li>Then throw {@link IllegalArgumentException}.
    * </ul>
    *
@@ -777,10 +813,10 @@ public class GsonTypesDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Type[] GsonTypes.getMapKeyAndValueTypes(Type, Class)"})
-  public void testGetMapKeyAndValueTypes_whenJavaLangObject_thenThrowIllegalArgumentException() {
+  public void testGetMapKeyAndValueTypes_thenThrowIllegalArgumentException() {
     // Arrange
     Type context = GsonBuilderTestFactory.createType();
-    Class<Object> contextRawType = Object.class;
+    Class<?> contextRawType = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     assertThrows(
@@ -815,7 +851,7 @@ public class GsonTypesDiffblueTest {
    * Test {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}.
    *
    * <ul>
-   *   <li>When {@code null}.
+   *   <li>When {@code Map}.
    *   <li>Then return array length is two.
    * </ul>
    *
@@ -825,9 +861,34 @@ public class GsonTypesDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Type[] GsonTypes.getMapKeyAndValueTypes(Type, Class)"})
-  public void testGetMapKeyAndValueTypes_whenNull_thenReturnArrayLengthIsTwo() {
+  public void testGetMapKeyAndValueTypes_whenJavaUtilMap_thenReturnArrayLengthIsTwo2() {
     // Arrange
     Class<Map> contextRawType = Map.class;
+
+    // Act
+    Type[] actualMapKeyAndValueTypes = GsonTypes.getMapKeyAndValueTypes(null, contextRawType);
+
+    // Assert
+    assertEquals(2, actualMapKeyAndValueTypes.length);
+  }
+
+  /**
+   * Test {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}.
+   *
+   * <ul>
+   *   <li>When {@code Properties}.
+   *   <li>Then return array length is two.
+   * </ul>
+   *
+   * <p>Method under test: {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Type[] GsonTypes.getMapKeyAndValueTypes(Type, Class)"})
+  public void testGetMapKeyAndValueTypes_whenJavaUtilProperties_thenReturnArrayLengthIsTwo() {
+    // Arrange
+    Class<Properties> contextRawType = Properties.class;
 
     // Act
     Type[] actualMapKeyAndValueTypes = GsonTypes.getMapKeyAndValueTypes(null, contextRawType);
@@ -854,7 +915,7 @@ public class GsonTypesDiffblueTest {
   public void testResolveWithContextContextRawTypeToResolve_whenNull_thenReturnNull() {
     // Arrange
     Type context = GsonBuilderTestFactory.createType();
-    Class<Object> contextRawType = Object.class;
+    Class<?> contextRawType = ReflectionHelperTestFactory.createStringClass();
 
     // Act
     Type actualResolveResult = GsonTypes.resolve(context, contextRawType, null);

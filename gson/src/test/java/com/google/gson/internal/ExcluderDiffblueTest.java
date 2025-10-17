@@ -299,6 +299,52 @@ public class ExcluderDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link Excluder#DEFAULT}.
+   *   <li>When createClass.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeClass(Class, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeClass(Class, boolean)"})
+  public void testExcludeClass_givenDefault_whenCreateClass_thenReturnFalse() {
+    // Arrange
+    Class<?> clazz = ReflectionHelperTestFactory.createClass();
+
+    // Act and Assert
+    assertFalse(Excluder.DEFAULT.excludeClass(clazz, false));
+  }
+
+  /**
+   * Test {@link Excluder#excludeClass(Class, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link Excluder#DEFAULT}.
+   *   <li>When createStringClass.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeClass(Class, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeClass(Class, boolean)"})
+  public void testExcludeClass_givenDefault_whenCreateStringClass_thenReturnFalse() {
+    // Arrange
+    Class<?> clazz = ReflectionHelperTestFactory.createStringClass();
+
+    // Act and Assert
+    assertFalse(Excluder.DEFAULT.excludeClass(clazz, false));
+  }
+
+  /**
+   * Test {@link Excluder#excludeClass(Class, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link Excluder#DEFAULT}.
    *   <li>When {@code Enum}.
    *   <li>Then return {@code false}.
    * </ul>
@@ -322,29 +368,6 @@ public class ExcluderDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link Excluder#DEFAULT}.
-   *   <li>When {@code Object}.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Excluder#excludeClass(Class, boolean)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"boolean Excluder.excludeClass(Class, boolean)"})
-  public void testExcludeClass_givenDefault_whenJavaLangObject_thenReturnFalse() {
-    // Arrange
-    Class<Object> clazz = Object.class;
-
-    // Act and Assert
-    assertFalse(Excluder.DEFAULT.excludeClass(clazz, false));
-  }
-
-  /**
-   * Test {@link Excluder#excludeClass(Class, boolean)}.
-   *
-   * <ul>
-   *   <li>Given {@link Excluder#DEFAULT}.
    *   <li>When {@code true}.
    *   <li>Then return {@code false}.
    * </ul>
@@ -357,7 +380,7 @@ public class ExcluderDiffblueTest {
   @MethodsUnderTest({"boolean Excluder.excludeClass(Class, boolean)"})
   public void testExcludeClass_givenDefault_whenTrue_thenReturnFalse() {
     // Arrange
-    Class<Object> clazz = Object.class;
+    Class<?> clazz = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     assertFalse(Excluder.DEFAULT.excludeClass(clazz, true));
@@ -386,7 +409,7 @@ public class ExcluderDiffblueTest {
     ArrayList<ExclusionStrategy> exclusionStrategyList = new ArrayList<>();
     exclusionStrategyList.add(exclusionStrategy);
     when(list.iterator()).thenReturn(exclusionStrategyList.iterator());
-    Class<Object> clazz = Object.class;
+    Class<?> clazz = ReflectionHelperTestFactory.createStringClass();
 
     // Act
     boolean actualExcludeClassResult = excluder.excludeClass(clazz, false);

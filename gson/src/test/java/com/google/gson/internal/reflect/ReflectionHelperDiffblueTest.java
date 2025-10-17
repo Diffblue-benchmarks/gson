@@ -186,7 +186,29 @@ public class ReflectionHelperDiffblueTest {
    * Test {@link ReflectionHelper#isStatic(Class)}.
    *
    * <ul>
-   *   <li>When {@code Object}.
+   *   <li>When createClass.
+   *   <li>Then return {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ReflectionHelper#isStatic(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean ReflectionHelper.isStatic(Class)"})
+  public void testIsStatic_whenCreateClass_thenReturnTrue() {
+    // Arrange
+    Class<?> clazz = ReflectionHelperTestFactory.createClass();
+
+    // Act and Assert
+    assertTrue(ReflectionHelper.isStatic(clazz));
+  }
+
+  /**
+   * Test {@link ReflectionHelper#isStatic(Class)}.
+   *
+   * <ul>
+   *   <li>When createStringClass.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -196,9 +218,9 @@ public class ReflectionHelperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean ReflectionHelper.isStatic(Class)"})
-  public void testIsStatic_whenJavaLangObject_thenReturnFalse() {
+  public void testIsStatic_whenCreateStringClass_thenReturnFalse() {
     // Arrange
-    Class<Object> clazz = Object.class;
+    Class<?> clazz = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     assertFalse(ReflectionHelper.isStatic(clazz));
@@ -208,7 +230,7 @@ public class ReflectionHelperDiffblueTest {
    * Test {@link ReflectionHelper#isAnonymousOrNonStaticLocal(Class)}.
    *
    * <ul>
-   *   <li>When {@code Object}.
+   *   <li>When createClass.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -218,9 +240,31 @@ public class ReflectionHelperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean ReflectionHelper.isAnonymousOrNonStaticLocal(Class)"})
-  public void testIsAnonymousOrNonStaticLocal_whenJavaLangObject_thenReturnFalse() {
+  public void testIsAnonymousOrNonStaticLocal_whenCreateClass_thenReturnFalse() {
     // Arrange
-    Class<Object> clazz = Object.class;
+    Class<?> clazz = ReflectionHelperTestFactory.createClass();
+
+    // Act and Assert
+    assertFalse(ReflectionHelper.isAnonymousOrNonStaticLocal(clazz));
+  }
+
+  /**
+   * Test {@link ReflectionHelper#isAnonymousOrNonStaticLocal(Class)}.
+   *
+   * <ul>
+   *   <li>When createStringClass.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ReflectionHelper#isAnonymousOrNonStaticLocal(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean ReflectionHelper.isAnonymousOrNonStaticLocal(Class)"})
+  public void testIsAnonymousOrNonStaticLocal_whenCreateStringClass_thenReturnFalse() {
+    // Arrange
+    Class<?> clazz = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     assertFalse(ReflectionHelper.isAnonymousOrNonStaticLocal(clazz));
@@ -254,7 +298,7 @@ public class ReflectionHelperDiffblueTest {
    * Test {@link ReflectionHelper#isRecord(Class)}.
    *
    * <ul>
-   *   <li>When {@code Object}.
+   *   <li>When createStringClass.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -264,9 +308,9 @@ public class ReflectionHelperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean ReflectionHelper.isRecord(Class)"})
-  public void testIsRecord_whenJavaLangObject_thenReturnFalse() {
+  public void testIsRecord_whenCreateStringClass_thenReturnFalse() {
     // Arrange
-    Class<Object> raw = Object.class;
+    Class<?> raw = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     assertFalse(ReflectionHelper.isRecord(raw));
@@ -289,7 +333,7 @@ public class ReflectionHelperDiffblueTest {
   public void testGetAccessor_whenCreatePublicField_thenThrowRuntimeException()
       throws NoSuchFieldException {
     // Arrange
-    Class<Object> raw = Object.class;
+    Class<?> raw = ReflectionHelperTestFactory.createStringClass();
 
     // Act and Assert
     assertThrows(

@@ -2,7 +2,9 @@ package com.google.gson.internal.bind;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -11,15 +13,21 @@ import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilderTestFactory;
 import com.google.gson.InstanceCreator;
+import com.google.gson.ParameterizedTypeFixtures;
+import com.google.gson.ParameterizedTypeFixtures.MyParameterizedTypeAdapter;
 import com.google.gson.ReflectionAccessFilter;
 import com.google.gson.ReflectionAccessFilter.FilterResult;
+import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.internal.ConstructorConstructor;
+import com.google.gson.internal.reflect.ReflectionHelperTestFactory;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -39,9 +47,7 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({
-    "com.google.gson.TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.create(Gson, TypeToken)"
-  })
+  @MethodsUnderTest({"TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.create(Gson, TypeToken)"})
   public void testCreate_whenJavaLangObject_thenReturnNull() {
     // Arrange
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
@@ -60,9 +66,162 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
    * Test {@link JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor,
    * Gson, TypeToken, JsonAdapter, boolean)}.
    *
+   * <p>Method under test: {@link
+   * JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor, Gson, TypeToken,
+   * JsonAdapter, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+  })
+  public void testGetTypeAdapter() {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
+        new JsonAdapterAnnotationTypeAdapterFactory(
+            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
+
+    InstanceCreator<Object> instanceCreator = mock(InstanceCreator.class);
+    when(instanceCreator.createInstance(Mockito.<Type>any()))
+        .thenReturn(mock(DefaultDateTypeAdapter.class));
+
+    HashMap<Type, InstanceCreator<?>> instanceCreators2 = new HashMap<>();
+    instanceCreators2.put(GsonBuilderTestFactory.createType(), instanceCreator);
+    ConstructorConstructor constructorConstructor =
+        new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
+    Gson gson = new Gson();
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
+    TypeToken<?> type2 = TypeToken.get(type);
+
+    JsonAdapter annotation = mock(JsonAdapter.class);
+    when(annotation.nullSafe()).thenReturn(false);
+    Class<?> createStringClassResult = ReflectionHelperTestFactory.createStringClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createStringClassResult);
+
+    // Act
+    jsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(
+        constructorConstructor, gson, type2, annotation, true);
+
+    // Assert
+    verify(instanceCreator).createInstance(isA(Type.class));
+    verify(annotation).nullSafe();
+    verify(annotation).value();
+  }
+
+  /**
+   * Test {@link JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor,
+   * Gson, TypeToken, JsonAdapter, boolean)}.
+   *
+   * <p>Method under test: {@link
+   * JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor, Gson, TypeToken,
+   * JsonAdapter, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+  })
+  public void testGetTypeAdapter2() {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
+        new JsonAdapterAnnotationTypeAdapterFactory(
+            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
+
+    InstanceCreator<Object> instanceCreator = mock(InstanceCreator.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators2 = new HashMap<>();
+    when(instanceCreator.createInstance(Mockito.<Type>any()))
+        .thenReturn(
+            new JsonAdapterAnnotationTypeAdapterFactory(
+                new ConstructorConstructor(instanceCreators2, true, new ArrayList<>())));
+
+    HashMap<Type, InstanceCreator<?>> instanceCreators3 = new HashMap<>();
+    instanceCreators3.put(GsonBuilderTestFactory.createType(), instanceCreator);
+    ConstructorConstructor constructorConstructor =
+        new ConstructorConstructor(instanceCreators3, true, new ArrayList<>());
+    Gson gson = new Gson();
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
+    TypeToken<?> type2 = TypeToken.get(type);
+
+    JsonAdapter annotation = mock(JsonAdapter.class);
+    when(annotation.nullSafe()).thenReturn(false);
+    Class<?> createStringClassResult = ReflectionHelperTestFactory.createStringClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createStringClassResult);
+
+    // Act
+    TypeAdapter<?> actualTypeAdapter =
+        jsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(
+            constructorConstructor, gson, type2, annotation, true);
+
+    // Assert
+    verify(instanceCreator).createInstance(isA(Type.class));
+    verify(annotation).nullSafe();
+    verify(annotation).value();
+    assertNull(actualTypeAdapter);
+  }
+
+  /**
+   * Test {@link JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor,
+   * Gson, TypeToken, JsonAdapter, boolean)}.
+   *
+   * <p>Method under test: {@link
+   * JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor, Gson, TypeToken,
+   * JsonAdapter, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+  })
+  public void testGetTypeAdapter3() {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
+        new JsonAdapterAnnotationTypeAdapterFactory(
+            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
+
+    DefaultDateTypeAdapter<Date> defaultDateTypeAdapter = mock(DefaultDateTypeAdapter.class);
+    when(defaultDateTypeAdapter.nullSafe()).thenThrow(new IllegalArgumentException());
+
+    InstanceCreator<Object> instanceCreator = mock(InstanceCreator.class);
+    when(instanceCreator.createInstance(Mockito.<Type>any())).thenReturn(defaultDateTypeAdapter);
+
+    HashMap<Type, InstanceCreator<?>> instanceCreators2 = new HashMap<>();
+    instanceCreators2.put(GsonBuilderTestFactory.createType(), instanceCreator);
+    ConstructorConstructor constructorConstructor =
+        new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
+    Gson gson = new Gson();
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
+    TypeToken<?> type2 = TypeToken.get(type);
+
+    JsonAdapter annotation = mock(JsonAdapter.class);
+    when(annotation.nullSafe()).thenReturn(true);
+    Class<?> createStringClassResult = ReflectionHelperTestFactory.createStringClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createStringClassResult);
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            jsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(
+                constructorConstructor, gson, type2, annotation, true));
+    verify(instanceCreator).createInstance(isA(Type.class));
+    verify(defaultDateTypeAdapter).nullSafe();
+    verify(annotation).nullSafe();
+    verify(annotation).value();
+  }
+
+  /**
+   * Test {@link JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor,
+   * Gson, TypeToken, JsonAdapter, boolean)}.
+   *
    * <ul>
    *   <li>Given {@code false}.
-   *   <li>Then calls {@link JsonAdapter#nullSafe()}.
+   *   <li>Then throw {@link IllegalArgumentException}.
    * </ul>
    *
    * <p>Method under test: {@link
@@ -73,9 +232,9 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "com.google.gson.TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
   })
-  public void testGetTypeAdapter_givenFalse_thenCallsNullSafe() {
+  public void testGetTypeAdapter_givenFalse_thenThrowIllegalArgumentException() {
     // Arrange
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
@@ -85,13 +244,13 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
     ConstructorConstructor constructorConstructor =
         new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
     Gson gson = new Gson();
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
     TypeToken<?> type2 = TypeToken.get(type);
 
     JsonAdapter annotation = mock(JsonAdapter.class);
     when(annotation.nullSafe()).thenReturn(false);
-    Class<Object> forNameResult = Object.class;
-    Mockito.<Class<?>>when(annotation.value()).thenReturn(forNameResult);
+    Class<?> createStringClassResult = ReflectionHelperTestFactory.createStringClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createStringClassResult);
 
     // Act and Assert
     assertThrows(
@@ -108,8 +267,62 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
    * Gson, TypeToken, JsonAdapter, boolean)}.
    *
    * <ul>
-   *   <li>Given {@link ReflectionAccessFilter} {@link ReflectionAccessFilter#check(Class)} return
-   *       {@code ALLOW}.
+   *   <li>Given {@link InstanceCreator} {@link InstanceCreator#createInstance(Type)} return
+   *       createPublicField.
+   * </ul>
+   *
+   * <p>Method under test: {@link
+   * JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor, Gson, TypeToken,
+   * JsonAdapter, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+  })
+  public void testGetTypeAdapter_givenInstanceCreatorCreateInstanceReturnCreatePublicField()
+      throws NoSuchFieldException {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
+        new JsonAdapterAnnotationTypeAdapterFactory(
+            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
+
+    InstanceCreator<Object> instanceCreator = mock(InstanceCreator.class);
+    when(instanceCreator.createInstance(Mockito.<Type>any()))
+        .thenReturn(ReflectionHelperTestFactory.createPublicField());
+
+    HashMap<Type, InstanceCreator<?>> instanceCreators2 = new HashMap<>();
+    instanceCreators2.put(GsonBuilderTestFactory.createType(), instanceCreator);
+    ConstructorConstructor constructorConstructor =
+        new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
+    Gson gson = new Gson();
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
+    TypeToken<?> type2 = TypeToken.get(type);
+
+    JsonAdapter annotation = mock(JsonAdapter.class);
+    when(annotation.nullSafe()).thenReturn(false);
+    Class<?> createStringClassResult = ReflectionHelperTestFactory.createStringClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createStringClassResult);
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            jsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(
+                constructorConstructor, gson, type2, annotation, true));
+    verify(instanceCreator).createInstance(isA(Type.class));
+    verify(annotation).nullSafe();
+    verify(annotation).value();
+  }
+
+  /**
+   * Test {@link JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor,
+   * Gson, TypeToken, JsonAdapter, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link InstanceCreator}.
    *   <li>Then calls {@link ReflectionAccessFilter#check(Class)}.
    * </ul>
    *
@@ -121,30 +334,34 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "com.google.gson.TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
   })
-  public void testGetTypeAdapter_givenReflectionAccessFilterCheckReturnAllow_thenCallsCheck() {
+  public void testGetTypeAdapter_givenInstanceCreator_thenCallsCheck() {
     // Arrange
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
         new JsonAdapterAnnotationTypeAdapterFactory(
             new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
 
+    HashMap<Type, InstanceCreator<?>> instanceCreators2 = new HashMap<>();
+    instanceCreators2.put(GsonBuilderTestFactory.createIntegerType(), mock(InstanceCreator.class));
+
     ReflectionAccessFilter reflectionAccessFilter = mock(ReflectionAccessFilter.class);
     when(reflectionAccessFilter.check(Mockito.<Class<?>>any())).thenReturn(FilterResult.ALLOW);
 
     ArrayList<ReflectionAccessFilter> reflectionFilters = new ArrayList<>();
     reflectionFilters.add(reflectionAccessFilter);
+
     ConstructorConstructor constructorConstructor =
-        new ConstructorConstructor(new HashMap<>(), true, reflectionFilters);
+        new ConstructorConstructor(instanceCreators2, true, reflectionFilters);
     Gson gson = new Gson();
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
     TypeToken<?> type2 = TypeToken.get(type);
 
     JsonAdapter annotation = mock(JsonAdapter.class);
-    when(annotation.nullSafe()).thenReturn(false);
-    Class<Object> forNameResult = Object.class;
-    Mockito.<Class<?>>when(annotation.value()).thenReturn(forNameResult);
+    when(annotation.nullSafe()).thenReturn(true);
+    Class<?> createStringClassResult = ReflectionHelperTestFactory.createStringClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createStringClassResult);
 
     // Act and Assert
     assertThrows(
@@ -155,6 +372,183 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
     verify(reflectionAccessFilter).check(isA(Class.class));
     verify(annotation).nullSafe();
     verify(annotation).value();
+  }
+
+  /**
+   * Test {@link JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor,
+   * Gson, TypeToken, JsonAdapter, boolean)}.
+   *
+   * <ul>
+   *   <li>Then return {@link DefaultDateTypeAdapter}.
+   * </ul>
+   *
+   * <p>Method under test: {@link
+   * JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor, Gson, TypeToken,
+   * JsonAdapter, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+  })
+  public void testGetTypeAdapter_thenReturnDefaultDateTypeAdapter() {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
+        new JsonAdapterAnnotationTypeAdapterFactory(
+            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
+
+    DefaultDateTypeAdapter<Date> defaultDateTypeAdapter = mock(DefaultDateTypeAdapter.class);
+    TypeAdapter<Date> createDefaultDateTypeAdapterWithStylesResult =
+        DefaultDateTypeAdapterTestFactory.createDefaultDateTypeAdapterWithStyles();
+    when(defaultDateTypeAdapter.nullSafe())
+        .thenReturn(createDefaultDateTypeAdapterWithStylesResult);
+
+    InstanceCreator<Object> instanceCreator = mock(InstanceCreator.class);
+    when(instanceCreator.createInstance(Mockito.<Type>any())).thenReturn(defaultDateTypeAdapter);
+
+    HashMap<Type, InstanceCreator<?>> instanceCreators2 = new HashMap<>();
+    instanceCreators2.put(GsonBuilderTestFactory.createType(), instanceCreator);
+    ConstructorConstructor constructorConstructor =
+        new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
+    Gson gson = new Gson();
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
+    TypeToken<?> type2 = TypeToken.get(type);
+
+    JsonAdapter annotation = mock(JsonAdapter.class);
+    when(annotation.nullSafe()).thenReturn(true);
+    Class<?> createStringClassResult = ReflectionHelperTestFactory.createStringClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createStringClassResult);
+
+    // Act
+    TypeAdapter<?> actualTypeAdapter =
+        jsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(
+            constructorConstructor, gson, type2, annotation, true);
+
+    // Assert
+    verify(instanceCreator).createInstance(isA(Type.class));
+    verify(defaultDateTypeAdapter).nullSafe();
+    verify(annotation).nullSafe();
+    verify(annotation).value();
+    assertTrue(actualTypeAdapter instanceof DefaultDateTypeAdapter);
+    assertSame(createDefaultDateTypeAdapterWithStylesResult, actualTypeAdapter);
+  }
+
+  /**
+   * Test {@link JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor,
+   * Gson, TypeToken, JsonAdapter, boolean)}.
+   *
+   * <ul>
+   *   <li>Then return {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link
+   * JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor, Gson, TypeToken,
+   * JsonAdapter, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+  })
+  public void testGetTypeAdapter_thenReturnNull() {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
+        new JsonAdapterAnnotationTypeAdapterFactory(
+            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
+
+    InstanceCreator<Object> instanceCreator = mock(InstanceCreator.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators2 = new HashMap<>();
+    when(instanceCreator.createInstance(Mockito.<Type>any()))
+        .thenReturn(
+            new CollectionTypeAdapterFactory(
+                new ConstructorConstructor(instanceCreators2, true, new ArrayList<>())));
+
+    HashMap<Type, InstanceCreator<?>> instanceCreators3 = new HashMap<>();
+    instanceCreators3.put(GsonBuilderTestFactory.createType(), instanceCreator);
+    ConstructorConstructor constructorConstructor =
+        new ConstructorConstructor(instanceCreators3, true, new ArrayList<>());
+    Gson gson = new Gson();
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
+    TypeToken<?> type2 = TypeToken.get(type);
+
+    JsonAdapter annotation = mock(JsonAdapter.class);
+    when(annotation.nullSafe()).thenReturn(false);
+    Class<?> createStringClassResult = ReflectionHelperTestFactory.createStringClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createStringClassResult);
+
+    // Act
+    TypeAdapter<?> actualTypeAdapter =
+        jsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(
+            constructorConstructor, gson, type2, annotation, true);
+
+    // Assert
+    verify(instanceCreator).createInstance(isA(Type.class));
+    verify(annotation).nullSafe();
+    verify(annotation).value();
+    assertNull(actualTypeAdapter);
+  }
+
+  /**
+   * Test {@link JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor,
+   * Gson, TypeToken, JsonAdapter, boolean)}.
+   *
+   * <ul>
+   *   <li>Then return {@link TreeTypeAdapter}.
+   * </ul>
+   *
+   * <p>Method under test: {@link
+   * JsonAdapterAnnotationTypeAdapterFactory#getTypeAdapter(ConstructorConstructor, Gson, TypeToken,
+   * JsonAdapter, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+  })
+  public void testGetTypeAdapter_thenReturnTreeTypeAdapter() {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
+        new JsonAdapterAnnotationTypeAdapterFactory(
+            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
+
+    InstanceCreator<Object> instanceCreator = mock(InstanceCreator.class);
+    when(instanceCreator.createInstance(Mockito.<Type>any()))
+        .thenReturn(new MyParameterizedTypeAdapter<>());
+
+    HashMap<Type, InstanceCreator<?>> instanceCreators2 = new HashMap<>();
+    instanceCreators2.put(GsonBuilderTestFactory.createType(), instanceCreator);
+    ConstructorConstructor constructorConstructor =
+        new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
+    Gson gson = new Gson();
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
+    TypeToken<?> type2 = TypeToken.get(type);
+
+    JsonAdapter annotation = mock(JsonAdapter.class);
+    when(annotation.nullSafe()).thenReturn(false);
+    Class<?> createStringClassResult = ReflectionHelperTestFactory.createStringClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createStringClassResult);
+
+    // Act
+    TypeAdapter<?> actualTypeAdapter =
+        jsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(
+            constructorConstructor, gson, type2, annotation, true);
+
+    // Assert
+    verify(instanceCreator).createInstance(isA(Type.class));
+    verify(annotation).nullSafe();
+    verify(annotation).value();
+    assertTrue(actualTypeAdapter instanceof TreeTypeAdapter);
+    Gson gson2 = ((TreeTypeAdapter<?>) actualTypeAdapter).gson;
+    assertFalse(gson2.serializeNulls());
+    assertTrue(gson2.htmlSafe());
+    assertSame(
+        actualTypeAdapter, ((TreeTypeAdapter<?>) actualTypeAdapter).getSerializationDelegate());
   }
 
   /**
@@ -174,7 +568,7 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "com.google.gson.TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
   })
   public void testGetTypeAdapter_whenJsonAdapterNullSafeThrowIllegalArgumentException() {
     // Arrange
@@ -186,13 +580,13 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
     ConstructorConstructor constructorConstructor =
         new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
     Gson gson = new Gson();
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
     TypeToken<?> type2 = TypeToken.get(type);
 
     JsonAdapter annotation = mock(JsonAdapter.class);
     when(annotation.nullSafe()).thenThrow(new IllegalArgumentException());
-    Class<Object> forNameResult = Object.class;
-    Mockito.<Class<?>>when(annotation.value()).thenReturn(forNameResult);
+    Class<?> createStringClassResult = ReflectionHelperTestFactory.createStringClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createStringClassResult);
 
     // Act and Assert
     assertThrows(
@@ -221,7 +615,7 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "com.google.gson.TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
+    "TypeAdapter JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor, Gson, TypeToken, JsonAdapter, boolean)"
   })
   public void testGetTypeAdapter_whenJsonAdapterValueThrowIllegalArgumentException() {
     // Arrange
@@ -233,7 +627,7 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
     ConstructorConstructor constructorConstructor =
         new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
     Gson gson = new Gson();
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
     TypeToken<?> type2 = TypeToken.get(type);
 
     JsonAdapter annotation = mock(JsonAdapter.class);
@@ -253,7 +647,7 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
    * TypeAdapterFactory)}.
    *
    * <ul>
-   *   <li>When {@code Object}.
+   *   <li>When createStringClass.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -267,13 +661,13 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
   @MethodsUnderTest({
     "boolean JsonAdapterAnnotationTypeAdapterFactory.isClassJsonAdapterFactory(TypeToken, TypeAdapterFactory)"
   })
-  public void testIsClassJsonAdapterFactory_whenJavaLangObject_thenReturnFalse() {
+  public void testIsClassJsonAdapterFactory_whenCreateStringClass_thenReturnFalse() {
     // Arrange
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
         new JsonAdapterAnnotationTypeAdapterFactory(
             new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperTestFactory.createStringClass();
     TypeToken<?> type2 = TypeToken.get(type);
 
     // Act and Assert
