@@ -45,7 +45,10 @@ public class ModuleTest {
     // Note: This might fail when run from the IDE, but should succeed when run with Maven from
     // command line
     URL gsonLocation = Gson.class.getProtectionDomain().getCodeSource().getLocation();
-    assertThat(gsonLocation.getPath()).containsMatch("gson/target/gson-[^/]+\\.jar");
+    // Accept either local build (gson/target/gson-*.jar) or Maven repository
+    // (repository/.../gson-*.jar)
+    assertThat(gsonLocation.getPath())
+        .containsMatch("(gson/target/gson-[^/]+\\.jar|repository/.*/gson-[^/]+\\.jar)");
 
     Module module = Gson.class.getModule();
     ModuleDescriptor moduleDescriptor = module.getDescriptor();
