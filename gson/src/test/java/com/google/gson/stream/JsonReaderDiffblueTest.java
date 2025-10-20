@@ -58,7 +58,7 @@ public class JsonReaderDiffblueTest {
     // Assert
     assertEquals("$", actualJsonReader.getPath());
     assertEquals("$", actualJsonReader.getPreviousPath());
-    assertEquals(0, actualJsonReader.peeked);
+    assertEquals(0, actualJsonReader.getPeeked());
     assertEquals(255, actualJsonReader.getNestingLimit());
     assertEquals(Strictness.LEGACY_STRICT, actualJsonReader.getStrictness());
     assertFalse(actualJsonReader.isLenient());
@@ -1955,7 +1955,7 @@ public class JsonReaderDiffblueTest {
     JsonToken actualPeekResult = jsonReader.peek();
 
     // Assert
-    assertEquals(10, jsonReader.peeked);
+    assertEquals(10, jsonReader.getPeeked());
     assertEquals(JsonToken.STRING, actualPeekResult);
   }
 
@@ -1984,7 +1984,7 @@ public class JsonReaderDiffblueTest {
     JsonToken actualPeekResult = jsonReader.peek();
 
     // Assert
-    assertEquals(10, jsonReader.peeked);
+    assertEquals(10, jsonReader.getPeeked());
     assertEquals(JsonToken.STRING, actualPeekResult);
   }
 
@@ -2013,7 +2013,7 @@ public class JsonReaderDiffblueTest {
     JsonToken actualPeekResult = jsonReader.peek();
 
     // Assert
-    assertEquals(10, jsonReader.peeked);
+    assertEquals(10, jsonReader.getPeeked());
     assertEquals(JsonToken.STRING, actualPeekResult);
   }
 
@@ -2038,7 +2038,7 @@ public class JsonReaderDiffblueTest {
     JsonToken actualPeekResult = jsonReader.peek();
 
     // Assert
-    assertEquals(6, jsonReader.peeked);
+    assertEquals(6, jsonReader.getPeeked());
     assertEquals(JsonToken.BOOLEAN, actualPeekResult);
   }
 
@@ -2064,7 +2064,7 @@ public class JsonReaderDiffblueTest {
     JsonToken actualPeekResult = jsonReader.peek();
 
     // Assert
-    assertEquals(6, jsonReader.peeked);
+    assertEquals(6, jsonReader.getPeeked());
     assertEquals(JsonToken.BOOLEAN, actualPeekResult);
   }
 
@@ -2092,7 +2092,7 @@ public class JsonReaderDiffblueTest {
     JsonToken actualPeekResult = jsonReader.peek();
 
     // Assert
-    assertEquals(6, jsonReader.peeked);
+    assertEquals(6, jsonReader.getPeeked());
     assertEquals(JsonToken.BOOLEAN, actualPeekResult);
   }
 
@@ -2121,7 +2121,7 @@ public class JsonReaderDiffblueTest {
     JsonToken actualPeekResult = jsonReader.peek();
 
     // Assert
-    assertEquals(10, jsonReader.peeked);
+    assertEquals(10, jsonReader.getPeeked());
     assertEquals(JsonToken.STRING, actualPeekResult);
   }
 
@@ -2189,7 +2189,7 @@ public class JsonReaderDiffblueTest {
     JsonToken actualPeekResult = jsonReader.peek();
 
     // Assert
-    assertEquals(15, jsonReader.peeked);
+    assertEquals(15, jsonReader.getPeeked());
     assertEquals(JsonToken.NUMBER, actualPeekResult);
   }
 

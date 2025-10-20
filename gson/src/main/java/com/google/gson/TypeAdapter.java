@@ -314,6 +314,15 @@ public abstract class TypeAdapter<T> {
       return TypeAdapter.this.read(reader);
     }
 
+    /**
+     * Returns the delegate TypeAdapter that this NullSafeTypeAdapter wraps.
+     *
+     * @return the wrapped TypeAdapter instance
+     */
+    public TypeAdapter<T> getDelegate() {
+      return TypeAdapter.this;
+    }
+
     @Override
     public String toString() {
       return "NullSafeTypeAdapter[" + TypeAdapter.this + "]";

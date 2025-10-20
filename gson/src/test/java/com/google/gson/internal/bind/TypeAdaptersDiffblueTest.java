@@ -1,5 +1,7 @@
 package com.google.gson.internal.bind;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
@@ -173,5 +175,64 @@ public class TypeAdaptersDiffblueTest {
 
     // Assert
     assertSame(typeAdapter, actualNewFactoryForMultipleTypesResult.create(gson2, getResult));
+  }
+
+  /**
+   * Test {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}.
+   *
+   * <ul>
+   *   <li>When create with Boolean type, then return null for unrelated String type.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory TypeAdapters.newTypeHierarchyFactory(Class, TypeAdapter)"})
+  public void testNewTypeHierarchyFactory_whenCreateWithUnrelatedType_thenReturnNull() {
+    // Arrange
+    Class<Boolean> clazz = Boolean.class;
+    TypeAdapter<Boolean> typeAdapter = TypeAdapters.BOOLEAN;
+
+    // Act
+    TypeAdapterFactory actualNewTypeHierarchyFactoryResult =
+        TypeAdapters.newTypeHierarchyFactory(clazz, typeAdapter);
+    Gson gson2 = new Gson();
+    Class<String> type2 = String.class;
+    TypeToken<String> getResult = TypeToken.get(type2);
+
+    // Assert - Boolean is not assignable from String, so should return null
+    assertNull(actualNewTypeHierarchyFactoryResult.create(gson2, getResult));
+  }
+
+  /**
+   * Test {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}.
+   *
+   * <ul>
+   *   <li>When create with assignable type, then return non-null adapter.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory TypeAdapters.newTypeHierarchyFactory(Class, TypeAdapter)"})
+  public void testNewTypeHierarchyFactory_whenCreateWithAssignableType_thenReturnAdapter() {
+    // Arrange
+    Class<Number> clazz = Number.class;
+    TypeAdapter<Number> typeAdapter = TypeAdapters.LONG;
+
+    // Act
+    TypeAdapterFactory actualNewTypeHierarchyFactoryResult =
+        TypeAdapters.newTypeHierarchyFactory(clazz, typeAdapter);
+    Gson gson2 = new Gson();
+    Class<Integer> type2 = Integer.class;
+    TypeToken<Integer> getResult = TypeToken.get(type2);
+
+    // Assert - Number is assignable from Integer (Integer extends Number), so should return an
+    // adapter
+    assertNotNull(actualNewTypeHierarchyFactoryResult.create(gson2, getResult));
   }
 }

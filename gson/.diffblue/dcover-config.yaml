@@ -1,0 +1,38 @@
+---
+# Diffblue Cover custom configuration for gson
+# This configuration provides custom input rules to help Diffblue Cover
+# construct instances of inner classes that are not directly instantiable
+
+custom-inputs:
+  # Custom factory for LinkedTreeMap.EntrySet
+  - class: "com.google.gson.internal.LinkedTreeMap$EntrySet"
+    factories:
+      - method: "com.google.gson.internal.LinkedTreeMapEntrySetDiffblueTestFactory.createEntrySet"
+      - method: "com.google.gson.internal.LinkedTreeMapEntrySetDiffblueTestFactory.createEmptyEntrySet"
+      - method: "com.google.gson.internal.LinkedTreeMapEntrySetDiffblueTestFactory.createEntrySetWithData"
+
+  # Custom factory for LinkedTreeMap.KeySet
+  - class: "com.google.gson.internal.LinkedTreeMap$KeySet"
+    factories:
+      - method: "com.google.gson.internal.LinkedTreeMapKeySetDiffblueTestFactory.createKeySet"
+      - method: "com.google.gson.internal.LinkedTreeMapKeySetDiffblueTestFactory.createEmptyKeySet"
+      - method: "com.google.gson.internal.LinkedTreeMapKeySetDiffblueTestFactory.createKeySetWithData"
+      - method: "com.google.gson.internal.LinkedTreeMapKeySetDiffblueTestFactory.createKeySetWithMultipleEntries"
+
+  # Custom factory for DefaultDateTypeAdapter
+  - class: "com.google.gson.internal.bind.DefaultDateTypeAdapter"
+    factories:
+      - method: "com.google.gson.internal.bind.DefaultDateTypeAdapterDiffblueTestFactory.createDefaultStyleAdapter"
+      - method: "com.google.gson.internal.bind.DefaultDateTypeAdapterDiffblueTestFactory.createCustomPatternAdapter"
+      - method: "com.google.gson.internal.bind.DefaultDateTypeAdapterDiffblueTestFactory.createCustomStyleAdapter"
+      - method: "com.google.gson.internal.bind.DefaultDateTypeAdapterDiffblueTestFactory.createShortStyleAdapter"
+      - method: "com.google.gson.internal.bind.DefaultDateTypeAdapterDiffblueTestFactory.createLongStyleAdapter"
+      - method: "com.google.gson.internal.bind.DefaultDateTypeAdapterDiffblueTestFactory.createSimpleDateAdapter"
+
+  # Custom factory for NumberTypeAdapter
+  - class: "com.google.gson.internal.bind.NumberTypeAdapter"
+    factories:
+      - method: "com.google.gson.internal.bind.NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter"
+      - method: "com.google.gson.internal.bind.NumberTypeAdapterDiffblueTestFactory.createDoubleAdapter"
+      - method: "com.google.gson.internal.bind.NumberTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter"
+      - method: "com.google.gson.internal.bind.NumberTypeAdapterDiffblueTestFactory.createBigDecimalAdapter"

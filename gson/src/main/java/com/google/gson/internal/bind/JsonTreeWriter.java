@@ -73,6 +73,11 @@ public final class JsonTreeWriter extends JsonWriter {
     return product;
   }
 
+  /** Returns true if this writer has been closed. */
+  public boolean isClosed() {
+    return !stack.isEmpty() && stack.get(stack.size() - 1) == SENTINEL_CLOSED;
+  }
+
   private JsonElement peek() {
     return stack.get(stack.size() - 1);
   }

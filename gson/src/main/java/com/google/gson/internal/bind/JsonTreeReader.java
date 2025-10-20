@@ -388,4 +388,23 @@ public final class JsonTreeReader extends JsonReader {
   private String locationString() {
     return " at path " + getPath();
   }
+
+  /**
+   * Returns the current stack size. Used for testing purposes.
+   *
+   * @return the current stack size
+   */
+  int getStackSize() {
+    return stackSize;
+  }
+
+  /**
+   * Returns the element at the top of the stack, or null if the stack is empty. Used for testing
+   * purposes.
+   *
+   * @return the top stack element or null
+   */
+  Object peekTopStack() {
+    return stackSize > 0 ? stack[stackSize - 1] : null;
+  }
 }

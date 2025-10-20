@@ -41,6 +41,30 @@ public final class GsonTypesTest {
   }
 
   @Test
+  public void testCheckNotPrimitive() {
+    // Test that primitive types throw IllegalArgumentException
+    String expectedMessage = "Primitive type is not allowed";
+    IllegalArgumentException e =
+        assertThrows(IllegalArgumentException.class, () -> GsonTypes.checkNotPrimitive(int.class));
+    assertThat(e).hasMessageThat().isEqualTo(expectedMessage);
+
+    e =
+        assertThrows(
+            IllegalArgumentException.class, () -> GsonTypes.checkNotPrimitive(boolean.class));
+    assertThat(e).hasMessageThat().isEqualTo(expectedMessage);
+
+    e =
+        assertThrows(
+            IllegalArgumentException.class, () -> GsonTypes.checkNotPrimitive(double.class));
+    assertThat(e).hasMessageThat().isEqualTo(expectedMessage);
+
+    // Test that non-primitive types do not throw
+    GsonTypes.checkNotPrimitive(String.class);
+    GsonTypes.checkNotPrimitive(Integer.class);
+    GsonTypes.checkNotPrimitive(List.class);
+  }
+
+  @Test
   public void testNewParameterizedTypeWithoutOwner() throws Exception {
     // List<A>. List is a top-level class
     ParameterizedType type = GsonTypes.newParameterizedTypeWithOwner(null, List.class, A.class);

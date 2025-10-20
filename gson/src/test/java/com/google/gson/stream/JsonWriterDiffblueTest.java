@@ -1838,4 +1838,28 @@ public class JsonWriterDiffblueTest {
     // Assert
     verify(writer).flush();
   }
+
+  /**
+   * Test {@link JsonWriter#close()}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()}.
+   *   <li>Then throw {@link IOException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonWriter#close()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonWriter.close()"})
+  public void testClose_givenJsonWriterWithOutIsStringWriter_thenThrowIOException() {
+    // Arrange
+    JsonWriter jsonWriter = new JsonWriter(new StringWriter());
+
+    // Act and Assert
+    IOException exception = assertThrows(IOException.class, () -> jsonWriter.close());
+    assertEquals("Incomplete document", exception.getMessage());
+  }
 }

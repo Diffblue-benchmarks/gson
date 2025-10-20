@@ -531,6 +531,15 @@ public class JsonReader implements Closeable {
     }
   }
 
+  /**
+   * Package-private getter for the peeked field, used for testing.
+   *
+   * @return the current peeked value
+   */
+  int getPeeked() {
+    return peeked;
+  }
+
   /** Returns true if the current array or object has another element. */
   public boolean hasNext() throws IOException {
     int p = peeked;

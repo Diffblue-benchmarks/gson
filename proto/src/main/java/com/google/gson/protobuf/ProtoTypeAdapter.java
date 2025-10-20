@@ -110,6 +110,31 @@ public class ProtoTypeAdapter implements JsonSerializer<Message>, JsonDeserializ
       return this;
     }
 
+    /** For testing purposes only */
+    public ProtoTypeAdapter.EnumSerialization getEnumSerialization() {
+      return enumSerialization;
+    }
+
+    /** For testing purposes only */
+    public CaseFormat getJsonFormat() {
+      return jsonFormat;
+    }
+
+    /** For testing purposes only */
+    public CaseFormat getProtoFormat() {
+      return protoFormat;
+    }
+
+    /** For testing purposes only */
+    public Set getSerializedEnumValueExtensions() {
+      return serializedEnumValueExtensions;
+    }
+
+    /** For testing purposes only */
+    public Set getSerializedNameExtensions() {
+      return serializedNameExtensions;
+    }
+
     /**
      * Sets the field names serialization format. The first parameter defines how to read the format
      * of the proto field names you are converting to JSON. The second parameter defines which
@@ -202,6 +227,11 @@ public class ProtoTypeAdapter implements JsonSerializer<Message>, JsonDeserializ
     public Builder setShouldUseJsonNameFieldOption(boolean shouldUseJsonNameFieldOption) {
       this.shouldUseJsonNameFieldOption = shouldUseJsonNameFieldOption;
       return this;
+    }
+
+    /** For testing purposes only */
+    public boolean isShouldUseJsonNameFieldOption() {
+      return shouldUseJsonNameFieldOption;
     }
 
     public ProtoTypeAdapter build() {
@@ -447,5 +477,35 @@ public class ProtoTypeAdapter implements JsonSerializer<Message>, JsonDeserializ
       // NB: it doesn't matter which method we return in the event of a race.
     }
     return method;
+  }
+
+  /** For testing purposes only */
+  public ProtoTypeAdapter.EnumSerialization getEnumSerialization() {
+    return enumSerialization;
+  }
+
+  /** For testing purposes only */
+  public CaseFormat getJsonFormat() {
+    return jsonFormat;
+  }
+
+  /** For testing purposes only */
+  public CaseFormat getProtoFormat() {
+    return protoFormat;
+  }
+
+  /** For testing purposes only */
+  public Set getSerializedEnumValueExtensions() {
+    return serializedEnumValueExtensions;
+  }
+
+  /** For testing purposes only */
+  public Set getSerializedNameExtensions() {
+    return serializedNameExtensions;
+  }
+
+  /** For testing purposes only */
+  public boolean isShouldUseJsonNameFieldOption() {
+    return shouldUseJsonNameFieldOption;
   }
 }

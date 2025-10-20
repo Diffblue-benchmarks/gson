@@ -140,4 +140,14 @@ public class CollectionsDeserializationBenchmark {
       jr.endArray();
     }
   }
+
+  /** For testing purposes only */
+  public Gson getGson() {
+    return gson;
+  }
+
+  /** For testing purposes only */
+  public String getJson() {
+    return json;
+  }
 }

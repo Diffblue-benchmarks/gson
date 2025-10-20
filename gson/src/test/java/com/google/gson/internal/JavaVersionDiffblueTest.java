@@ -117,4 +117,20 @@ public class JavaVersionDiffblueTest {
     // Arrange, Act and Assert
     assertTrue(JavaVersion.isJava9OrLater());
   }
+
+  /**
+   * Test {@link JavaVersion#getMajorJavaVersion()}.
+   *
+   * <p>Method under test: {@link JavaVersion#getMajorJavaVersion()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"int JavaVersion.getMajorJavaVersion()"})
+  public void testGetMajorJavaVersion() {
+    // Arrange, Act and Assert
+    // The major Java version should be at least 6 (minimum supported version)
+    int actualMajorJavaVersion = JavaVersion.getMajorJavaVersion();
+    assertTrue("Major Java version should be at least 6", actualMajorJavaVersion >= 6);
+  }
 }

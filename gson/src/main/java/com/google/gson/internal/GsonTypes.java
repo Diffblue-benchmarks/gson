@@ -484,7 +484,13 @@ public final class GsonTypes {
     return genericDeclaration instanceof Class ? (Class<?>) genericDeclaration : null;
   }
 
-  static void checkNotPrimitive(Type type) {
+  /**
+   * Validates that the provided type is not a primitive type.
+   *
+   * @param type the type to check
+   * @throws IllegalArgumentException if the type is a primitive type
+   */
+  public static void checkNotPrimitive(Type type) {
     if (type instanceof Class<?> && ((Class<?>) type).isPrimitive()) {
       throw new IllegalArgumentException("Primitive type is not allowed");
     }

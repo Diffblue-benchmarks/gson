@@ -100,6 +100,27 @@ public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Seri
     return size;
   }
 
+  /**
+   * Returns the root node of the tree, or {@code null} if the tree is empty. Public for testing
+   * purposes.
+   */
+  public Node<K, V> getRoot() {
+    return root;
+  }
+
+  /**
+   * Returns the modification count for concurrent modification detection. Public for testing
+   * purposes.
+   */
+  public int getModCount() {
+    return modCount;
+  }
+
+  /** Returns the header node used for maintaining iteration order. Public for testing purposes. */
+  public Node<K, V> getHeader() {
+    return header;
+  }
+
   @Override
   public V get(Object key) {
     Node<K, V> node = findByObject(key);
@@ -466,7 +487,7 @@ public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Seri
     return result;
   }
 
-  static final class Node<K, V> implements Entry<K, V> {
+  public static final class Node<K, V> implements Entry<K, V> {
     Node<K, V> parent;
     Node<K, V> left;
     Node<K, V> right;
@@ -556,6 +577,31 @@ public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Seri
         child = node.right;
       }
       return node;
+    }
+
+    /** Returns the next node in the iteration order. Public for testing purposes. */
+    public Node<K, V> getNext() {
+      return next;
+    }
+
+    /** Returns the previous node in the iteration order. Public for testing purposes. */
+    public Node<K, V> getPrev() {
+      return prev;
+    }
+
+    /** Returns the parent node in the tree. Public for testing purposes. */
+    public Node<K, V> getParent() {
+      return parent;
+    }
+
+    /** Returns the left child node. Public for testing purposes. */
+    public Node<K, V> getLeft() {
+      return left;
+    }
+
+    /** Returns the right child node. Public for testing purposes. */
+    public Node<K, V> getRight() {
+      return right;
     }
   }
 
