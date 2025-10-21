@@ -11,6 +11,7 @@ import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilderDiffblueTestFactory;
 import com.google.gson.InstanceCreator;
 import com.google.gson.ReflectionAccessFilter;
 import com.google.gson.ReflectionAccessFilter.FilterResult;
@@ -30,7 +31,8 @@ public class ReflectiveTypeAdapterFactoryDiffblueTest {
    * Test {@link ReflectiveTypeAdapterFactory#create(Gson, TypeToken)}.
    *
    * <ul>
-   *   <li>Given {@link HashMap#HashMap()} All is {@link HashMap#HashMap()}.
+   *   <li>Given {@link HashMap#HashMap()} createType is {@link InstanceCreator}.
+   *   <li>Then return toJson {@code null} is {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link ReflectiveTypeAdapterFactory#create(Gson, TypeToken)}
@@ -39,10 +41,10 @@ public class ReflectiveTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapter ReflectiveTypeAdapterFactory.create(Gson, TypeToken)"})
-  public void testCreate_givenHashMapAllIsHashMap() {
+  public void testCreate_givenHashMapCreateTypeIsInstanceCreator_thenReturnToJsonNullIsNull() {
     // Arrange
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    instanceCreators.putAll(new HashMap<>());
+    instanceCreators.put(GsonBuilderDiffblueTestFactory.createType(), mock(InstanceCreator.class));
     ConstructorConstructor constructorConstructor =
         new ConstructorConstructor(instanceCreators, true, new ArrayList<>());
     FieldNamingStrategy fieldNamingPolicy = mock(FieldNamingStrategy.class);
@@ -63,7 +65,7 @@ public class ReflectiveTypeAdapterFactoryDiffblueTest {
     TypeToken<Object> type2 = TypeToken.get(type);
 
     // Act and Assert
-    assertEquals("{}", reflectiveTypeAdapterFactory.create(gson, type2).toJson("Value"));
+    assertEquals("null", reflectiveTypeAdapterFactory.create(gson, type2).toJson(null));
   }
 
   /**
@@ -112,14 +114,14 @@ public class ReflectiveTypeAdapterFactoryDiffblueTest {
 
     // Assert
     verify(reflectionAccessFilter).check(isA(Class.class));
-    assertEquals("{}", actualCreateResult.toJson("Value"));
+    assertEquals("null", actualCreateResult.toJson(null));
   }
 
   /**
    * Test {@link ReflectiveTypeAdapterFactory#create(Gson, TypeToken)}.
    *
    * <ul>
-   *   <li>Then return toJson {@code Value} is {@code {}}.
+   *   <li>Then return toJson {@code null} is {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link ReflectiveTypeAdapterFactory#create(Gson, TypeToken)}
@@ -128,7 +130,7 @@ public class ReflectiveTypeAdapterFactoryDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapter ReflectiveTypeAdapterFactory.create(Gson, TypeToken)"})
-  public void testCreate_thenReturnToJsonValueIsLeftCurlyBracketRightCurlyBracket() {
+  public void testCreate_thenReturnToJsonNullIsNull() {
     // Arrange
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     ConstructorConstructor constructorConstructor =
@@ -151,6 +153,6 @@ public class ReflectiveTypeAdapterFactoryDiffblueTest {
     TypeToken<Object> type2 = TypeToken.get(type);
 
     // Act and Assert
-    assertEquals("{}", reflectiveTypeAdapterFactory.create(gson, type2).toJson("Value"));
+    assertEquals("null", reflectiveTypeAdapterFactory.create(gson, type2).toJson(null));
   }
 }

@@ -1,15 +1,192 @@
 package com.google.gson.internal.reflect;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
+import com.google.gson.JsonIOException;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class ReflectionHelperDiffblueTest {
+  /**
+   * Test {@link ReflectionHelper#makeAccessible(AccessibleObject)}.
+   *
+   * <ul>
+   *   <li>Then createSimpleAccessibleObject {@link Field}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ReflectionHelper#makeAccessible(AccessibleObject)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void ReflectionHelper.makeAccessible(AccessibleObject)"})
+  public void testMakeAccessible_thenCreateSimpleAccessibleObjectField()
+      throws JsonIOException, NoSuchFieldException {
+    // Arrange
+    AccessibleObject object = ReflectionHelperDiffblueTestFactory.createSimpleAccessibleObject();
+
+    // Act
+    ReflectionHelper.makeAccessible(object);
+
+    // Assert
+    assertTrue(object instanceof Field);
+    assertTrue(object.isAccessible());
+  }
+
+  /**
+   * Test {@link ReflectionHelper#getAccessibleObjectDescription(AccessibleObject, boolean)}.
+   *
+   * <p>Method under test: {@link ReflectionHelper#getAccessibleObjectDescription(AccessibleObject,
+   * boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "java.lang.String ReflectionHelper.getAccessibleObjectDescription(AccessibleObject, boolean)"
+  })
+  public void testGetAccessibleObjectDescription() throws NoSuchFieldException {
+    // Arrange, Act and Assert
+    assertEquals(
+        "Field"
+            + " 'com.google.gson.internal.reflect.ReflectionHelperDiffblueTestFactory$TestClass#testField'",
+        ReflectionHelper.getAccessibleObjectDescription(
+            ReflectionHelperDiffblueTestFactory.createSimpleAccessibleObject(), true));
+  }
+
+  /**
+   * Test {@link ReflectionHelper#getAccessibleObjectDescription(AccessibleObject, boolean)}.
+   *
+   * <p>Method under test: {@link ReflectionHelper#getAccessibleObjectDescription(AccessibleObject,
+   * boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "java.lang.String ReflectionHelper.getAccessibleObjectDescription(AccessibleObject, boolean)"
+  })
+  public void testGetAccessibleObjectDescription2() throws NoSuchFieldException {
+    // Arrange, Act and Assert
+    assertEquals(
+        "field"
+            + " 'com.google.gson.internal.reflect.ReflectionHelperDiffblueTestFactory$TestClass#testField'",
+        ReflectionHelper.getAccessibleObjectDescription(
+            ReflectionHelperDiffblueTestFactory.createFieldForGetAccessor(), false));
+  }
+
+  /**
+   * Test {@link ReflectionHelper#getAccessibleObjectDescription(AccessibleObject, boolean)}.
+   *
+   * <p>Method under test: {@link ReflectionHelper#getAccessibleObjectDescription(AccessibleObject,
+   * boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "java.lang.String ReflectionHelper.getAccessibleObjectDescription(AccessibleObject, boolean)"
+  })
+  public void testGetAccessibleObjectDescription3() throws NoSuchMethodException {
+    // Arrange, Act and Assert
+    assertEquals(
+        "Method"
+            + " 'com.google.gson.internal.reflect.ReflectionHelperDiffblueTestFactory$TestClass#testMethod()'",
+        ReflectionHelper.getAccessibleObjectDescription(
+            ReflectionHelperDiffblueTestFactory.createAccessibleObjectAsMethod(), true));
+  }
+
+  /**
+   * Test {@link ReflectionHelper#getAccessibleObjectDescription(AccessibleObject, boolean)}.
+   *
+   * <p>Method under test: {@link ReflectionHelper#getAccessibleObjectDescription(AccessibleObject,
+   * boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "java.lang.String ReflectionHelper.getAccessibleObjectDescription(AccessibleObject, boolean)"
+  })
+  public void testGetAccessibleObjectDescription4() throws NoSuchMethodException {
+    // Arrange, Act and Assert
+    assertEquals(
+        "Constructor"
+            + " 'com.google.gson.internal.reflect.ReflectionHelperDiffblueTestFactory$TestClass()'",
+        ReflectionHelper.getAccessibleObjectDescription(
+            ReflectionHelperDiffblueTestFactory.createAccessibleObjectAsConstructor(), true));
+  }
+
+  /**
+   * Test {@link ReflectionHelper#fieldToString(Field)}.
+   *
+   * <p>Method under test: {@link ReflectionHelper#fieldToString(Field)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String ReflectionHelper.fieldToString(Field)"})
+  public void testFieldToString() throws NoSuchFieldException {
+    // Arrange, Act and Assert
+    assertEquals(
+        "com.google.gson.internal.reflect.ReflectionHelperDiffblueTestFactory$TestClass#testField",
+        ReflectionHelper.fieldToString(
+            ReflectionHelperDiffblueTestFactory.createFieldForGetAccessor()));
+  }
+
+  /**
+   * Test {@link ReflectionHelper#constructorToString(Constructor)}.
+   *
+   * <p>Method under test: {@link ReflectionHelper#constructorToString(Constructor)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String ReflectionHelper.constructorToString(Constructor)"})
+  public void testConstructorToString() throws NoSuchMethodException {
+    // Arrange
+    Constructor<?> constructor =
+        ReflectionHelperDiffblueTestFactory.createConstructorWithParameters();
+
+    // Act and Assert
+    assertEquals(
+        "com.google.gson.internal.reflect.ReflectionHelperDiffblueTestFactory$TestClass(String,"
+            + " int, boolean)",
+        ReflectionHelper.constructorToString(constructor));
+  }
+
+  /**
+   * Test {@link ReflectionHelper#isStatic(Class)}.
+   *
+   * <ul>
+   *   <li>When createNonNullClass.
+   *   <li>Then return {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ReflectionHelper#isStatic(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean ReflectionHelper.isStatic(Class)"})
+  public void testIsStatic_whenCreateNonNullClass_thenReturnTrue() {
+    // Arrange
+    Class<?> clazz = ReflectionHelperDiffblueTestFactory.createNonNullClass();
+
+    // Act and Assert
+    assertTrue(ReflectionHelper.isStatic(clazz));
+  }
+
   /**
    * Test {@link ReflectionHelper#isStatic(Class)}.
    *
@@ -36,6 +213,28 @@ public class ReflectionHelperDiffblueTest {
    * Test {@link ReflectionHelper#isAnonymousOrNonStaticLocal(Class)}.
    *
    * <ul>
+   *   <li>When createNonNullClass.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ReflectionHelper#isAnonymousOrNonStaticLocal(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean ReflectionHelper.isAnonymousOrNonStaticLocal(Class)"})
+  public void testIsAnonymousOrNonStaticLocal_whenCreateNonNullClass_thenReturnFalse() {
+    // Arrange
+    Class<?> clazz = ReflectionHelperDiffblueTestFactory.createNonNullClass();
+
+    // Act and Assert
+    assertFalse(ReflectionHelper.isAnonymousOrNonStaticLocal(clazz));
+  }
+
+  /**
+   * Test {@link ReflectionHelper#isAnonymousOrNonStaticLocal(Class)}.
+   *
+   * <ul>
    *   <li>When {@code Object}.
    *   <li>Then return {@code false}.
    * </ul>
@@ -55,10 +254,35 @@ public class ReflectionHelperDiffblueTest {
   }
 
   /**
+   * Test {@link ReflectionHelper#tryMakeAccessible(Constructor)}.
+   *
+   * <ul>
+   *   <li>When createConstructorWithParameters.
+   *   <li>Then return {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ReflectionHelper#tryMakeAccessible(Constructor)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String ReflectionHelper.tryMakeAccessible(Constructor)"})
+  public void testTryMakeAccessible_whenCreateConstructorWithParameters_thenReturnNull()
+      throws NoSuchMethodException {
+    // Arrange
+    Constructor<?> constructor =
+        ReflectionHelperDiffblueTestFactory.createConstructorWithParameters();
+
+    // Act and Assert
+    assertNull(ReflectionHelper.tryMakeAccessible(constructor));
+    assertTrue(constructor.isAccessible());
+  }
+
+  /**
    * Test {@link ReflectionHelper#isRecord(Class)}.
    *
    * <ul>
-   *   <li>When {@code Object}.
+   *   <li>When createNonNullClass.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -68,12 +292,39 @@ public class ReflectionHelperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean ReflectionHelper.isRecord(Class)"})
-  public void testIsRecord_whenJavaLangObject_thenReturnFalse() {
+  public void testIsRecord_whenCreateNonNullClass_thenReturnFalse() {
     // Arrange
-    Class<Object> raw = Object.class;
+    Class<?> raw = ReflectionHelperDiffblueTestFactory.createNonNullClass();
 
     // Act and Assert
     assertFalse(ReflectionHelper.isRecord(raw));
+  }
+
+  /**
+   * Test {@link ReflectionHelper#getAccessor(Class, Field)}.
+   *
+   * <ul>
+   *   <li>When createFieldForGetAccessor.
+   *   <li>Then throw {@link RuntimeException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ReflectionHelper#getAccessor(Class, Field)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.reflect.Method ReflectionHelper.getAccessor(Class, Field)"})
+  public void testGetAccessor_whenCreateFieldForGetAccessor_thenThrowRuntimeException()
+      throws NoSuchFieldException {
+    // Arrange
+    Class<?> raw = ReflectionHelperDiffblueTestFactory.createNonNullClass();
+
+    // Act and Assert
+    assertThrows(
+        RuntimeException.class,
+        () ->
+            ReflectionHelper.getAccessor(
+                raw, ReflectionHelperDiffblueTestFactory.createFieldForGetAccessor()));
   }
 
   /**

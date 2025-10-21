@@ -6,28 +6,84 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
+import com.google.gson.Gson;
 import com.google.gson.JsonArrayDiffblueTestFactory;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.Strictness;
+import com.google.gson.ToNumberPolicy;
+import com.google.gson.ToNumberStrategy;
+import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.LazilyParsedNumber;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class NumberTypeAdapterDiffblueTest {
+  /**
+   * Test {@link NumberTypeAdapter#getFactory(ToNumberStrategy)}.
+   *
+   * <ul>
+   *   <li>When {@link ToNumberPolicy#LAZILY_PARSED_NUMBER}.
+   *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#getFactory(ToNumberStrategy)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory NumberTypeAdapter.getFactory(ToNumberStrategy)"})
+  public void testGetFactory_whenLazily_parsed_number_thenReturnCreateGsonAndObjectIsNull() {
+    // Arrange and Act
+    TypeAdapterFactory actualFactory =
+        NumberTypeAdapter.getFactory(ToNumberPolicy.LAZILY_PARSED_NUMBER);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+
+    // Assert
+    assertNull(actualFactory.create(gson, getResult));
+  }
+
+  /**
+   * Test {@link NumberTypeAdapter#getFactory(ToNumberStrategy)}.
+   *
+   * <ul>
+   *   <li>When {@link ToNumberStrategy}.
+   *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#getFactory(ToNumberStrategy)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"TypeAdapterFactory NumberTypeAdapter.getFactory(ToNumberStrategy)"})
+  public void testGetFactory_whenToNumberStrategy_thenReturnCreateGsonAndObjectIsNull() {
+    // Arrange and Act
+    TypeAdapterFactory actualFactory = NumberTypeAdapter.getFactory(mock(ToNumberStrategy.class));
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+
+    // Assert
+    assertNull(actualFactory.create(gson, getResult));
+  }
+
   /**
    * Test {@link NumberTypeAdapter#read(JsonReader)}.
    *
@@ -487,7 +543,7 @@ public class NumberTypeAdapterDiffblueTest {
    * Number}.
    *
    * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) AsBigInteger signum is valueOf one.
+   *   <li>When {@link JsonTreeWriter} (default constructor) Strictness is {@code LENIENT}.
    * </ul>
    *
    * <p>Method under test: {@link NumberTypeAdapter#write(JsonWriter, Number)}
@@ -496,7 +552,7 @@ public class NumberTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void NumberTypeAdapter.write(JsonWriter, Number)"})
-  public void testWriteWithJsonWriterNumber_thenJsonTreeWriterAsBigIntegerSignumIsValueOfOne()
+  public void testWriteWithJsonWriterNumber_whenJsonTreeWriterStrictnessIsLenient()
       throws IOException {
     // Arrange
     NumberTypeAdapter createLongOrDoubleAdapterResult =
@@ -512,45 +568,9 @@ public class NumberTypeAdapterDiffblueTest {
     // Assert
     JsonElement getResult = out.get();
     assertTrue(getResult instanceof JsonPrimitive);
-    BigInteger asBigInteger = getResult.getAsBigInteger();
-    assertSame(value, asBigInteger.signum());
-    assertSame(value, asBigInteger.sqrt().signum());
-  }
-
-  /**
-   * Test {@link NumberTypeAdapter#write(JsonWriter, Number)} with {@code JsonWriter}, {@code
-   * Number}.
-   *
-   * <ul>
-   *   <li>When {@link JsonTreeWriter} (default constructor).
-   *   <li>Then {@link JsonTreeWriter} (default constructor) AsString is {@code 1}.
-   * </ul>
-   *
-   * <p>Method under test: {@link NumberTypeAdapter#write(JsonWriter, Number)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void NumberTypeAdapter.write(JsonWriter, Number)"})
-  public void testWriteWithJsonWriterNumber_whenJsonTreeWriter_thenJsonTreeWriterAsStringIs1()
-      throws IOException {
-    // Arrange
-    NumberTypeAdapter createLongOrDoubleAdapterResult =
-        NumberTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
-    JsonTreeWriter out = new JsonTreeWriter();
-    Integer value = Integer.valueOf(1);
-
-    // Act
-    createLongOrDoubleAdapterResult.write(out, value);
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
     assertEquals("1", getResult.getAsString());
     assertEquals('1', getResult.getAsCharacter());
     assertEquals(1, getResult.getAsInt());
-    Number asNumber = getResult.getAsNumber();
-    assertEquals(1, asNumber.intValue());
     assertEquals(1.0d, getResult.getAsDouble(), 0.0);
     assertEquals(1.0f, getResult.getAsFloat(), 0.0f);
     assertEquals(1L, getResult.getAsLong());
@@ -563,7 +583,7 @@ public class NumberTypeAdapterDiffblueTest {
     assertTrue(getResult.isJsonPrimitive());
     assertTrue(((JsonPrimitive) getResult).isNumber());
     assertEquals(new BigDecimal("1"), getResult.getAsBigDecimal());
-    assertSame(value, asNumber);
+    assertSame(value, getResult.getAsNumber());
     assertSame(getResult, getResult.getAsJsonPrimitive());
   }
 
@@ -597,5 +617,53 @@ public class NumberTypeAdapterDiffblueTest {
     assertTrue(getResult instanceof JsonNull);
     assertFalse(getResult.isJsonPrimitive());
     assertTrue(getResult.isJsonNull());
+  }
+
+  /**
+   * Test {@link NumberTypeAdapter#write(JsonWriter, Number)} with {@code JsonWriter}, {@code
+   * Number}.
+   *
+   * <ul>
+   *   <li>When {@link JsonTreeWriter} (default constructor).
+   *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonPrimitive}.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#write(JsonWriter, Number)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void NumberTypeAdapter.write(JsonWriter, Number)"})
+  public void testWriteWithJsonWriterNumber_whenJsonTreeWriter_thenJsonTreeWriterJsonPrimitive()
+      throws IOException {
+    // Arrange
+    NumberTypeAdapter createLongOrDoubleAdapterResult =
+        NumberTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
+    JsonTreeWriter out = new JsonTreeWriter();
+    Integer value = Integer.valueOf(1);
+
+    // Act
+    createLongOrDoubleAdapterResult.write(out, value);
+
+    // Assert
+    JsonElement getResult = out.get();
+    assertTrue(getResult instanceof JsonPrimitive);
+    assertEquals("1", getResult.getAsString());
+    assertEquals('1', getResult.getAsCharacter());
+    assertEquals(1, getResult.getAsInt());
+    assertEquals(1.0d, getResult.getAsDouble(), 0.0);
+    assertEquals(1.0f, getResult.getAsFloat(), 0.0f);
+    assertEquals(1L, getResult.getAsLong());
+    assertEquals((byte) 1, getResult.getAsByte());
+    assertEquals((short) 1, getResult.getAsShort());
+    assertFalse(getResult.getAsBoolean());
+    assertFalse(getResult.isJsonNull());
+    assertFalse(((JsonPrimitive) getResult).isBoolean());
+    assertFalse(((JsonPrimitive) getResult).isString());
+    assertTrue(getResult.isJsonPrimitive());
+    assertTrue(((JsonPrimitive) getResult).isNumber());
+    assertEquals(new BigDecimal("1"), getResult.getAsBigDecimal());
+    assertSame(value, getResult.getAsNumber());
+    assertSame(getResult, getResult.getAsJsonPrimitive());
   }
 }

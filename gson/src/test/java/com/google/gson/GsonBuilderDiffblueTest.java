@@ -11,9 +11,10 @@ import static org.mockito.Mockito.mock;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
-import com.google.gson.Gson.FutureTypeAdapter;
 import com.google.gson.internal.Excluder;
 import com.google.gson.internal.bind.ReflectiveTypeAdapterFactory;
+import com.google.gson.internal.reflect.ReflectionHelperDiffblueTestFactory;
+import com.google.gson.internal.sql.SqlTimestampTypeAdapterDiffblueTestFactory;
 import java.util.List;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -706,11 +707,12 @@ public class GsonBuilderDiffblueTest {
   public void testRegisterTypeHierarchyAdapter_thenGsonBuilderCreateBuilderFactoriesSizeIsOne() {
     // Arrange
     GsonBuilder gsonBuilder = new GsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperDiffblueTestFactory.createNonNullClass();
 
     // Act
     GsonBuilder actualRegisterTypeHierarchyAdapterResult =
-        gsonBuilder.registerTypeHierarchyAdapter(baseType, new FutureTypeAdapter<>());
+        gsonBuilder.registerTypeHierarchyAdapter(
+            baseType, SqlTimestampTypeAdapterDiffblueTestFactory.createSqlTimestampTypeAdapter());
 
     // Assert
     Gson createResult = gsonBuilder.create();
@@ -719,30 +721,6 @@ public class GsonBuilderDiffblueTest {
     assertEquals(1, createResult2.builderFactories.size());
     assertTrue(createResult.builderHierarchyFactories.isEmpty());
     assertTrue(createResult2.builderHierarchyFactories.isEmpty());
-  }
-
-  /**
-   * Test {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}.
-   *
-   * <ul>
-   *   <li>Then throw {@link IllegalArgumentException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"GsonBuilder GsonBuilder.registerTypeHierarchyAdapter(Class, Object)"})
-  public void testRegisterTypeHierarchyAdapter_thenThrowIllegalArgumentException() {
-    // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    Class<Object> baseType = Object.class;
-
-    // Act and Assert
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> gsonBuilder.registerTypeHierarchyAdapter(baseType, "Type Adapter"));
   }
 
   /**
@@ -761,7 +739,7 @@ public class GsonBuilderDiffblueTest {
   public void testRegisterTypeHierarchyAdapter_whenJsonDeserializer() {
     // Arrange
     GsonBuilder gsonBuilder = new GsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperDiffblueTestFactory.createNonNullClass();
 
     // Act
     GsonBuilder actualRegisterTypeHierarchyAdapterResult =
@@ -792,7 +770,7 @@ public class GsonBuilderDiffblueTest {
   public void testRegisterTypeHierarchyAdapter_whenJsonSerializer() {
     // Arrange
     GsonBuilder gsonBuilder = new GsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperDiffblueTestFactory.createNonNullClass();
 
     // Act
     GsonBuilder actualRegisterTypeHierarchyAdapterResult =
@@ -805,6 +783,31 @@ public class GsonBuilderDiffblueTest {
     assertEquals(1, createResult2.builderHierarchyFactories.size());
     assertTrue(createResult.builderFactories.isEmpty());
     assertTrue(createResult2.builderFactories.isEmpty());
+  }
+
+  /**
+   * Test {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}.
+   *
+   * <ul>
+   *   <li>When one.
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"GsonBuilder GsonBuilder.registerTypeHierarchyAdapter(Class, Object)"})
+  public void testRegisterTypeHierarchyAdapter_whenOne_thenThrowIllegalArgumentException() {
+    // Arrange
+    GsonBuilder gsonBuilder = new GsonBuilder();
+    Class<?> baseType = ReflectionHelperDiffblueTestFactory.createNonNullClass();
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> gsonBuilder.registerTypeHierarchyAdapter(baseType, 1));
   }
 
   /**

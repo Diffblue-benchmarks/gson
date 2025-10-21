@@ -99,6 +99,32 @@ public class GraphAdapterBuilderDiffblueTest {
   }
 
   /**
+   * Test {@link GraphAdapterBuilder#addType(Type)} with {@code type}.
+   *
+   * <ul>
+   *   <li>When {@code Type}.
+   *   <li>Then return {@link GraphAdapterBuilder} (default constructor).
+   * </ul>
+   *
+   * <p>Method under test: {@link GraphAdapterBuilder#addType(Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"GraphAdapterBuilder GraphAdapterBuilder.addType(Type)"})
+  public void testAddTypeWithType_whenJavaLangReflectType_thenReturnGraphAdapterBuilder() {
+    // Arrange
+    GraphAdapterBuilder graphAdapterBuilder = new GraphAdapterBuilder();
+    Class<Type> type = Type.class;
+
+    // Act
+    GraphAdapterBuilder actualAddTypeResult = graphAdapterBuilder.addType(type);
+
+    // Assert
+    assertSame(graphAdapterBuilder, actualAddTypeResult);
+  }
+
+  /**
    * Test Element {@link Element#read(Graph)}.
    *
    * <p>Method under test: {@link Element#read(Graph)}

@@ -7,18 +7,17 @@ import static org.junit.Assert.assertTrue;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
+import com.google.gson.GsonBuilderDiffblueTestFactory;
 import java.lang.reflect.Type;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.mockito.internal.util.reflection.GenericMetadataSupport;
-import org.mockito.internal.util.reflection.GenericMetadataSupport.TypeVarBoundedType;
 
 public class PrimitivesDiffblueTest {
   /**
    * Test {@link Primitives#isPrimitive(Type)}.
    *
    * <ul>
-   *   <li>When {@code Object}.
+   *   <li>When createType.
    * </ul>
    *
    * <p>Method under test: {@link Primitives#isPrimitive(Type)}
@@ -27,20 +26,16 @@ public class PrimitivesDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean Primitives.isPrimitive(Type)"})
-  public void testIsPrimitive_whenJavaLangObject() {
-    // Arrange
-    Class<Object> type = Object.class;
-
-    // Act and Assert
-    assertFalse(Primitives.isPrimitive(type));
+  public void testIsPrimitive_whenCreateType() {
+    // Arrange, Act and Assert
+    assertFalse(Primitives.isPrimitive(GsonBuilderDiffblueTestFactory.createType()));
   }
 
   /**
    * Test {@link Primitives#isPrimitive(Type)}.
    *
    * <ul>
-   *   <li>When {@link GenericMetadataSupport.TypeVarBoundedType#TypeVarBoundedType(TypeVariable)}
-   *       with typeVariable is {@code null}.
+   *   <li>When {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link Primitives#isPrimitive(Type)}
@@ -49,9 +44,28 @@ public class PrimitivesDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean Primitives.isPrimitive(Type)"})
-  public void testIsPrimitive_whenTypeVarBoundedTypeWithTypeVariableIsNull() {
+  public void testIsPrimitive_whenNull() {
     // Arrange, Act and Assert
-    assertFalse(Primitives.isPrimitive(new TypeVarBoundedType(null)));
+    assertFalse(Primitives.isPrimitive(null));
+  }
+
+  /**
+   * Test {@link Primitives#isWrapperType(Type)}.
+   *
+   * <ul>
+   *   <li>When createType.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Primitives#isWrapperType(Type)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Primitives.isWrapperType(Type)"})
+  public void testIsWrapperType_whenCreateType_thenReturnFalse() {
+    // Arrange, Act and Assert
+    assertFalse(Primitives.isWrapperType(GsonBuilderDiffblueTestFactory.createType()));
   }
 
   /**
@@ -250,26 +264,6 @@ public class PrimitivesDiffblueTest {
 
     // Act and Assert
     assertTrue(Primitives.isWrapperType(type));
-  }
-
-  /**
-   * Test {@link Primitives#isWrapperType(Type)}.
-   *
-   * <ul>
-   *   <li>When {@link GenericMetadataSupport.TypeVarBoundedType#TypeVarBoundedType(TypeVariable)}
-   *       with typeVariable is {@code null}.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Primitives#isWrapperType(Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"boolean Primitives.isWrapperType(Type)"})
-  public void testIsWrapperType_whenTypeVarBoundedTypeWithTypeVariableIsNull_thenReturnFalse() {
-    // Arrange, Act and Assert
-    assertFalse(Primitives.isWrapperType(new TypeVarBoundedType(null)));
   }
 
   /**

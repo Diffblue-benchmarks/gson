@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
-import com.google.gson.JsonNull;
+import com.google.gson.JsonArrayDiffblueTestFactory;
 import com.google.gson.Strictness;
 import com.google.gson.internal.bind.JsonTreeReader;
 import java.io.CharArrayReader;
@@ -151,7 +151,8 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"boolean JsonReader.isLenient()"})
   public void testIsLenient_thenReturnTrue() {
     // Arrange
-    JsonTreeReader jsonTreeReader = new JsonTreeReader(JsonNull.INSTANCE);
+    JsonTreeReader jsonTreeReader =
+        new JsonTreeReader(JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
     jsonTreeReader.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
@@ -214,6 +215,7 @@ public class JsonReaderDiffblueTest {
    *   <li>{@link JsonReader#setStrictness(Strictness)}
    *   <li>{@link JsonReader#toString()}
    *   <li>{@link JsonReader#getNestingLimit()}
+   *   <li>{@link JsonReader#getPeeked()}
    *   <li>{@link JsonReader#getStrictness()}
    * </ul>
    */
@@ -222,6 +224,7 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({
     "int JsonReader.getNestingLimit()",
+    "int JsonReader.getPeeked()",
     "Strictness JsonReader.getStrictness()",
     "void JsonReader.setStrictness(Strictness)",
     "String JsonReader.toString()"
@@ -234,9 +237,11 @@ public class JsonReaderDiffblueTest {
     jsonReader.setStrictness(Strictness.LENIENT);
     String actualToStringResult = jsonReader.toString();
     int actualNestingLimit = jsonReader.getNestingLimit();
+    int actualPeeked = jsonReader.getPeeked();
 
     // Assert
     assertEquals("JsonReader at line 1 column 1 path $", actualToStringResult);
+    assertEquals(0, actualPeeked);
     assertEquals(255, actualNestingLimit);
     assertEquals(Strictness.LENIENT, jsonReader.getStrictness());
   }
@@ -1787,6 +1792,457 @@ public class JsonReaderDiffblueTest {
   }
 
   /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext() throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () ->
+            new JsonReader(
+                    new StringReader(
+                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
+                            + " JSON"))
+                .hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext2() throws IOException {
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link CharArrayReader#CharArrayReader(char[])} with {@code ﻿} toCharArray.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenCharArrayReaderWithZeroWidthNoBreakSpaceToCharArray()
+      throws IOException {
+    // Arrange
+    CharArrayReader in = new CharArrayReader("﻿\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)} Strictness is {@code STRICT}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenJsonReaderWithInIsStringReaderStrictnessIsStrict()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithElements.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenJsonTreeReaderWithElementIsCreateJsonArrayWithElements()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertTrue(
+        new JsonTreeReader(JsonArrayDiffblueTestFactory.createJsonArrayWithElements()).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader(" at line ")).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with empty string.
+   *   <li>Then throw {@link EOFException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithEmptyString_thenThrowEOFException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(EOFException.class, () -> new JsonReader(new StringReader("")).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with empty string.
+   *   <li>Then throw {@link EOFException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithEmptyString_thenThrowEOFException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader(""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code End of input}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithEndOfInput() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("End of input"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(10, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code End of input} skip eleven.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithEndOfInputSkipEleven() throws IOException {
+    // Arrange
+    StringReader in = new StringReader("End of input");
+    in.skip(11L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(10, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code End of input} skip one.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithEndOfInputSkipOne() throws IOException {
+    // Arrange
+    StringReader in = new StringReader("End of input");
+    in.skip(1L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(10, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code FALSE}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithFalse() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(6, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithFalseToString() throws IOException {
+    // Arrange
+    StringReader in = new StringReader(Boolean.FALSE.toString());
+    JsonReader jsonReader = new JsonReader(in);
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(6, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithFalseToString2() throws IOException {
+    // Arrange
+    StringReader in = new StringReader(Boolean.FALSE.toString());
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(6, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithFoo() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(10, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithFoo_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class, () -> new JsonReader(new StringReader("foo")).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code See}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithSee_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class, () -> new JsonReader(new StringReader("\nSee ")).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)} Peeked is fifteen.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_thenJsonReaderWithInIsStringReaderPeekedIsFifteen() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("42"));
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(15, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_thenThrowIllegalArgumentException() throws IOException {
+    // Arrange
+    when(reader.read(Mockito.<char[]>any(), anyInt(), anyInt()))
+        .thenThrow(new IllegalArgumentException());
+
+    // Act and Assert
+    assertThrows(IllegalArgumentException.class, () -> jsonReader.hasNext());
+    verify(reader).read(isA(char[].class), eq(0), eq(1024));
+  }
+
+  /**
    * Test {@link JsonReader#peek()}.
    *
    * <p>Method under test: {@link JsonReader#peek()}
@@ -2102,7 +2558,7 @@ public class JsonReaderDiffblueTest {
    * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
    *   <li>Then {@link JsonReader#JsonReader(Reader)} with in is {@link
-   *       StringReader#StringReader(String)} {@link JsonReader#peeked} is ten.
+   *       StringReader#StringReader(String)} Peeked is ten.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#peek()}
@@ -2172,7 +2628,7 @@ public class JsonReaderDiffblueTest {
    *
    * <ul>
    *   <li>Then {@link JsonReader#JsonReader(Reader)} with in is {@link
-   *       StringReader#StringReader(String)} {@link JsonReader#peeked} is fifteen.
+   *       StringReader#StringReader(String)} Peeked is fifteen.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#peek()}
@@ -5222,8 +5678,8 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#locationString()}.
    *
    * <ul>
-   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
-   *       JsonNull#INSTANCE}.
+   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
+   *       createJsonArrayWithElements.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#locationString()}
@@ -5232,11 +5688,13 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.locationString()"})
-  public void testLocationString_givenJsonTreeReaderWithElementIsInstance() {
+  public void testLocationString_givenJsonTreeReaderWithElementIsCreateJsonArrayWithElements() {
     // Arrange, Act and Assert
     assertEquals(
         " at line 1 column 1 path $",
-        ((JsonReader) new JsonTreeReader(JsonNull.INSTANCE)).locationString());
+        ((JsonReader)
+                new JsonTreeReader(JsonArrayDiffblueTestFactory.createJsonArrayWithElements()))
+            .locationString());
   }
 
   /**

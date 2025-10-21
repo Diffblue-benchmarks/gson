@@ -29,37 +29,8 @@ public class ClassWithAdapterDiffblueTest {
    * Test Adapter {@link Adapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>Given {@link IllegalArgumentException#IllegalArgumentException()}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Adapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"ClassWithAdapter Adapter.read(JsonReader)"})
-  public void testAdapterRead_givenIllegalArgumentException() throws IOException {
-    // Arrange
-    Adapter adapter = new Adapter();
-
-    JsonReader in = mock(JsonReader.class);
-    when(in.nextInt()).thenThrow(new IllegalArgumentException());
-    when(in.nextName()).thenReturn("custom");
-    doNothing().when(in).beginObject();
-
-    // Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> adapter.read(in));
-    verify(in).beginObject();
-    verify(in).nextInt();
-    verify(in).nextName();
-  }
-
-  /**
-   * Test Adapter {@link Adapter#read(JsonReader)}.
-   *
-   * <ul>
    *   <li>Given {@code Next Name}.
-   *   <li>When {@link JsonReader} {@link JsonReader#nextName()} return {@code Next Name}.
+   *   <li>Then throw {@link IllegalArgumentException}.
    * </ul>
    *
    * <p>Method under test: {@link Adapter#read(JsonReader)}
@@ -68,8 +39,7 @@ public class ClassWithAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"ClassWithAdapter Adapter.read(JsonReader)"})
-  public void testAdapterRead_givenNextName_whenJsonReaderNextNameReturnNextName()
-      throws IOException {
+  public void testAdapterRead_givenNextName_thenThrowIllegalArgumentException() throws IOException {
     // Arrange
     Adapter adapter = new Adapter();
 
@@ -118,6 +88,38 @@ public class ClassWithAdapterDiffblueTest {
     verify(in).nextInt();
     verify(in).nextName();
     assertEquals(1, actualReadResult.i.intValue());
+  }
+
+  /**
+   * Test Adapter {@link Adapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonReader} {@link JsonReader#nextInt()} throw {@link
+   *       IOException#IOException()}.
+   *   <li>Then throw {@link IOException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Adapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"ClassWithAdapter Adapter.read(JsonReader)"})
+  public void testAdapterRead_whenJsonReaderNextIntThrowIOException_thenThrowIOException()
+      throws IOException {
+    // Arrange
+    Adapter adapter = new Adapter();
+
+    JsonReader in = mock(JsonReader.class);
+    when(in.nextInt()).thenThrow(new IOException());
+    when(in.nextName()).thenReturn("custom");
+    doNothing().when(in).beginObject();
+
+    // Act and Assert
+    assertThrows(IOException.class, () -> adapter.read(in));
+    verify(in).beginObject();
+    verify(in).nextInt();
+    verify(in).nextName();
   }
 
   /**

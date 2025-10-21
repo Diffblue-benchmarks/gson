@@ -1,9 +1,14 @@
 package com.google.gson.metrics;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -15,6 +20,33 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class BagOfPrimitivesDeserializationBenchmarkDiffblueTest {
   @InjectMocks
   private BagOfPrimitivesDeserializationBenchmark bagOfPrimitivesDeserializationBenchmark;
+
+  /**
+   * Test {@link BagOfPrimitivesDeserializationBenchmark#setUp()}.
+   *
+   * <p>Method under test: {@link BagOfPrimitivesDeserializationBenchmark#setUp()}
+   */
+  @Test
+  @DisplayName("Test setUp()")
+  @Tag("ContributionFromDiffblue")
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void BagOfPrimitivesDeserializationBenchmark.setUp()"})
+  void testSetUp() throws Exception {
+    // Arrange
+    BagOfPrimitivesDeserializationBenchmark bagOfPrimitivesDeserializationBenchmark =
+        new BagOfPrimitivesDeserializationBenchmark();
+
+    // Act
+    bagOfPrimitivesDeserializationBenchmark.setUp();
+
+    // Assert
+    assertEquals(
+        "{\"longValue\":10,\"intValue\":1,\"booleanValue\":false,\"stringValue\":\"foo\"}",
+        bagOfPrimitivesDeserializationBenchmark.getJson());
+    Gson gson = bagOfPrimitivesDeserializationBenchmark.getGson();
+    assertFalse(gson.serializeNulls());
+    assertTrue(gson.htmlSafe());
+  }
 
   /**
    * Test {@link BagOfPrimitivesDeserializationBenchmark#timeBagOfPrimitivesDefault(int)}.
@@ -37,5 +69,36 @@ class BagOfPrimitivesDeserializationBenchmarkDiffblueTest {
   void testTimeBagOfPrimitivesDefault_whenZero_thenDoesNotThrow() {
     // Arrange, Act and Assert
     assertDoesNotThrow(() -> bagOfPrimitivesDeserializationBenchmark.timeBagOfPrimitivesDefault(0));
+  }
+
+  /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>default or parameterless constructor of {@link BagOfPrimitivesDeserializationBenchmark}
+   *   <li>{@link BagOfPrimitivesDeserializationBenchmark#getGson()}
+   *   <li>{@link BagOfPrimitivesDeserializationBenchmark#getJson()}
+   * </ul>
+   */
+  @Test
+  @DisplayName("Test getters and setters")
+  @Tag("ContributionFromDiffblue")
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "void BagOfPrimitivesDeserializationBenchmark.<init>()",
+    "Gson BagOfPrimitivesDeserializationBenchmark.getGson()",
+    "java.lang.String BagOfPrimitivesDeserializationBenchmark.getJson()"
+  })
+  void testGettersAndSetters() {
+    // Arrange and Act
+    BagOfPrimitivesDeserializationBenchmark actualBagOfPrimitivesDeserializationBenchmark =
+        new BagOfPrimitivesDeserializationBenchmark();
+    Gson actualGson = actualBagOfPrimitivesDeserializationBenchmark.getGson();
+
+    // Assert
+    assertNull(actualGson);
+    assertNull(actualBagOfPrimitivesDeserializationBenchmark.getJson());
   }
 }
