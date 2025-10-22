@@ -18,18 +18,19 @@ class NonUploadingCaliperRunnerDiffblueTest {
    * Test {@link NonUploadingCaliperRunner#run(Class, String[])}.
    *
    * <ul>
-   *   <li>When array of {@link String} with {@code Args}.
+   *   <li>When array of {@link String} with a string.
    *   <li>Then calls {@link Runtime#exit(int)}.
    * </ul>
    *
    * <p>Method under test: {@link NonUploadingCaliperRunner#run(Class, String[])}
    */
   @Test
-  @DisplayName("Test run(Class, String[]); when array of String with 'Args'; then calls exit(int)")
+  @DisplayName(
+      "Test run(Class, String[]); when array of String with a string; then calls exit(int)")
   @Tag("ContributionFromDiffblue")
   @ManagedByDiffblue
   @MethodsUnderTest({"void NonUploadingCaliperRunner.run(Class, String[])"})
-  void testRun_whenArrayOfStringWithArgs_thenCallsExit() {
+  void testRun_whenArrayOfStringWithAString_thenCallsExit() {
     // Arrange
     try (MockedStatic<Runtime> mockRuntime = mockStatic(Runtime.class)) {
 
@@ -39,7 +40,12 @@ class NonUploadingCaliperRunnerDiffblueTest {
       Class<Object> c = Object.class;
 
       // Act
-      NonUploadingCaliperRunner.run(c, new String[] {"Args"});
+      NonUploadingCaliperRunner.run(
+          c,
+          new String[] {
+            "\"com.google.gson.metrics.TestClass\", \"--measurements=10\", \"--warmup=5\","
+                + " \"--instrument=runtime\", \"--benchmark=methodA\", \"--benchmark=methodB\""
+          });
 
       // Assert
       verify(runtime).exit(1);

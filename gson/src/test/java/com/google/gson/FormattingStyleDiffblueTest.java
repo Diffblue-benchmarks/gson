@@ -17,30 +17,6 @@ public class FormattingStyleDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link FormattingStyle#COMPACT}.
-   *   <li>When lf lf lf.
-   *   <li>Then return Newline is lf lf lf.
-   * </ul>
-   *
-   * <p>Method under test: {@link FormattingStyle#withNewline(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"FormattingStyle FormattingStyle.withNewline(String)"})
-  public void testWithNewline_givenCompact_whenLfLfLf_thenReturnNewlineIsLfLfLf() {
-    // Arrange and Act
-    FormattingStyle actualWithNewlineResult = FormattingStyle.COMPACT.withNewline("\n\n\n");
-
-    // Assert
-    assertEquals("", actualWithNewlineResult.getIndent());
-    assertEquals("\n\n\n", actualWithNewlineResult.getNewline());
-  }
-
-  /**
-   * Test {@link FormattingStyle#withNewline(String)}.
-   *
-   * <ul>
-   *   <li>Given {@link FormattingStyle#COMPACT}.
    *   <li>When lf lf.
    *   <li>Then return Newline is lf lf.
    * </ul>
@@ -66,7 +42,7 @@ public class FormattingStyleDiffblueTest {
    * <ul>
    *   <li>Given {@link FormattingStyle#COMPACT}.
    *   <li>When lf.
-   *   <li>Then return Newline is lf.
+   *   <li>Then return Indent is empty string.
    * </ul>
    *
    * <p>Method under test: {@link FormattingStyle#withNewline(String)}
@@ -75,7 +51,7 @@ public class FormattingStyleDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"FormattingStyle FormattingStyle.withNewline(String)"})
-  public void testWithNewline_givenCompact_whenLf_thenReturnNewlineIsLf() {
+  public void testWithNewline_givenCompact_whenLf_thenReturnIndentIsEmptyString() {
     // Arrange and Act
     FormattingStyle actualWithNewlineResult = FormattingStyle.COMPACT.withNewline("\n");
 
@@ -89,7 +65,7 @@ public class FormattingStyleDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link FormattingStyle#COMPACT}.
-   *   <li>When {@code Newline}.
+   *   <li>When {@code "\r\n"}.
    *   <li>Then throw {@link IllegalArgumentException}.
    * </ul>
    *
@@ -99,10 +75,10 @@ public class FormattingStyleDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"FormattingStyle FormattingStyle.withNewline(String)"})
-  public void testWithNewline_givenCompact_whenNewline_thenThrowIllegalArgumentException() {
+  public void testWithNewline_givenCompact_whenRN_thenThrowIllegalArgumentException() {
     // Arrange, Act and Assert
     assertThrows(
-        IllegalArgumentException.class, () -> FormattingStyle.COMPACT.withNewline("Newline"));
+        IllegalArgumentException.class, () -> FormattingStyle.COMPACT.withNewline("\"\\r\\n\""));
   }
 
   /**
@@ -127,27 +103,6 @@ public class FormattingStyleDiffblueTest {
     // Assert
     assertEquals("  ", actualWithNewlineResult.getIndent());
     assertEquals("\n", actualWithNewlineResult.getNewline());
-  }
-
-  /**
-   * Test {@link FormattingStyle#withIndent(String)}.
-   *
-   * <ul>
-   *   <li>Given {@link FormattingStyle#COMPACT}.
-   *   <li>When {@code Indent}.
-   *   <li>Then throw {@link IllegalArgumentException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link FormattingStyle#withIndent(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"FormattingStyle FormattingStyle.withIndent(String)"})
-  public void testWithIndent_givenCompact_whenIndent_thenThrowIllegalArgumentException() {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalArgumentException.class, () -> FormattingStyle.COMPACT.withIndent("Indent"));
   }
 
   /**
@@ -202,8 +157,8 @@ public class FormattingStyleDiffblueTest {
    * Test {@link FormattingStyle#withIndent(String)}.
    *
    * <ul>
-   *   <li>Given {@link FormattingStyle#PRETTY}.
-   *   <li>When {@code Indent}.
+   *   <li>Given {@link FormattingStyle#COMPACT}.
+   *   <li>When {@code "\t\t"}.
    *   <li>Then throw {@link IllegalArgumentException}.
    * </ul>
    *
@@ -213,9 +168,31 @@ public class FormattingStyleDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"FormattingStyle FormattingStyle.withIndent(String)"})
-  public void testWithIndent_givenPretty_whenIndent_thenThrowIllegalArgumentException() {
+  public void testWithIndent_givenCompact_whenTT_thenThrowIllegalArgumentException() {
     // Arrange, Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> FormattingStyle.PRETTY.withIndent("Indent"));
+    assertThrows(
+        IllegalArgumentException.class, () -> FormattingStyle.COMPACT.withIndent("\"\\t\\t\""));
+  }
+
+  /**
+   * Test {@link FormattingStyle#withIndent(String)}.
+   *
+   * <ul>
+   *   <li>Given {@link FormattingStyle#PRETTY}.
+   *   <li>When {@code "\t\t"}.
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link FormattingStyle#withIndent(String)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"FormattingStyle FormattingStyle.withIndent(String)"})
+  public void testWithIndent_givenPretty_whenTT_thenThrowIllegalArgumentException() {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalArgumentException.class, () -> FormattingStyle.PRETTY.withIndent("\"\\t\\t\""));
   }
 
   /**

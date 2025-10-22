@@ -89,7 +89,6 @@ public class JsonElementDiffblueTest {
    * Test {@link JsonElement#isJsonPrimitive()}.
    *
    * <ul>
-   *   <li>Given {@link JsonPrimitive#JsonPrimitive(String)} with {@code String}.
    *   <li>Then return {@code true}.
    * </ul>
    *
@@ -99,9 +98,9 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonElement.isJsonPrimitive()"})
-  public void testIsJsonPrimitive_givenJsonPrimitiveWithString_thenReturnTrue() {
+  public void testIsJsonPrimitive_thenReturnTrue() {
     // Arrange, Act and Assert
-    assertTrue(new JsonPrimitive("String").isJsonPrimitive());
+    assertTrue(new JsonPrimitive("\"Test string for JsonPrimitive method\"").isJsonPrimitive());
   }
 
   /**
@@ -155,6 +154,26 @@ public class JsonElementDiffblueTest {
     // Arrange
     JsonArray createJsonArrayWithElementsResult =
         JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
+    createJsonArrayWithElementsResult.add("\"Test string for JsonArray add method\"");
+
+    // Act and Assert
+    assertThrows(
+        IllegalStateException.class, () -> createJsonArrayWithElementsResult.getAsJsonObject());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsJsonObject()}.
+   *
+   * <p>Method under test: {@link JsonElement#getAsJsonObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
+  public void testGetAsJsonObject2() {
+    // Arrange
+    JsonArray createJsonArrayWithElementsResult =
+        JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
     createJsonArrayWithElementsResult.add(new LazilyParsedNumber("42"));
     createJsonArrayWithElementsResult.add(true);
 
@@ -172,7 +191,7 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject2() {
+  public void testGetAsJsonObject3() {
     // Arrange
     JsonArray createJsonArrayWithElementsResult =
         JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
@@ -193,7 +212,7 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonObject JsonElement.getAsJsonObject()"})
-  public void testGetAsJsonObject3() {
+  public void testGetAsJsonObject4() {
     // Arrange
     JsonArray createJsonArrayWithElementsResult =
         JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
@@ -576,6 +595,26 @@ public class JsonElementDiffblueTest {
     // Arrange
     JsonArray createJsonArrayWithElementsResult =
         JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
+    createJsonArrayWithElementsResult.add("\"Test string for JsonArray add method\"");
+
+    // Act and Assert
+    assertThrows(
+        IllegalStateException.class, () -> createJsonArrayWithElementsResult.getAsJsonPrimitive());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsJsonPrimitive()}.
+   *
+   * <p>Method under test: {@link JsonElement#getAsJsonPrimitive()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
+  public void testGetAsJsonPrimitive2() {
+    // Arrange
+    JsonArray createJsonArrayWithElementsResult =
+        JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
     createJsonArrayWithElementsResult.add(new LazilyParsedNumber("42"));
     createJsonArrayWithElementsResult.add(true);
 
@@ -593,7 +632,7 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive2() {
+  public void testGetAsJsonPrimitive3() {
     // Arrange
     JsonArray createJsonArrayWithElementsResult =
         JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
@@ -614,7 +653,7 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonPrimitive JsonElement.getAsJsonPrimitive()"})
-  public void testGetAsJsonPrimitive3() {
+  public void testGetAsJsonPrimitive4() {
     // Arrange
     JsonArray createJsonArrayWithElementsResult =
         JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
@@ -951,6 +990,26 @@ public class JsonElementDiffblueTest {
     // Arrange
     JsonArray createJsonArrayWithElementsResult =
         JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
+    createJsonArrayWithElementsResult.add("\"Test string for JsonArray add method\"");
+
+    // Act and Assert
+    assertThrows(
+        IllegalStateException.class, () -> createJsonArrayWithElementsResult.getAsJsonNull());
+  }
+
+  /**
+   * Test {@link JsonElement#getAsJsonNull()}.
+   *
+   * <p>Method under test: {@link JsonElement#getAsJsonNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
+  public void testGetAsJsonNull2() {
+    // Arrange
+    JsonArray createJsonArrayWithElementsResult =
+        JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
     createJsonArrayWithElementsResult.add(new LazilyParsedNumber("42"));
     createJsonArrayWithElementsResult.add(true);
 
@@ -968,7 +1027,7 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull2() {
+  public void testGetAsJsonNull3() {
     // Arrange
     JsonArray createJsonArrayWithElementsResult =
         JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
@@ -989,7 +1048,7 @@ public class JsonElementDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonNull JsonElement.getAsJsonNull()"})
-  public void testGetAsJsonNull3() {
+  public void testGetAsJsonNull4() {
     // Arrange
     JsonArray createJsonArrayWithElementsResult =
         JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
@@ -1738,6 +1797,31 @@ public class JsonElementDiffblueTest {
     // Act and Assert
     assertEquals(
         "[\"element0\",\"element1\",null,true]", createJsonArrayWithElementsResult.toString());
+  }
+
+  /**
+   * Test {@link JsonElement#toString()}.
+   *
+   * <ul>
+   *   <li>Then return {@code ["element0","element1","\"Test string for JsonArray add method\""]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonElement#toString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String JsonElement.toString()"})
+  public void testToString_thenReturnElement0Element1TestStringForJsonArrayAddMethod() {
+    // Arrange
+    JsonArray createJsonArrayWithElementsResult =
+        JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
+    createJsonArrayWithElementsResult.add("\"Test string for JsonArray add method\"");
+
+    // Act and Assert
+    assertEquals(
+        "[\"element0\",\"element1\",\"\\\"Test string for JsonArray add method\\\"\"]",
+        createJsonArrayWithElementsResult.toString());
   }
 
   /**

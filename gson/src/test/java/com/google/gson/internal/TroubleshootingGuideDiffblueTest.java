@@ -21,7 +21,7 @@ public class TroubleshootingGuideDiffblueTest {
   public void testCreateUrl() {
     // Arrange, Act and Assert
     assertEquals(
-        "https://github.com/google/gson/blob/main/Troubleshooting.md#https://example.org/example",
-        TroubleshootingGuide.createUrl("https://example.org/example"));
+        "https://github.com/google/gson/blob/main/Troubleshooting.md#\"parsing-json-objects\"",
+        TroubleshootingGuide.createUrl("\"parsing-json-objects\""));
   }
 }

@@ -183,19 +183,15 @@ public class JsonWriterDiffblueTest {
   /**
    * Test {@link JsonWriter#setFormattingStyle(FormattingStyle)}.
    *
-   * <ul>
-   *   <li>Given {@link FormattingStyle} {@link FormattingStyle#getIndent()} return {@code Indent}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonWriter#setFormattingStyle(FormattingStyle)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonWriter.setFormattingStyle(FormattingStyle)"})
-  public void testSetFormattingStyle_givenFormattingStyleGetIndentReturnIndent() {
+  public void testSetFormattingStyle3() {
     // Arrange
-    when(formattingStyle.getIndent()).thenReturn("Indent");
+    when(formattingStyle.getIndent()).thenReturn("\"    \"");
     when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
     when(formattingStyle.getNewline()).thenReturn("");
 
@@ -252,7 +248,7 @@ public class JsonWriterDiffblueTest {
   public void testSetFormattingStyle_thenJsonWriterFormattingStyleIsFormattingStyle() {
     // Arrange
     when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
-    when(formattingStyle.getNewline()).thenReturn("Newline");
+    when(formattingStyle.getNewline()).thenReturn("\"\\r\\n\"");
 
     // Act
     jsonWriter.setFormattingStyle(formattingStyle);
@@ -545,7 +541,8 @@ public class JsonWriterDiffblueTest {
       throws IOException {
     // Arrange, Act and Assert
     assertThrows(
-        IllegalStateException.class, () -> new JsonWriter(new StringWriter()).name("Name"));
+        IllegalStateException.class,
+        () -> new JsonWriter(new StringWriter()).name("\"testPropertyName\""));
   }
 
   /**
@@ -1411,8 +1408,7 @@ public class JsonWriterDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link
-   *       StringWriter#StringWriter()} HtmlSafe is {@code true}.
-   *   <li>When {@code 42}.
+   *       StringWriter#StringWriter()}.
    * </ul>
    *
    * <p>Method under test: {@link JsonWriter#value(String)}
@@ -1421,14 +1417,43 @@ public class JsonWriterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonWriter JsonWriter.value(String)"})
-  public void testValueWithString_givenJsonWriterWithOutIsStringWriterHtmlSafeIsTrue_when42()
+  public void testValueWithString_givenJsonWriterWithOutIsStringWriter() throws IOException {
+    // Arrange
+    JsonWriter jsonWriter = new JsonWriter(new StringWriter());
+
+    // Act
+    JsonWriter actualValueResult =
+        jsonWriter.value(
+            "\"{\\\"name\\\":\\\"John\\\", \\\"age\\\":30, \\\"city\\\":\\\"New York\\\"}\"");
+
+    // Assert
+    assertSame(jsonWriter, actualValueResult);
+  }
+
+  /**
+   * Test {@link JsonWriter#value(String)} with {@code String}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} HtmlSafe is {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonWriter#value(String)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonWriter JsonWriter.value(String)"})
+  public void testValueWithString_givenJsonWriterWithOutIsStringWriterHtmlSafeIsTrue()
       throws IOException {
     // Arrange
     JsonWriter jsonWriter = new JsonWriter(new StringWriter());
     jsonWriter.setHtmlSafe(true);
 
     // Act
-    JsonWriter actualValueResult = jsonWriter.value("42");
+    JsonWriter actualValueResult =
+        jsonWriter.value(
+            "\"{\\\"name\\\":\\\"John\\\", \\\"age\\\":30, \\\"city\\\":\\\"New York\\\"}\"");
 
     // Assert
     assertSame(jsonWriter, actualValueResult);
@@ -1466,33 +1491,6 @@ public class JsonWriterDiffblueTest {
    * <ul>
    *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link
    *       StringWriter#StringWriter()}.
-   *   <li>When empty string.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonWriter#value(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonWriter JsonWriter.value(String)"})
-  public void testValueWithString_givenJsonWriterWithOutIsStringWriter_whenEmptyString()
-      throws IOException {
-    // Arrange
-    JsonWriter jsonWriter = new JsonWriter(new StringWriter());
-
-    // Act
-    JsonWriter actualValueResult = jsonWriter.value("");
-
-    // Assert
-    assertSame(jsonWriter, actualValueResult);
-  }
-
-  /**
-   * Test {@link JsonWriter#value(String)} with {@code String}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link
-   *       StringWriter#StringWriter()}.
    *   <li>When {@code null}.
    * </ul>
    *
@@ -1518,35 +1516,9 @@ public class JsonWriterDiffblueTest {
    * Test {@link JsonWriter#value(String)} with {@code String}.
    *
    * <ul>
-   *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link
-   *       StringWriter#StringWriter()}.
-   *   <li>When {@code \u0027}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonWriter#value(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonWriter JsonWriter.value(String)"})
-  public void testValueWithString_givenJsonWriterWithOutIsStringWriter_whenU0027()
-      throws IOException {
-    // Arrange
-    JsonWriter jsonWriter = new JsonWriter(new StringWriter());
-
-    // Act
-    JsonWriter actualValueResult = jsonWriter.value("\\u0027");
-
-    // Assert
-    assertSame(jsonWriter, actualValueResult);
-  }
-
-  /**
-   * Test {@link JsonWriter#value(String)} with {@code String}.
-   *
-   * <ul>
    *   <li>Given {@link Writer} {@link Writer#write(int)} throw {@link
    *       IllegalStateException#IllegalStateException()}.
+   *   <li>Then calls {@link Writer#write(int)}.
    * </ul>
    *
    * <p>Method under test: {@link JsonWriter#value(String)}
@@ -1555,12 +1527,17 @@ public class JsonWriterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonWriter JsonWriter.value(String)"})
-  public void testValueWithString_givenWriterWriteThrowIllegalStateException() throws IOException {
+  public void testValueWithString_givenWriterWriteThrowIllegalStateException_thenCallsWrite()
+      throws IOException {
     // Arrange
     doThrow(new IllegalStateException()).when(writer).write(anyInt());
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonWriter.value("42"));
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            jsonWriter.value(
+                "\"{\\\"name\\\":\\\"John\\\", \\\"age\\\":30, \\\"city\\\":\\\"New York\\\"}\""));
     verify(writer).write(34);
   }
 
@@ -1570,7 +1547,7 @@ public class JsonWriterDiffblueTest {
    * <ul>
    *   <li>Given {@link Writer} {@link Writer#write(String)} throw {@link
    *       IllegalStateException#IllegalStateException()}.
-   *   <li>When {@code null}.
+   *   <li>Then calls {@link Writer#write(String)}.
    * </ul>
    *
    * <p>Method under test: {@link JsonWriter#value(String)}
@@ -1579,7 +1556,7 @@ public class JsonWriterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonWriter JsonWriter.value(String)"})
-  public void testValueWithString_givenWriterWriteThrowIllegalStateException_whenNull()
+  public void testValueWithString_givenWriterWriteThrowIllegalStateException_thenCallsWrite2()
       throws IOException {
     // Arrange
     doThrow(new IllegalStateException()).when(writer).write(Mockito.<String>any());
@@ -1595,7 +1572,7 @@ public class JsonWriterDiffblueTest {
    * <ul>
    *   <li>Given {@link Writer} {@link Writer#write(String)} throw {@link
    *       IllegalStateException#IllegalStateException()}.
-   *   <li>When {@code \u0027}.
+   *   <li>Then calls {@link Writer#write(String)}.
    * </ul>
    *
    * <p>Method under test: {@link JsonWriter#value(String)}
@@ -1604,23 +1581,29 @@ public class JsonWriterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonWriter JsonWriter.value(String)"})
-  public void testValueWithString_givenWriterWriteThrowIllegalStateException_whenU0027()
+  public void testValueWithString_givenWriterWriteThrowIllegalStateException_thenCallsWrite3()
       throws IOException {
     // Arrange
-    doThrow(new IllegalStateException()).when(writer).write(Mockito.<String>any());
     doNothing().when(writer).write(anyInt());
+    doThrow(new IllegalStateException()).when(writer).write(Mockito.<String>any());
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonWriter.value("\\u0027"));
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            jsonWriter.value(
+                "\"{\\\"name\\\":\\\"John\\\", \\\"age\\\":30, \\\"city\\\":\\\"New York\\\"}\""));
     verify(writer).write(34);
-    verify(writer).write("\\\\");
+    verify(writer).write("\\\"");
   }
 
   /**
    * Test {@link JsonWriter#value(String)} with {@code String}.
    *
    * <ul>
-   *   <li>Then throw {@link IllegalArgumentException}.
+   *   <li>Given {@link Writer} {@link Writer#write(String, int, int)} throw {@link
+   *       IllegalStateException#IllegalStateException()}.
+   *   <li>Then calls {@link Writer#write(String, int, int)}.
    * </ul>
    *
    * <p>Method under test: {@link JsonWriter#value(String)}
@@ -1629,17 +1612,55 @@ public class JsonWriterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonWriter JsonWriter.value(String)"})
-  public void testValueWithString_thenThrowIllegalArgumentException() throws IOException {
+  public void testValueWithString_givenWriterWriteThrowIllegalStateException_thenCallsWrite4()
+      throws IOException {
     // Arrange
-    doThrow(new IllegalArgumentException()).when(writer).write(Mockito.<String>any());
+    doThrow(new IllegalStateException())
+        .when(writer)
+        .write(Mockito.<String>any(), anyInt(), anyInt());
     doNothing().when(writer).write(anyInt());
-    doNothing().when(writer).write(Mockito.<String>any(), anyInt(), anyInt());
 
     // Act and Assert
-    assertThrows(IllegalArgumentException.class, () -> jsonWriter.value("42\\u0027"));
+    assertThrows(IllegalStateException.class, () -> jsonWriter.value("42"));
     verify(writer).write(34);
-    verify(writer).write("\\\\");
-    verify(writer).write("42\\u0027", 0, 2);
+    verify(writer).write("42", 0, 2);
+  }
+
+  /**
+   * Test {@link JsonWriter#value(String)} with {@code String}.
+   *
+   * <ul>
+   *   <li>When {@code 42"{\"name\":\"John\", \"age\":30, \"city\":\"New York\"}"}.
+   *   <li>Then calls {@link Writer#write(String, int, int)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonWriter#value(String)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonWriter JsonWriter.value(String)"})
+  public void testValueWithString_when42NameJohnAge30CityNewYork_thenCallsWrite()
+      throws IOException {
+    // Arrange
+    doThrow(new IllegalStateException())
+        .when(writer)
+        .write(Mockito.<String>any(), anyInt(), anyInt());
+    doNothing().when(writer).write(anyInt());
+
+    // Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            jsonWriter.value(
+                "42\"{\\\"name\\\":\\\"John\\\", \\\"age\\\":30, \\\"city\\\":\\\"New"
+                    + " York\\\"}\""));
+    verify(writer).write(34);
+    verify(writer)
+        .write(
+            "42\"{\\\"name\\\":\\\"John\\\", \\\"age\\\":30, \\\"city\\\":\\\"New York\\\"}\"",
+            0,
+            2);
   }
 
   /**
@@ -1695,7 +1716,6 @@ public class JsonWriterDiffblueTest {
    * <ul>
    *   <li>Given {@link Writer} {@link Writer#append(CharSequence)} throw {@link
    *       IllegalStateException#IllegalStateException()}.
-   *   <li>When {@code 42}.
    *   <li>Then calls {@link Writer#append(CharSequence)}.
    * </ul>
    *
@@ -1705,13 +1725,19 @@ public class JsonWriterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonWriter JsonWriter.jsonValue(String)"})
-  public void testJsonValue_givenWriterAppendThrowIllegalStateException_when42_thenCallsAppend()
+  public void testJsonValue_givenWriterAppendThrowIllegalStateException_thenCallsAppend()
       throws IOException {
     // Arrange
     when(writer.append(Mockito.<CharSequence>any())).thenThrow(new IllegalStateException());
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonWriter.jsonValue("42"));
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            jsonWriter.jsonValue(
+                "\"{\\\"name\\\":\\\"John"
+                    + " Doe\\\",\\\"age\\\":30,\\\"isAdmin\\\":false,\\\"roles\\\":[\\\"User\\\",\\\"Admin\\\"],\\\"address\\\":{\\\"street\\\":\\\"123"
+                    + " Main St\\\",\\\"city\\\":\\\"New York\\\"}}\""));
     verify(writer).append(isA(CharSequence.class));
   }
 
@@ -1760,7 +1786,11 @@ public class JsonWriterDiffblueTest {
     JsonWriter jsonWriter = new JsonWriter(new StringWriter());
 
     // Act
-    JsonWriter actualJsonValueResult = jsonWriter.jsonValue("42");
+    JsonWriter actualJsonValueResult =
+        jsonWriter.jsonValue(
+            "\"{\\\"name\\\":\\\"John"
+                + " Doe\\\",\\\"age\\\":30,\\\"isAdmin\\\":false,\\\"roles\\\":[\\\"User\\\",\\\"Admin\\\"],\\\"address\\\":{\\\"street\\\":\\\"123"
+                + " Main St\\\",\\\"city\\\":\\\"New York\\\"}}\"");
 
     // Assert
     assertSame(jsonWriter, actualJsonValueResult);

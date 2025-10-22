@@ -12,6 +12,7 @@ import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.internal.Excluder;
+import com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory;
 import com.google.gson.internal.bind.ReflectiveTypeAdapterFactory;
 import com.google.gson.internal.reflect.ReflectionHelperDiffblueTestFactory;
 import com.google.gson.internal.sql.SqlTimestampTypeAdapterDiffblueTestFactory;
@@ -600,7 +601,8 @@ public class GsonBuilderDiffblueTest {
     GsonBuilder gsonBuilder = new GsonBuilder();
 
     // Act
-    GsonBuilder actualSetDateFormatResult = gsonBuilder.setDateFormat("42");
+    GsonBuilder actualSetDateFormatResult =
+        gsonBuilder.setDateFormat("\"yyyy-MM-dd'T'HH:mm:ss.SSSZ\"");
 
     // Assert
     Gson createResult = gsonBuilder.create();
@@ -611,8 +613,8 @@ public class GsonBuilderDiffblueTest {
     List<TypeAdapterFactory> typeAdapterFactoryList2 = createResult2.factories;
     assertEquals(45, typeAdapterFactoryList2.size());
     assertTrue(typeAdapterFactoryList2.get(44) instanceof ReflectiveTypeAdapterFactory);
-    assertEquals("42", createResult.datePattern);
-    assertEquals("42", createResult2.datePattern);
+    assertEquals("\"yyyy-MM-dd'T'HH:mm:ss.SSSZ\"", createResult.datePattern);
+    assertEquals("\"yyyy-MM-dd'T'HH:mm:ss.SSSZ\"", createResult2.datePattern);
   }
 
   /**
@@ -727,6 +729,32 @@ public class GsonBuilderDiffblueTest {
    * Test {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}.
    *
    * <ul>
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"GsonBuilder GsonBuilder.registerTypeHierarchyAdapter(Class, Object)"})
+  public void testRegisterTypeHierarchyAdapter_thenThrowIllegalArgumentException() {
+    // Arrange
+    GsonBuilder gsonBuilder = new GsonBuilder();
+    Class<?> baseType = ReflectionHelperDiffblueTestFactory.createNonNullClass();
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            gsonBuilder.registerTypeHierarchyAdapter(
+                baseType, "\"com.google.gson.internal.bind.TypeAdapters$16\""));
+  }
+
+  /**
+   * Test {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}.
+   *
+   * <ul>
    *   <li>When {@link JsonDeserializer}.
    * </ul>
    *
@@ -786,31 +814,6 @@ public class GsonBuilderDiffblueTest {
   }
 
   /**
-   * Test {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}.
-   *
-   * <ul>
-   *   <li>When one.
-   *   <li>Then throw {@link IllegalArgumentException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link GsonBuilder#registerTypeHierarchyAdapter(Class, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"GsonBuilder GsonBuilder.registerTypeHierarchyAdapter(Class, Object)"})
-  public void testRegisterTypeHierarchyAdapter_whenOne_thenThrowIllegalArgumentException() {
-    // Arrange
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    Class<?> baseType = ReflectionHelperDiffblueTestFactory.createNonNullClass();
-
-    // Act and Assert
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> gsonBuilder.registerTypeHierarchyAdapter(baseType, 1));
-  }
-
-  /**
    * Test {@link GsonBuilder#addReflectionAccessFilter(ReflectionAccessFilter)}.
    *
    * <p>Method under test: {@link GsonBuilder#addReflectionAccessFilter(ReflectionAccessFilter)}
@@ -855,28 +858,12 @@ public class GsonBuilderDiffblueTest {
     Gson actualCreateResult = gsonBuilder.create();
 
     // Assert
-    assertNull(actualCreateResult.strictness);
+    List<TypeAdapterFactory> typeAdapterFactoryList = actualCreateResult.factories;
+    assertEquals(42, typeAdapterFactoryList.size());
+    assertTrue(typeAdapterFactoryList.get(39) instanceof JsonAdapterAnnotationTypeAdapterFactory);
+    assertTrue(typeAdapterFactoryList.get(41) instanceof ReflectiveTypeAdapterFactory);
     assertNull(actualCreateResult.datePattern);
-    assertEquals(2, actualCreateResult.dateStyle);
-    assertEquals(2, actualCreateResult.timeStyle);
-    assertEquals(42, actualCreateResult.factories.size());
     assertEquals(LongSerializationPolicy.DEFAULT, actualCreateResult.longSerializationPolicy);
-    assertFalse(actualCreateResult.serializeNulls());
-    assertFalse(actualCreateResult.complexMapKeySerialization);
-    assertFalse(actualCreateResult.generateNonExecutableJson);
-    assertFalse(actualCreateResult.serializeNulls);
-    assertFalse(actualCreateResult.serializeSpecialFloatingPointValues);
-    assertTrue(actualCreateResult.htmlSafe());
-    assertTrue(actualCreateResult.builderFactories.isEmpty());
-    assertTrue(actualCreateResult.builderHierarchyFactories.isEmpty());
-    assertTrue(actualCreateResult.reflectionFilters.isEmpty());
-    assertTrue(actualCreateResult.instanceCreators.isEmpty());
-    assertTrue(actualCreateResult.htmlSafe);
-    assertTrue(actualCreateResult.useJdkUnsafe);
-    Excluder expectedExcluderResult = actualCreateResult.excluder;
-    assertSame(expectedExcluderResult, actualCreateResult.excluder());
-    FieldNamingStrategy expectedFieldNamingStrategyResult = actualCreateResult.fieldNamingStrategy;
-    assertSame(expectedFieldNamingStrategyResult, actualCreateResult.fieldNamingStrategy());
   }
 
   /**
@@ -902,28 +889,12 @@ public class GsonBuilderDiffblueTest {
     Gson actualCreateResult = gsonBuilder.create();
 
     // Assert
-    assertNull(actualCreateResult.strictness);
+    List<TypeAdapterFactory> typeAdapterFactoryList = actualCreateResult.factories;
+    assertEquals(42, typeAdapterFactoryList.size());
+    assertTrue(typeAdapterFactoryList.get(39) instanceof JsonAdapterAnnotationTypeAdapterFactory);
+    assertTrue(typeAdapterFactoryList.get(41) instanceof ReflectiveTypeAdapterFactory);
     assertNull(actualCreateResult.datePattern);
-    assertEquals(2, actualCreateResult.dateStyle);
-    assertEquals(2, actualCreateResult.timeStyle);
-    assertEquals(42, actualCreateResult.factories.size());
     assertEquals(LongSerializationPolicy.DEFAULT, actualCreateResult.longSerializationPolicy);
-    assertFalse(actualCreateResult.serializeNulls());
-    assertFalse(actualCreateResult.complexMapKeySerialization);
-    assertFalse(actualCreateResult.generateNonExecutableJson);
-    assertFalse(actualCreateResult.serializeNulls);
-    assertFalse(actualCreateResult.serializeSpecialFloatingPointValues);
-    assertTrue(actualCreateResult.htmlSafe());
-    assertTrue(actualCreateResult.builderFactories.isEmpty());
-    assertTrue(actualCreateResult.builderHierarchyFactories.isEmpty());
-    assertTrue(actualCreateResult.reflectionFilters.isEmpty());
-    assertTrue(actualCreateResult.instanceCreators.isEmpty());
-    assertTrue(actualCreateResult.htmlSafe);
-    assertTrue(actualCreateResult.useJdkUnsafe);
-    Excluder expectedExcluderResult = actualCreateResult.excluder;
-    assertSame(expectedExcluderResult, actualCreateResult.excluder());
-    FieldNamingStrategy expectedFieldNamingStrategyResult = actualCreateResult.fieldNamingStrategy;
-    assertSame(expectedFieldNamingStrategyResult, actualCreateResult.fieldNamingStrategy());
   }
 
   /**
@@ -931,7 +902,7 @@ public class GsonBuilderDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link GsonBuilder#GsonBuilder()}.
-   *   <li>Then return {@link Gson#longSerializationPolicy} is {@code DEFAULT}.
+   *   <li>Then return {@link Gson#datePattern} is {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link GsonBuilder#create()}
@@ -940,33 +911,76 @@ public class GsonBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Gson GsonBuilder.create()"})
-  public void testCreate_givenGsonBuilder_thenReturnLongSerializationPolicyIsDefault() {
+  public void testCreate_givenGsonBuilder_thenReturnDatePatternIsNull() {
     // Arrange and Act
     Gson actualCreateResult = new GsonBuilder().create();
 
     // Assert
-    assertNull(actualCreateResult.strictness);
+    List<TypeAdapterFactory> typeAdapterFactoryList = actualCreateResult.factories;
+    assertEquals(42, typeAdapterFactoryList.size());
+    assertTrue(typeAdapterFactoryList.get(39) instanceof JsonAdapterAnnotationTypeAdapterFactory);
+    assertTrue(typeAdapterFactoryList.get(41) instanceof ReflectiveTypeAdapterFactory);
     assertNull(actualCreateResult.datePattern);
-    assertEquals(2, actualCreateResult.dateStyle);
-    assertEquals(2, actualCreateResult.timeStyle);
-    assertEquals(42, actualCreateResult.factories.size());
     assertEquals(LongSerializationPolicy.DEFAULT, actualCreateResult.longSerializationPolicy);
-    assertFalse(actualCreateResult.serializeNulls());
-    assertFalse(actualCreateResult.complexMapKeySerialization);
-    assertFalse(actualCreateResult.generateNonExecutableJson);
-    assertFalse(actualCreateResult.serializeNulls);
-    assertFalse(actualCreateResult.serializeSpecialFloatingPointValues);
-    assertTrue(actualCreateResult.htmlSafe());
-    assertTrue(actualCreateResult.builderFactories.isEmpty());
-    assertTrue(actualCreateResult.builderHierarchyFactories.isEmpty());
-    assertTrue(actualCreateResult.reflectionFilters.isEmpty());
-    assertTrue(actualCreateResult.instanceCreators.isEmpty());
-    assertTrue(actualCreateResult.htmlSafe);
-    assertTrue(actualCreateResult.useJdkUnsafe);
-    Excluder expectedExcluderResult = actualCreateResult.excluder;
-    assertSame(expectedExcluderResult, actualCreateResult.excluder());
-    FieldNamingStrategy expectedFieldNamingStrategyResult = actualCreateResult.fieldNamingStrategy;
-    assertSame(expectedFieldNamingStrategyResult, actualCreateResult.fieldNamingStrategy());
+  }
+
+  /**
+   * Test {@link GsonBuilder#create()}.
+   *
+   * <ul>
+   *   <li>Then return {@link Gson#datePattern} is empty string.
+   * </ul>
+   *
+   * <p>Method under test: {@link GsonBuilder#create()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Gson GsonBuilder.create()"})
+  public void testCreate_thenReturnDatePatternIsEmptyString() {
+    // Arrange
+    GsonBuilder gsonBuilder = new GsonBuilder();
+    gsonBuilder.setDateFormat("");
+
+    // Act
+    Gson actualCreateResult = gsonBuilder.create();
+
+    // Assert
+    List<TypeAdapterFactory> typeAdapterFactoryList = actualCreateResult.factories;
+    assertEquals(42, typeAdapterFactoryList.size());
+    assertTrue(typeAdapterFactoryList.get(39) instanceof JsonAdapterAnnotationTypeAdapterFactory);
+    assertTrue(typeAdapterFactoryList.get(41) instanceof ReflectiveTypeAdapterFactory);
+    assertEquals("", actualCreateResult.datePattern);
+    assertEquals(LongSerializationPolicy.DEFAULT, actualCreateResult.longSerializationPolicy);
+  }
+
+  /**
+   * Test {@link GsonBuilder#create()}.
+   *
+   * <ul>
+   *   <li>Then return {@link Gson#factories} size is forty-five.
+   * </ul>
+   *
+   * <p>Method under test: {@link GsonBuilder#create()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Gson GsonBuilder.create()"})
+  public void testCreate_thenReturnFactoriesSizeIsFortyFive() {
+    // Arrange
+    GsonBuilder gsonBuilder = new GsonBuilder();
+    gsonBuilder.setDateFormat("\"yyyy-MM-dd'T'HH:mm:ss.SSSZ\"");
+
+    // Act
+    Gson actualCreateResult = gsonBuilder.create();
+
+    // Assert
+    List<TypeAdapterFactory> typeAdapterFactoryList = actualCreateResult.factories;
+    assertEquals(45, typeAdapterFactoryList.size());
+    assertTrue(typeAdapterFactoryList.get(42) instanceof JsonAdapterAnnotationTypeAdapterFactory);
+    assertTrue(typeAdapterFactoryList.get(44) instanceof ReflectiveTypeAdapterFactory);
+    assertEquals("\"yyyy-MM-dd'T'HH:mm:ss.SSSZ\"", actualCreateResult.datePattern);
   }
 
   /**
@@ -991,27 +1005,11 @@ public class GsonBuilderDiffblueTest {
     Gson actualCreateResult = gsonBuilder.create();
 
     // Assert
-    assertNull(actualCreateResult.strictness);
+    List<TypeAdapterFactory> typeAdapterFactoryList = actualCreateResult.factories;
+    assertEquals(42, typeAdapterFactoryList.size());
+    assertTrue(typeAdapterFactoryList.get(39) instanceof JsonAdapterAnnotationTypeAdapterFactory);
+    assertTrue(typeAdapterFactoryList.get(41) instanceof ReflectiveTypeAdapterFactory);
     assertNull(actualCreateResult.datePattern);
-    assertEquals(2, actualCreateResult.dateStyle);
-    assertEquals(2, actualCreateResult.timeStyle);
-    assertEquals(42, actualCreateResult.factories.size());
     assertEquals(LongSerializationPolicy.STRING, actualCreateResult.longSerializationPolicy);
-    assertFalse(actualCreateResult.serializeNulls());
-    assertFalse(actualCreateResult.complexMapKeySerialization);
-    assertFalse(actualCreateResult.generateNonExecutableJson);
-    assertFalse(actualCreateResult.serializeNulls);
-    assertFalse(actualCreateResult.serializeSpecialFloatingPointValues);
-    assertTrue(actualCreateResult.htmlSafe());
-    assertTrue(actualCreateResult.builderFactories.isEmpty());
-    assertTrue(actualCreateResult.builderHierarchyFactories.isEmpty());
-    assertTrue(actualCreateResult.reflectionFilters.isEmpty());
-    assertTrue(actualCreateResult.instanceCreators.isEmpty());
-    assertTrue(actualCreateResult.htmlSafe);
-    assertTrue(actualCreateResult.useJdkUnsafe);
-    Excluder expectedExcluderResult = actualCreateResult.excluder;
-    assertSame(expectedExcluderResult, actualCreateResult.excluder());
-    FieldNamingStrategy expectedFieldNamingStrategyResult = actualCreateResult.fieldNamingStrategy;
-    assertSame(expectedFieldNamingStrategyResult, actualCreateResult.fieldNamingStrategy());
   }
 }

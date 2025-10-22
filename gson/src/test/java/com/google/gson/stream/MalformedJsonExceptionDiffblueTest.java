@@ -14,11 +14,6 @@ public class MalformedJsonExceptionDiffblueTest {
   /**
    * Test {@link MalformedJsonException#MalformedJsonException(String)}.
    *
-   * <ul>
-   *   <li>When {@code Msg}.
-   *   <li>Then return Cause is {@code null}.
-   * </ul>
-   *
    * <p>Method under test: {@link MalformedJsonException#MalformedJsonException(String)}
    */
   @Test
@@ -29,23 +24,22 @@ public class MalformedJsonExceptionDiffblueTest {
     "void MalformedJsonException.<init>(String, Throwable)",
     "void MalformedJsonException.<init>(Throwable)"
   })
-  public void testNewMalformedJsonException_whenMsg_thenReturnCauseIsNull() {
+  public void testNewMalformedJsonException() {
     // Arrange and Act
-    MalformedJsonException actualMalformedJsonException = new MalformedJsonException("Msg");
+    MalformedJsonException actualMalformedJsonException =
+        new MalformedJsonException(
+            "\"{ 'name': 'John', 'age': 30, 'city': 'New York' 'country': 'USA' }\"");
 
     // Assert
-    assertEquals("Msg", actualMalformedJsonException.getMessage());
+    assertEquals(
+        "\"{ 'name': 'John', 'age': 30, 'city': 'New York' 'country': 'USA' }\"",
+        actualMalformedJsonException.getMessage());
     assertNull(actualMalformedJsonException.getCause());
     assertEquals(0, actualMalformedJsonException.getSuppressed().length);
   }
 
   /**
    * Test {@link MalformedJsonException#MalformedJsonException(String, Throwable)}.
-   *
-   * <ul>
-   *   <li>When {@code Msg}.
-   *   <li>Then return Message is {@code Msg}.
-   * </ul>
    *
    * <p>Method under test: {@link MalformedJsonException#MalformedJsonException(String, Throwable)}
    */
@@ -57,16 +51,19 @@ public class MalformedJsonExceptionDiffblueTest {
     "void MalformedJsonException.<init>(String, Throwable)",
     "void MalformedJsonException.<init>(Throwable)"
   })
-  public void testNewMalformedJsonException_whenMsg_thenReturnMessageIsMsg() {
+  public void testNewMalformedJsonException2() {
     // Arrange
     Throwable throwable = new Throwable();
 
     // Act
     MalformedJsonException actualMalformedJsonException =
-        new MalformedJsonException("Msg", throwable);
+        new MalformedJsonException(
+            "\"Invalid JSON format: Expected '{' at line 1 column 2 path $.\"", throwable);
 
     // Assert
-    assertEquals("Msg", actualMalformedJsonException.getMessage());
+    assertEquals(
+        "\"Invalid JSON format: Expected '{' at line 1 column 2 path $.\"",
+        actualMalformedJsonException.getMessage());
     assertEquals(0, actualMalformedJsonException.getSuppressed().length);
     assertSame(throwable, actualMalformedJsonException.getCause());
   }

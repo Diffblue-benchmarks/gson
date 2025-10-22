@@ -75,7 +75,7 @@ public class RuntimeTypeAdapterFactoryDiffblueTest {
 
     // Act
     RuntimeTypeAdapterFactory<Object> actualRegisterSubtypeResult =
-        ofResult.registerSubtype(type, "Label");
+        ofResult.registerSubtype(type, "\"RectangleSubtype\"");
 
     // Assert
     assertSame(ofResult, actualRegisterSubtypeResult);

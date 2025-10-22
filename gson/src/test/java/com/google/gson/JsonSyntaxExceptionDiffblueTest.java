@@ -14,11 +14,6 @@ public class JsonSyntaxExceptionDiffblueTest {
   /**
    * Test {@link JsonSyntaxException#JsonSyntaxException(String)}.
    *
-   * <ul>
-   *   <li>When {@code Msg}.
-   *   <li>Then return Cause is {@code null}.
-   * </ul>
-   *
    * <p>Method under test: {@link JsonSyntaxException#JsonSyntaxException(String)}
    */
   @Test
@@ -29,23 +24,24 @@ public class JsonSyntaxExceptionDiffblueTest {
     "void JsonSyntaxException.<init>(String, Throwable)",
     "void JsonSyntaxException.<init>(Throwable)"
   })
-  public void testNewJsonSyntaxException_whenMsg_thenReturnCauseIsNull() {
+  public void testNewJsonSyntaxException() {
     // Arrange and Act
-    JsonSyntaxException actualJsonSyntaxException = new JsonSyntaxException("Msg");
+    JsonSyntaxException actualJsonSyntaxException =
+        new JsonSyntaxException(
+            "\"Invalid JSON syntax: missing closing bracket in object declaration at line 5, column"
+                + " 12.\"");
 
     // Assert
-    assertEquals("Msg", actualJsonSyntaxException.getMessage());
+    assertEquals(
+        "\"Invalid JSON syntax: missing closing bracket in object declaration at line 5, column"
+            + " 12.\"",
+        actualJsonSyntaxException.getMessage());
     assertNull(actualJsonSyntaxException.getCause());
     assertEquals(0, actualJsonSyntaxException.getSuppressed().length);
   }
 
   /**
    * Test {@link JsonSyntaxException#JsonSyntaxException(String, Throwable)}.
-   *
-   * <ul>
-   *   <li>When {@code Msg}.
-   *   <li>Then return Message is {@code Msg}.
-   * </ul>
    *
    * <p>Method under test: {@link JsonSyntaxException#JsonSyntaxException(String, Throwable)}
    */
@@ -57,15 +53,22 @@ public class JsonSyntaxExceptionDiffblueTest {
     "void JsonSyntaxException.<init>(String, Throwable)",
     "void JsonSyntaxException.<init>(Throwable)"
   })
-  public void testNewJsonSyntaxException_whenMsg_thenReturnMessageIsMsg() {
+  public void testNewJsonSyntaxException2() {
     // Arrange
     Throwable cause = new Throwable();
 
     // Act
-    JsonSyntaxException actualJsonSyntaxException = new JsonSyntaxException("Msg", cause);
+    JsonSyntaxException actualJsonSyntaxException =
+        new JsonSyntaxException(
+            "\"Invalid JSON syntax detected: Missing closing bracket in the object at line 5,"
+                + " column 12.\"",
+            cause);
 
     // Assert
-    assertEquals("Msg", actualJsonSyntaxException.getMessage());
+    assertEquals(
+        "\"Invalid JSON syntax detected: Missing closing bracket in the object at line 5, column"
+            + " 12.\"",
+        actualJsonSyntaxException.getMessage());
     assertEquals(0, actualJsonSyntaxException.getSuppressed().length);
     assertSame(cause, actualJsonSyntaxException.getCause());
   }

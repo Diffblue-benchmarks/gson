@@ -41,7 +41,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#JsonReader(Reader)}.
    *
    * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@code foo}.
+   *   <li>When {@link StringReader#StringReader(String)} with a string.
    *   <li>Then return Path is {@code $}.
    * </ul>
    *
@@ -51,9 +51,13 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.<init>(Reader)"})
-  public void testNewJsonReader_whenStringReaderWithFoo_thenReturnPathIsDollarSign() {
+  public void testNewJsonReader_whenStringReaderWithAString_thenReturnPathIsDollarSign() {
     // Arrange and Act
-    JsonReader actualJsonReader = new JsonReader(new StringReader("foo"));
+    JsonReader actualJsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
 
     // Assert
     assertEquals("$", actualJsonReader.getPath());
@@ -80,7 +84,11 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.setLenient(boolean)"})
   public void testSetLenient_thenJsonReaderWithInIsStringReaderStrictnessIsLegacyStrict() {
     // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
 
     // Act
     jsonReader.setLenient(false);
@@ -107,7 +115,11 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.setLenient(boolean)"})
   public void testSetLenient_whenTrue_thenJsonReaderWithInIsStringReaderStrictnessIsLenient() {
     // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
 
     // Act
     jsonReader.setLenient(true);
@@ -121,7 +133,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#isLenient()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -131,9 +143,15 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonReader.isLenient()"})
-  public void testIsLenient_givenStringReaderWithFoo_thenReturnFalse() {
+  public void testIsLenient_givenStringReaderWithAString_thenReturnFalse() {
     // Arrange, Act and Assert
-    assertFalse(new JsonReader(new StringReader("foo")).isLenient());
+    assertFalse(
+        new JsonReader(
+                new StringReader(
+                    "\"This is a test string for the java.io.StringReader method. It includes"
+                        + " various characters such as numbers 123, special characters @#$%, and"
+                        + " spaces.\""))
+            .isLenient());
   }
 
   /**
@@ -177,7 +195,13 @@ public class JsonReaderDiffblueTest {
     // Arrange, Act and Assert
     assertThrows(
         IllegalArgumentException.class,
-        () -> new JsonReader(new StringReader("foo")).setNestingLimit(-1));
+        () ->
+            new JsonReader(
+                    new StringReader(
+                        "\"This is a test string for the java.io.StringReader method. It includes"
+                            + " various characters such as numbers 123, special characters @#$%,"
+                            + " and spaces.\""))
+                .setNestingLimit(-1));
   }
 
   /**
@@ -197,7 +221,11 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.setNestingLimit(int)"})
   public void testSetNestingLimit_whenOne_thenJsonReaderWithInIsStringReaderNestingLimitIsOne() {
     // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
 
     // Act
     jsonReader.setNestingLimit(1);
@@ -231,7 +259,11 @@ public class JsonReaderDiffblueTest {
   })
   public void testGettersAndSetters() {
     // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
 
     // Act
     jsonReader.setStrictness(Strictness.LENIENT);
@@ -256,15 +288,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.beginArray()"})
   public void testBeginArray() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .beginArray());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).beginArray());
   }
 
   /**
@@ -278,7 +306,8 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.beginArray()"})
   public void testBeginArray2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in = new StringReader(" but was ");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).beginArray());
@@ -355,7 +384,112 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#beginArray()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#beginArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.beginArray()"})
+  public void testBeginArray_givenStringReaderWithAStringSkipOne() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).beginArray());
+  }
+
+  /**
+   * Test {@link JsonReader#beginArray()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#beginArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.beginArray()"})
+  public void testBeginArray_givenStringReaderWithAString_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonReader(
+                    new StringReader(
+                        "\"This is a test string for the java.io.StringReader method. It includes"
+                            + " various characters such as numbers 123, special characters @#$%,"
+                            + " and spaces.\""))
+                .beginArray());
+  }
+
+  /**
+   * Test {@link JsonReader#beginArray()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#beginArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.beginArray()"})
+  public void testBeginArray_givenStringReaderWithAString_thenThrowIllegalStateException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.beginArray());
+  }
+
+  /**
+   * Test {@link JsonReader#beginArray()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code BEGIN_ARRAY}.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#beginArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.beginArray()"})
+  public void testBeginArray_givenStringReaderWithBeginArray_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("BEGIN_ARRAY"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.beginArray());
+  }
+
+  /**
+   * Test {@link JsonReader#beginArray()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code BEGIN_ARRAY}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -365,12 +499,34 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.beginArray()"})
-  public void testBeginArray_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testBeginArray_givenStringReaderWithBeginArray_thenThrowMalformedJsonException()
       throws IOException {
     // Arrange, Act and Assert
     assertThrows(
         MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).beginArray());
+        () -> new JsonReader(new StringReader("BEGIN_ARRAY")).beginArray());
+  }
+
+  /**
+   * Test {@link JsonReader#beginArray()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code but was}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#beginArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.beginArray()"})
+  public void testBeginArray_givenStringReaderWithButWas_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader(" but was ")).beginArray());
   }
 
   /**
@@ -422,7 +578,7 @@ public class JsonReaderDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code Expected}.
-   *   <li>Then throw {@link IllegalStateException}.
+   *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#beginArray()}
@@ -431,14 +587,12 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.beginArray()"})
-  public void testBeginArray_givenStringReaderWithExpected_thenThrowIllegalStateException()
+  public void testBeginArray_givenStringReaderWithExpected_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("Expected "));
-    jsonReader.setStrictness(Strictness.LENIENT);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.beginArray());
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader("Expected ")).beginArray());
   }
 
   /**
@@ -456,29 +610,6 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.beginArray()"})
   public void testBeginArray_givenStringReaderWithFalseToString_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonReader(in).beginArray());
-  }
-
-  /**
-   * Test {@link JsonReader#beginArray()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#beginArray()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonReader.beginArray()"})
-  public void testBeginArray_givenStringReaderWithFalseToString_thenThrowIllegalStateException2()
       throws IOException {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
@@ -506,9 +637,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.beginArray()"})
   public void testBeginArray_givenStringReaderWithFalse_thenThrowIllegalStateException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonReader(new StringReader("FALSE")).beginArray());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.beginArray());
   }
 
   /**
@@ -611,15 +745,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.endArray()"})
   public void testEndArray() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .endArray());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endArray());
   }
 
   /**
@@ -633,7 +763,8 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.endArray()"})
   public void testEndArray2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in = new StringReader(" but was ");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endArray());
@@ -710,7 +841,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#endArray()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -720,12 +851,95 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.endArray()"})
-  public void testEndArray_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testEndArray_givenStringReaderWithAStringSkipOne_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endArray());
+  }
+
+  /**
+   * Test {@link JsonReader#endArray()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#endArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.endArray()"})
+  public void testEndArray_givenStringReaderWithAString_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonReader(
+                    new StringReader(
+                        "\"This is a test string for the java.io.StringReader method. It includes"
+                            + " various characters such as numbers 123, special characters @#$%,"
+                            + " and spaces.\""))
+                .endArray());
+  }
+
+  /**
+   * Test {@link JsonReader#endArray()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#endArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.endArray()"})
+  public void testEndArray_givenStringReaderWithAString_thenThrowIllegalStateException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.endArray());
+  }
+
+  /**
+   * Test {@link JsonReader#endArray()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code but was}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#endArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.endArray()"})
+  public void testEndArray_givenStringReaderWithButWas_thenThrowMalformedJsonException()
       throws IOException {
     // Arrange, Act and Assert
     assertThrows(
         MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).endArray());
+        () -> new JsonReader(new StringReader(" but was ")).endArray());
   }
 
   /**
@@ -777,7 +991,6 @@ public class JsonReaderDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code END_ARRAY} skip one.
-   *   <li>Then throw {@link IllegalStateException}.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#endArray()}
@@ -786,17 +999,13 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.endArray()"})
-  public void testEndArray_givenStringReaderWithEndArraySkipOne_thenThrowIllegalStateException()
-      throws IOException {
+  public void testEndArray_givenStringReaderWithEndArraySkipOne() throws IOException {
     // Arrange
     StringReader in = new StringReader("END_ARRAY");
     in.skip(1L);
 
-    JsonReader jsonReader = new JsonReader(in);
-    jsonReader.setStrictness(Strictness.LENIENT);
-
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.endArray());
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endArray());
   }
 
   /**
@@ -827,8 +1036,8 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#endArray()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link IllegalStateException}.
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code END_ARRAY}.
+   *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#endArray()}
@@ -837,13 +1046,12 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.endArray()"})
-  public void testEndArray_givenStringReaderWithFalseToString_thenThrowIllegalStateException()
+  public void testEndArray_givenStringReaderWithEndArray_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonReader(in).endArray());
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader("END_ARRAY")).endArray());
   }
 
   /**
@@ -860,7 +1068,7 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.endArray()"})
-  public void testEndArray_givenStringReaderWithFalseToString_thenThrowIllegalStateException2()
+  public void testEndArray_givenStringReaderWithFalseToString_thenThrowIllegalStateException()
       throws IOException {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
@@ -888,9 +1096,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.endArray()"})
   public void testEndArray_givenStringReaderWithFalse_thenThrowIllegalStateException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonReader(new StringReader("FALSE")).endArray());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.endArray());
   }
 
   /**
@@ -963,6 +1174,26 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#endArray()}.
    *
    * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code unexpected-json-structure}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#endArray()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.endArray()"})
+  public void testEndArray_givenStringReaderWithUnexpectedJsonStructure() throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader("unexpected-json-structure")).endArray());
+  }
+
+  /**
+   * Test {@link JsonReader#endArray()}.
+   *
+   * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code unexpected-json-structure}
    *       skip one.
    * </ul>
@@ -979,11 +1210,8 @@ public class JsonReaderDiffblueTest {
     StringReader in = new StringReader("unexpected-json-structure");
     in.skip(1L);
 
-    JsonReader jsonReader = new JsonReader(in);
-    jsonReader.setStrictness(Strictness.LENIENT);
-
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.endArray());
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endArray());
   }
 
   /**
@@ -1019,15 +1247,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.beginObject()"})
   public void testBeginObject() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .beginObject());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).beginObject());
   }
 
   /**
@@ -1041,7 +1265,8 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.beginObject()"})
   public void testBeginObject2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in = new StringReader(" but was ");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).beginObject());
@@ -1118,7 +1343,112 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#beginObject()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#beginObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.beginObject()"})
+  public void testBeginObject_givenStringReaderWithAStringSkipOne() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).beginObject());
+  }
+
+  /**
+   * Test {@link JsonReader#beginObject()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#beginObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.beginObject()"})
+  public void testBeginObject_givenStringReaderWithAString_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonReader(
+                    new StringReader(
+                        "\"This is a test string for the java.io.StringReader method. It includes"
+                            + " various characters such as numbers 123, special characters @#$%,"
+                            + " and spaces.\""))
+                .beginObject());
+  }
+
+  /**
+   * Test {@link JsonReader#beginObject()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#beginObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.beginObject()"})
+  public void testBeginObject_givenStringReaderWithAString_thenThrowIllegalStateException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.beginObject());
+  }
+
+  /**
+   * Test {@link JsonReader#beginObject()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code BEGIN_OBJECT}.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#beginObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.beginObject()"})
+  public void testBeginObject_givenStringReaderWithBeginObject_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("BEGIN_OBJECT"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.beginObject());
+  }
+
+  /**
+   * Test {@link JsonReader#beginObject()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code BEGIN_OBJECT}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -1128,12 +1458,34 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.beginObject()"})
-  public void testBeginObject_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testBeginObject_givenStringReaderWithBeginObject_thenThrowMalformedJsonException()
       throws IOException {
     // Arrange, Act and Assert
     assertThrows(
         MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).beginObject());
+        () -> new JsonReader(new StringReader("BEGIN_OBJECT")).beginObject());
+  }
+
+  /**
+   * Test {@link JsonReader#beginObject()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code but was}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#beginObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.beginObject()"})
+  public void testBeginObject_givenStringReaderWithButWas_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader(" but was ")).beginObject());
   }
 
   /**
@@ -1185,7 +1537,7 @@ public class JsonReaderDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code Expected}.
-   *   <li>Then throw {@link IllegalStateException}.
+   *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#beginObject()}
@@ -1194,14 +1546,12 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.beginObject()"})
-  public void testBeginObject_givenStringReaderWithExpected_thenThrowIllegalStateException()
+  public void testBeginObject_givenStringReaderWithExpected_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("Expected "));
-    jsonReader.setStrictness(Strictness.LENIENT);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.beginObject());
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader("Expected ")).beginObject());
   }
 
   /**
@@ -1218,27 +1568,6 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.beginObject()"})
   public void testBeginObject_givenStringReaderWithFalseToString() throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonReader(in).beginObject());
-  }
-
-  /**
-   * Test {@link JsonReader#beginObject()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#beginObject()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonReader.beginObject()"})
-  public void testBeginObject_givenStringReaderWithFalseToString2() throws IOException {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
 
@@ -1265,9 +1594,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.beginObject()"})
   public void testBeginObject_givenStringReaderWithFalse_thenThrowIllegalStateException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonReader(new StringReader("FALSE")).beginObject());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.beginObject());
   }
 
   /**
@@ -1370,15 +1702,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.endObject()"})
   public void testEndObject() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .endObject());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endObject());
   }
 
   /**
@@ -1392,7 +1720,8 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.endObject()"})
   public void testEndObject2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in = new StringReader(" but was ");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endObject());
@@ -1469,7 +1798,88 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#endObject()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#endObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.endObject()"})
+  public void testEndObject_givenStringReaderWithAStringSkipOne() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endObject());
+  }
+
+  /**
+   * Test {@link JsonReader#endObject()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#endObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.endObject()"})
+  public void testEndObject_givenStringReaderWithAString_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonReader(
+                    new StringReader(
+                        "\"This is a test string for the java.io.StringReader method. It includes"
+                            + " various characters such as numbers 123, special characters @#$%,"
+                            + " and spaces.\""))
+                .endObject());
+  }
+
+  /**
+   * Test {@link JsonReader#endObject()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#endObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.endObject()"})
+  public void testEndObject_givenStringReaderWithAString_thenThrowIllegalStateException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.endObject());
+  }
+
+  /**
+   * Test {@link JsonReader#endObject()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code but was}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -1479,12 +1889,12 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.endObject()"})
-  public void testEndObject_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testEndObject_givenStringReaderWithButWas_thenThrowMalformedJsonException()
       throws IOException {
     // Arrange, Act and Assert
     assertThrows(
         MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).endObject());
+        () -> new JsonReader(new StringReader(" but was ")).endObject());
   }
 
   /**
@@ -1549,11 +1959,8 @@ public class JsonReaderDiffblueTest {
     StringReader in = new StringReader("END_OBJECT");
     in.skip(9L);
 
-    JsonReader jsonReader = new JsonReader(in);
-    jsonReader.setStrictness(Strictness.LENIENT);
-
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.endObject());
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endObject());
   }
 
   /**
@@ -1574,11 +1981,8 @@ public class JsonReaderDiffblueTest {
     StringReader in = new StringReader("END_OBJECT");
     in.skip(1L);
 
-    JsonReader jsonReader = new JsonReader(in);
-    jsonReader.setStrictness(Strictness.LENIENT);
-
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.endObject());
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endObject());
   }
 
   /**
@@ -1609,8 +2013,8 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#endObject()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link IllegalStateException}.
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code END_OBJECT}.
+   *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#endObject()}
@@ -1619,13 +2023,12 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.endObject()"})
-  public void testEndObject_givenStringReaderWithFalseToString_thenThrowIllegalStateException()
+  public void testEndObject_givenStringReaderWithEndObject_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonReader(in).endObject());
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader("END_OBJECT")).endObject());
   }
 
   /**
@@ -1642,7 +2045,7 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.endObject()"})
-  public void testEndObject_givenStringReaderWithFalseToString_thenThrowIllegalStateException2()
+  public void testEndObject_givenStringReaderWithFalseToString_thenThrowIllegalStateException()
       throws IOException {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
@@ -1670,9 +2073,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.endObject()"})
   public void testEndObject_givenStringReaderWithFalse_thenThrowIllegalStateException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonReader(new StringReader("FALSE")).endObject());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.endObject());
   }
 
   /**
@@ -1724,6 +2130,28 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#endObject()}.
    *
    * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code malformed-json} skip nine.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#endObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.endObject()"})
+  public void testEndObject_givenStringReaderWithMalformedJsonSkipNine() throws IOException {
+    // Arrange
+    StringReader in = new StringReader("malformed-json");
+    in.skip(9L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endObject());
+  }
+
+  /**
+   * Test {@link JsonReader#endObject()}.
+   *
+   * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code See}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
@@ -1739,6 +2167,26 @@ public class JsonReaderDiffblueTest {
     // Arrange, Act and Assert
     assertThrows(
         MalformedJsonException.class, () -> new JsonReader(new StringReader("\nSee ")).endObject());
+  }
+
+  /**
+   * Test {@link JsonReader#endObject()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code unexpected-json-structure}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#endObject()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.endObject()"})
+  public void testEndObject_givenStringReaderWithUnexpectedJsonStructure() throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader("unexpected-json-structure")).endObject());
   }
 
   /**
@@ -1761,11 +2209,8 @@ public class JsonReaderDiffblueTest {
     StringReader in = new StringReader("unexpected-json-structure");
     in.skip(1L);
 
-    JsonReader jsonReader = new JsonReader(in);
-    jsonReader.setStrictness(Strictness.LENIENT);
-
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.endObject());
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).endObject());
   }
 
   /**
@@ -1801,15 +2246,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonReader.hasNext()"})
   public void testHasNext() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .hasNext());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).hasNext());
   }
 
   /**
@@ -1823,10 +2264,135 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"boolean JsonReader.hasNext()"})
   public void testHasNext2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(1L);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext3() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext4() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(5L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext5() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext6() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext7() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext8() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(35L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.hasNext());
   }
 
   /**
@@ -1879,28 +2445,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#hasNext()}.
    *
    * <ul>
-   *   <li>Given {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is
-   *       createJsonArrayWithElements.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#hasNext()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
-  public void testHasNext_givenJsonTreeReaderWithElementIsCreateJsonArrayWithElements()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertTrue(
-        new JsonTreeReader(JsonArrayDiffblueTestFactory.createJsonArrayWithElements()).hasNext());
-  }
-
-  /**
-   * Test {@link JsonReader#hasNext()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -1910,12 +2455,43 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonReader.hasNext()"})
-  public void testHasNext_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testHasNext_givenStringReaderWithAStringSkipOne_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).hasNext());
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).hasNext());
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_givenStringReaderWithAtLine() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader(" at line "));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(10, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
   }
 
   /**
@@ -2062,6 +2638,7 @@ public class JsonReaderDiffblueTest {
   public void testHasNext_givenStringReaderWithFalse() throws IOException {
     // Arrange
     JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
 
     // Act
     boolean actualHasNextResult = jsonReader.hasNext();
@@ -2085,32 +2662,6 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonReader.hasNext()"})
   public void testHasNext_givenStringReaderWithFalseToString() throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-    JsonReader jsonReader = new JsonReader(in);
-
-    // Act
-    boolean actualHasNextResult = jsonReader.hasNext();
-
-    // Assert
-    assertEquals(6, jsonReader.getPeeked());
-    assertTrue(actualHasNextResult);
-  }
-
-  /**
-   * Test {@link JsonReader#hasNext()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#hasNext()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
-  public void testHasNext_givenStringReaderWithFalseToString2() throws IOException {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
 
@@ -2188,9 +2739,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"boolean JsonReader.hasNext()"})
   public void testHasNext_givenStringReaderWithSee_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class, () -> new JsonReader(new StringReader("\nSee ")).hasNext());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("\nSee "));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.hasNext());
   }
 
   /**
@@ -2216,6 +2770,67 @@ public class JsonReaderDiffblueTest {
 
     // Assert
     assertEquals(15, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)} Peeked is nine.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_thenJsonReaderWithInIsStringReaderPeekedIsNine() throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(9, jsonReader.getPeeked());
+    assertTrue(actualHasNextResult);
+  }
+
+  /**
+   * Test {@link JsonReader#hasNext()}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)} Peeked is nine.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#hasNext()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.hasNext()"})
+  public void testHasNext_thenJsonReaderWithInIsStringReaderPeekedIsNine2() throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act
+    boolean actualHasNextResult = jsonReader.hasNext();
+
+    // Assert
+    assertEquals(9, jsonReader.getPeeked());
     assertTrue(actualHasNextResult);
   }
 
@@ -2252,15 +2867,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonToken JsonReader.peek()"})
   public void testPeek() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .peek());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).peek());
   }
 
   /**
@@ -2274,10 +2885,135 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"JsonToken JsonReader.peek()"})
   public void testPeek2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(1L);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).peek());
+  }
+
+  /**
+   * Test {@link JsonReader#peek()}.
+   *
+   * <p>Method under test: {@link JsonReader#peek()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonToken JsonReader.peek()"})
+  public void testPeek3() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).peek());
+  }
+
+  /**
+   * Test {@link JsonReader#peek()}.
+   *
+   * <p>Method under test: {@link JsonReader#peek()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonToken JsonReader.peek()"})
+  public void testPeek4() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(5L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).peek());
+  }
+
+  /**
+   * Test {@link JsonReader#peek()}.
+   *
+   * <p>Method under test: {@link JsonReader#peek()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonToken JsonReader.peek()"})
+  public void testPeek5() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.peek());
+  }
+
+  /**
+   * Test {@link JsonReader#peek()}.
+   *
+   * <p>Method under test: {@link JsonReader#peek()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonToken JsonReader.peek()"})
+  public void testPeek6() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).peek());
+  }
+
+  /**
+   * Test {@link JsonReader#peek()}.
+   *
+   * <p>Method under test: {@link JsonReader#peek()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonToken JsonReader.peek()"})
+  public void testPeek7() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.peek());
+  }
+
+  /**
+   * Test {@link JsonReader#peek()}.
+   *
+   * <p>Method under test: {@link JsonReader#peek()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonToken JsonReader.peek()"})
+  public void testPeek8() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(35L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.peek());
   }
 
   /**
@@ -2329,7 +3065,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#peek()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -2339,11 +3075,43 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonToken JsonReader.peek()"})
-  public void testPeek_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testPeek_givenStringReaderWithAStringSkipOne_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class, () -> new JsonReader(new StringReader(" at line ")).peek());
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).peek());
+  }
+
+  /**
+   * Test {@link JsonReader#peek()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#peek()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonToken JsonReader.peek()"})
+  public void testPeek_givenStringReaderWithAtLine() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader(" at line "));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act
+    JsonToken actualPeekResult = jsonReader.peek();
+
+    // Assert
+    assertEquals(10, jsonReader.getPeeked());
+    assertEquals(JsonToken.STRING, actualPeekResult);
   }
 
   /**
@@ -2489,6 +3257,7 @@ public class JsonReaderDiffblueTest {
   public void testPeek_givenStringReaderWithFalse() throws IOException {
     // Arrange
     JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
 
     // Act
     JsonToken actualPeekResult = jsonReader.peek();
@@ -2512,32 +3281,6 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonToken JsonReader.peek()"})
   public void testPeek_givenStringReaderWithFalseToString() throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-    JsonReader jsonReader = new JsonReader(in);
-
-    // Act
-    JsonToken actualPeekResult = jsonReader.peek();
-
-    // Assert
-    assertEquals(6, jsonReader.getPeeked());
-    assertEquals(JsonToken.BOOLEAN, actualPeekResult);
-  }
-
-  /**
-   * Test {@link JsonReader#peek()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#peek()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonToken JsonReader.peek()"})
-  public void testPeek_givenStringReaderWithFalseToString2() throws IOException {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
 
@@ -2618,9 +3361,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"JsonToken JsonReader.peek()"})
   public void testPeek_givenStringReaderWithSee_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class, () -> new JsonReader(new StringReader("\nSee ")).peek());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("\nSee "));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.peek());
   }
 
   /**
@@ -2647,6 +3393,67 @@ public class JsonReaderDiffblueTest {
     // Assert
     assertEquals(15, jsonReader.getPeeked());
     assertEquals(JsonToken.NUMBER, actualPeekResult);
+  }
+
+  /**
+   * Test {@link JsonReader#peek()}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)} Peeked is nine.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#peek()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonToken JsonReader.peek()"})
+  public void testPeek_thenJsonReaderWithInIsStringReaderPeekedIsNine() throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+
+    // Act
+    JsonToken actualPeekResult = jsonReader.peek();
+
+    // Assert
+    assertEquals(9, jsonReader.getPeeked());
+    assertEquals(JsonToken.STRING, actualPeekResult);
+  }
+
+  /**
+   * Test {@link JsonReader#peek()}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)} Peeked is nine.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#peek()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonToken JsonReader.peek()"})
+  public void testPeek_thenJsonReaderWithInIsStringReaderPeekedIsNine2() throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act
+    JsonToken actualPeekResult = jsonReader.peek();
+
+    // Assert
+    assertEquals(9, jsonReader.getPeeked());
+    assertEquals(JsonToken.STRING, actualPeekResult);
   }
 
   /**
@@ -2723,8 +3530,8 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#doPeek()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
-   *   <li>Then throw {@link MalformedJsonException}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then return nine.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#doPeek()}
@@ -2733,11 +3540,17 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"int JsonReader.doPeek()"})
-  public void testDoPeek_givenStringReaderWithFoo_thenThrowMalformedJsonException()
-      throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class, () -> new JsonReader(new StringReader("foo")).doPeek());
+  public void testDoPeek_givenStringReaderWithAString_thenReturnNine() throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+
+    // Act and Assert
+    assertEquals(9, jsonReader.doPeek());
+    assertEquals(9, jsonReader.getPeeked());
   }
 
   /**
@@ -2773,15 +3586,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.nextName()"})
   public void testNextName() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .nextName());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextName());
   }
 
   /**
@@ -2795,7 +3604,8 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"String JsonReader.nextName()"})
   public void testNextName2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in = new StringReader(" but was ");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextName());
@@ -2872,7 +3682,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextName()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code a name} skip one.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -2882,12 +3692,164 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.nextName()"})
-  public void testNextName_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testNextName_givenStringReaderWithANameSkipOne_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange
+    StringReader in = new StringReader("a name");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextName());
+  }
+
+  /**
+   * Test {@link JsonReader#nextName()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code a name}.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextName()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextName()"})
+  public void testNextName_givenStringReaderWithAName_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("a name"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextName());
+  }
+
+  /**
+   * Test {@link JsonReader#nextName()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code a name}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextName()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextName()"})
+  public void testNextName_givenStringReaderWithAName_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class, () -> new JsonReader(new StringReader("a name")).nextName());
+  }
+
+  /**
+   * Test {@link JsonReader#nextName()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextName()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextName()"})
+  public void testNextName_givenStringReaderWithAStringSkipOne_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextName());
+  }
+
+  /**
+   * Test {@link JsonReader#nextName()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextName()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextName()"})
+  public void testNextName_givenStringReaderWithAString_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonReader(
+                    new StringReader(
+                        "\"This is a test string for the java.io.StringReader method. It includes"
+                            + " various characters such as numbers 123, special characters @#$%,"
+                            + " and spaces.\""))
+                .nextName());
+  }
+
+  /**
+   * Test {@link JsonReader#nextName()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextName()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextName()"})
+  public void testNextName_givenStringReaderWithAString_thenThrowIllegalStateException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextName());
+  }
+
+  /**
+   * Test {@link JsonReader#nextName()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code but was}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextName()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextName()"})
+  public void testNextName_givenStringReaderWithButWas_thenThrowMalformedJsonException()
       throws IOException {
     // Arrange, Act and Assert
     assertThrows(
         MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).nextName());
+        () -> new JsonReader(new StringReader(" but was ")).nextName());
   }
 
   /**
@@ -2939,7 +3901,7 @@ public class JsonReaderDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code Expected}.
-   *   <li>Then throw {@link IllegalStateException}.
+   *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#nextName()}
@@ -2948,14 +3910,12 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.nextName()"})
-  public void testNextName_givenStringReaderWithExpected_thenThrowIllegalStateException()
+  public void testNextName_givenStringReaderWithExpected_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("Expected "));
-    jsonReader.setStrictness(Strictness.LENIENT);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.nextName());
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader("Expected ")).nextName());
   }
 
   /**
@@ -2973,29 +3933,6 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.nextName()"})
   public void testNextName_givenStringReaderWithFalseToString_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonReader(in).nextName());
-  }
-
-  /**
-   * Test {@link JsonReader#nextName()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextName()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String JsonReader.nextName()"})
-  public void testNextName_givenStringReaderWithFalseToString_thenThrowIllegalStateException2()
       throws IOException {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
@@ -3023,9 +3960,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"String JsonReader.nextName()"})
   public void testNextName_givenStringReaderWithFalse_thenThrowIllegalStateException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonReader(new StringReader("FALSE")).nextName());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextName());
   }
 
   /**
@@ -3127,15 +4067,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.nextString()"})
   public void testNextString() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .nextString());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextString());
   }
 
   /**
@@ -3149,10 +4085,114 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"String JsonReader.nextString()"})
   public void testNextString2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(1L);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString3() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString4() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(5L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString5() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 1);
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString6() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString7() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.nextString());
   }
 
   /**
@@ -3181,30 +4221,6 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextString()}.
    *
    * <ul>
-   *   <li>Given {@link JsonReader#JsonReader(Reader)} with in is {@link
-   *       StringReader#StringReader(String)} Strictness is {@code STRICT}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String JsonReader.nextString()"})
-  public void testNextString_givenJsonReaderWithInIsStringReaderStrictnessIsStrict()
-      throws IOException {
-    // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
-    jsonReader.setStrictness(Strictness.STRICT);
-
-    // Act and Assert
-    assertThrows(MalformedJsonException.class, () -> jsonReader.nextString());
-  }
-
-  /**
-   * Test {@link JsonReader#nextString()}.
-   *
-   * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code 42}.
    *   <li>Then return {@code 42}.
    * </ul>
@@ -3224,8 +4240,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextString()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
-   *   <li>Then throw {@link MalformedJsonException}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#nextString()}
@@ -3234,12 +4249,153 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.nextString()"})
-  public void testNextString_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testNextString_givenStringReaderWithAStringSkipOne() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one hundred
+   *       forty-eight.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString_givenStringReaderWithAStringSkipOneHundredFortyEight()
       throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(148L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then return a string.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString_givenStringReaderWithAString_thenReturnAString() throws IOException {
     // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).nextString());
+    assertEquals(
+        "This is a test string for the java.io.StringReader method. It includes various characters"
+            + " such as numbers 123, special characters @#$%, and spaces.",
+        new JsonReader(
+                new StringReader(
+                    "\"This is a test string for the java.io.StringReader method. It includes"
+                        + " various characters such as numbers 123, special characters @#$%, and"
+                        + " spaces.\""))
+            .nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then return a string.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString_givenStringReaderWithAString_thenReturnAString2() throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertEquals(
+        "This is a test string for the java.io.StringReader method. It includes various characters"
+            + " such as numbers 123, special characters @#$%, and spaces.",
+        jsonReader.nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then return a string.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString_givenStringReaderWithAString_thenReturnAString3() throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertEquals(
+        "This is a test string for the java.io.StringReader method. It includes various characters"
+            + " such as numbers 123, special characters @#$%, and spaces.",
+        jsonReader.nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Then return {@code at}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString_givenStringReaderWithAtLine_thenReturnAt() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader(" at line "));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertEquals("at", jsonReader.nextString());
   }
 
   /**
@@ -3290,8 +4446,8 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextString()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code Expected}.
-   *   <li>Then return {@code Expected}.
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code End of input} skip eleven.
+   *   <li>Then return {@code t}.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#nextString()}
@@ -3300,13 +4456,67 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.nextString()"})
-  public void testNextString_givenStringReaderWithExpected_thenReturnExpected() throws IOException {
+  public void testNextString_givenStringReaderWithEndOfInputSkipEleven_thenReturnT()
+      throws IOException {
     // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("Expected "));
+    StringReader in = new StringReader("End of input");
+    in.skip(11L);
+
+    JsonReader jsonReader = new JsonReader(in);
     jsonReader.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
-    assertEquals("Expected", jsonReader.nextString());
+    assertEquals("t", jsonReader.nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code End of input} skip one.
+   *   <li>Then return {@code nd}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString_givenStringReaderWithEndOfInputSkipOne_thenReturnNd()
+      throws IOException {
+    // Arrange
+    StringReader in = new StringReader("End of input");
+    in.skip(1L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertEquals("nd", jsonReader.nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code End of input}.
+   *   <li>Then return {@code End}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString_givenStringReaderWithEndOfInput_thenReturnEnd() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("End of input"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertEquals("End", jsonReader.nextString());
   }
 
   /**
@@ -3324,29 +4534,6 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.nextString()"})
   public void testNextString_givenStringReaderWithFalseToString_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonReader(in).nextString());
-  }
-
-  /**
-   * Test {@link JsonReader#nextString()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextString()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String JsonReader.nextString()"})
-  public void testNextString_givenStringReaderWithFalseToString_thenThrowIllegalStateException2()
       throws IOException {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
@@ -3374,9 +4561,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"String JsonReader.nextString()"})
   public void testNextString_givenStringReaderWithFalse_thenThrowIllegalStateException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonReader(new StringReader("FALSE")).nextString());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextString());
   }
 
   /**
@@ -3427,6 +4617,30 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextString()}.
    *
    * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString_givenStringReaderWithFoo_thenThrowMalformedJsonException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code See}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
@@ -3439,17 +4653,19 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"String JsonReader.nextString()"})
   public void testNextString_givenStringReaderWithSee_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () -> new JsonReader(new StringReader("\nSee ")).nextString());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("\nSee "));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextString());
   }
 
   /**
    * Test {@link JsonReader#nextString()}.
    *
    * <ul>
-   *   <li>Then return {@code Use}.
+   *   <li>Then return {@code ithub.com}.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#nextString()}
@@ -3458,16 +4674,44 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.nextString()"})
-  public void testNextString_thenReturnUse() throws IOException {
+  public void testNextString_thenReturnIthubCom() throws IOException {
     // Arrange
-    JsonReader jsonReader =
-        new JsonReader(
-            new StringReader(
-                "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"));
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
     jsonReader.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
-    assertEquals("Use", jsonReader.nextString());
+    assertEquals("ithub.com", jsonReader.nextString());
+  }
+
+  /**
+   * Test {@link JsonReader#nextString()}.
+   *
+   * <ul>
+   *   <li>Then throw {@link EOFException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextString()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String JsonReader.nextString()"})
+  public void testNextString_thenThrowEOFException() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.nextString());
   }
 
   /**
@@ -3503,15 +4747,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
   public void testNextBoolean() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .nextBoolean());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextBoolean());
   }
 
   /**
@@ -3525,7 +4765,8 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
   public void testNextBoolean2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in = new StringReader(" but was ");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextBoolean());
@@ -3602,7 +4843,31 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextBoolean()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code a boolean}.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextBoolean()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
+  public void testNextBoolean_givenStringReaderWithABoolean_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("a boolean"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextBoolean());
+  }
+
+  /**
+   * Test {@link JsonReader#nextBoolean()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code a boolean}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -3612,12 +4877,115 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
-  public void testNextBoolean_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testNextBoolean_givenStringReaderWithABoolean_thenThrowMalformedJsonException()
       throws IOException {
     // Arrange, Act and Assert
     assertThrows(
         MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).nextBoolean());
+        () -> new JsonReader(new StringReader("a boolean")).nextBoolean());
+  }
+
+  /**
+   * Test {@link JsonReader#nextBoolean()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextBoolean()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
+  public void testNextBoolean_givenStringReaderWithAStringSkipOne() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextBoolean());
+  }
+
+  /**
+   * Test {@link JsonReader#nextBoolean()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextBoolean()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
+  public void testNextBoolean_givenStringReaderWithAString_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonReader(
+                    new StringReader(
+                        "\"This is a test string for the java.io.StringReader method. It includes"
+                            + " various characters such as numbers 123, special characters @#$%,"
+                            + " and spaces.\""))
+                .nextBoolean());
+  }
+
+  /**
+   * Test {@link JsonReader#nextBoolean()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextBoolean()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
+  public void testNextBoolean_givenStringReaderWithAString_thenThrowIllegalStateException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextBoolean());
+  }
+
+  /**
+   * Test {@link JsonReader#nextBoolean()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code but was}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextBoolean()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
+  public void testNextBoolean_givenStringReaderWithButWas_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader(" but was ")).nextBoolean());
   }
 
   /**
@@ -3669,7 +5037,7 @@ public class JsonReaderDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code Expected}.
-   *   <li>Then throw {@link IllegalStateException}.
+   *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#nextBoolean()}
@@ -3678,14 +5046,12 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
-  public void testNextBoolean_givenStringReaderWithExpected_thenThrowIllegalStateException()
+  public void testNextBoolean_givenStringReaderWithExpected_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("Expected "));
-    jsonReader.setStrictness(Strictness.LENIENT);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.nextBoolean());
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader("Expected ")).nextBoolean());
   }
 
   /**
@@ -3703,29 +5069,6 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
   public void testNextBoolean_givenStringReaderWithFalseToString_thenReturnFalse()
-      throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    // Act and Assert
-    assertFalse(new JsonReader(in).nextBoolean());
-  }
-
-  /**
-   * Test {@link JsonReader#nextBoolean()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextBoolean()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
-  public void testNextBoolean_givenStringReaderWithFalseToString_thenReturnFalse2()
       throws IOException {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
@@ -3752,8 +5095,12 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean JsonReader.nextBoolean()"})
   public void testNextBoolean_givenStringReaderWithFalse_thenReturnFalse() throws IOException {
-    // Arrange, Act and Assert
-    assertFalse(new JsonReader(new StringReader("FALSE")).nextBoolean());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertFalse(jsonReader.nextBoolean());
   }
 
   /**
@@ -3856,15 +5203,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.nextNull()"})
   public void testNextNull() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .nextNull());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextNull());
   }
 
   /**
@@ -3878,7 +5221,8 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.nextNull()"})
   public void testNextNull2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in = new StringReader(" but was ");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextNull());
@@ -3923,11 +5267,11 @@ public class JsonReaderDiffblueTest {
   public void testNextNull_givenJsonReaderWithInIsStringReaderStrictnessIsStrict()
       throws IOException {
     // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    JsonReader jsonReader = new JsonReader(new StringReader("null"));
     jsonReader.setStrictness(Strictness.STRICT);
 
     // Act and Assert
-    assertThrows(MalformedJsonException.class, () -> jsonReader.nextNull());
+    jsonReader.nextNull();
   }
 
   /**
@@ -3955,7 +5299,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextNull()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -3965,12 +5309,95 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.nextNull()"})
-  public void testNextNull_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testNextNull_givenStringReaderWithAStringSkipOne_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextNull());
+  }
+
+  /**
+   * Test {@link JsonReader#nextNull()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.nextNull()"})
+  public void testNextNull_givenStringReaderWithAString_thenThrowIllegalStateException()
+      throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new JsonReader(
+                    new StringReader(
+                        "\"This is a test string for the java.io.StringReader method. It includes"
+                            + " various characters such as numbers 123, special characters @#$%,"
+                            + " and spaces.\""))
+                .nextNull());
+  }
+
+  /**
+   * Test {@link JsonReader#nextNull()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link IllegalStateException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.nextNull()"})
+  public void testNextNull_givenStringReaderWithAString_thenThrowIllegalStateException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextNull());
+  }
+
+  /**
+   * Test {@link JsonReader#nextNull()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code but was}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.nextNull()"})
+  public void testNextNull_givenStringReaderWithButWas_thenThrowMalformedJsonException()
       throws IOException {
     // Arrange, Act and Assert
     assertThrows(
         MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).nextNull());
+        () -> new JsonReader(new StringReader(" but was ")).nextNull());
   }
 
   /**
@@ -4022,7 +5449,7 @@ public class JsonReaderDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code Expected}.
-   *   <li>Then throw {@link IllegalStateException}.
+   *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#nextNull()}
@@ -4031,108 +5458,12 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.nextNull()"})
-  public void testNextNull_givenStringReaderWithExpected_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("Expected "));
-    jsonReader.setStrictness(Strictness.LENIENT);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.nextNull());
-  }
-
-  /**
-   * Test {@link JsonReader#nextNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonReader.nextNull()"})
-  public void testNextNull_givenStringReaderWithFalseToString_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonReader(in).nextNull());
-  }
-
-  /**
-   * Test {@link JsonReader#nextNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonReader.nextNull()"})
-  public void testNextNull_givenStringReaderWithFalseToString_thenThrowIllegalStateException2()
-      throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    JsonReader jsonReader = new JsonReader(in);
-    jsonReader.setStrictness(Strictness.LENIENT);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.nextNull());
-  }
-
-  /**
-   * Test {@link JsonReader#nextNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code FALSE}.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonReader.nextNull()"})
-  public void testNextNull_givenStringReaderWithFalse_thenThrowIllegalStateException()
+  public void testNextNull_givenStringReaderWithExpected_thenThrowMalformedJsonException()
       throws IOException {
     // Arrange, Act and Assert
     assertThrows(
-        IllegalStateException.class, () -> new JsonReader(new StringReader("FALSE")).nextNull());
-  }
-
-  /**
-   * Test {@link JsonReader#nextNull()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextNull()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonReader.nextNull()"})
-  public void testNextNull_givenStringReaderWithFoo_thenThrowIllegalStateException()
-      throws IOException {
-    // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
-    jsonReader.setStrictness(Strictness.LENIENT);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> jsonReader.nextNull());
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader("Expected ")).nextNull());
   }
 
   /**
@@ -4171,12 +5502,78 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.nextNull()"})
   public void testNextNull_givenStringReaderWithNull_thenDoesNotThrow() throws IOException {
+    // Arrange, Act and Assert
+    new JsonReader(new StringReader("null")).nextNull();
+  }
+
+  /**
+   * Test {@link JsonReader#nextNull()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code null}.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.nextNull()"})
+  public void testNextNull_givenStringReaderWithNull_thenDoesNotThrow2() throws IOException {
     // Arrange
     JsonReader jsonReader = new JsonReader(new StringReader("null"));
     jsonReader.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
     jsonReader.nextNull();
+  }
+
+  /**
+   * Test {@link JsonReader#nextNull()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code NULL}.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.nextNull()"})
+  public void testNextNull_givenStringReaderWithNull_thenDoesNotThrow3() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("NULL"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    jsonReader.nextNull();
+  }
+
+  /**
+   * Test {@link JsonReader#nextNull()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code NULL}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.nextNull()"})
+  public void testNextNull_givenStringReaderWithNull_thenThrowMalformedJsonException()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("NULL"));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextNull());
   }
 
   /**
@@ -4198,6 +5595,48 @@ public class JsonReaderDiffblueTest {
     // Arrange, Act and Assert
     assertThrows(
         MalformedJsonException.class, () -> new JsonReader(new StringReader("\nSee ")).nextNull());
+  }
+
+  /**
+   * Test {@link JsonReader#nextNull()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code unexpected-json-structure}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.nextNull()"})
+  public void testNextNull_givenStringReaderWithUnexpectedJsonStructure() throws IOException {
+    // Arrange, Act and Assert
+    assertThrows(
+        MalformedJsonException.class,
+        () -> new JsonReader(new StringReader("unexpected-json-structure")).nextNull());
+  }
+
+  /**
+   * Test {@link JsonReader#nextNull()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code unexpected-json-structure}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextNull()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.nextNull()"})
+  public void testNextNull_givenStringReaderWithUnexpectedJsonStructure2() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("unexpected-json-structure"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextNull());
   }
 
   /**
@@ -4233,15 +5672,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"double JsonReader.nextDouble()"})
   public void testNextDouble() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .nextDouble());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextDouble());
   }
 
   /**
@@ -4255,10 +5690,136 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"double JsonReader.nextDouble()"})
   public void testNextDouble2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(1L);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextDouble());
+  }
+
+  /**
+   * Test {@link JsonReader#nextDouble()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextDouble()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"double JsonReader.nextDouble()"})
+  public void testNextDouble3() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextDouble());
+  }
+
+  /**
+   * Test {@link JsonReader#nextDouble()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextDouble()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"double JsonReader.nextDouble()"})
+  public void testNextDouble4() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(5L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextDouble());
+  }
+
+  /**
+   * Test {@link JsonReader#nextDouble()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextDouble()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"double JsonReader.nextDouble()"})
+  public void testNextDouble5() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.nextDouble());
+  }
+
+  /**
+   * Test {@link JsonReader#nextDouble()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextDouble()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"double JsonReader.nextDouble()"})
+  public void testNextDouble6() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 1);
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextDouble());
+  }
+
+  /**
+   * Test {@link JsonReader#nextDouble()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextDouble()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"double JsonReader.nextDouble()"})
+  public void testNextDouble7() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextDouble());
+  }
+
+  /**
+   * Test {@link JsonReader#nextDouble()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextDouble()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"double JsonReader.nextDouble()"})
+  public void testNextDouble8() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.nextDouble());
   }
 
   /**
@@ -4281,30 +5842,6 @@ public class JsonReaderDiffblueTest {
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextDouble());
-  }
-
-  /**
-   * Test {@link JsonReader#nextDouble()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonReader#JsonReader(Reader)} with in is {@link
-   *       StringReader#StringReader(String)} Strictness is {@code STRICT}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextDouble()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"double JsonReader.nextDouble()"})
-  public void testNextDouble_givenJsonReaderWithInIsStringReaderStrictnessIsStrict()
-      throws IOException {
-    // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
-    jsonReader.setStrictness(Strictness.STRICT);
-
-    // Act and Assert
-    assertThrows(MalformedJsonException.class, () -> jsonReader.nextDouble());
   }
 
   /**
@@ -4353,8 +5890,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextDouble()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
-   *   <li>Then throw {@link MalformedJsonException}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#nextDouble()}
@@ -4363,12 +5899,43 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"double JsonReader.nextDouble()"})
-  public void testNextDouble_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testNextDouble_givenStringReaderWithAStringSkipOne() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextDouble());
+  }
+
+  /**
+   * Test {@link JsonReader#nextDouble()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one hundred
+   *       forty-eight.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextDouble()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"double JsonReader.nextDouble()"})
+  public void testNextDouble_givenStringReaderWithAStringSkipOneHundredFortyEight()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).nextDouble());
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(148L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextDouble());
   }
 
   /**
@@ -4434,29 +6001,6 @@ public class JsonReaderDiffblueTest {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
 
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonReader(in).nextDouble());
-  }
-
-  /**
-   * Test {@link JsonReader#nextDouble()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextDouble()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"double JsonReader.nextDouble()"})
-  public void testNextDouble_givenStringReaderWithFalseToString_thenThrowIllegalStateException2()
-      throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
     JsonReader jsonReader = new JsonReader(in);
     jsonReader.setStrictness(Strictness.LENIENT);
 
@@ -4480,9 +6024,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"double JsonReader.nextDouble()"})
   public void testNextDouble_givenStringReaderWithFalse_thenThrowIllegalStateException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonReader(new StringReader("FALSE")).nextDouble());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextDouble());
   }
 
   /**
@@ -4510,6 +6057,30 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextDouble()}.
    *
    * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextDouble()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"double JsonReader.nextDouble()"})
+  public void testNextDouble_givenStringReaderWithFoo_thenThrowMalformedJsonException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextDouble());
+  }
+
+  /**
+   * Test {@link JsonReader#nextDouble()}.
+   *
+   * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code See}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
@@ -4522,10 +6093,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"double JsonReader.nextDouble()"})
   public void testNextDouble_givenStringReaderWithSee_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () -> new JsonReader(new StringReader("\nSee ")).nextDouble());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("\nSee "));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextDouble());
   }
 
   /**
@@ -4561,15 +6134,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"long JsonReader.nextLong()"})
   public void testNextLong() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .nextLong());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextLong());
   }
 
   /**
@@ -4583,10 +6152,136 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"long JsonReader.nextLong()"})
   public void testNextLong2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(1L);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextLong());
+  }
+
+  /**
+   * Test {@link JsonReader#nextLong()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextLong()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"long JsonReader.nextLong()"})
+  public void testNextLong3() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextLong());
+  }
+
+  /**
+   * Test {@link JsonReader#nextLong()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextLong()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"long JsonReader.nextLong()"})
+  public void testNextLong4() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(5L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextLong());
+  }
+
+  /**
+   * Test {@link JsonReader#nextLong()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextLong()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"long JsonReader.nextLong()"})
+  public void testNextLong5() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.nextLong());
+  }
+
+  /**
+   * Test {@link JsonReader#nextLong()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextLong()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"long JsonReader.nextLong()"})
+  public void testNextLong6() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 1);
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextLong());
+  }
+
+  /**
+   * Test {@link JsonReader#nextLong()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextLong()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"long JsonReader.nextLong()"})
+  public void testNextLong7() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextLong());
+  }
+
+  /**
+   * Test {@link JsonReader#nextLong()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextLong()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"long JsonReader.nextLong()"})
+  public void testNextLong8() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.nextLong());
   }
 
   /**
@@ -4609,30 +6304,6 @@ public class JsonReaderDiffblueTest {
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextLong());
-  }
-
-  /**
-   * Test {@link JsonReader#nextLong()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonReader#JsonReader(Reader)} with in is {@link
-   *       StringReader#StringReader(String)} Strictness is {@code STRICT}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextLong()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"long JsonReader.nextLong()"})
-  public void testNextLong_givenJsonReaderWithInIsStringReaderStrictnessIsStrict()
-      throws IOException {
-    // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
-    jsonReader.setStrictness(Strictness.STRICT);
-
-    // Act and Assert
-    assertThrows(MalformedJsonException.class, () -> jsonReader.nextLong());
   }
 
   /**
@@ -4681,7 +6352,34 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextLong()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one hundred
+   *       forty-eight.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextLong()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"long JsonReader.nextLong()"})
+  public void testNextLong_givenStringReaderWithAStringSkipOneHundredFortyEight()
+      throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(148L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextLong());
+  }
+
+  /**
+   * Test {@link JsonReader#nextLong()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -4691,12 +6389,17 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"long JsonReader.nextLong()"})
-  public void testNextLong_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testNextLong_givenStringReaderWithAStringSkipOne_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).nextLong());
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextLong());
   }
 
   /**
@@ -4762,29 +6465,6 @@ public class JsonReaderDiffblueTest {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
 
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonReader(in).nextLong());
-  }
-
-  /**
-   * Test {@link JsonReader#nextLong()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextLong()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"long JsonReader.nextLong()"})
-  public void testNextLong_givenStringReaderWithFalseToString_thenThrowIllegalStateException2()
-      throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
     JsonReader jsonReader = new JsonReader(in);
     jsonReader.setStrictness(Strictness.LENIENT);
 
@@ -4808,9 +6488,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"long JsonReader.nextLong()"})
   public void testNextLong_givenStringReaderWithFalse_thenThrowIllegalStateException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonReader(new StringReader("FALSE")).nextLong());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextLong());
   }
 
   /**
@@ -4838,6 +6521,30 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextLong()}.
    *
    * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextLong()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"long JsonReader.nextLong()"})
+  public void testNextLong_givenStringReaderWithFoo_thenThrowMalformedJsonException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextLong());
+  }
+
+  /**
+   * Test {@link JsonReader#nextLong()}.
+   *
+   * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code See}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
@@ -4850,9 +6557,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"long JsonReader.nextLong()"})
   public void testNextLong_givenStringReaderWithSee_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class, () -> new JsonReader(new StringReader("\nSee ")).nextLong());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("\nSee "));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextLong());
   }
 
   /**
@@ -4888,15 +6598,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"int JsonReader.nextInt()"})
   public void testNextInt() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .nextInt());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextInt());
   }
 
   /**
@@ -4910,10 +6616,136 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"int JsonReader.nextInt()"})
   public void testNextInt2() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(1L);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextInt());
+  }
+
+  /**
+   * Test {@link JsonReader#nextInt()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextInt()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"int JsonReader.nextInt()"})
+  public void testNextInt3() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextInt());
+  }
+
+  /**
+   * Test {@link JsonReader#nextInt()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextInt()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"int JsonReader.nextInt()"})
+  public void testNextInt4() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(5L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextInt());
+  }
+
+  /**
+   * Test {@link JsonReader#nextInt()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextInt()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"int JsonReader.nextInt()"})
+  public void testNextInt5() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.nextInt());
+  }
+
+  /**
+   * Test {@link JsonReader#nextInt()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextInt()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"int JsonReader.nextInt()"})
+  public void testNextInt6() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 1);
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextInt());
+  }
+
+  /**
+   * Test {@link JsonReader#nextInt()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextInt()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"int JsonReader.nextInt()"})
+  public void testNextInt7() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextInt());
+  }
+
+  /**
+   * Test {@link JsonReader#nextInt()}.
+   *
+   * <p>Method under test: {@link JsonReader#nextInt()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"int JsonReader.nextInt()"})
+  public void testNextInt8() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.nextInt());
   }
 
   /**
@@ -4936,30 +6768,6 @@ public class JsonReaderDiffblueTest {
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextInt());
-  }
-
-  /**
-   * Test {@link JsonReader#nextInt()}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonReader#JsonReader(Reader)} with in is {@link
-   *       StringReader#StringReader(String)} Strictness is {@code STRICT}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextInt()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"int JsonReader.nextInt()"})
-  public void testNextInt_givenJsonReaderWithInIsStringReaderStrictnessIsStrict()
-      throws IOException {
-    // Arrange
-    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
-    jsonReader.setStrictness(Strictness.STRICT);
-
-    // Act and Assert
-    assertThrows(MalformedJsonException.class, () -> jsonReader.nextInt());
   }
 
   /**
@@ -5008,7 +6816,34 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextInt()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one hundred
+   *       forty-eight.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextInt()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"int JsonReader.nextInt()"})
+  public void testNextInt_givenStringReaderWithAStringSkipOneHundredFortyEight()
+      throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(148L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextInt());
+  }
+
+  /**
+   * Test {@link JsonReader#nextInt()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
    *
@@ -5018,12 +6853,17 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"int JsonReader.nextInt()"})
-  public void testNextInt_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testNextInt_givenStringReaderWithAStringSkipOne_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).nextInt());
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).nextInt());
   }
 
   /**
@@ -5089,29 +6929,6 @@ public class JsonReaderDiffblueTest {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
 
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> new JsonReader(in).nextInt());
-  }
-
-  /**
-   * Test {@link JsonReader#nextInt()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link IllegalStateException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#nextInt()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"int JsonReader.nextInt()"})
-  public void testNextInt_givenStringReaderWithFalseToString_thenThrowIllegalStateException2()
-      throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
     JsonReader jsonReader = new JsonReader(in);
     jsonReader.setStrictness(Strictness.LENIENT);
 
@@ -5135,9 +6952,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"int JsonReader.nextInt()"})
   public void testNextInt_givenStringReaderWithFalse_thenThrowIllegalStateException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        IllegalStateException.class, () -> new JsonReader(new StringReader("FALSE")).nextInt());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> jsonReader.nextInt());
   }
 
   /**
@@ -5165,6 +6985,30 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#nextInt()}.
    *
    * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
+   *   <li>Then throw {@link MalformedJsonException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#nextInt()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"int JsonReader.nextInt()"})
+  public void testNextInt_givenStringReaderWithFoo_thenThrowMalformedJsonException2()
+      throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("foo"));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextInt());
+  }
+
+  /**
+   * Test {@link JsonReader#nextInt()}.
+   *
+   * <ul>
    *   <li>Given {@link StringReader#StringReader(String)} with {@code See}.
    *   <li>Then throw {@link MalformedJsonException}.
    * </ul>
@@ -5177,9 +7021,12 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"int JsonReader.nextInt()"})
   public void testNextInt_givenStringReaderWithSee_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class, () -> new JsonReader(new StringReader("\nSee ")).nextInt());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("\nSee "));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.nextInt());
   }
 
   /**
@@ -5261,15 +7108,11 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.skipValue()"})
   public void testSkipValue() throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () ->
-            new JsonReader(
-                    new StringReader(
-                        "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed"
-                            + " JSON"))
-                .skipValue());
+    // Arrange
+    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).skipValue());
   }
 
   /**
@@ -5283,10 +7126,69 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.skipValue()"})
   public void testSkipValue2() throws IOException {
     // Arrange
-    JsonReader jsonReader =
-        new JsonReader(
-            new StringReader(
-                "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"));
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).skipValue());
+  }
+
+  /**
+   * Test {@link JsonReader#skipValue()}.
+   *
+   * <p>Method under test: {@link JsonReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.skipValue()"})
+  public void testSkipValue3() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).skipValue());
+  }
+
+  /**
+   * Test {@link JsonReader#skipValue()}.
+   *
+   * <p>Method under test: {@link JsonReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.skipValue()"})
+  public void testSkipValue4() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(5L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).skipValue());
+  }
+
+  /**
+   * Test {@link JsonReader#skipValue()}.
+   *
+   * <p>Method under test: {@link JsonReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.skipValue()"})
+  public void testSkipValue5() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
     jsonReader.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
@@ -5302,12 +7204,59 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.skipValue()"})
-  public void testSkipValue3() throws IOException {
+  public void testSkipValue6() throws IOException {
     // Arrange
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 1);
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.skipValue());
+  }
+
+  /**
+   * Test {@link JsonReader#skipValue()}.
+   *
+   * <p>Method under test: {@link JsonReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.skipValue()"})
+  public void testSkipValue7() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
 
     // Act and Assert
     assertThrows(MalformedJsonException.class, () -> new JsonReader(in).skipValue());
+  }
+
+  /**
+   * Test {@link JsonReader#skipValue()}.
+   *
+   * <p>Method under test: {@link JsonReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.skipValue()"})
+  public void testSkipValue8() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(59L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.skipValue());
   }
 
   /**
@@ -5379,8 +7328,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#skipValue()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
-   *   <li>Then throw {@link MalformedJsonException}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#skipValue()}
@@ -5389,12 +7337,116 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.skipValue()"})
-  public void testSkipValue_givenStringReaderWithAtLine_thenThrowMalformedJsonException()
+  public void testSkipValue_givenStringReaderWithAStringSkipOne() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(1L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).skipValue());
+  }
+
+  /**
+   * Test {@link JsonReader#skipValue()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string skip one hundred
+   *       forty-eight.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.skipValue()"})
+  public void testSkipValue_givenStringReaderWithAStringSkipOneHundredFortyEight()
       throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader(
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces.\"");
+    in.skip(148L);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> new JsonReader(in).skipValue());
+  }
+
+  /**
+   * Test {@link JsonReader#skipValue()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.skipValue()"})
+  public void testSkipValue_givenStringReaderWithAString_thenDoesNotThrow() throws IOException {
     // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class,
-        () -> new JsonReader(new StringReader(" at line ")).skipValue());
+    new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""))
+        .skipValue();
+  }
+
+  /**
+   * Test {@link JsonReader#skipValue()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.skipValue()"})
+  public void testSkipValue_givenStringReaderWithAString_thenDoesNotThrow2() throws IOException {
+    // Arrange
+    JsonReader jsonReader =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    jsonReader.skipValue();
+  }
+
+  /**
+   * Test {@link JsonReader#skipValue()}.
+   *
+   * <ul>
+   *   <li>Given {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Then does not throw.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.skipValue()"})
+  public void testSkipValue_givenStringReaderWithAtLine_thenDoesNotThrow() throws IOException {
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader(" at line "));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    jsonReader.skipValue();
   }
 
   /**
@@ -5537,29 +7589,6 @@ public class JsonReaderDiffblueTest {
     // Arrange
     StringReader in = new StringReader(Boolean.FALSE.toString());
 
-    // Act and Assert
-    new JsonReader(in).skipValue();
-  }
-
-  /**
-   * Test {@link JsonReader#skipValue()}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then does not throw.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonReader#skipValue()}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void JsonReader.skipValue()"})
-  public void testSkipValue_givenStringReaderWithFalseToString_thenDoesNotThrow2()
-      throws IOException {
-    // Arrange
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
     JsonReader jsonReader = new JsonReader(in);
     jsonReader.setStrictness(Strictness.LENIENT);
 
@@ -5582,8 +7611,12 @@ public class JsonReaderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonReader.skipValue()"})
   public void testSkipValue_givenStringReaderWithFalse_thenDoesNotThrow() throws IOException {
-    // Arrange, Act and Assert
-    new JsonReader(new StringReader("FALSE")).skipValue();
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("FALSE"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    jsonReader.skipValue();
   }
 
   /**
@@ -5646,9 +7679,38 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"void JsonReader.skipValue()"})
   public void testSkipValue_givenStringReaderWithSee_thenThrowMalformedJsonException()
       throws IOException {
-    // Arrange, Act and Assert
-    assertThrows(
-        MalformedJsonException.class, () -> new JsonReader(new StringReader("\nSee ")).skipValue());
+    // Arrange
+    JsonReader jsonReader = new JsonReader(new StringReader("\nSee "));
+    jsonReader.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(MalformedJsonException.class, () -> jsonReader.skipValue());
+  }
+
+  /**
+   * Test {@link JsonReader#skipValue()}.
+   *
+   * <ul>
+   *   <li>Then throw {@link EOFException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonReader#skipValue()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonReader.skipValue()"})
+  public void testSkipValue_thenThrowEOFException() throws IOException {
+    // Arrange
+    StringReader in =
+        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
+    in.skip(6L);
+
+    JsonReader jsonReader = new JsonReader(in);
+    jsonReader.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(EOFException.class, () -> jsonReader.skipValue());
   }
 
   /**
@@ -5701,7 +7763,7 @@ public class JsonReaderDiffblueTest {
    * Test {@link JsonReader#locationString()}.
    *
    * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code foo}.
+   *   <li>Given {@link StringReader#StringReader(String)} with a string.
    * </ul>
    *
    * <p>Method under test: {@link JsonReader#locationString()}
@@ -5710,10 +7772,16 @@ public class JsonReaderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"String JsonReader.locationString()"})
-  public void testLocationString_givenStringReaderWithFoo() {
+  public void testLocationString_givenStringReaderWithAString() {
     // Arrange, Act and Assert
     assertEquals(
-        " at line 1 column 1 path $", new JsonReader(new StringReader("foo")).locationString());
+        " at line 1 column 1 path $",
+        new JsonReader(
+                new StringReader(
+                    "\"This is a test string for the java.io.StringReader method. It includes"
+                        + " various characters such as numbers 123, special characters @#$%, and"
+                        + " spaces.\""))
+            .locationString());
   }
 
   /**
@@ -5727,7 +7795,14 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"String JsonReader.getPath()"})
   public void testGetPath() {
     // Arrange, Act and Assert
-    assertEquals("$", new JsonReader(new StringReader("foo")).getPath());
+    assertEquals(
+        "$",
+        new JsonReader(
+                new StringReader(
+                    "\"This is a test string for the java.io.StringReader method. It includes"
+                        + " various characters such as numbers 123, special characters @#$%, and"
+                        + " spaces.\""))
+            .getPath());
   }
 
   /**
@@ -5741,6 +7816,13 @@ public class JsonReaderDiffblueTest {
   @MethodsUnderTest({"String JsonReader.getPreviousPath()"})
   public void testGetPreviousPath() {
     // Arrange, Act and Assert
-    assertEquals("$", new JsonReader(new StringReader("foo")).getPreviousPath());
+    assertEquals(
+        "$",
+        new JsonReader(
+                new StringReader(
+                    "\"This is a test string for the java.io.StringReader method. It includes"
+                        + " various characters such as numbers 123, special characters @#$%, and"
+                        + " spaces.\""))
+            .getPreviousPath());
   }
 }

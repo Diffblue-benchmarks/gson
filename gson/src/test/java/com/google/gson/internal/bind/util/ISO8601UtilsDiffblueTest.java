@@ -64,7 +64,7 @@ public class ISO8601UtilsDiffblueTest {
     // Act and Assert
     assertEquals(
         "1970-01-01T00:00:00.001+00:00",
-        ISO8601Utils.format(date, true, new SimpleTimeZone(1, "yyyy-MM-ddThh:mm:ss")));
+        ISO8601Utils.format(date, true, new SimpleTimeZone(1, "\"GMT+10:00\"")));
   }
 
   /**
@@ -89,7 +89,8 @@ public class ISO8601UtilsDiffblueTest {
 
     // Act and Assert
     assertEquals(
-        "1970-01-01T00:00:00Z", ISO8601Utils.format(date, false, new SimpleTimeZone(0, "ID")));
+        "1970-01-01T00:00:00Z",
+        ISO8601Utils.format(date, false, new SimpleTimeZone(0, "\"GMT+10:00\"")));
   }
 
   /**
@@ -228,6 +229,32 @@ public class ISO8601UtilsDiffblueTest {
    * Test {@link ISO8601Utils#parse(String, ParsePosition)}.
    *
    * <ul>
+   *   <li>When {@code "2022-03-15T14:30:00.000Z"}.
+   *   <li>Then {@link ParsePosition#ParsePosition(int)} with one Index is twenty-five.
+   * </ul>
+   *
+   * <p>Method under test: {@link ISO8601Utils#parse(String, ParsePosition)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Date ISO8601Utils.parse(String, ParsePosition)"})
+  public void testParse_when20220315t143000000z_thenParsePositionWithOneIndexIsTwentyFive()
+      throws ParseException {
+    // Arrange
+    ParsePosition pos = new ParsePosition(1);
+
+    // Act
+    ISO8601Utils.parse("\"2022-03-15T14:30:00.000Z\"", pos);
+
+    // Assert
+    assertEquals(25, pos.getIndex());
+  }
+
+  /**
+   * Test {@link ISO8601Utils#parse(String, ParsePosition)}.
+   *
+   * <ul>
    *   <li>When empty string.
    *   <li>Then throw {@link ParseException}.
    * </ul>
@@ -247,7 +274,7 @@ public class ISO8601UtilsDiffblueTest {
    * Test {@link ISO8601Utils#parse(String, ParsePosition)}.
    *
    * <ul>
-   *   <li>When {@code Invalid number:}.
+   *   <li>When {@link ParsePosition#ParsePosition(int)} with five.
    *   <li>Then throw {@link ParseException}.
    * </ul>
    *
@@ -257,10 +284,11 @@ public class ISO8601UtilsDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Date ISO8601Utils.parse(String, ParsePosition)"})
-  public void testParse_whenInvalidNumber_thenThrowParseException() throws ParseException {
+  public void testParse_whenParsePositionWithFive_thenThrowParseException() throws ParseException {
     // Arrange, Act and Assert
     assertThrows(
-        ParseException.class, () -> ISO8601Utils.parse("Invalid number: ", new ParsePosition(1)));
+        ParseException.class,
+        () -> ISO8601Utils.parse("\"2022-03-15T14:30:00.000Z\"", new ParsePosition(5)));
   }
 
   /**
@@ -281,7 +309,8 @@ public class ISO8601UtilsDiffblueTest {
       throws ParseException {
     // Arrange, Act and Assert
     assertThrows(
-        ParseException.class, () -> ISO8601Utils.parse("2020-03-01", new ParsePosition(-1)));
+        ParseException.class,
+        () -> ISO8601Utils.parse("\"2022-03-15T14:30:00.000Z\"", new ParsePosition(-1)));
   }
 
   /**

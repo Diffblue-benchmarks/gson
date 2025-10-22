@@ -20,7 +20,6 @@ import com.google.gson.internal.bind.JsonTreeReader;
 import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.time.LocalDate;
@@ -104,20 +103,29 @@ public class UtcDateTypeAdapterDiffblueTest {
   /**
    * Test {@link UtcDateTypeAdapter#read(JsonReader)}.
    *
+   * <ul>
+   *   <li>Given {@code LENIENT}.
+   *   <li>When {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link JsonParseException}.
+   * </ul>
+   *
    * <p>Method under test: {@link UtcDateTypeAdapter#read(JsonReader)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Date UtcDateTypeAdapter.read(JsonReader)"})
-  public void testRead() throws IOException {
+  public void testRead_givenLenient_whenStringReaderWithAString_thenThrowJsonParseException()
+      throws IOException {
     // Arrange
     UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
 
     JsonReader in =
         new JsonReader(
             new StringReader(
-                "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"));
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces. It's"
+                    + " designed to test the method's functionality.\""));
     in.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
@@ -127,26 +135,11 @@ public class UtcDateTypeAdapterDiffblueTest {
   /**
    * Test {@link UtcDateTypeAdapter#read(JsonReader)}.
    *
-   * <p>Method under test: {@link UtcDateTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Date UtcDateTypeAdapter.read(JsonReader)"})
-  public void testRead2() throws IOException {
-    // Arrange
-    UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
-    CharArrayReader in = new CharArrayReader("\u0001\u0006\u0001\u0006".toCharArray());
-
-    JsonReader in2 = new JsonReader(in);
-    in2.setStrictness(Strictness.LENIENT);
-
-    // Act and Assert
-    assertThrows(JsonParseException.class, () -> utcDateTypeAdapter.read(in2));
-  }
-
-  /**
-   * Test {@link UtcDateTypeAdapter#read(JsonReader)}.
+   * <ul>
+   *   <li>Given {@code LENIENT}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Then throw {@link JsonParseException}.
+   * </ul>
    *
    * <p>Method under test: {@link UtcDateTypeAdapter#read(JsonReader)}
    */
@@ -154,19 +147,43 @@ public class UtcDateTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Date UtcDateTypeAdapter.read(JsonReader)"})
-  public void testRead3() throws IOException {
+  public void testRead_givenLenient_whenStringReaderWithAtLine_thenThrowJsonParseException()
+      throws IOException {
     // Arrange
     UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
 
-    StringReader in =
-        new StringReader("https://github.com/google/gson/blob/main/Troubleshooting.md#");
-    in.skip(1L);
-
-    JsonReader in2 = new JsonReader(in);
-    in2.setStrictness(Strictness.LENIENT);
+    JsonReader in = new JsonReader(new StringReader(" at line "));
+    in.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
-    assertThrows(JsonParseException.class, () -> utcDateTypeAdapter.read(in2));
+    assertThrows(JsonParseException.class, () -> utcDateTypeAdapter.read(in));
+  }
+
+  /**
+   * Test {@link UtcDateTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given {@code LENIENT}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code End of input}.
+   *   <li>Then throw {@link JsonParseException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link UtcDateTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Date UtcDateTypeAdapter.read(JsonReader)"})
+  public void testRead_givenLenient_whenStringReaderWithEndOfInput_thenThrowJsonParseException()
+      throws IOException {
+    // Arrange
+    UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
+
+    JsonReader in = new JsonReader(new StringReader("End of input"));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(JsonParseException.class, () -> utcDateTypeAdapter.read(in));
   }
 
   /**
@@ -200,8 +217,8 @@ public class UtcDateTypeAdapterDiffblueTest {
    * Test {@link UtcDateTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>Given six.
-   *   <li>When {@link StringReader#StringReader(String)} with {@code at line} skip six.
+   *   <li>Given {@code LENIENT}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code See}.
    *   <li>Then throw {@link JsonParseException}.
    * </ul>
    *
@@ -211,19 +228,48 @@ public class UtcDateTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Date UtcDateTypeAdapter.read(JsonReader)"})
-  public void testRead_givenSix_whenStringReaderWithAtLineSkipSix_thenThrowJsonParseException()
+  public void testRead_givenLenient_whenStringReaderWithSee_thenThrowJsonParseException()
       throws IOException {
     // Arrange
     UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
 
-    StringReader in = new StringReader(" at line ");
-    in.skip(6L);
-
-    JsonReader in2 = new JsonReader(in);
-    in2.setStrictness(Strictness.LENIENT);
+    JsonReader in = new JsonReader(new StringReader("\nSee "));
+    in.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
-    assertThrows(JsonParseException.class, () -> utcDateTypeAdapter.read(in2));
+    assertThrows(JsonParseException.class, () -> utcDateTypeAdapter.read(in));
+  }
+
+  /**
+   * Test {@link UtcDateTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given {@code STRICT}.
+   *   <li>When {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)} Strictness is {@code STRICT}.
+   * </ul>
+   *
+   * <p>Method under test: {@link UtcDateTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Date UtcDateTypeAdapter.read(JsonReader)"})
+  public void testRead_givenStrict_whenJsonReaderWithInIsStringReaderStrictnessIsStrict()
+      throws IOException {
+    // Arrange
+    UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
+
+    JsonReader in =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces. It's"
+                    + " designed to test the method's functionality.\""));
+    in.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(JsonParseException.class, () -> utcDateTypeAdapter.read(in));
   }
 
   /**
@@ -259,7 +305,8 @@ public class UtcDateTypeAdapterDiffblueTest {
    * Test {@link UtcDateTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>When {@link CharArrayReader#CharArrayReader(char[])} with {@code ﻿} toCharArray.
+   *   <li>When {@link JsonPrimitive#JsonPrimitive(String)} with string is {@code
+   *       "{\"name\":\"John\", \"age\":30, \"city\":\"New York\"}"}.
    * </ul>
    *
    * <p>Method under test: {@link UtcDateTypeAdapter#read(JsonReader)}
@@ -268,42 +315,19 @@ public class UtcDateTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Date UtcDateTypeAdapter.read(JsonReader)"})
-  public void testRead_whenCharArrayReaderWithZeroWidthNoBreakSpaceToCharArray()
-      throws IOException {
-    // Arrange
-    UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
-    CharArrayReader in = new CharArrayReader("﻿\u0006\u0001\u0006".toCharArray());
-
-    JsonReader in2 = new JsonReader(in);
-    in2.setStrictness(Strictness.LENIENT);
-
-    // Act and Assert
-    assertThrows(JsonParseException.class, () -> utcDateTypeAdapter.read(in2));
-  }
-
-  /**
-   * Test {@link UtcDateTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>When {@link JsonPrimitive#JsonPrimitive(String)} with {@code String}.
-   *   <li>Then throw {@link JsonParseException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link UtcDateTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Date UtcDateTypeAdapter.read(JsonReader)"})
-  public void testRead_whenJsonPrimitiveWithString_thenThrowJsonParseException()
-      throws IOException {
+  public void testRead_whenJsonPrimitiveWithStringIsNameJohnAge30CityNewYork() throws IOException {
     // Arrange
     UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
 
     // Act and Assert
     assertThrows(
         JsonParseException.class,
-        () -> utcDateTypeAdapter.read(new JsonTreeReader(new JsonPrimitive("String"))));
+        () ->
+            utcDateTypeAdapter.read(
+                new JsonTreeReader(
+                    new JsonPrimitive(
+                        "\"{\\\"name\\\":\\\"John\\\", \\\"age\\\":30, \\\"city\\\":\\\"New"
+                            + " York\\\"}\""))));
   }
 
   /**
@@ -356,5 +380,63 @@ public class UtcDateTypeAdapterDiffblueTest {
     assertThrows(
         JsonParseException.class,
         () -> utcDateTypeAdapter.read(new JsonReader(new StringReader("42"))));
+  }
+
+  /**
+   * Test {@link UtcDateTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link JsonParseException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link UtcDateTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Date UtcDateTypeAdapter.read(JsonReader)"})
+  public void testRead_whenStringReaderWithAString_thenThrowJsonParseException()
+      throws IOException {
+    // Arrange
+    UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
+
+    // Act and Assert
+    assertThrows(
+        JsonParseException.class,
+        () ->
+            utcDateTypeAdapter.read(
+                new JsonReader(
+                    new StringReader(
+                        "\"This is a test string for the java.io.StringReader method. It includes"
+                            + " various characters such as numbers 123, special characters @#$%,"
+                            + " and spaces. It's designed to test the method's functionality."
+                            + "\""))));
+  }
+
+  /**
+   * Test {@link UtcDateTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code Invalid number:}.
+   *   <li>Then throw {@link JsonParseException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link UtcDateTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Date UtcDateTypeAdapter.read(JsonReader)"})
+  public void testRead_whenStringReaderWithInvalidNumber_thenThrowJsonParseException()
+      throws IOException {
+    // Arrange
+    UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
+
+    JsonReader in = new JsonReader(new StringReader("Invalid number: "));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(JsonParseException.class, () -> utcDateTypeAdapter.read(in));
   }
 }

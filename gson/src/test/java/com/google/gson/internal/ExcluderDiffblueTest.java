@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.internal.reflect.ReflectionHelperDiffblueTestFactory;
 import com.google.gson.reflect.TypeToken;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +164,7 @@ public class ExcluderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapter Excluder.create(Gson, TypeToken)"})
-  public void testCreate_thenReturnToJsonNullIsNull() {
+  public void testCreate_thenReturnToJsonNullIsNull() throws IOException {
     // Arrange
     ExclusionStrategy exclusionStrategy = mock(ExclusionStrategy.class);
     when(exclusionStrategy.shouldSkipClass(Mockito.<Class<?>>any())).thenReturn(true);
@@ -182,6 +183,11 @@ public class ExcluderDiffblueTest {
     verify(exclusionStrategy).shouldSkipClass(isA(Class.class));
     verify(list).iterator();
     assertEquals("null", actualCreateResult.toJson(null));
+    assertNull(
+        actualCreateResult.fromJson(
+            "\"{\\\"name\\\":\\\"John"
+                + " Doe\\\",\\\"age\\\":30,\\\"isDeveloper\\\":true,\\\"skills\\\":[\\\"Java\\\",\\\"Python\\\",\\\"JavaScript"
+                + "\\\"]}\""));
   }
 
   /**

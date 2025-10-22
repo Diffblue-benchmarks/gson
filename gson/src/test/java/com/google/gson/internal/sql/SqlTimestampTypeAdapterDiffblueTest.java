@@ -84,9 +84,10 @@ public class SqlTimestampTypeAdapterDiffblueTest {
   public void testWriteWithJsonWriterTimestamp() throws IOException {
     // Arrange
     JsonSerializer<Date> serializer = mock(JsonSerializer.class);
+    JsonPrimitive jsonPrimitive = new JsonPrimitive("\"Test string for JsonPrimitive method\"");
     when(serializer.serialize(
             Mockito.<Date>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+        .thenReturn(jsonPrimitive);
     JsonDeserializer<Date> deserializer = mock(JsonDeserializer.class);
     Gson gson = new Gson();
     Class<Date> type = Date.class;
@@ -96,7 +97,7 @@ public class SqlTimestampTypeAdapterDiffblueTest {
         new TreeTypeAdapter<>(
             serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
     SqlTimestampTypeAdapter sqlTimestampTypeAdapter = new SqlTimestampTypeAdapter(dateTypeAdapter);
-    JsonWriter out = new JsonWriter(new StringWriter());
+    JsonTreeWriter out = new JsonTreeWriter();
 
     // Act
     sqlTimestampTypeAdapter.write(out, new Timestamp(10L));
@@ -104,6 +105,9 @@ public class SqlTimestampTypeAdapterDiffblueTest {
     // Assert
     verify(serializer)
         .serialize(isA(Date.class), isA(Type.class), isA(JsonSerializationContext.class));
+    JsonElement getResult = out.get();
+    assertTrue(getResult instanceof JsonPrimitive);
+    assertEquals(jsonPrimitive, getResult);
   }
 
   /**
@@ -121,7 +125,7 @@ public class SqlTimestampTypeAdapterDiffblueTest {
     JsonSerializer<Date> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
             Mockito.<Date>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(new JsonPrimitive("String"));
+        .thenReturn(JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
     JsonDeserializer<Date> deserializer = mock(JsonDeserializer.class);
     Gson gson = new Gson();
     Class<Date> type = Date.class;
@@ -156,7 +160,7 @@ public class SqlTimestampTypeAdapterDiffblueTest {
     JsonSerializer<Date> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
             Mockito.<Date>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(new JsonPrimitive(true));
+        .thenReturn(new JsonPrimitive("\"Test string for JsonPrimitive method\""));
     JsonDeserializer<Date> deserializer = mock(JsonDeserializer.class);
     Gson gson = new Gson();
     Class<Date> type = Date.class;
@@ -188,15 +192,10 @@ public class SqlTimestampTypeAdapterDiffblueTest {
   @MethodsUnderTest({"void SqlTimestampTypeAdapter.write(JsonWriter, Timestamp)"})
   public void testWriteWithJsonWriterTimestamp4() throws IOException {
     // Arrange
-    JsonArray createJsonArrayWithElementsResult =
-        JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
-    createJsonArrayWithElementsResult.add(
-        JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-
     JsonSerializer<Date> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
             Mockito.<Date>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(createJsonArrayWithElementsResult);
+        .thenReturn(new JsonPrimitive(true));
     JsonDeserializer<Date> deserializer = mock(JsonDeserializer.class);
     Gson gson = new Gson();
     Class<Date> type = Date.class;
@@ -228,10 +227,15 @@ public class SqlTimestampTypeAdapterDiffblueTest {
   @MethodsUnderTest({"void SqlTimestampTypeAdapter.write(JsonWriter, Timestamp)"})
   public void testWriteWithJsonWriterTimestamp5() throws IOException {
     // Arrange
+    JsonArray createJsonArrayWithElementsResult =
+        JsonArrayDiffblueTestFactory.createJsonArrayWithElements();
+    createJsonArrayWithElementsResult.add(
+        JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+
     JsonSerializer<Date> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
             Mockito.<Date>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(new JsonPrimitive('\u0001'));
+        .thenReturn(createJsonArrayWithElementsResult);
     JsonDeserializer<Date> deserializer = mock(JsonDeserializer.class);
     Gson gson = new Gson();
     Class<Date> type = Date.class;
@@ -299,7 +303,8 @@ public class SqlTimestampTypeAdapterDiffblueTest {
   public void testWriteWithJsonWriterTimestamp7() throws IOException {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    jsonObject.add(
+        "\"employeeDetails\"", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
 
     JsonSerializer<Date> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
@@ -337,9 +342,9 @@ public class SqlTimestampTypeAdapterDiffblueTest {
   public void testWriteWithJsonWriterTimestamp8() throws IOException {
     // Arrange
     JsonObject jsonObject = new JsonObject();
+    jsonObject.add("name == null", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
     jsonObject.add(
-        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    jsonObject.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+        "\"employeeDetails\"", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
 
     JsonSerializer<Date> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
@@ -545,7 +550,7 @@ public class SqlTimestampTypeAdapterDiffblueTest {
    * {@code Timestamp}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
+   *   <li>Given {@link JsonObject} (default constructor) add {@code "employeeDetails"} and {@link
    *       JsonNull#INSTANCE}.
    * </ul>
    *
@@ -555,11 +560,11 @@ public class SqlTimestampTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void SqlTimestampTypeAdapter.write(JsonWriter, Timestamp)"})
-  public void testWriteWithJsonWriterTimestamp_givenJsonObjectAddPropertyAndInstance()
+  public void testWriteWithJsonWriterTimestamp_givenJsonObjectAddEmployeeDetailsAndInstance()
       throws IOException {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("\"employeeDetails\"", JsonNull.INSTANCE);
 
     JsonSerializer<Date> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
@@ -592,7 +597,7 @@ public class SqlTimestampTypeAdapterDiffblueTest {
    * {@code Timestamp}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
+   *   <li>Given {@link JsonObject} (default constructor) add {@code "employeeDetails"} and {@link
    *       JsonNull#INSTANCE}.
    * </ul>
    *
@@ -602,11 +607,11 @@ public class SqlTimestampTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void SqlTimestampTypeAdapter.write(JsonWriter, Timestamp)"})
-  public void testWriteWithJsonWriterTimestamp_givenJsonObjectAddPropertyAndInstance2()
+  public void testWriteWithJsonWriterTimestamp_givenJsonObjectAddEmployeeDetailsAndInstance2()
       throws IOException {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonNull.INSTANCE);
+    jsonObject.add("\"employeeDetails\"", JsonNull.INSTANCE);
 
     JsonSerializer<Date> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
@@ -843,51 +848,6 @@ public class SqlTimestampTypeAdapterDiffblueTest {
    * {@code Timestamp}.
    *
    * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link
-   *       JsonPrimitive#JsonPrimitive(String)} with {@code String}.
-   * </ul>
-   *
-   * <p>Method under test: {@link SqlTimestampTypeAdapter#write(JsonWriter, Timestamp)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void SqlTimestampTypeAdapter.write(JsonWriter, Timestamp)"})
-  public void testWriteWithJsonWriterTimestamp_thenJsonTreeWriterIsJsonPrimitiveWithString()
-      throws IOException {
-    // Arrange
-    JsonSerializer<Date> serializer = mock(JsonSerializer.class);
-    JsonPrimitive jsonPrimitive = new JsonPrimitive("String");
-    when(serializer.serialize(
-            Mockito.<Date>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonPrimitive);
-    JsonDeserializer<Date> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Date> type = Date.class;
-    TypeToken<Date> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Date> dateTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
-    SqlTimestampTypeAdapter sqlTimestampTypeAdapter = new SqlTimestampTypeAdapter(dateTypeAdapter);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    sqlTimestampTypeAdapter.write(out, new Timestamp(10L));
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Date.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals(jsonPrimitive, getResult);
-  }
-
-  /**
-   * Test {@link SqlTimestampTypeAdapter#write(JsonWriter, Timestamp)} with {@code JsonWriter},
-   * {@code Timestamp}.
-   *
-   * <ul>
    *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonNull}.
    * </ul>
    *
@@ -1017,7 +977,8 @@ public class SqlTimestampTypeAdapterDiffblueTest {
   public void testWriteWithJsonWriterTimestamp_thenJsonTreeWriterJsonObject2() throws IOException {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    jsonObject.add(
+        "\"employeeDetails\"", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
 
     JsonSerializer<Date> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(

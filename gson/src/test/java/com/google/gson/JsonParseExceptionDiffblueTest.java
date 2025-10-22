@@ -12,10 +12,39 @@ import org.junit.experimental.categories.Category;
 
 public class JsonParseExceptionDiffblueTest {
   /**
+   * Test {@link JsonParseException#JsonParseException(String, Throwable)}.
+   *
+   * <p>Method under test: {@link JsonParseException#JsonParseException(String, Throwable)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "void JsonParseException.<init>(String)",
+    "void JsonParseException.<init>(String, Throwable)",
+    "void JsonParseException.<init>(Throwable)"
+  })
+  public void testNewJsonParseException() {
+    // Arrange
+    Throwable cause = new Throwable();
+
+    // Act
+    JsonParseException actualJsonParseException =
+        new JsonParseException(
+            "\"Invalid JSON format: Missing closing bracket in the object at line 5\"", cause);
+
+    // Assert
+    assertEquals(
+        "\"Invalid JSON format: Missing closing bracket in the object at line 5\"",
+        actualJsonParseException.getMessage());
+    assertEquals(0, actualJsonParseException.getSuppressed().length);
+    assertSame(cause, actualJsonParseException.getCause());
+  }
+
+  /**
    * Test {@link JsonParseException#JsonParseException(String)}.
    *
    * <ul>
-   *   <li>When {@code Msg}.
    *   <li>Then return Cause is {@code null}.
    * </ul>
    *
@@ -29,45 +58,18 @@ public class JsonParseExceptionDiffblueTest {
     "void JsonParseException.<init>(String, Throwable)",
     "void JsonParseException.<init>(Throwable)"
   })
-  public void testNewJsonParseException_whenMsg_thenReturnCauseIsNull() {
+  public void testNewJsonParseException_thenReturnCauseIsNull() {
     // Arrange and Act
-    JsonParseException actualJsonParseException = new JsonParseException("Msg");
+    JsonParseException actualJsonParseException =
+        new JsonParseException(
+            "\"Invalid JSON format: Missing closing bracket in the object at line 5\"");
 
     // Assert
-    assertEquals("Msg", actualJsonParseException.getMessage());
+    assertEquals(
+        "\"Invalid JSON format: Missing closing bracket in the object at line 5\"",
+        actualJsonParseException.getMessage());
     assertNull(actualJsonParseException.getCause());
     assertEquals(0, actualJsonParseException.getSuppressed().length);
-  }
-
-  /**
-   * Test {@link JsonParseException#JsonParseException(String, Throwable)}.
-   *
-   * <ul>
-   *   <li>When {@code Msg}.
-   *   <li>Then return Message is {@code Msg}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonParseException#JsonParseException(String, Throwable)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({
-    "void JsonParseException.<init>(String)",
-    "void JsonParseException.<init>(String, Throwable)",
-    "void JsonParseException.<init>(Throwable)"
-  })
-  public void testNewJsonParseException_whenMsg_thenReturnMessageIsMsg() {
-    // Arrange
-    Throwable cause = new Throwable();
-
-    // Act
-    JsonParseException actualJsonParseException = new JsonParseException("Msg", cause);
-
-    // Assert
-    assertEquals("Msg", actualJsonParseException.getMessage());
-    assertEquals(0, actualJsonParseException.getSuppressed().length);
-    assertSame(cause, actualJsonParseException.getCause());
   }
 
   /**

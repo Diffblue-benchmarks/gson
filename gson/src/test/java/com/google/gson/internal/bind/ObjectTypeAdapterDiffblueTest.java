@@ -22,6 +22,7 @@ import com.google.gson.ReflectionAccessFilter;
 import com.google.gson.Strictness;
 import com.google.gson.ToNumberPolicy;
 import com.google.gson.ToNumberStrategy;
+import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.ConstructorConstructor;
 import com.google.gson.internal.LazilyParsedNumber;
@@ -32,6 +33,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,15 +56,21 @@ public class ObjectTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapterFactory ObjectTypeAdapter.getFactory(ToNumberStrategy)"})
-  public void testGetFactory_thenCreateGsonAndObjectReturnObjectTypeAdapter() {
+  public void testGetFactory_thenCreateGsonAndObjectReturnObjectTypeAdapter() throws IOException {
     // Arrange and Act
     TypeAdapterFactory actualFactory = ObjectTypeAdapter.getFactory(mock(ToNumberStrategy.class));
     Gson gson = new Gson();
     Class<Object> type = Object.class;
     TypeToken<Object> getResult = TypeToken.get(type);
+    TypeAdapter<Object> actualCreateResult = actualFactory.create(gson, getResult);
 
     // Assert
-    assertTrue(actualFactory.create(gson, getResult) instanceof ObjectTypeAdapter);
+    assertTrue(actualCreateResult instanceof ObjectTypeAdapter);
+    assertEquals(
+        "{\"name\":\"John Doe\",\"age\":30,\"email\":\"johndoe@example.com\"}",
+        actualCreateResult.fromJson(
+            "\"{\\\"name\\\":\\\"John"
+                + " Doe\\\",\\\"age\\\":30,\\\"email\\\":\\\"johndoe@example.com\\\"}\""));
   }
 
   /**
@@ -79,22 +87,29 @@ public class ObjectTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapterFactory ObjectTypeAdapter.getFactory(ToNumberStrategy)"})
-  public void testGetFactory_whenDouble_thenCreateGsonAndObjectReturnObjectTypeAdapter() {
+  public void testGetFactory_whenDouble_thenCreateGsonAndObjectReturnObjectTypeAdapter()
+      throws IOException {
     // Arrange and Act
     TypeAdapterFactory actualFactory = ObjectTypeAdapter.getFactory(ToNumberPolicy.DOUBLE);
     Gson gson = new Gson();
     Class<Object> type = Object.class;
     TypeToken<Object> getResult = TypeToken.get(type);
+    TypeAdapter<Object> actualCreateResult = actualFactory.create(gson, getResult);
 
     // Assert
-    assertTrue(actualFactory.create(gson, getResult) instanceof ObjectTypeAdapter);
+    assertTrue(actualCreateResult instanceof ObjectTypeAdapter);
+    assertEquals(
+        "{\"name\":\"John Doe\",\"age\":30,\"email\":\"johndoe@example.com\"}",
+        actualCreateResult.fromJson(
+            "\"{\\\"name\\\":\\\"John"
+                + " Doe\\\",\\\"age\\\":30,\\\"email\\\":\\\"johndoe@example.com\\\"}\""));
   }
 
   /**
    * Test {@link ObjectTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>Given {@code 42}.
+   *   <li>Given {@code JsonObject}.
    *   <li>Then return size is two.
    * </ul>
    *
@@ -104,15 +119,15 @@ public class ObjectTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_given42_thenReturnSizeIsTwo() throws IOException {
+  public void testRead_givenComGoogleGsonJsonObject_thenReturnSizeIsTwo() throws IOException {
     // Arrange
     ObjectTypeAdapter createLongOrDoubleAdapterResult =
         ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
 
     JsonObject element = new JsonObject();
-    element.add("42", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
     element.add(
         "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
 
     // Act
     Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
@@ -120,12 +135,12 @@ public class ObjectTypeAdapterDiffblueTest {
     // Assert
     assertTrue(actualReadResult instanceof Map);
     assertEquals(2, ((Map<String, ArrayList>) actualReadResult).size());
-    ArrayList getResult = ((Map<String, ArrayList>) actualReadResult).get("42");
+    ArrayList getResult =
+        ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject");
     assertEquals(2, getResult.size());
     assertEquals("element0", getResult.get(0));
     assertEquals("element1", getResult.get(1));
-    assertEquals(
-        getResult, ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject"));
+    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("Property"));
   }
 
   /**
@@ -166,6 +181,176 @@ public class ObjectTypeAdapterDiffblueTest {
    * Test {@link ObjectTypeAdapter#read(JsonReader)}.
    *
    * <ul>
+   *   <li>Given {@code "employeeDetails"}.
+   *   <li>Then return {@code "employeeDetails"} is {@code JsonObject}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
+  public void testRead_givenEmployeeDetails_thenReturnEmployeeDetailsIsComGoogleGsonJsonObject()
+      throws IOException {
+    // Arrange
+    ObjectTypeAdapter createLongOrDoubleAdapterResult =
+        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
+
+    JsonObject element = new JsonObject();
+    element.add(
+        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("\"employeeDetails\"", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add(
+        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+
+    // Act
+    Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
+
+    // Assert
+    assertTrue(actualReadResult instanceof Map);
+    assertEquals(3, ((Map<String, ArrayList>) actualReadResult).size());
+    ArrayList getResult =
+        ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject");
+    assertEquals(2, getResult.size());
+    assertEquals("element0", getResult.get(0));
+    assertEquals("element1", getResult.get(1));
+    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("Property"));
+    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("\"employeeDetails\""));
+  }
+
+  /**
+   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given {@code "employeeDetails"}.
+   *   <li>Then return {@code "employeeDetails"} is {@code JsonObject}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
+  public void testRead_givenEmployeeDetails_thenReturnEmployeeDetailsIsComGoogleGsonJsonObject2()
+      throws IOException {
+    // Arrange
+    ObjectTypeAdapter createLongOrDoubleAdapterResult =
+        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
+
+    JsonObject element = new JsonObject();
+    element.add(
+        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("\"employeeDetails\"", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add(
+        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+
+    // Act
+    Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
+
+    // Assert
+    assertTrue(actualReadResult instanceof Map);
+    assertEquals(3, ((Map<String, ArrayList>) actualReadResult).size());
+    ArrayList getResult =
+        ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject");
+    assertEquals(2, getResult.size());
+    assertEquals("element0", getResult.get(0));
+    assertEquals("element1", getResult.get(1));
+    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("Property"));
+    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("\"employeeDetails\""));
+  }
+
+  /**
+   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given {@code "employeeDetails"}.
+   *   <li>Then return {@code "employeeDetails"} is {@code Property}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
+  public void testRead_givenEmployeeDetails_thenReturnEmployeeDetailsIsProperty()
+      throws IOException {
+    // Arrange
+    ObjectTypeAdapter createLongOrDoubleAdapterResult =
+        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
+
+    JsonObject element = new JsonObject();
+    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("\"employeeDetails\"", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add(
+        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+
+    // Act
+    Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
+
+    // Assert
+    assertTrue(actualReadResult instanceof Map);
+    assertEquals(3, ((Map<String, ArrayList>) actualReadResult).size());
+    ArrayList getResult = ((Map<String, ArrayList>) actualReadResult).get("Property");
+    assertEquals(2, getResult.size());
+    assertEquals("element0", getResult.get(0));
+    assertEquals("element1", getResult.get(1));
+    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("\"employeeDetails\""));
+    assertEquals(
+        getResult, ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject"));
+  }
+
+  /**
+   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given {@code "employeeDetails"}.
+   *   <li>Then return {@code "employeeDetails"} size is two.
+   * </ul>
+   *
+   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
+  public void testRead_givenEmployeeDetails_thenReturnEmployeeDetailsSizeIsTwo()
+      throws IOException {
+    // Arrange
+    ObjectTypeAdapter createLongOrDoubleAdapterResult =
+        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
+
+    JsonObject element = new JsonObject();
+    element.add("\"employeeDetails\"", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add(
+        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+
+    // Act
+    Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
+
+    // Assert
+    assertTrue(actualReadResult instanceof Map);
+    assertEquals(3, ((Map<String, ArrayList>) actualReadResult).size());
+    ArrayList getResult = ((Map<String, ArrayList>) actualReadResult).get("\"employeeDetails\"");
+    assertEquals(2, getResult.size());
+    assertEquals("element0", getResult.get(0));
+    assertEquals("element1", getResult.get(1));
+    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("Property"));
+    assertEquals(
+        getResult, ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject"));
+  }
+
+  /**
+   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
    *   <li>Given empty string.
    *   <li>Then return empty string size is two.
    * </ul>
@@ -183,21 +368,23 @@ public class ObjectTypeAdapterDiffblueTest {
 
     JsonObject element = new JsonObject();
     element.add("", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add("42", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("\"employeeDetails\"", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
     element.add(
         "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
 
     // Act
     Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
 
     // Assert
     assertTrue(actualReadResult instanceof Map);
-    assertEquals(3, ((Map<String, ArrayList>) actualReadResult).size());
+    assertEquals(4, ((Map<String, ArrayList>) actualReadResult).size());
     ArrayList getResult = ((Map<String, ArrayList>) actualReadResult).get("");
     assertEquals(2, getResult.size());
     assertEquals("element0", getResult.get(0));
     assertEquals("element1", getResult.get(1));
-    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("42"));
+    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("Property"));
+    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("\"employeeDetails\""));
     assertEquals(
         getResult, ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject"));
   }
@@ -207,7 +394,7 @@ public class ObjectTypeAdapterDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link JsonNull#INSTANCE}.
-   *   <li>Then return {@code JsonObject} is {@code null}.
+   *   <li>Then return {@code Property} is {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
@@ -216,13 +403,13 @@ public class ObjectTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_givenInstance_thenReturnComGoogleGsonJsonObjectIsNull() throws IOException {
+  public void testRead_givenInstance_thenReturnPropertyIsNull() throws IOException {
     // Arrange
     ObjectTypeAdapter createLongOrDoubleAdapterResult =
         ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
 
     JsonObject element = new JsonObject();
-    element.add("com.google.gson.JsonObject", JsonNull.INSTANCE);
+    element.add("Property", JsonNull.INSTANCE);
     JsonTreeReader in = new JsonTreeReader(element);
 
     // Act
@@ -231,7 +418,7 @@ public class ObjectTypeAdapterDiffblueTest {
     // Assert
     assertTrue(actualReadResult instanceof Map);
     assertEquals(1, ((Map<String, Object>) actualReadResult).size());
-    assertNull(((Map<String, Object>) actualReadResult).get("com.google.gson.JsonObject"));
+    assertNull(((Map<String, Object>) actualReadResult).get("Property"));
     assertEquals(0, in.getStackSize());
     assertFalse(in.hasNext());
   }
@@ -276,7 +463,8 @@ public class ObjectTypeAdapterDiffblueTest {
    *
    * <ul>
    *   <li>Given {@code LENIENT}.
-   *   <li>Then return {@code foo}.
+   *   <li>When {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)} Strictness is {@code LENIENT}.
    * </ul>
    *
    * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
@@ -285,51 +473,29 @@ public class ObjectTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_givenLenient_thenReturnFoo() throws IOException {
+  public void testRead_givenLenient_whenJsonReaderWithInIsStringReaderStrictnessIsLenient()
+      throws IOException {
     // Arrange
     ObjectTypeAdapter createLongOrDoubleAdapterResult =
         ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
 
-    JsonReader in = new JsonReader(new StringReader("foo"));
+    JsonReader in =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces. It's"
+                    + " designed to test the method's functionality.\""));
     in.setStrictness(Strictness.LENIENT);
 
     // Act
     Object actualReadResult = createLongOrDoubleAdapterResult.read(in);
 
     // Assert
-    assertEquals("foo", actualReadResult);
-  }
-
-  /**
-   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>Given {@code LENIENT}.
-   *   <li>When {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_givenLenient_whenStringReaderWithFalseToString_thenReturnFalse()
-      throws IOException {
-    // Arrange
-    ObjectTypeAdapter createLongOrDoubleAdapterResult =
-        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    JsonReader in2 = new JsonReader(in);
-    in2.setStrictness(Strictness.LENIENT);
-
-    // Act
-    Object actualReadResult = createLongOrDoubleAdapterResult.read(in2);
-
-    // Assert
-    assertFalse((Boolean) actualReadResult);
+    assertEquals(
+        "This is a test string for the java.io.StringReader method. It includes various characters"
+            + " such as numbers 123, special characters @#$%, and spaces. It's designed to test the"
+            + " method's functionality.",
+        actualReadResult);
   }
 
   /**
@@ -371,8 +537,9 @@ public class ObjectTypeAdapterDiffblueTest {
    * Test {@link ObjectTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return {@code 42} is {@code JsonObject}.
+   *   <li>Given {@code STRICT}.
+   *   <li>When {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)} Strictness is {@code STRICT}.
    * </ul>
    *
    * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
@@ -381,160 +548,29 @@ public class ObjectTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_givenProperty_thenReturn42IsComGoogleGsonJsonObject() throws IOException {
+  public void testRead_givenStrict_whenJsonReaderWithInIsStringReaderStrictnessIsStrict()
+      throws IOException {
     // Arrange
     ObjectTypeAdapter createLongOrDoubleAdapterResult =
         ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
 
-    JsonObject element = new JsonObject();
-    element.add(
-        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add("42", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add(
-        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    JsonReader in =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces. It's"
+                    + " designed to test the method's functionality.\""));
+    in.setStrictness(Strictness.STRICT);
 
     // Act
-    Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
+    Object actualReadResult = createLongOrDoubleAdapterResult.read(in);
 
     // Assert
-    assertTrue(actualReadResult instanceof Map);
-    assertEquals(3, ((Map<String, ArrayList>) actualReadResult).size());
-    ArrayList getResult =
-        ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject");
-    assertEquals(2, getResult.size());
-    assertEquals("element0", getResult.get(0));
-    assertEquals("element1", getResult.get(1));
-    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("42"));
-    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("Property"));
-  }
-
-  /**
-   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return {@code 42} is {@code JsonObject}.
-   * </ul>
-   *
-   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_givenProperty_thenReturn42IsComGoogleGsonJsonObject2() throws IOException {
-    // Arrange
-    ObjectTypeAdapter createLongOrDoubleAdapterResult =
-        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
-
-    JsonObject element = new JsonObject();
-    element.add(
-        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add("42", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add(
-        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add("42", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add(
-        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-
-    // Act
-    Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
-
-    // Assert
-    assertTrue(actualReadResult instanceof Map);
-    assertEquals(3, ((Map<String, ArrayList>) actualReadResult).size());
-    ArrayList getResult =
-        ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject");
-    assertEquals(2, getResult.size());
-    assertEquals("element0", getResult.get(0));
-    assertEquals("element1", getResult.get(1));
-    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("42"));
-    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("Property"));
-  }
-
-  /**
-   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return {@code Property} is {@code 42}.
-   * </ul>
-   *
-   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_givenProperty_thenReturnPropertyIs42() throws IOException {
-    // Arrange
-    ObjectTypeAdapter createLongOrDoubleAdapterResult =
-        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
-
-    JsonObject element = new JsonObject();
-    element.add("42", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add(
-        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add("42", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add(
-        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-
-    // Act
-    Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
-
-    // Assert
-    assertTrue(actualReadResult instanceof Map);
-    assertEquals(3, ((Map<String, ArrayList>) actualReadResult).size());
-    ArrayList getResult = ((Map<String, ArrayList>) actualReadResult).get("42");
-    assertEquals(2, getResult.size());
-    assertEquals("element0", getResult.get(0));
-    assertEquals("element1", getResult.get(1));
-    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("Property"));
     assertEquals(
-        getResult, ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject"));
-  }
-
-  /**
-   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>Given {@code Property}.
-   *   <li>Then return {@code Property} size is two.
-   * </ul>
-   *
-   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_givenProperty_thenReturnPropertySizeIsTwo() throws IOException {
-    // Arrange
-    ObjectTypeAdapter createLongOrDoubleAdapterResult =
-        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
-
-    JsonObject element = new JsonObject();
-    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add("42", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-    element.add(
-        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
-
-    // Act
-    Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
-
-    // Assert
-    assertTrue(actualReadResult instanceof Map);
-    assertEquals(3, ((Map<String, ArrayList>) actualReadResult).size());
-    ArrayList getResult = ((Map<String, ArrayList>) actualReadResult).get("Property");
-    assertEquals(2, getResult.size());
-    assertEquals("element0", getResult.get(0));
-    assertEquals("element1", getResult.get(1));
-    assertEquals(getResult, ((Map<String, ArrayList>) actualReadResult).get("42"));
-    assertEquals(
-        getResult, ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject"));
+        "This is a test string for the java.io.StringReader method. It includes various characters"
+            + " such as numbers 123, special characters @#$%, and spaces. It's designed to test the"
+            + " method's functionality.",
+        actualReadResult);
   }
 
   /**
@@ -607,36 +643,6 @@ public class ObjectTypeAdapterDiffblueTest {
    * Test {@link ObjectTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>Then {@link JsonTreeReader#JsonTreeReader(JsonElement)} with element is {@link
-   *       JsonPrimitive#JsonPrimitive(Boolean)} StackSize is zero.
-   * </ul>
-   *
-   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_thenJsonTreeReaderWithElementIsJsonPrimitiveStackSizeIsZero()
-      throws IOException {
-    // Arrange
-    ObjectTypeAdapter createLongOrDoubleAdapterResult =
-        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
-    JsonTreeReader in = new JsonTreeReader(new JsonPrimitive(true));
-
-    // Act
-    Object actualReadResult = createLongOrDoubleAdapterResult.read(in);
-
-    // Assert
-    assertEquals(0, in.getStackSize());
-    assertFalse(in.hasNext());
-    assertTrue((Boolean) actualReadResult);
-  }
-
-  /**
-   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
    *   <li>Then return size is one.
    * </ul>
    *
@@ -652,8 +658,7 @@ public class ObjectTypeAdapterDiffblueTest {
         ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
 
     JsonObject element = new JsonObject();
-    element.add(
-        "com.google.gson.JsonObject", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
+    element.add("Property", JsonArrayDiffblueTestFactory.createJsonArrayWithElements());
 
     // Act
     Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonTreeReader(element));
@@ -661,8 +666,7 @@ public class ObjectTypeAdapterDiffblueTest {
     // Assert
     assertTrue(actualReadResult instanceof Map);
     assertEquals(1, ((Map<String, ArrayList>) actualReadResult).size());
-    ArrayList getResult =
-        ((Map<String, ArrayList>) actualReadResult).get("com.google.gson.JsonObject");
+    ArrayList getResult = ((Map<String, ArrayList>) actualReadResult).get("Property");
     assertEquals(2, getResult.size());
     assertEquals("element0", getResult.get(0));
     assertEquals("element1", getResult.get(1));
@@ -696,6 +700,35 @@ public class ObjectTypeAdapterDiffblueTest {
     assertEquals(2, ((List<String>) actualReadResult).size());
     assertEquals("element0", ((List<String>) actualReadResult).get(0));
     assertEquals("element1", ((List<String>) actualReadResult).get(1));
+  }
+
+  /**
+   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Then return {@code "Test string for JsonPrimitive method"}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
+  public void testRead_thenReturnTestStringForJsonPrimitiveMethod() throws IOException {
+    // Arrange
+    ObjectTypeAdapter createLongOrDoubleAdapterResult =
+        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
+    JsonTreeReader in =
+        new JsonTreeReader(new JsonPrimitive("\"Test string for JsonPrimitive method\""));
+
+    // Act
+    Object actualReadResult = createLongOrDoubleAdapterResult.read(in);
+
+    // Assert
+    assertEquals("\"Test string for JsonPrimitive method\"", actualReadResult);
+    assertEquals(0, in.getStackSize());
+    assertFalse(in.hasNext());
   }
 
   /**
@@ -737,8 +770,8 @@ public class ObjectTypeAdapterDiffblueTest {
    * Test {@link ObjectTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>When {@link JsonPrimitive#JsonPrimitive(String)} with {@code String}.
-   *   <li>Then return {@code String}.
+   *   <li>When {@link JsonPrimitive#JsonPrimitive(Boolean)} with bool is {@code false}.
+   *   <li>Then return {@code false}.
    * </ul>
    *
    * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
@@ -747,19 +780,85 @@ public class ObjectTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_whenJsonPrimitiveWithString_thenReturnString() throws IOException {
+  public void testRead_whenJsonPrimitiveWithBoolIsFalse_thenReturnFalse() throws IOException {
     // Arrange
     ObjectTypeAdapter createLongOrDoubleAdapterResult =
         ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
-    JsonTreeReader in = new JsonTreeReader(new JsonPrimitive("String"));
+    JsonTreeReader in = new JsonTreeReader(new JsonPrimitive(false));
 
     // Act
     Object actualReadResult = createLongOrDoubleAdapterResult.read(in);
 
     // Assert
-    assertEquals("String", actualReadResult);
     assertEquals(0, in.getStackSize());
     assertFalse(in.hasNext());
+    assertFalse((Boolean) actualReadResult);
+  }
+
+  /**
+   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonPrimitive#JsonPrimitive(Boolean)} with bool is {@code true}.
+   *   <li>Then return {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
+  public void testRead_whenJsonPrimitiveWithBoolIsTrue_thenReturnTrue() throws IOException {
+    // Arrange
+    ObjectTypeAdapter createLongOrDoubleAdapterResult =
+        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
+    JsonTreeReader in = new JsonTreeReader(new JsonPrimitive(true));
+
+    // Act
+    Object actualReadResult = createLongOrDoubleAdapterResult.read(in);
+
+    // Assert
+    assertEquals(0, in.getStackSize());
+    assertFalse(in.hasNext());
+    assertTrue((Boolean) actualReadResult);
+  }
+
+  /**
+   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)}.
+   *   <li>Then return a string.
+   * </ul>
+   *
+   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
+  public void testRead_whenJsonReaderWithInIsStringReader_thenReturnAString() throws IOException {
+    // Arrange
+    ObjectTypeAdapter createLongOrDoubleAdapterResult =
+        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
+
+    // Act
+    Object actualReadResult =
+        createLongOrDoubleAdapterResult.read(
+            new JsonReader(
+                new StringReader(
+                    "\"This is a test string for the java.io.StringReader method. It includes"
+                        + " various characters such as numbers 123, special characters @#$%, and"
+                        + " spaces. It's designed to test the method's functionality.\"")));
+
+    // Assert
+    assertEquals(
+        "This is a test string for the java.io.StringReader method. It includes various characters"
+            + " such as numbers 123, special characters @#$%, and spaces. It's designed to test the"
+            + " method's functionality.",
+        actualReadResult);
   }
 
   /**
@@ -822,33 +921,6 @@ public class ObjectTypeAdapterDiffblueTest {
     assertEquals(0, in.getStackSize());
     assertFalse(in.hasNext());
     assertTrue(((Map<Object, Object>) actualReadResult).isEmpty());
-  }
-
-  /**
-   * Test {@link ObjectTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link ObjectTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object ObjectTypeAdapter.read(JsonReader)"})
-  public void testRead_whenStringReaderWithFalseToString_thenReturnFalse() throws IOException {
-    // Arrange
-    ObjectTypeAdapter createLongOrDoubleAdapterResult =
-        ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
-    // Act
-    Object actualReadResult = createLongOrDoubleAdapterResult.read(new JsonReader(in));
-
-    // Assert
-    assertFalse((Boolean) actualReadResult);
   }
 
   /**
@@ -996,7 +1068,7 @@ public class ObjectTypeAdapterDiffblueTest {
    * Test {@link ObjectTypeAdapter#write(JsonWriter, Object)}.
    *
    * <ul>
-   *   <li>When {@code 42}.
+   *   <li>When a string.
    *   <li>Then {@link JsonTreeWriter} (default constructor) AsNumber {@link LazilyParsedNumber}.
    * </ul>
    *
@@ -1006,21 +1078,36 @@ public class ObjectTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void ObjectTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_when42_thenJsonTreeWriterAsNumberLazilyParsedNumber() throws IOException {
+  public void testWrite_whenAString_thenJsonTreeWriterAsNumberLazilyParsedNumber()
+      throws IOException {
     // Arrange
     ObjectTypeAdapter createLongOrDoubleAdapterResult =
         ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
     JsonTreeWriter out = new JsonTreeWriter();
 
     // Act
-    createLongOrDoubleAdapterResult.write(out, "42");
+    createLongOrDoubleAdapterResult.write(
+        out,
+        "{\"name\":\"John"
+            + " Doe\",\"age\":30,\"isMarried\":true,\"children\":[\"Anna\",\"Bob\"],\"pets\":[{\"type\":\"dog\",\"name\":"
+            + "\"Fido\"},{\"type\":\"cat\",\"name\":\"Whiskers\"}]}");
 
     // Assert
     JsonElement getResult = out.get();
     assertTrue(getResult instanceof JsonPrimitive);
     Number asNumber = getResult.getAsNumber();
     assertTrue(asNumber instanceof LazilyParsedNumber);
-    assertEquals("42", asNumber.toString());
+    assertEquals(
+        "{\"name\":\"John"
+            + " Doe\",\"age\":30,\"isMarried\":true,\"children\":[\"Anna\",\"Bob\"],\"pets\":[{\"type\":\"dog\",\"name\":"
+            + "\"Fido\"},{\"type\":\"cat\",\"name\":\"Whiskers\"}]}",
+        getResult.getAsString());
+    assertEquals(
+        "{\"name\":\"John"
+            + " Doe\",\"age\":30,\"isMarried\":true,\"children\":[\"Anna\",\"Bob\"],\"pets\":[{\"type\":\"dog\",\"name\":"
+            + "\"Fido\"},{\"type\":\"cat\",\"name\":\"Whiskers\"}]}",
+        asNumber.toString());
+    assertEquals('{', getResult.getAsCharacter());
     assertFalse(((JsonPrimitive) getResult).isNumber());
     assertTrue(((JsonPrimitive) getResult).isString());
   }
@@ -1064,7 +1151,7 @@ public class ObjectTypeAdapterDiffblueTest {
    *
    * <ul>
    *   <li>When forty-two.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) AsNumber longValue is forty-two.
+   *   <li>Then {@link JsonTreeWriter} (default constructor) AsString is {@code 42}.
    * </ul>
    *
    * <p>Method under test: {@link ObjectTypeAdapter#write(JsonWriter, Object)}
@@ -1073,8 +1160,7 @@ public class ObjectTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void ObjectTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_whenFortyTwo_thenJsonTreeWriterAsNumberLongValueIsFortyTwo()
-      throws IOException {
+  public void testWrite_whenFortyTwo_thenJsonTreeWriterAsStringIs42() throws IOException {
     // Arrange
     ObjectTypeAdapter createLongOrDoubleAdapterResult =
         ObjectTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
@@ -1086,9 +1172,18 @@ public class ObjectTypeAdapterDiffblueTest {
     // Assert
     JsonElement getResult = out.get();
     assertTrue(getResult instanceof JsonPrimitive);
+    assertEquals("42", getResult.getAsString());
+    assertEquals('4', getResult.getAsCharacter());
+    assertEquals(42, getResult.getAsInt());
+    assertEquals(42.0d, getResult.getAsDouble(), 0.0);
+    assertEquals(42.0f, getResult.getAsFloat(), 0.0f);
+    assertEquals(42L, getResult.getAsLong());
     assertEquals(42L, getResult.getAsNumber().longValue());
+    assertEquals((short) 42, getResult.getAsShort());
     assertFalse(((JsonPrimitive) getResult).isString());
     assertTrue(((JsonPrimitive) getResult).isNumber());
+    assertEquals(new BigDecimal("42"), getResult.getAsBigDecimal());
+    assertEquals('*', getResult.getAsByte());
   }
 
   /**

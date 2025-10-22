@@ -29,20 +29,113 @@ public class SqlTimeTypeAdapterDiffblueTest {
   /**
    * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
    *
+   * <ul>
+   *   <li>Given eleven.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code ' as SQL Time; at path} skip
+   *       eleven.
+   * </ul>
+   *
    * <p>Method under test: {@link SqlTimeTypeAdapter#read(JsonReader)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
-  public void testRead() throws IOException {
+  public void testRead_givenEleven_whenStringReaderWithAsSqlTimeAtPathSkipEleven()
+      throws IOException {
+    // Arrange
+    SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
+
+    StringReader in = new StringReader("' as SQL Time; at path ");
+    in.skip(11L);
+
+    JsonReader in2 = new JsonReader(in);
+    in2.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> sqlTimeTypeAdapter.read(in2));
+  }
+
+  /**
+   * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given eleven.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code End of input} skip eleven.
+   * </ul>
+   *
+   * <p>Method under test: {@link SqlTimeTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
+  public void testRead_givenEleven_whenStringReaderWithEndOfInputSkipEleven() throws IOException {
+    // Arrange
+    SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
+
+    StringReader in = new StringReader("End of input");
+    in.skip(11L);
+
+    JsonReader in2 = new JsonReader(in);
+    in2.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> sqlTimeTypeAdapter.read(in2));
+  }
+
+  /**
+   * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given {@code LENIENT}.
+   *   <li>When {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link SqlTimeTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
+  public void testRead_givenLenient_whenStringReaderWithAString_thenThrowJsonSyntaxException()
+      throws IOException {
     // Arrange
     SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
 
     JsonReader in =
         new JsonReader(
             new StringReader(
-                "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"));
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> sqlTimeTypeAdapter.read(in));
+  }
+
+  /**
+   * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given {@code LENIENT}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link SqlTimeTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
+  public void testRead_givenLenient_whenStringReaderWithAtLine_thenThrowJsonSyntaxException()
+      throws IOException {
+    // Arrange
+    SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
+
+    JsonReader in = new JsonReader(new StringReader(" at line "));
     in.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
@@ -80,7 +173,8 @@ public class SqlTimeTypeAdapterDiffblueTest {
    * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>When {@link JsonPrimitive#JsonPrimitive(String)} with {@code String}.
+   *   <li>Given {@code LENIENT}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code See}.
    *   <li>Then throw {@link JsonSyntaxException}.
    * </ul>
    *
@@ -90,7 +184,92 @@ public class SqlTimeTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
-  public void testRead_whenJsonPrimitiveWithString_thenThrowJsonSyntaxException()
+  public void testRead_givenLenient_whenStringReaderWithSee_thenThrowJsonSyntaxException()
+      throws IOException {
+    // Arrange
+    SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
+
+    JsonReader in = new JsonReader(new StringReader("\nSee "));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> sqlTimeTypeAdapter.read(in));
+  }
+
+  /**
+   * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given one.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code End of input} skip one.
+   * </ul>
+   *
+   * <p>Method under test: {@link SqlTimeTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
+  public void testRead_givenOne_whenStringReaderWithEndOfInputSkipOne() throws IOException {
+    // Arrange
+    SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
+
+    StringReader in = new StringReader("End of input");
+    in.skip(1L);
+
+    JsonReader in2 = new JsonReader(in);
+    in2.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> sqlTimeTypeAdapter.read(in2));
+  }
+
+  /**
+   * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given {@code STRICT}.
+   *   <li>When {@link JsonReader#JsonReader(Reader)} with in is {@link
+   *       StringReader#StringReader(String)} Strictness is {@code STRICT}.
+   * </ul>
+   *
+   * <p>Method under test: {@link SqlTimeTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
+  public void testRead_givenStrict_whenJsonReaderWithInIsStringReaderStrictnessIsStrict()
+      throws IOException {
+    // Arrange
+    SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
+
+    JsonReader in =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces.\""));
+    in.setStrictness(Strictness.STRICT);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> sqlTimeTypeAdapter.read(in));
+  }
+
+  /**
+   * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonPrimitive#JsonPrimitive(String)} with string is {@code "Test string for
+   *       JsonPrimitive method"}.
+   * </ul>
+   *
+   * <p>Method under test: {@link SqlTimeTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
+  public void testRead_whenJsonPrimitiveWithStringIsTestStringForJsonPrimitiveMethod()
       throws IOException {
     // Arrange
     SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
@@ -98,7 +277,9 @@ public class SqlTimeTypeAdapterDiffblueTest {
     // Act and Assert
     assertThrows(
         JsonSyntaxException.class,
-        () -> sqlTimeTypeAdapter.read(new JsonTreeReader(new JsonPrimitive("String"))));
+        () ->
+            sqlTimeTypeAdapter.read(
+                new JsonTreeReader(new JsonPrimitive("\"Test string for JsonPrimitive method\""))));
   }
 
   /**
@@ -151,6 +332,89 @@ public class SqlTimeTypeAdapterDiffblueTest {
     assertThrows(
         JsonSyntaxException.class,
         () -> sqlTimeTypeAdapter.read(new JsonReader(new StringReader("42"))));
+  }
+
+  /**
+   * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link SqlTimeTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
+  public void testRead_whenStringReaderWithAString_thenThrowJsonSyntaxException()
+      throws IOException {
+    // Arrange
+    SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
+
+    // Act and Assert
+    assertThrows(
+        JsonSyntaxException.class,
+        () ->
+            sqlTimeTypeAdapter.read(
+                new JsonReader(
+                    new StringReader(
+                        "\"This is a test string for the java.io.StringReader method. It includes"
+                            + " various characters such as numbers 123, special characters @#$%,"
+                            + " and spaces.\""))));
+  }
+
+  /**
+   * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code End of input}.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link SqlTimeTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
+  public void testRead_whenStringReaderWithEndOfInput_thenThrowJsonSyntaxException()
+      throws IOException {
+    // Arrange
+    SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
+
+    JsonReader in = new JsonReader(new StringReader("End of input"));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> sqlTimeTypeAdapter.read(in));
+  }
+
+  /**
+   * Test {@link SqlTimeTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code Failed parsing '}.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link SqlTimeTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Time SqlTimeTypeAdapter.read(JsonReader)"})
+  public void testRead_whenStringReaderWithFailedParsing_thenThrowJsonSyntaxException()
+      throws IOException {
+    // Arrange
+    SqlTimeTypeAdapter sqlTimeTypeAdapter = new SqlTimeTypeAdapter();
+
+    JsonReader in = new JsonReader(new StringReader("Failed parsing '"));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> sqlTimeTypeAdapter.read(in));
   }
 
   /**

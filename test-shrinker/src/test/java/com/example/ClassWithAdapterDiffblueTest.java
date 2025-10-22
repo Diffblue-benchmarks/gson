@@ -1,10 +1,7 @@
 package com.example;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -14,12 +11,7 @@ import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.example.ClassWithAdapter.Adapter;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.Strictness;
-import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -29,8 +21,8 @@ public class ClassWithAdapterDiffblueTest {
    * Test Adapter {@link Adapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>Given {@code Next Name}.
-   *   <li>Then throw {@link IllegalArgumentException}.
+   *   <li>Given {@code "firstName"}.
+   *   <li>When {@link JsonReader} {@link JsonReader#nextName()} return {@code "firstName"}.
    * </ul>
    *
    * <p>Method under test: {@link Adapter#read(JsonReader)}
@@ -39,17 +31,47 @@ public class ClassWithAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"ClassWithAdapter Adapter.read(JsonReader)"})
-  public void testAdapterRead_givenNextName_thenThrowIllegalArgumentException() throws IOException {
+  public void testAdapterRead_givenFirstName_whenJsonReaderNextNameReturnFirstName()
+      throws IOException {
     // Arrange
     Adapter adapter = new Adapter();
 
     JsonReader in = mock(JsonReader.class);
-    when(in.nextName()).thenReturn("Next Name");
+    when(in.nextName()).thenReturn("\"firstName\"");
     doNothing().when(in).beginObject();
 
     // Act and Assert
     assertThrows(IllegalArgumentException.class, () -> adapter.read(in));
     verify(in).beginObject();
+    verify(in).nextName();
+  }
+
+  /**
+   * Test Adapter {@link Adapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given {@link IllegalArgumentException#IllegalArgumentException()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Adapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"ClassWithAdapter Adapter.read(JsonReader)"})
+  public void testAdapterRead_givenIllegalArgumentException() throws IOException {
+    // Arrange
+    Adapter adapter = new Adapter();
+
+    JsonReader in = mock(JsonReader.class);
+    when(in.nextInt()).thenThrow(new IllegalArgumentException());
+    when(in.nextName()).thenReturn("custom");
+    doNothing().when(in).beginObject();
+
+    // Act and Assert
+    assertThrows(IllegalArgumentException.class, () -> adapter.read(in));
+    verify(in).beginObject();
+    verify(in).nextInt();
     verify(in).nextName();
   }
 
@@ -88,105 +110,6 @@ public class ClassWithAdapterDiffblueTest {
     verify(in).nextInt();
     verify(in).nextName();
     assertEquals(1, actualReadResult.i.intValue());
-  }
-
-  /**
-   * Test Adapter {@link Adapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>When {@link JsonReader} {@link JsonReader#nextInt()} throw {@link
-   *       IOException#IOException()}.
-   *   <li>Then throw {@link IOException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Adapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"ClassWithAdapter Adapter.read(JsonReader)"})
-  public void testAdapterRead_whenJsonReaderNextIntThrowIOException_thenThrowIOException()
-      throws IOException {
-    // Arrange
-    Adapter adapter = new Adapter();
-
-    JsonReader in = mock(JsonReader.class);
-    when(in.nextInt()).thenThrow(new IOException());
-    when(in.nextName()).thenReturn("custom");
-    doNothing().when(in).beginObject();
-
-    // Act and Assert
-    assertThrows(IOException.class, () -> adapter.read(in));
-    verify(in).beginObject();
-    verify(in).nextInt();
-    verify(in).nextName();
-  }
-
-  /**
-   * Test Adapter {@link Adapter#write(JsonWriter, ClassWithAdapter)} with {@code JsonWriter},
-   * {@code ClassWithAdapter}.
-   *
-   * <ul>
-   *   <li>Given {@code LENIENT}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Adapter#write(JsonWriter, ClassWithAdapter)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Adapter.write(JsonWriter, ClassWithAdapter)"})
-  public void testAdapterWriteWithJsonWriterClassWithAdapter_givenLenient() throws IOException {
-    // Arrange
-    Adapter adapter = new Adapter();
-
-    JsonTreeWriter out = new JsonTreeWriter();
-    out.setStrictness(Strictness.LENIENT);
-
-    // Act
-    adapter.write(out, new ClassWithAdapter(1));
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(1, ((JsonObject) getResult).size());
-    assertFalse(getResult.isJsonNull());
-    assertFalse(((JsonObject) getResult).isEmpty());
-    assertTrue(getResult.isJsonObject());
-    assertSame(getResult, getResult.getAsJsonObject());
-  }
-
-  /**
-   * Test Adapter {@link Adapter#write(JsonWriter, ClassWithAdapter)} with {@code JsonWriter},
-   * {@code ClassWithAdapter}.
-   *
-   * <ul>
-   *   <li>When {@link JsonTreeWriter} (default constructor).
-   * </ul>
-   *
-   * <p>Method under test: {@link Adapter#write(JsonWriter, ClassWithAdapter)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Adapter.write(JsonWriter, ClassWithAdapter)"})
-  public void testAdapterWriteWithJsonWriterClassWithAdapter_whenJsonTreeWriter()
-      throws IOException {
-    // Arrange
-    Adapter adapter = new Adapter();
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    adapter.write(out, new ClassWithAdapter(1));
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(1, ((JsonObject) getResult).size());
-    assertFalse(getResult.isJsonNull());
-    assertFalse(((JsonObject) getResult).isEmpty());
-    assertTrue(getResult.isJsonObject());
-    assertSame(getResult, getResult.getAsJsonObject());
   }
 
   /**

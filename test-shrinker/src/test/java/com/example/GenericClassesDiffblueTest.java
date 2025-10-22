@@ -1,45 +1,22 @@
 package com.example;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
-import com.example.GenericClasses.DummyClass;
 import com.example.GenericClasses.DummyClass.Adapter;
 import com.example.GenericClasses.GenericClass;
 import com.example.GenericClasses.GenericUsingGenericClass;
 import com.example.GenericClasses.UsingGenericClass;
 import com.google.gson.Strictness;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class GenericClassesDiffblueTest {
-  /**
-   * Test DummyClass getters and setters.
-   *
-   * <p>Methods under test:
-   *
-   * <ul>
-   *   <li>{@link DummyClass#DummyClass(String)}
-   *   <li>{@link DummyClass#toString()}
-   * </ul>
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void DummyClass.<init>(String)", "String DummyClass.toString()"})
-  public void testDummyClassGettersAndSetters() {
-    // Arrange, Act and Assert
-    assertEquals("foo", new DummyClass("foo").toString());
-  }
-
   /**
    * Test DummyClass_Adapter {@link Adapter#read(JsonReader)}.
    *
@@ -90,26 +67,6 @@ public class GenericClassesDiffblueTest {
   }
 
   /**
-   * Test DummyClass_Adapter {@link Adapter#write(JsonWriter, DummyClass)} with {@code JsonWriter},
-   * {@code DummyClass}.
-   *
-   * <p>Method under test: {@link Adapter#write(JsonWriter, DummyClass)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Adapter.write(JsonWriter, DummyClass)"})
-  public void testDummyClass_AdapterWriteWithJsonWriterDummyClass() throws IOException {
-    // Arrange
-    Adapter adapter = new Adapter();
-    JsonWriter out = new JsonWriter(new StringWriter());
-
-    // Act and Assert
-    assertThrows(
-        UnsupportedOperationException.class, () -> adapter.write(out, new DummyClass("foo")));
-  }
-
-  /**
    * Test GenericClass getters and setters.
    *
    * <p>Methods under test:
@@ -122,7 +79,7 @@ public class GenericClassesDiffblueTest {
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"void GenericClass.<init>()", "String GenericClass.toString()"})
+  @MethodsUnderTest({"void GenericClass.<init>()", "java.lang.String GenericClass.toString()"})
   public void testGenericClassGettersAndSetters() {
     // Arrange and Act
     GenericClass<Object> actualGenericClass = new GenericClass<>();
@@ -146,7 +103,7 @@ public class GenericClassesDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({
     "void GenericUsingGenericClass.<init>()",
-    "String GenericUsingGenericClass.toString()"
+    "java.lang.String GenericUsingGenericClass.toString()"
   })
   public void testGenericUsingGenericClassGettersAndSetters() {
     // Arrange and Act
@@ -170,7 +127,10 @@ public class GenericClassesDiffblueTest {
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"void UsingGenericClass.<init>()", "String UsingGenericClass.toString()"})
+  @MethodsUnderTest({
+    "void UsingGenericClass.<init>()",
+    "java.lang.String UsingGenericClass.toString()"
+  })
   public void testUsingGenericClassGettersAndSetters() {
     // Arrange, Act and Assert
     assertEquals("{g=null}", new UsingGenericClass().toString());

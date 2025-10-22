@@ -11,6 +11,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.reflect.ReflectionHelperDiffblueTestFactory;
 import com.google.gson.reflect.TypeToken;
+import java.io.IOException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -140,7 +141,8 @@ public class TypeAdaptersDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"TypeAdapterFactory TypeAdapters.newTypeHierarchyFactory(Class, TypeAdapter)"})
-  public void testNewTypeHierarchyFactory_thenReturnCreateGsonAndObjectToJsonNullIsNull() {
+  public void testNewTypeHierarchyFactory_thenReturnCreateGsonAndObjectToJsonNullIsNull()
+      throws IOException {
     // Arrange
     Class<Object> clazz = Object.class;
 
@@ -151,8 +153,14 @@ public class TypeAdaptersDiffblueTest {
     Gson gson = new Gson();
     Class<Object> type = Object.class;
     TypeToken<Object> getResult = TypeToken.get(type);
+    TypeAdapter<Object> actualCreateResult =
+        actualNewTypeHierarchyFactoryResult.create(gson, getResult);
 
     // Assert
-    assertEquals("null", actualNewTypeHierarchyFactoryResult.create(gson, getResult).toJson(null));
+    assertEquals("null", actualCreateResult.toJson(null));
+    assertEquals(
+        "{\"name\":\"John Doe\",\"age\":30,\"city\":\"New York\"}",
+        actualCreateResult.fromJson(
+            "\"{\\\"name\\\":\\\"John Doe\\\",\\\"age\\\":30,\\\"city\\\":\\\"New York\\\"}\""));
   }
 }

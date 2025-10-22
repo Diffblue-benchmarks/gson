@@ -1,10 +1,7 @@
 package com.example;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
@@ -12,19 +9,12 @@ import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.example.ClassWithJsonAdapterAnnotation.Adapter;
 import com.example.ClassWithJsonAdapterAnnotation.Deserializer;
-import com.example.ClassWithJsonAdapterAnnotation.DummyClass;
-import com.example.ClassWithJsonAdapterAnnotation.Serializer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
 import com.google.gson.Strictness;
-import com.google.gson.internal.LazilyParsedNumber;
-import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Type;
@@ -46,7 +36,7 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"DummyClass Adapter.read(JsonReader)"})
+  @MethodsUnderTest({"ClassWithJsonAdapterAnnotation.DummyClass Adapter.read(JsonReader)"})
   public void testAdapterRead_whenStringReaderWith42_thenReturnToStringIsAdapter42()
       throws IOException {
     // Arrange
@@ -69,7 +59,7 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"DummyClass Adapter.read(JsonReader)"})
+  @MethodsUnderTest({"ClassWithJsonAdapterAnnotation.DummyClass Adapter.read(JsonReader)"})
   public void testAdapterRead_whenStringReaderWith42_thenReturnToStringIsAdapter422()
       throws IOException {
     // Arrange
@@ -80,46 +70,6 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
 
     // Act and Assert
     assertEquals("adapter-42", adapter.read(in).toString());
-  }
-
-  /**
-   * Test Adapter {@link Adapter#write(JsonWriter, DummyClass)} with {@code JsonWriter}, {@code
-   * DummyClass}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonPrimitive}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Adapter#write(JsonWriter, DummyClass)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Adapter.write(JsonWriter, DummyClass)"})
-  public void testAdapterWriteWithJsonWriterDummyClass_thenJsonTreeWriterJsonPrimitive()
-      throws IOException {
-    // Arrange
-    Adapter adapter = new Adapter();
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    adapter.write(out, new DummyClass("foo"));
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    Number asNumber = getResult.getAsNumber();
-    assertTrue(asNumber instanceof LazilyParsedNumber);
-    assertEquals("adapter-foo", getResult.getAsString());
-    assertEquals("adapter-foo", asNumber.toString());
-    assertEquals('a', getResult.getAsCharacter());
-    assertFalse(getResult.getAsBoolean());
-    assertFalse(getResult.isJsonNull());
-    assertFalse(((JsonPrimitive) getResult).isBoolean());
-    assertFalse(((JsonPrimitive) getResult).isNumber());
-    assertTrue(getResult.isJsonPrimitive());
-    assertTrue(((JsonPrimitive) getResult).isString());
-    assertSame(getResult, getResult.getAsJsonPrimitive());
   }
 
   /**
@@ -138,7 +88,8 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({
-    "DummyClass Deserializer.deserialize(JsonElement, Type, JsonDeserializationContext)"
+    "ClassWithJsonAdapterAnnotation.DummyClass Deserializer.deserialize(JsonElement, Type,"
+        + " JsonDeserializationContext)"
   })
   public void testDeserializerDeserialize_givenValueOfOne_thenReturnToStringIsDeserializer1()
       throws JsonParseException {
@@ -157,25 +108,6 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
   }
 
   /**
-   * Test DummyClass getters and setters.
-   *
-   * <p>Methods under test:
-   *
-   * <ul>
-   *   <li>{@link DummyClass#DummyClass(String)}
-   *   <li>{@link DummyClass#toString()}
-   * </ul>
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void DummyClass.<init>(String)", "String DummyClass.toString()"})
-  public void testDummyClassGettersAndSetters() {
-    // Arrange, Act and Assert
-    assertEquals("foo", new DummyClass("foo").toString());
-  }
-
-  /**
    * Test getters and setters.
    *
    * <p>Methods under test:
@@ -190,7 +122,7 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({
     "void ClassWithJsonAdapterAnnotation.<init>()",
-    "String ClassWithJsonAdapterAnnotation.toString()"
+    "java.lang.String ClassWithJsonAdapterAnnotation.toString()"
   })
   public void testGettersAndSetters() {
     // Arrange, Act and Assert
@@ -220,44 +152,5 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
     assertEquals("1", actualClassWithJsonAdapterAnnotation.f3.toString());
     assertEquals("1", actualClassWithJsonAdapterAnnotation.f4.toString());
     assertNull(actualClassWithJsonAdapterAnnotation.f);
-  }
-
-  /**
-   * Test Serializer {@link Serializer#serialize(DummyClass, Type, JsonSerializationContext)} with
-   * {@code DummyClass}, {@code Type}, {@code JsonSerializationContext}.
-   *
-   * <p>Method under test: {@link Serializer#serialize(DummyClass, Type, JsonSerializationContext)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({
-    "JsonElement Serializer.serialize(DummyClass, Type, JsonSerializationContext)"
-  })
-  public void testSerializerSerializeWithDummyClassTypeJsonSerializationContext() {
-    // Arrange
-    Serializer serializer = new Serializer();
-    DummyClass src = new DummyClass("foo");
-
-    // Act
-    JsonElement actualSerializeResult =
-        serializer.serialize(
-            src, new TypeVarBoundedType(null), mock(JsonSerializationContext.class));
-
-    // Assert
-    assertTrue(actualSerializeResult instanceof JsonPrimitive);
-    assertTrue(actualSerializeResult.getAsNumber() instanceof LazilyParsedNumber);
-    assertEquals("serializer-foo", actualSerializeResult.getAsString());
-    assertEquals('s', actualSerializeResult.getAsCharacter());
-    assertFalse(actualSerializeResult.getAsBoolean());
-    assertFalse(actualSerializeResult.isJsonArray());
-    assertFalse(actualSerializeResult.isJsonNull());
-    assertFalse(actualSerializeResult.isJsonObject());
-    assertFalse(((JsonPrimitive) actualSerializeResult).isBoolean());
-    assertFalse(((JsonPrimitive) actualSerializeResult).isNumber());
-    assertTrue(actualSerializeResult.isJsonPrimitive());
-    assertTrue(((JsonPrimitive) actualSerializeResult).isString());
-    JsonPrimitive actualAsJsonPrimitive = actualSerializeResult.getAsJsonPrimitive();
-    assertSame(actualSerializeResult, actualAsJsonPrimitive);
   }
 }

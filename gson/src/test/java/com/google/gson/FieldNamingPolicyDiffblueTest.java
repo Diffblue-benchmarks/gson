@@ -13,25 +13,6 @@ public class FieldNamingPolicyDiffblueTest {
    * Test {@link FieldNamingPolicy#separateCamelCase(String, char)}.
    *
    * <ul>
-   *   <li>When {@code IDENTITY}.
-   *   <li>Then return {@code IADAEANATAIATAY}.
-   * </ul>
-   *
-   * <p>Method under test: {@link FieldNamingPolicy#separateCamelCase(String, char)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String FieldNamingPolicy.separateCamelCase(String, char)"})
-  public void testSeparateCamelCase_whenIdentity_thenReturnIadaeanataiatay() {
-    // Arrange, Act and Assert
-    assertEquals("IADAEANATAIATAY", FieldNamingPolicy.separateCamelCase("IDENTITY", 'A'));
-  }
-
-  /**
-   * Test {@link FieldNamingPolicy#separateCamelCase(String, char)}.
-   *
-   * <ul>
    *   <li>When {@code Name}.
    *   <li>Then return {@code Name}.
    * </ul>
@@ -45,6 +26,27 @@ public class FieldNamingPolicyDiffblueTest {
   public void testSeparateCamelCase_whenName_thenReturnName() {
     // Arrange, Act and Assert
     assertEquals("Name", FieldNamingPolicy.separateCamelCase("Name", 'A'));
+  }
+
+  /**
+   * Test {@link FieldNamingPolicy#separateCamelCase(String, char)}.
+   *
+   * <ul>
+   *   <li>When {@code "sampleJsonFieldName"}.
+   *   <li>Then return {@code "sampleAJsonAFieldAName"}.
+   * </ul>
+   *
+   * <p>Method under test: {@link FieldNamingPolicy#separateCamelCase(String, char)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String FieldNamingPolicy.separateCamelCase(String, char)"})
+  public void testSeparateCamelCase_whenSampleJsonFieldName_thenReturnSampleAJsonAFieldAName() {
+    // Arrange, Act and Assert
+    assertEquals(
+        "\"sampleAJsonAFieldAName\"",
+        FieldNamingPolicy.separateCamelCase("\"sampleJsonFieldName\"", 'A'));
   }
 
   /**
@@ -64,25 +66,6 @@ public class FieldNamingPolicyDiffblueTest {
   public void testUpperCaseFirstLetter_when42_thenReturn42() {
     // Arrange, Act and Assert
     assertEquals("42", FieldNamingPolicy.upperCaseFirstLetter("42"));
-  }
-
-  /**
-   * Test {@link FieldNamingPolicy#upperCaseFirstLetter(String)}.
-   *
-   * <ul>
-   *   <li>When {@code 42foo}.
-   *   <li>Then return {@code 42Foo}.
-   * </ul>
-   *
-   * <p>Method under test: {@link FieldNamingPolicy#upperCaseFirstLetter(String)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"String FieldNamingPolicy.upperCaseFirstLetter(String)"})
-  public void testUpperCaseFirstLetter_when42foo_thenReturn42Foo() {
-    // Arrange, Act and Assert
-    assertEquals("42Foo", FieldNamingPolicy.upperCaseFirstLetter("42foo"));
   }
 
   /**
@@ -121,5 +104,24 @@ public class FieldNamingPolicyDiffblueTest {
   public void testUpperCaseFirstLetter_whenIdentity_thenReturnIdentity() {
     // Arrange, Act and Assert
     assertEquals("IDENTITY", FieldNamingPolicy.upperCaseFirstLetter("IDENTITY"));
+  }
+
+  /**
+   * Test {@link FieldNamingPolicy#upperCaseFirstLetter(String)}.
+   *
+   * <ul>
+   *   <li>When {@code "jsonFieldName"}.
+   *   <li>Then return {@code "JsonFieldName"}.
+   * </ul>
+   *
+   * <p>Method under test: {@link FieldNamingPolicy#upperCaseFirstLetter(String)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String FieldNamingPolicy.upperCaseFirstLetter(String)"})
+  public void testUpperCaseFirstLetter_whenJsonFieldName_thenReturnJsonFieldName() {
+    // Arrange, Act and Assert
+    assertEquals("\"JsonFieldName\"", FieldNamingPolicy.upperCaseFirstLetter("\"jsonFieldName\""));
   }
 }

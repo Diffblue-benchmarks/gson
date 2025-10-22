@@ -115,8 +115,9 @@ public class NumberTypeAdapterDiffblueTest {
    * Test {@link NumberTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>Given three.
-   *   <li>Then return toString is {@code JsonReader.setStrictness(Strictness.LENIENT)}.
+   *   <li>Given {@code LENIENT}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code 42}.
+   *   <li>Then return longValue is forty-two.
    * </ul>
    *
    * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
@@ -125,7 +126,63 @@ public class NumberTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
-  public void testRead_givenThree_thenReturnToStringIsJsonReaderSetStrictnessStrictnessLenient()
+  public void testRead_givenLenient_whenStringReaderWith42_thenReturnLongValueIsFortyTwo()
+      throws IOException {
+    // Arrange
+    NumberTypeAdapter createLongOrDoubleAdapterResult =
+        NumberTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
+
+    JsonReader in = new JsonReader(new StringReader("42"));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertEquals(42L, createLongOrDoubleAdapterResult.read(in).longValue());
+  }
+
+  /**
+   * Test {@link NumberTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given {@code LENIENT}.
+   *   <li>When {@link StringReader#StringReader(String)} with {@code FALSE}.
+   *   <li>Then throw {@link JsonSyntaxException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
+  public void testRead_givenLenient_whenStringReaderWithFalse_thenThrowJsonSyntaxException()
+      throws IOException {
+    // Arrange
+    NumberTypeAdapter createLongOrDoubleAdapterResult =
+        NumberTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
+
+    JsonReader in = new JsonReader(new StringReader("FALSE"));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act and Assert
+    assertThrows(JsonSyntaxException.class, () -> createLongOrDoubleAdapterResult.read(in));
+  }
+
+  /**
+   * Test {@link NumberTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>Given one.
+   *   <li>When {@link StringReader#StringReader(String)} with a string skip one.
+   *   <li>Then return toString is {@code This}.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
+  public void testRead_givenOne_whenStringReaderWithAStringSkipOne_thenReturnToStringIsThis()
       throws IOException {
     // Arrange
     NumberTypeAdapter createLazilyParsedNumberAdapterResult =
@@ -133,8 +190,10 @@ public class NumberTypeAdapterDiffblueTest {
 
     StringReader in =
         new StringReader(
-            "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON");
-    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
+            "\"This is a test string for the java.io.StringReader method. It includes various"
+                + " characters such as numbers 123, special characters @#$%, and spaces. It's"
+                + " designed to test the method's functionality.\"");
+    in.skip(1L);
 
     JsonReader in2 = new JsonReader(in);
     in2.setStrictness(Strictness.LENIENT);
@@ -144,16 +203,15 @@ public class NumberTypeAdapterDiffblueTest {
 
     // Assert
     assertTrue(actualReadResult instanceof LazilyParsedNumber);
-    assertEquals("JsonReader.setStrictness(Strictness.LENIENT)", actualReadResult.toString());
+    assertEquals("This", actualReadResult.toString());
   }
 
   /**
    * Test {@link NumberTypeAdapter#read(JsonReader)}.
    *
    * <ul>
-   *   <li>Given three.
-   *   <li>When {@link StringReader#StringReader(String)} with {@code ; at path}.
-   *   <li>Then return toString is {@code t}.
+   *   <li>Given {@code STRICT}.
+   *   <li>Then return toString is a string.
    * </ul>
    *
    * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
@@ -162,94 +220,29 @@ public class NumberTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
-  public void testRead_givenThree_whenStringReaderWithAtPath_thenReturnToStringIsT()
-      throws IOException {
+  public void testRead_givenStrict_thenReturnToStringIsAString() throws IOException {
     // Arrange
     NumberTypeAdapter createLazilyParsedNumberAdapterResult =
         NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter();
 
-    StringReader in = new StringReader("; at path ");
-    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
-
-    JsonReader in2 = new JsonReader(in);
-    in2.setStrictness(Strictness.LENIENT);
+    JsonReader in =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces. It's"
+                    + " designed to test the method's functionality.\""));
+    in.setStrictness(Strictness.STRICT);
 
     // Act
-    Number actualReadResult = createLazilyParsedNumberAdapterResult.read(in2);
+    Number actualReadResult = createLazilyParsedNumberAdapterResult.read(in);
 
     // Assert
     assertTrue(actualReadResult instanceof LazilyParsedNumber);
-    assertEquals("t", actualReadResult.toString());
-  }
-
-  /**
-   * Test {@link NumberTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>Given three.
-   *   <li>When {@link StringReader#StringReader(String)} with {@code Cannot parse}.
-   *   <li>Then return toString is {@code not}.
-   * </ul>
-   *
-   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
-  public void testRead_givenThree_whenStringReaderWithCannotParse_thenReturnToStringIsNot()
-      throws IOException {
-    // Arrange
-    NumberTypeAdapter createLazilyParsedNumberAdapterResult =
-        NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter();
-
-    StringReader in = new StringReader("Cannot parse ");
-    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
-
-    JsonReader in2 = new JsonReader(in);
-    in2.setStrictness(Strictness.LENIENT);
-
-    // Act
-    Number actualReadResult = createLazilyParsedNumberAdapterResult.read(in2);
-
-    // Assert
-    assertTrue(actualReadResult instanceof LazilyParsedNumber);
-    assertEquals("not", actualReadResult.toString());
-  }
-
-  /**
-   * Test {@link NumberTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>Given two.
-   *   <li>Then return toString is {@code e}.
-   * </ul>
-   *
-   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
-  public void testRead_givenTwo_thenReturnToStringIsE() throws IOException {
-    // Arrange
-    NumberTypeAdapter createLazilyParsedNumberAdapterResult =
-        NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter();
-
-    StringReader in =
-        new StringReader(
-            "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON");
-    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 2);
-
-    JsonReader in2 = new JsonReader(in);
-    in2.setStrictness(Strictness.LENIENT);
-
-    // Act
-    Number actualReadResult = createLazilyParsedNumberAdapterResult.read(in2);
-
-    // Assert
-    assertTrue(actualReadResult instanceof LazilyParsedNumber);
-    assertEquals("e", actualReadResult.toString());
+    assertEquals(
+        "This is a test string for the java.io.StringReader method. It includes various characters"
+            + " such as numbers 123, special characters @#$%, and spaces. It's designed to test the"
+            + " method's functionality.",
+        actualReadResult.toString());
   }
 
   /**
@@ -287,6 +280,38 @@ public class NumberTypeAdapterDiffblueTest {
    * Test {@link NumberTypeAdapter#read(JsonReader)}.
    *
    * <ul>
+   *   <li>Then return toString is {@code not}.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
+  public void testRead_thenReturnToStringIsNot() throws IOException {
+    // Arrange
+    NumberTypeAdapter createLazilyParsedNumberAdapterResult =
+        NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter();
+
+    StringReader in = new StringReader("Cannot parse ");
+    in.read("\u0001\u0006\u0001\u0006".toCharArray(), 1, 3);
+
+    JsonReader in2 = new JsonReader(in);
+    in2.setStrictness(Strictness.LENIENT);
+
+    // Act
+    Number actualReadResult = createLazilyParsedNumberAdapterResult.read(in2);
+
+    // Assert
+    assertTrue(actualReadResult instanceof LazilyParsedNumber);
+    assertEquals("not", actualReadResult.toString());
+  }
+
+  /**
+   * Test {@link NumberTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
    *   <li>Then return toString is start of heading acknowledge start of heading acknowledge.
    * </ul>
    *
@@ -312,38 +337,6 @@ public class NumberTypeAdapterDiffblueTest {
     // Assert
     assertTrue(actualReadResult instanceof LazilyParsedNumber);
     assertEquals("\u0001\u0006\u0001\u0006", actualReadResult.toString());
-  }
-
-  /**
-   * Test {@link NumberTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>Then return toString is {@code Use}.
-   * </ul>
-   *
-   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
-  public void testRead_thenReturnToStringIsUse() throws IOException {
-    // Arrange
-    NumberTypeAdapter createLazilyParsedNumberAdapterResult =
-        NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter();
-
-    JsonReader in =
-        new JsonReader(
-            new StringReader(
-                "Use JsonReader.setStrictness(Strictness.LENIENT) to accept malformed JSON"));
-    in.setStrictness(Strictness.LENIENT);
-
-    // Act
-    Number actualReadResult = createLazilyParsedNumberAdapterResult.read(in);
-
-    // Assert
-    assertTrue(actualReadResult instanceof LazilyParsedNumber);
-    assertEquals("Use", actualReadResult.toString());
   }
 
   /**
@@ -433,6 +426,175 @@ public class NumberTypeAdapterDiffblueTest {
    * Test {@link NumberTypeAdapter#read(JsonReader)}.
    *
    * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then return toString is a string.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
+  public void testRead_whenStringReaderWithAString_thenReturnToStringIsAString()
+      throws IOException {
+    // Arrange
+    NumberTypeAdapter createLazilyParsedNumberAdapterResult =
+        NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter();
+
+    // Act
+    Number actualReadResult =
+        createLazilyParsedNumberAdapterResult.read(
+            new JsonReader(
+                new StringReader(
+                    "\"This is a test string for the java.io.StringReader method. It includes"
+                        + " various characters such as numbers 123, special characters @#$%, and"
+                        + " spaces. It's designed to test the method's functionality.\"")));
+
+    // Assert
+    assertTrue(actualReadResult instanceof LazilyParsedNumber);
+    assertEquals(
+        "This is a test string for the java.io.StringReader method. It includes various characters"
+            + " such as numbers 123, special characters @#$%, and spaces. It's designed to test the"
+            + " method's functionality.",
+        actualReadResult.toString());
+  }
+
+  /**
+   * Test {@link NumberTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with a string.
+   *   <li>Then return toString is a string.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
+  public void testRead_whenStringReaderWithAString_thenReturnToStringIsAString2()
+      throws IOException {
+    // Arrange
+    NumberTypeAdapter createLazilyParsedNumberAdapterResult =
+        NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter();
+
+    JsonReader in =
+        new JsonReader(
+            new StringReader(
+                "\"This is a test string for the java.io.StringReader method. It includes various"
+                    + " characters such as numbers 123, special characters @#$%, and spaces. It's"
+                    + " designed to test the method's functionality.\""));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act
+    Number actualReadResult = createLazilyParsedNumberAdapterResult.read(in);
+
+    // Assert
+    assertTrue(actualReadResult instanceof LazilyParsedNumber);
+    assertEquals(
+        "This is a test string for the java.io.StringReader method. It includes various characters"
+            + " such as numbers 123, special characters @#$%, and spaces. It's designed to test the"
+            + " method's functionality.",
+        actualReadResult.toString());
+  }
+
+  /**
+   * Test {@link NumberTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code at line}.
+   *   <li>Then return toString is {@code at}.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
+  public void testRead_whenStringReaderWithAtLine_thenReturnToStringIsAt() throws IOException {
+    // Arrange
+    NumberTypeAdapter createLazilyParsedNumberAdapterResult =
+        NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter();
+
+    JsonReader in = new JsonReader(new StringReader(" at line "));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act
+    Number actualReadResult = createLazilyParsedNumberAdapterResult.read(in);
+
+    // Assert
+    assertTrue(actualReadResult instanceof LazilyParsedNumber);
+    assertEquals("at", actualReadResult.toString());
+  }
+
+  /**
+   * Test {@link NumberTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code Cannot parse}.
+   *   <li>Then return toString is {@code Cannot}.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
+  public void testRead_whenStringReaderWithCannotParse_thenReturnToStringIsCannot()
+      throws IOException {
+    // Arrange
+    NumberTypeAdapter createLazilyParsedNumberAdapterResult =
+        NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter();
+
+    JsonReader in = new JsonReader(new StringReader("Cannot parse "));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act
+    Number actualReadResult = createLazilyParsedNumberAdapterResult.read(in);
+
+    // Assert
+    assertTrue(actualReadResult instanceof LazilyParsedNumber);
+    assertEquals("Cannot", actualReadResult.toString());
+  }
+
+  /**
+   * Test {@link NumberTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
+   *   <li>When {@link StringReader#StringReader(String)} with {@code End of input}.
+   *   <li>Then return toString is {@code End}.
+   * </ul>
+   *
+   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
+  public void testRead_whenStringReaderWithEndOfInput_thenReturnToStringIsEnd() throws IOException {
+    // Arrange
+    NumberTypeAdapter createLazilyParsedNumberAdapterResult =
+        NumberTypeAdapterDiffblueTestFactory.createLazilyParsedNumberAdapter();
+
+    JsonReader in = new JsonReader(new StringReader("End of input"));
+    in.setStrictness(Strictness.LENIENT);
+
+    // Act
+    Number actualReadResult = createLazilyParsedNumberAdapterResult.read(in);
+
+    // Assert
+    assertTrue(actualReadResult instanceof LazilyParsedNumber);
+    assertEquals("End", actualReadResult.toString());
+  }
+
+  /**
+   * Test {@link NumberTypeAdapter#read(JsonReader)}.
+   *
+   * <ul>
    *   <li>When {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
    *   <li>Then throw {@link JsonSyntaxException}.
    * </ul>
@@ -450,62 +612,11 @@ public class NumberTypeAdapterDiffblueTest {
         NumberTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
     StringReader in = new StringReader(Boolean.FALSE.toString());
 
-    // Act and Assert
-    assertThrows(
-        JsonSyntaxException.class, () -> createLongOrDoubleAdapterResult.read(new JsonReader(in)));
-  }
-
-  /**
-   * Test {@link NumberTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@link Boolean#FALSE} toString.
-   *   <li>Then throw {@link JsonSyntaxException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
-  public void testRead_whenStringReaderWithFalseToString_thenThrowJsonSyntaxException2()
-      throws IOException {
-    // Arrange
-    NumberTypeAdapter createLongOrDoubleAdapterResult =
-        NumberTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
-    StringReader in = new StringReader(Boolean.FALSE.toString());
-
     JsonReader in2 = new JsonReader(in);
     in2.setStrictness(Strictness.LENIENT);
 
     // Act and Assert
     assertThrows(JsonSyntaxException.class, () -> createLongOrDoubleAdapterResult.read(in2));
-  }
-
-  /**
-   * Test {@link NumberTypeAdapter#read(JsonReader)}.
-   *
-   * <ul>
-   *   <li>When {@link StringReader#StringReader(String)} with {@code FALSE}.
-   *   <li>Then throw {@link JsonSyntaxException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link NumberTypeAdapter#read(JsonReader)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Number NumberTypeAdapter.read(JsonReader)"})
-  public void testRead_whenStringReaderWithFalse_thenThrowJsonSyntaxException() throws IOException {
-    // Arrange
-    NumberTypeAdapter createLongOrDoubleAdapterResult =
-        NumberTypeAdapterDiffblueTestFactory.createLongOrDoubleAdapter();
-
-    // Act and Assert
-    assertThrows(
-        JsonSyntaxException.class,
-        () -> createLongOrDoubleAdapterResult.read(new JsonReader(new StringReader("FALSE"))));
   }
 
   /**

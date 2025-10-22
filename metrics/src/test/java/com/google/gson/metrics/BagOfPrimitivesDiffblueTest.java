@@ -48,12 +48,17 @@ class BagOfPrimitivesDiffblueTest {
   @MethodsUnderTest({"void BagOfPrimitives.<init>(long, int, boolean, String)"})
   void testNewBagOfPrimitives2() {
     // Arrange and Act
-    BagOfPrimitives actualBagOfPrimitives = new BagOfPrimitives(42L, 42, true, "42");
+    BagOfPrimitives actualBagOfPrimitives =
+        new BagOfPrimitives(
+            42L, 42, true, "\"Test string for BagOfPrimitives class in Gson metrics package\"");
 
     // Assert
-    assertEquals("42", actualBagOfPrimitives.stringValue);
     assertEquals(
-        "{\"longValue\":42,\"intValue\":42,\"booleanValue\":true,\"stringValue\":\"42\"}",
+        "\"Test string for BagOfPrimitives class in Gson metrics package\"",
+        actualBagOfPrimitives.stringValue);
+    assertEquals(
+        "{\"longValue\":42,\"intValue\":42,\"booleanValue\":true,\"stringValue\":\"\"Test string"
+            + " for BagOfPrimitives class in Gson metrics package\"\"}",
         actualBagOfPrimitives.getExpectedJson());
     assertEquals(42, actualBagOfPrimitives.getIntValue());
     assertEquals(42L, actualBagOfPrimitives.longValue);
@@ -181,7 +186,9 @@ class BagOfPrimitivesDiffblueTest {
   @MethodsUnderTest({"boolean BagOfPrimitives.equals(Object)", "int BagOfPrimitives.hashCode()"})
   void testEquals_whenOtherIsDifferent_thenReturnNotEqual() {
     // Arrange
-    BagOfPrimitives bagOfPrimitives = new BagOfPrimitives(42L, 42, true, "42");
+    BagOfPrimitives bagOfPrimitives =
+        new BagOfPrimitives(
+            42L, 42, true, "\"Test string for BagOfPrimitives class in Gson metrics package\"");
 
     // Act and Assert
     assertNotEquals(bagOfPrimitives, new BagOfPrimitives());
@@ -205,7 +212,11 @@ class BagOfPrimitivesDiffblueTest {
   void testEquals_whenOtherIsDifferent_thenReturnNotEqual2() {
     // Arrange
     BagOfPrimitives bagOfPrimitives =
-        new BagOfPrimitives(BagOfPrimitives.DEFAULT_VALUE, 42, true, "42");
+        new BagOfPrimitives(
+            BagOfPrimitives.DEFAULT_VALUE,
+            42,
+            true,
+            "\"Test string for BagOfPrimitives class in Gson metrics package\"");
 
     // Act and Assert
     assertNotEquals(bagOfPrimitives, new BagOfPrimitives());
@@ -229,7 +240,11 @@ class BagOfPrimitivesDiffblueTest {
   void testEquals_whenOtherIsDifferent_thenReturnNotEqual3() {
     // Arrange
     BagOfPrimitives bagOfPrimitives =
-        new BagOfPrimitives(BagOfPrimitives.DEFAULT_VALUE, 0, true, "42");
+        new BagOfPrimitives(
+            BagOfPrimitives.DEFAULT_VALUE,
+            0,
+            true,
+            "\"Test string for BagOfPrimitives class in Gson metrics package\"");
 
     // Act and Assert
     assertNotEquals(bagOfPrimitives, new BagOfPrimitives());
@@ -253,7 +268,11 @@ class BagOfPrimitivesDiffblueTest {
   void testEquals_whenOtherIsDifferent_thenReturnNotEqual4() {
     // Arrange
     BagOfPrimitives bagOfPrimitives =
-        new BagOfPrimitives(BagOfPrimitives.DEFAULT_VALUE, 0, false, "42");
+        new BagOfPrimitives(
+            BagOfPrimitives.DEFAULT_VALUE,
+            0,
+            false,
+            "\"Test string for BagOfPrimitives class in Gson metrics package\"");
 
     // Act and Assert
     assertNotEquals(bagOfPrimitives, new BagOfPrimitives());
