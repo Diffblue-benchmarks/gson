@@ -15,3 +15,5 @@
 -keepclassmembernames class com.example.NoSerializedNameMain$TestClassHasArgsConstructor {
   <fields>;
 }
+
+-dontwarn
