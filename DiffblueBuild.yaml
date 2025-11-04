@@ -160,9 +160,9 @@ global:
       flags: ~
       goals:
         - name: apply
-          goal: apply
+          goal: com.diffplug.spotless:spotless-maven-plugin:apply
           flags:
-            - -DspotlessFiles=${DIFFBLUE_TEST_FILE_REGEX}
+            - -DspotlessFiles=.*DiffblueTest.*\.java
         - name: disable
           goal: ~
           flags:
