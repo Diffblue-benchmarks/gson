@@ -4,6 +4,7 @@
 eclipsebin
 target
 */target
+.diffblue/
 pom.xml.*
 release.properties
 

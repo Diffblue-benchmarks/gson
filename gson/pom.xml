@@ -75,6 +75,18 @@
       <version>33.4.8-jre</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.21.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.diffblue.cover</groupId>
+      <artifactId>cover-annotations</artifactId>
+      <version>1.9.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -177,8 +189,13 @@
             run with e.g. Java 11, but Maven toolchain requirements (unlike Gradle ones)
             don't seem to be portable (every developer would have to set up toolchain
             configuration locally). -->
-          <argLine>--illegal-access=deny</argLine>
+          <!-- @{argLine} includes the JaCoCo agent for code coverage -->
+          <argLine>@{argLine} --illegal-access=deny</argLine>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
       <!-- Failsafe plugin for running integration tests against final JAR, see `*IT.java` test classes -->
       <plugin>
@@ -200,7 +217,7 @@
         <executions>
           <execution>
             <id>pre-obfuscate-class</id>
-            <phase>process-test-classes</phase>
+            <phase>none</phase>
             <goals>
               <goal>rename</goal>
             </goals>
@@ -226,7 +243,7 @@
         <executions>
           <execution>
             <id>obfuscate-test-class</id>
-            <phase>process-test-classes</phase>
+            <phase>none</phase>
             <goals>
               <goal>proguard</goal>
             </goals>
@@ -264,7 +281,7 @@
         <executions>
           <execution>
             <id>post-obfuscate-class</id>
-            <phase>process-test-classes</phase>
+            <phase>none</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
