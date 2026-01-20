@@ -1,0 +1,107 @@
+name: com.diffblue.cover.refactoring.Recipe
+recipeList:
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.Gson$FutureTypeAdapter,
+    fieldName: delegate}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: deserializationStrategies}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: modifiers}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: requireExpose}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: serializationStrategies}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: serializeInnerClasses}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: version}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: deserializationStrategies}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: modifiers}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: requireExpose}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: serializationStrategies}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: serializeInnerClasses}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: version}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: deserializationStrategies}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: modifiers}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: requireExpose}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: serializationStrategies}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: serializeInnerClasses}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: version}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: deserializationStrategies}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: modifiers}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: requireExpose}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: serializationStrategies}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: serializeInnerClasses}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.Excluder,
+    fieldName: version}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.ArrayTypeAdapter,
+    fieldName: componentType}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.ArrayTypeAdapter,
+    fieldName: componentTypeAdapter}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.CollectionTypeAdapterFactory,
+    fieldName: constructorConstructor}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory,
+    fieldName: adapterFactoryMap}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory,
+    fieldName: constructorConstructor}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.JsonTreeWriter,
+    fieldName: pendingName}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.JsonTreeWriter,
+    fieldName: product}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.JsonTreeWriter,
+    fieldName: stack}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: deferredName}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: formattedColon}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: formattedComma}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: formattingStyle}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: htmlSafe}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: out}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: serializeNulls}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: stack}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: stackSize}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: strictness}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.stream.JsonWriter,
+    fieldName: usesEmptyNewlineAndIndent}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.ReflectiveTypeAdapterFactory,
+    fieldName: constructorConstructor}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.ReflectiveTypeAdapterFactory,
+    fieldName: excluder}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.ReflectiveTypeAdapterFactory,
+    fieldName: fieldNamingPolicy}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.ReflectiveTypeAdapterFactory,
+    fieldName: jsonAdapterFactory}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.ReflectiveTypeAdapterFactory,
+    fieldName: reflectionFilters}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper,
+    fieldName: context}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper,
+    fieldName: delegate}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper,
+    fieldName: type}
+type: specs.openrewrite.org/v1beta/recipe

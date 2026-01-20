@@ -1,0 +1,27 @@
+name: com.diffblue.cover.refactoring.Recipe
+recipeList:
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter,
+    fieldName: enumSerialization}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter,
+    fieldName: jsonFormat}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter,
+    fieldName: protoFormat}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter,
+    fieldName: serializedEnumValueExtensions}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter,
+    fieldName: serializedNameExtensions}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter,
+    fieldName: shouldUseJsonNameFieldOption}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter$Builder,
+    fieldName: enumSerialization}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter$Builder,
+    fieldName: jsonFormat}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter$Builder,
+    fieldName: protoFormat}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter$Builder,
+    fieldName: serializedEnumValueExtensions}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter$Builder,
+    fieldName: serializedNameExtensions}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.protobuf.ProtoTypeAdapter$Builder,
+    fieldName: shouldUseJsonNameFieldOption}
+type: specs.openrewrite.org/v1beta/recipe

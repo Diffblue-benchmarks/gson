@@ -57,18 +57,13 @@ public class ReflectionHelperDiffblueTest {
   /**
    * Test {@link ReflectionHelper#isRecord(Class)}.
    *
-   * <ul>
-   *   <li>When {@code Object}.
-   *   <li>Then return {@code false}.
-   * </ul>
-   *
    * <p>Method under test: {@link ReflectionHelper#isRecord(Class)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"boolean ReflectionHelper.isRecord(Class)"})
-  public void testIsRecord_whenJavaLangObject_thenReturnFalse() {
+  public void testIsRecord() {
     // Arrange
     Class<Object> raw = Object.class;
 

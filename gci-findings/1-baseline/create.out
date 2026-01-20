@@ -1,0 +1,520 @@
+INFO  Diffblue Cover 2025.12.02-74144f0-licensed
+INFO  
+INFO  Command: create
+INFO  Create tests for the specified package/class/method.
+INFO  
+INFO  Selected modules:
+INFO  - com.google.code.gson:gson
+INFO  - com.google.code.gson:test-shrinker
+INFO  - com.google.code.gson:gson-extras
+INFO  - com.google.code.gson:gson-metrics
+INFO  - com.google.code.gson:proto
+INFO  
+INFO  
+INFO  [1/5] Creating tests for module: com.google.code.gson:gson
+INFO  ==========================================================
+INFO  
+INFO  Detecting environment:
+INFO  ----------------------
+INFO  Detected Java version 11.0.29
+INFO  Selected build system: Maven
+INFO  Selected classpath from build system maven
+INFO  Selected test framework: JUnit
+INFO  Selected Java language compliance level: 11
+INFO  Selected test validation: enabled
+INFO  Prefixes for filtering classes/methods:
+INFO  - com.google.gson
+INFO  - com.google.gson.annotations
+INFO  - com.google.gson.internal
+INFO  - com.google.gson.internal.bind
+INFO  - com.google.gson.internal.bind.util
+INFO  - com.google.gson.internal.reflect
+INFO  - com.google.gson.internal.sql
+INFO  - com.google.gson.reflect
+INFO  - com.google.gson.stream
+INFO  Gathering methods to test...
+INFO  Found 518 callable methods in 65 classes
+INFO  
+INFO  Creating tests:
+INFO  ---------------
+INFO   [1/65] com.google.gson.FieldAttributes
+INFO   [1/65]   Tests created: 0
+INFO   [2/65] com.google.gson.FieldNamingPolicy
+INFO   [2/65]   Tests created: 6
+INFO   [3/65] com.google.gson.FieldNamingStrategy
+INFO   [3/65]   Tests created: 0
+INFO   [4/65] com.google.gson.FormattingStyle
+INFO   [4/65]   Tests created: 14
+INFO   [5/65] com.google.gson.Gson
+INFO   [5/65]   Tests created: 332
+INFO   [6/65] com.google.gson.Gson$FutureTypeAdapter
+INFO   [6/65]   Tests created: 8
+INFO   [7/65] com.google.gson.GsonBuilder
+INFO   [7/65]   Tests created: 35
+INFO   [8/65] com.google.gson.JsonArray
+INFO   [8/65]   Tests created: 107
+INFO   [9/65] com.google.gson.JsonElement
+INFO   [9/65]   Tests created: 96
+INFO  [10/65] com.google.gson.JsonIOException
+INFO  [10/65]   Tests created: 3
+INFO  [11/65] com.google.gson.JsonNull
+INFO  [11/65]   Tests created: 7
+INFO  [12/65] com.google.gson.JsonObject
+INFO  [12/65]   Tests created: 119
+INFO  [13/65] com.google.gson.JsonParseException
+INFO  [13/65]   Tests created: 3
+INFO  [14/65] com.google.gson.JsonParser
+INFO  [14/65]   Tests created: 50
+INFO  [15/65] com.google.gson.JsonPrimitive
+INFO  [15/65]   Tests created: 33
+INFO  [16/65] com.google.gson.JsonStreamParser
+INFO  [16/65]   Tests created: 22
+INFO  [17/65] com.google.gson.JsonSyntaxException
+INFO  [17/65]   Tests created: 3
+INFO  [18/65] com.google.gson.LongSerializationPolicy
+INFO  [18/65]   Tests created: 0
+INFO  [19/65] com.google.gson.ReflectionAccessFilter$FilterResult
+INFO  [19/65]   Tests created: 0
+INFO  [20/65] com.google.gson.Strictness
+INFO  [20/65]   Tests created: 0
+INFO  [21/65] com.google.gson.ToNumberPolicy
+INFO  [21/65]   Tests created: 0
+INFO  [22/65] com.google.gson.TypeAdapter
+INFO  [22/65]   Tests created: 16
+INFO  [23/65] com.google.gson.internal.ConstructorConstructor
+INFO  [23/65]   Tests created: 6
+INFO  [24/65] com.google.gson.internal.Excluder
+INFO  [24/65]   Tests created: 12
+INFO  [25/65] com.google.gson.internal.GsonTypes
+INFO  [25/65]   Tests created: 35
+INFO  [26/65] com.google.gson.internal.JavaVersion
+INFO  [26/65]   Tests created: 6
+INFO  [27/65] com.google.gson.internal.LazilyParsedNumber
+INFO  [27/65]   Tests created: 10
+INFO  [28/65] com.google.gson.internal.LinkedTreeMap
+INFO  [28/65]   Tests created: 78
+INFO  [29/65] com.google.gson.internal.LinkedTreeMap$EntrySet
+INFO  [29/65]   Tests created: 1
+INFO  [30/65] com.google.gson.internal.LinkedTreeMap$KeySet
+INFO  [30/65]   Tests created: 4
+INFO  [31/65] com.google.gson.internal.LinkedTreeMap$Node
+INFO  [31/65]   Tests created: 19
+INFO  [32/65] com.google.gson.internal.NonNullElementWrapperList
+INFO  [32/65]   Tests created: 9
+INFO  [33/65] com.google.gson.internal.NumberLimits
+INFO  [33/65]   Tests created: 2
+INFO  [34/65] com.google.gson.internal.PreJava9DateFormatProvider
+INFO  [34/65]   Tests created: 8
+INFO  [35/65] com.google.gson.internal.Primitives
+INFO  [35/65]   Tests created: 14
+INFO  [36/65] com.google.gson.internal.ReflectionAccessFilterHelper
+INFO  [36/65]   Tests created: 6
+INFO  [37/65] com.google.gson.internal.Streams
+INFO  [37/65]   Tests created: 26
+INFO  [38/65] com.google.gson.internal.TroubleshootingGuide
+INFO  [38/65]   Tests created: 1
+INFO  [39/65] com.google.gson.internal.bind.ArrayTypeAdapter
+INFO  [39/65]   Tests created: 4
+INFO  [40/65] com.google.gson.internal.bind.CollectionTypeAdapterFactory
+INFO  [40/65]   Tests created: 1
+INFO  [41/65] com.google.gson.internal.bind.DefaultDateTypeAdapter
+INFO  [41/65]   Tests created: 0
+INFO  [42/65] com.google.gson.internal.bind.DefaultDateTypeAdapter$DateType
+INFO  [42/65]   Tests created: 0
+INFO  [43/65] com.google.gson.internal.bind.EnumTypeAdapter
+INFO  [43/65]   Tests created: 0
+INFO  [44/65] com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory
+INFO  [44/65]   Tests created: 6
+INFO  [45/65] com.google.gson.internal.bind.JsonElementTypeAdapter
+INFO  [45/65]   Tests created: 32
+INFO  [46/65] com.google.gson.internal.bind.JsonTreeReader
+INFO  [46/65]   Tests created: 106
+INFO  [47/65] com.google.gson.internal.bind.JsonTreeWriter
+INFO  [47/65]   Tests created: 24
+INFO  [48/65] com.google.gson.internal.bind.MapTypeAdapterFactory
+INFO  [48/65]   Tests created: 2
+INFO  [49/65] com.google.gson.internal.bind.NumberTypeAdapter
+INFO  [49/65]   Tests created: 2
+INFO  [50/65] com.google.gson.internal.bind.ObjectTypeAdapter
+INFO  [50/65]   Tests created: 2
+INFO  [51/65] com.google.gson.internal.bind.ReflectiveTypeAdapterFactory
+INFO  [51/65]   Tests created: 3
+INFO  [52/65] com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter
+INFO  [52/65]   Tests created: 0
+INFO  [53/65] com.google.gson.internal.bind.TreeTypeAdapter
+INFO  [53/65]   Tests created: 43
+INFO  [54/65] com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper
+INFO  [54/65]   Tests created: 18
+INFO  [55/65] com.google.gson.internal.bind.TypeAdapters
+INFO  [55/65]   Tests created: 4
+INFO  [56/65] com.google.gson.internal.bind.util.ISO8601Utils
+INFO  [56/65]   Tests created: 14
+INFO  [57/65] com.google.gson.internal.reflect.ReflectionHelper
+INFO  [57/65]   Tests created: 4
+INFO  [58/65] com.google.gson.internal.sql.SqlDateTypeAdapter
+INFO  [58/65]   Tests created: 0
+INFO  [59/65] com.google.gson.internal.sql.SqlTimeTypeAdapter
+INFO  [59/65]   Tests created: 0
+INFO  [60/65] com.google.gson.internal.sql.SqlTimestampTypeAdapter
+INFO  [60/65]   Tests created: 0
+INFO  [61/65] com.google.gson.reflect.TypeToken
+INFO  [61/65]   Tests created: 21
+INFO  [62/65] com.google.gson.stream.JsonReader
+INFO  [62/65]   Tests created: 235
+INFO  [63/65] com.google.gson.stream.JsonToken
+INFO  [63/65]   Tests created: 0
+INFO  [64/65] com.google.gson.stream.JsonWriter
+INFO  [64/65]   Tests created: 65
+INFO  [65/65] com.google.gson.stream.MalformedJsonException
+INFO  [65/65]   Tests created: 3
+INFO  
+INFO  Test creation summary for module: com.google.code.gson:gson
+INFO  -----------------------------------------------------------
+INFO  Total:                                             518 methods
+INFO  1,680 tests created for:                           423 methods
+INFO  
+INFO  Not unit-testable:                                   5 methods
+INFO      5 T009: No implementation for abstract class
+INFO  No tests created for:                               78 methods
+INFO     21 R008: Failed to instantiate class under test
+INFO     18 R013: No inputs found that don't throw a trivial exception
+INFO     16 R083: Can't find a suitable constructor
+INFO     10 R002: Missing observers
+INFO      1 R081: Exception in arrange section
+INFO  
+INFO  Running validation command.
+INFO  This can take a couple of minutes.
+INFO  All 1,680 created tests were successfully validated.
+INFO  Refactorings have been generated - run `dcover refactor` to apply them
+INFO  Calculating coverage from Diffblue tests.
+INFO  JaCoCo report file created in /home/jbergqvist/diffblue/gson/gson/.diffblue/reports/diffblue-tests-jacoco-report.xml
+INFO  Calculating coverage from manual tests.
+INFO  JaCoCo report file created in /home/jbergqvist/diffblue/gson/gson/.diffblue/reports/manual-tests-jacoco-report.xml
+INFO  
+INFO  Diffblue tests cover 3091 of 5021 lines to cover (61.6%)
+INFO  Manual tests cover 4502 of 5021 lines to cover (89.7%)
+INFO  Writing JSON report to /home/jbergqvist/diffblue/gson/gson/.diffblue/reports/report.json
+INFO  Coverage reports upload successful
+      Total count of Diffblue tests: 1680
+      Diffblue test coverage: 3091 of 5021 lines to cover
+      Manual test coverage: 4502 of 5021 lines to cover
+      View this run on the dashboard at http://localhost:8080/ui/project/Projects/gson/gson?runId=1000062
+INFO  
+INFO  [2/5] Creating tests for module: com.google.code.gson:test-shrinker
+INFO  ===================================================================
+INFO  
+INFO  Detecting environment:
+INFO  ----------------------
+INFO  Detected Java version 11.0.29
+INFO  Selected build system: Maven
+INFO  Selected classpath from build system maven
+INFO  Selected test framework: JUnit
+INFO  Selected Java language compliance level: 11
+INFO  Selected test validation: enabled
+INFO  Prefixes for filtering classes/methods:
+INFO  - com.example
+INFO  Gathering methods to test...
+INFO  Found 54 callable methods in 31 classes
+INFO  
+INFO  Creating tests:
+INFO  ---------------
+INFO   [1/31] com.example.ClassWithAdapter
+INFO   [1/31]   Tests created: 1
+INFO   [2/31] com.example.ClassWithAdapter$Adapter
+INFO   [2/31]   Tests created: 5
+INFO   [3/31] com.example.ClassWithExposeAnnotation
+INFO   [3/31]   Tests created: 1
+INFO   [4/31] com.example.ClassWithHasArgsConstructor
+INFO   [4/31]   Tests created: 1
+INFO   [5/31] com.example.ClassWithJsonAdapterAnnotation
+INFO   [5/31]   Tests created: 2
+INFO   [6/31] com.example.ClassWithJsonAdapterAnnotation$Adapter
+INFO   [6/31]   Tests created: 3
+INFO   [7/31] com.example.ClassWithJsonAdapterAnnotation$Deserializer
+INFO   [7/31]   Tests created: 1
+INFO   [8/31] com.example.ClassWithJsonAdapterAnnotation$DummyClass
+INFO   [8/31]   Tests created: 1
+INFO   [9/31] com.example.ClassWithJsonAdapterAnnotation$Factory
+INFO   [9/31]   Tests created: 0
+INFO  [10/31] com.example.ClassWithJsonAdapterAnnotation$Serializer
+INFO  [10/31]   Tests created: 1
+INFO  [11/31] com.example.ClassWithNamedFields
+INFO  [11/31]   Tests created: 1
+INFO  [12/31] com.example.ClassWithNoArgsConstructor
+INFO  [12/31]   Tests created: 1
+INFO  [13/31] com.example.ClassWithSerializedName
+INFO  [13/31]   Tests created: 1
+INFO  [14/31] com.example.ClassWithUnreferencedHasArgsConstructor
+INFO  [14/31]   Tests created: 1
+INFO  [15/31] com.example.ClassWithUnreferencedNoArgsConstructor
+INFO  [15/31]   Tests created: 1
+INFO  [16/31] com.example.ClassWithVersionAnnotations
+INFO  [16/31]   Tests created: 1
+INFO  [17/31] com.example.EnumClass
+INFO  [17/31]   Tests created: 0
+INFO  [18/31] com.example.EnumClassWithSerializedName
+INFO  [18/31]   Tests created: 0
+INFO  [19/31] com.example.GenericClasses$DummyClass
+INFO  [19/31]   Tests created: 1
+INFO  [20/31] com.example.GenericClasses$DummyClass$Adapter
+INFO  [20/31]   Tests created: 3
+INFO  [21/31] com.example.GenericClasses$GenericClass
+INFO  [21/31]   Tests created: 1
+INFO  [22/31] com.example.GenericClasses$GenericUsingGenericClass
+INFO  [22/31]   Tests created: 1
+INFO  [23/31] com.example.GenericClasses$UsingGenericClass
+INFO  [23/31]   Tests created: 1
+INFO  [24/31] com.example.InterfaceWithImplementation$Implementation
+INFO  [24/31]   Tests created: 1
+INFO  [25/31] com.example.Main
+INFO  [25/31]   Tests created: 0
+INFO  [26/31] com.example.NoSerializedNameMain
+INFO  [26/31]   Tests created: 2
+INFO  [27/31] com.example.NoSerializedNameMain$TestClassHasArgsConstructor
+INFO  [27/31]   Tests created: 1
+INFO  [28/31] com.example.NoSerializedNameMain$TestClassNoArgsConstructor
+INFO  [28/31]   Tests created: 1
+INFO  [29/31] com.example.NoSerializedNameMain$TestClassNotAbstract
+INFO  [29/31]   Tests created: 1
+INFO  [30/31] com.example.TestExecutor
+INFO  [30/31]   Tests created: 4
+INFO  [31/31] com.example.UnusedClass
+INFO  [31/31]   Tests created: 1
+INFO  
+INFO  Test creation summary for module: com.google.code.gson:test-shrinker
+INFO  --------------------------------------------------------------------
+INFO  Total:                                              54 methods
+INFO  40 tests created for:                               41 methods
+INFO  
+INFO  No tests created for:                                9 methods
+INFO      6 R002: Missing observers
+INFO      2 R013: No inputs found that don't throw a trivial exception
+INFO  
+INFO  Running validation command.
+INFO  This can take a couple of minutes.
+INFO  All 40 created tests were successfully validated.
+INFO  Calculating coverage from Diffblue tests.
+INFO  JaCoCo report file created in /home/jbergqvist/diffblue/gson/test-shrinker/.diffblue/reports/diffblue-tests-jacoco-report.xml
+INFO  Calculating coverage from manual tests.
+INFO  JaCoCo report file created in /home/jbergqvist/diffblue/gson/test-shrinker/.diffblue/reports/manual-tests-jacoco-report.xml
+INFO  
+INFO  Diffblue tests cover 96 of 247 lines to cover (38.9%)
+INFO  Manual tests cover 0 of 247 lines to cover (0.0%)
+INFO  Writing JSON report to /home/jbergqvist/diffblue/gson/test-shrinker/.diffblue/reports/report.json
+INFO  Coverage reports upload successful
+      Total count of Diffblue tests: 40
+      Diffblue test coverage: 96 of 247 lines to cover
+      Manual test coverage: 0 of 247 lines to cover
+      View this run on the dashboard at http://localhost:8080/ui/project/Projects/gson/test-shrinker?runId=1000063
+INFO  
+INFO  [3/5] Creating tests for module: com.google.code.gson:gson-extras
+INFO  =================================================================
+INFO  
+INFO  Detecting environment:
+INFO  ----------------------
+INFO  Detected Java version 11.0.29
+INFO  Selected build system: Maven
+INFO  Selected classpath from build system maven
+INFO  Selected test framework: JUnit
+INFO  Selected Java language compliance level: 11
+INFO  Selected test validation: enabled
+INFO  Prefixes for filtering classes/methods:
+INFO  - com.google.gson.extras.examples.rawcollections
+INFO  - com.google.gson.graph
+INFO  - com.google.gson.interceptors
+INFO  - com.google.gson.typeadapters
+INFO  Gathering methods to test...
+INFO  Found 34 callable methods in 12 classes
+INFO  
+INFO  Creating tests:
+INFO  ---------------
+INFO   [1/12] com.google.gson.extras.examples.rawcollections.RawCollectionsExample
+INFO   [1/12]   Tests created: 0
+INFO   [2/12] com.google.gson.extras.examples.rawcollections.RawCollectionsExample$Event
+INFO   [2/12]   Tests created: 0
+INFO   [3/12] com.google.gson.graph.GraphAdapterBuilder
+INFO   [3/12]   Tests created: 4
+INFO   [4/12] com.google.gson.graph.GraphAdapterBuilder$Element
+INFO   [4/12]   Tests created: 21
+INFO   [5/12] com.google.gson.graph.GraphAdapterBuilder$Factory
+INFO   [5/12]   Tests created: 3
+INFO   [6/12] com.google.gson.graph.GraphAdapterBuilder$Graph
+INFO   [6/12]   Tests created: 0
+INFO   [7/12] com.google.gson.interceptors.InterceptorFactory
+INFO   [7/12]   Tests created: 1
+INFO   [8/12] com.google.gson.interceptors.InterceptorFactory$InterceptorAdapter
+INFO   [8/12]   Tests created: 2
+INFO   [9/12] com.google.gson.typeadapters.PostConstructAdapterFactory
+INFO   [9/12]   Tests created: 1
+INFO  [10/12] com.google.gson.typeadapters.PostConstructAdapterFactory$PostConstructAdapter
+INFO  [10/12]   Tests created: 13
+INFO  [11/12] com.google.gson.typeadapters.RuntimeTypeAdapterFactory
+INFO  [11/12]   Tests created: 4
+INFO  [12/12] com.google.gson.typeadapters.UtcDateTypeAdapter
+INFO  [12/12]   Tests created: 12
+INFO  
+INFO  Test creation summary for module: com.google.code.gson:gson-extras
+INFO  ------------------------------------------------------------------
+INFO  Total:                                              34 methods
+INFO  61 tests created for:                               18 methods
+INFO  
+INFO  Tested indirectly via other methods:                 1 method
+INFO      1 T005: Trivial constructor
+INFO  Not unit-testable:                                   1 method
+INFO      1 T006: Main method
+INFO  No tests created for:                               14 methods
+INFO      7 R002: Missing observers
+INFO      6 R013: No inputs found that don't throw a trivial exception
+INFO      1 R083: Can't find a suitable constructor
+INFO  
+INFO  Running validation command.
+INFO  This can take a couple of minutes.
+INFO  All 61 created tests were successfully validated.
+INFO  Refactorings have been generated - run `dcover refactor` to apply them
+INFO  Calculating coverage from Diffblue tests.
+INFO  JaCoCo report file created in /home/jbergqvist/diffblue/gson/extras/.diffblue/reports/diffblue-tests-jacoco-report.xml
+INFO  Calculating coverage from manual tests.
+INFO  JaCoCo report file created in /home/jbergqvist/diffblue/gson/extras/.diffblue/reports/manual-tests-jacoco-report.xml
+INFO  
+INFO  Diffblue tests cover 168 of 370 lines to cover (45.4%)
+INFO  Manual tests cover 314 of 370 lines to cover (84.9%)
+INFO  Writing JSON report to /home/jbergqvist/diffblue/gson/extras/.diffblue/reports/report.json
+INFO  Coverage reports upload successful
+      Total count of Diffblue tests: 61
+      Diffblue test coverage: 168 of 370 lines to cover
+      Manual test coverage: 314 of 370 lines to cover
+      View this run on the dashboard at http://localhost:8080/ui/project/Projects/gson/gson/gson-extras?runId=1000064
+INFO  
+INFO  [4/5] Creating tests for module: com.google.code.gson:gson-metrics
+INFO  ==================================================================
+INFO  
+INFO  Detecting environment:
+INFO  ----------------------
+INFO  Detected Java version 11.0.29
+INFO  Selected build system: Maven
+INFO  Selected classpath from build system maven
+INFO  Selected test framework: JUnit Jupiter API
+INFO  Selected Java language compliance level: 11
+INFO  Selected test validation: enabled
+INFO  Prefixes for filtering classes/methods:
+INFO  - com.google.gson.metrics
+INFO  Gathering methods to test...
+INFO  Found 40 callable methods in 13 classes
+INFO  
+INFO  Creating tests:
+INFO  ---------------
+INFO   [1/13] com.google.gson.metrics.BagOfPrimitives
+INFO   [1/13]   Tests created: 12
+INFO   [2/13] com.google.gson.metrics.BagOfPrimitivesDeserializationBenchmark
+INFO   [2/13]   Tests created: 1
+INFO   [3/13] com.google.gson.metrics.CollectionsDeserializationBenchmark
+INFO   [3/13]   Tests created: 1
+INFO   [4/13] com.google.gson.metrics.NonUploadingCaliperRunner
+INFO   [4/13]   Tests created: 4
+INFO   [5/13] com.google.gson.metrics.ParseBenchmark
+INFO   [5/13]   Tests created: 1
+INFO   [6/13] com.google.gson.metrics.ParseBenchmark$Content
+INFO   [6/13]   Tests created: 1
+INFO   [7/13] com.google.gson.metrics.ParseBenchmark$Feed
+INFO   [7/13]   Tests created: 1
+INFO   [8/13] com.google.gson.metrics.ParseBenchmark$Item
+INFO   [8/13]   Tests created: 1
+INFO   [9/13] com.google.gson.metrics.ParseBenchmark$Link
+INFO   [9/13]   Tests created: 1
+INFO  [10/13] com.google.gson.metrics.ParseBenchmark$ReaderUser
+INFO  [10/13]   Tests created: 1
+INFO  [11/13] com.google.gson.metrics.ParseBenchmark$Tweet
+INFO  [11/13]   Tests created: 1
+INFO  [12/13] com.google.gson.metrics.ParseBenchmark$User
+INFO  [12/13]   Tests created: 1
+INFO  [13/13] com.google.gson.metrics.SerializationBenchmark
+INFO  [13/13]   Tests created: 0
+INFO  
+INFO  Test creation summary for module: com.google.code.gson:gson-metrics
+INFO  -------------------------------------------------------------------
+INFO  Total:                                              40 methods
+INFO  26 tests created for:                               22 methods
+INFO  
+INFO  Not unit-testable:                                   4 methods
+INFO      4 T006: Main method
+INFO  No tests created for:                               14 methods
+INFO      7 R013: No inputs found that don't throw a trivial exception
+INFO      6 R002: Missing observers
+INFO  
+INFO  Running validation command.
+INFO  This can take a couple of minutes.
+INFO  All 26 created tests were successfully validated.
+INFO  Refactorings have been generated - run `dcover refactor` to apply them
+INFO  Calculating coverage from Diffblue tests.
+INFO  JaCoCo report file created in /home/jbergqvist/diffblue/gson/metrics/.diffblue/reports/diffblue-tests-jacoco-report.xml
+INFO  Calculating coverage from manual tests.
+INFO  JaCoCo report file created in /home/jbergqvist/diffblue/gson/metrics/.diffblue/reports/manual-tests-jacoco-report.xml
+INFO  
+INFO  Diffblue tests cover 54 of 311 lines to cover (17.4%)
+INFO  Manual tests cover 0 of 311 lines to cover (0.0%)
+INFO  Writing JSON report to /home/jbergqvist/diffblue/gson/metrics/.diffblue/reports/report.json
+INFO  Coverage reports upload successful
+      Total count of Diffblue tests: 26
+      Diffblue test coverage: 54 of 311 lines to cover
+      Manual test coverage: 0 of 311 lines to cover
+      View this run on the dashboard at http://localhost:8080/ui/project/Projects/gson/gson/gson-metrics?runId=1000065
+INFO  
+INFO  [5/5] Creating tests for module: com.google.code.gson:proto
+INFO  ===========================================================
+INFO  
+INFO  Detecting environment:
+INFO  ----------------------
+INFO  Detected Java version 11.0.29
+INFO  Selected build system: Maven
+INFO  Selected classpath from build system maven
+INFO  Selected test framework: JUnit
+INFO  Selected Java language compliance level: 11
+INFO  Selected test validation: enabled
+INFO  Prefixes for filtering classes/methods:
+INFO  - com.google.gson.protobuf
+INFO  Gathering methods to test...
+INFO  Found 11 callable methods in 3 classes
+INFO  
+INFO  Creating tests:
+INFO  ---------------
+INFO  [1/3] com.google.gson.protobuf.ProtoTypeAdapter
+INFO  [1/3]   Tests created: 0
+INFO  [2/3] com.google.gson.protobuf.ProtoTypeAdapter$Builder
+INFO  [2/3]   Tests created: 3
+INFO  [3/3] com.google.gson.protobuf.ProtoTypeAdapter$EnumSerialization
+INFO  [3/3]   Tests created: 0
+INFO  
+INFO  Test creation summary for module: com.google.code.gson:proto
+INFO  ------------------------------------------------------------
+INFO  Total:                                              11 methods
+INFO  3 tests created for:                                 3 methods
+INFO  
+INFO  No tests created for:                                6 methods
+INFO      4 R002: Missing observers
+INFO      1 R013: No inputs found that don't throw a trivial exception
+INFO      1 R083: Can't find a suitable constructor
+INFO  
+INFO  Running validation command.
+INFO  This can take a couple of minutes.
+INFO  All 3 created tests were successfully validated.
+INFO  Refactorings have been generated - run `dcover refactor` to apply them
+INFO  Calculating coverage from Diffblue tests.
+INFO  JaCoCo report file created in /home/jbergqvist/diffblue/gson/proto/.diffblue/reports/diffblue-tests-jacoco-report.xml
+INFO  Calculating coverage from manual tests.
+INFO  JaCoCo report file created in /home/jbergqvist/diffblue/gson/proto/.diffblue/reports/manual-tests-jacoco-report.xml
+INFO  
+INFO  Diffblue tests cover 23 of 139 lines to cover (16.5%)
+INFO  Manual tests cover 122 of 139 lines to cover (87.8%)
+INFO  Writing JSON report to /home/jbergqvist/diffblue/gson/proto/.diffblue/reports/report.json
+INFO  Coverage reports upload successful
+      Total count of Diffblue tests: 3
+      Diffblue test coverage: 23 of 139 lines to cover
+      Manual test coverage: 122 of 139 lines to cover
+      View this run on the dashboard at http://localhost:8080/ui/project/Projects/gson/gson/proto?runId=1000066
+INFO  
+INFO  Run summary:
+INFO  ------------
+INFO  create                                                      SUCCESS
+INFO  
+INFO  Log file: /home/jbergqvist/diffblue/gson/.diffblue/log/user-20260120T153303.log
+INFO  Finished in 33m 13s
