@@ -1501,6 +1501,10 @@ public final class Gson {
       delegate = typeAdapter;
     }
 
+    public TypeAdapter<T> getDelegate() {
+      return delegate;
+    }
+
     private TypeAdapter<T> delegate() {
       TypeAdapter<T> delegate = this.delegate;
       if (delegate == null) {

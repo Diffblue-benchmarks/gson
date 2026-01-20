@@ -109,4 +109,12 @@ public final class ArrayTypeAdapter<E> extends TypeAdapter<Object> {
     }
     out.endArray();
   }
+
+  public Class<E> getComponentType() {
+    return componentType;
+  }
+
+  public TypeAdapter<E> getComponentTypeAdapter() {
+    return componentTypeAdapter;
+  }
 }

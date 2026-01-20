@@ -4,18 +4,18 @@
   },
   "run" : {
     "version" : "2025.12.02-74144f0-licensed",
-    "creationTimestamp" : "2026-01-20T15:33:04.42319Z",
-    "command" : "dcover create --exclude-modules=com.google.code.gson:test-jpms,com.google.code.gson:test-graal-native-image -B --coverage-reports --upload http://localhost:8080 --project-name gson --name baseline-with-diffblue-tests",
-    "totalTime" : 1485.713,
-    "environmentDetectionTime" : 0.792,
-    "indexingTime" : 0.397,
-    "entryPointsTime" : 0.764,
-    "generationTime" : 1384.568,
-    "timeToFirstTest" : 24.372,
-    "timeToLastTest" : 1447.5,
-    "indexQueryTime" : 4.122,
-    "verificationTime" : 54.003,
-    "validationTime" : 18.323
+    "creationTimestamp" : "2026-01-20T16:28:38.00113Z",
+    "command" : "dcover create --exclude-modules=com.google.code.gson:test-jpms,com.google.code.gson:test-graal-native-image -B --coverage-reports --upload http://localhost:8080 --project-name gson --name post-refactoring",
+    "totalTime" : 1577.659,
+    "environmentDetectionTime" : 0.803,
+    "indexingTime" : 0.45,
+    "entryPointsTime" : 0.771,
+    "generationTime" : 1464.105,
+    "timeToFirstTest" : 26.163,
+    "timeToLastTest" : 1535.333,
+    "indexQueryTime" : 4.658,
+    "verificationTime" : 61.688,
+    "validationTime" : 18.417
   },
   "codes" : {
     "F009" : "Internal error",
@@ -45,16 +45,16 @@
   },
   "summary" : {
     "classesCount" : 187,
-    "methodsCount" : 1101,
-    "cumulativeDiffblueTestCount" : 1680,
+    "methodsCount" : 1131,
+    "cumulativeDiffblueTestCount" : 1752,
     "cumulativeManualTestCount" : 1634,
-    "completeTestCount" : 1680,
+    "completeTestCount" : 1752,
     "incompleteTestCount" : 0,
     "skeletonTestCount" : 0,
-    "totalPhysicalLineCount" : 9879,
+    "totalPhysicalLineCount" : 9969,
     "perMethodTestability" : {
       "T000" : 432,
-      "T001" : 20,
+      "T001" : 50,
       "T002" : 16,
       "T003" : 233,
       "T004" : 212,
@@ -68,9 +68,9 @@
     },
     "perMethodOutcome" : {
       "F009" : 2,
-      "R000" : 423,
-      "R002" : 10,
-      "R004" : 7,
+      "R000" : 463,
+      "R002" : 1,
+      "R004" : 6,
       "R008" : 21,
       "R013" : 18,
       "R015" : 1,
@@ -86,10 +86,10 @@
       "W002" : 1
     },
     "perTestOutcome" : {
-      "R000" : 1680
+      "R000" : 1752
     },
     "perTestValidation" : {
-      "V000" : 1680
+      "V000" : 1752
     },
     "warnings" : {
       "W001" : 75,
@@ -248,7 +248,7 @@
     },
     "com.google.gson.Gson" : {
       "methodsCount" : 41,
-      "completeTestCount" : 332,
+      "completeTestCount" : 350,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 30,
@@ -261,7 +261,7 @@
         "T003" : 6
       },
       "perTestOutcome" : {
-        "R000" : 332
+        "R000" : 350
       },
       "warnings" : {
         "W001" : 33
@@ -333,22 +333,22 @@
       }
     },
     "com.google.gson.Gson$FutureTypeAdapter" : {
-      "methodsCount" : 6,
-      "completeTestCount" : 8,
+      "methodsCount" : 7,
+      "completeTestCount" : 9,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 4,
+        "T001" : 1,
         "T003" : 1,
         "T005" : 1
       },
       "perMethodOutcome" : {
-        "R000" : 3,
-        "R002" : 1,
+        "R000" : 5,
         "R004" : 1,
         "T003" : 1
       },
       "perTestOutcome" : {
-        "R000" : 8
+        "R000" : 9
       }
     },
     "com.google.gson.GsonBuilder" : {
@@ -881,21 +881,21 @@
       }
     },
     "com.google.gson.internal.Excluder" : {
-      "methodsCount" : 14,
-      "completeTestCount" : 12,
+      "methodsCount" : 20,
+      "completeTestCount" : 15,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 10,
+        "T001" : 6,
         "T003" : 4
       },
       "perMethodOutcome" : {
-        "R000" : 7,
-        "R002" : 2,
+        "R000" : 15,
         "R013" : 1,
         "T003" : 4
       },
       "perTestOutcome" : {
-        "R000" : 12
+        "R000" : 15
       },
       "warnings" : {
         "W001" : 1
@@ -1273,7 +1273,7 @@
     },
     "com.google.gson.internal.Streams" : {
       "methodsCount" : 4,
-      "completeTestCount" : 26,
+      "completeTestCount" : 44,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 3,
@@ -1284,7 +1284,7 @@
         "T003" : 1
       },
       "perTestOutcome" : {
-        "R000" : 26
+        "R000" : 44
       }
     },
     "com.google.gson.internal.Streams$AppendableWriter" : {
@@ -1387,18 +1387,18 @@
       }
     },
     "com.google.gson.internal.bind.ArrayTypeAdapter" : {
-      "methodsCount" : 3,
-      "completeTestCount" : 4,
+      "methodsCount" : 5,
+      "completeTestCount" : 6,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
-        "T000" : 3
+        "T000" : 3,
+        "T001" : 2
       },
       "perMethodOutcome" : {
-        "R000" : 2,
-        "R002" : 1
+        "R000" : 5
       },
       "perTestOutcome" : {
-        "R000" : 4
+        "R000" : 6
       },
       "warnings" : {
         "W001" : 3
@@ -1416,19 +1416,19 @@
       }
     },
     "com.google.gson.internal.bind.CollectionTypeAdapterFactory" : {
-      "methodsCount" : 2,
-      "completeTestCount" : 1,
+      "methodsCount" : 3,
+      "completeTestCount" : 2,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 1,
+        "T001" : 1,
         "T005" : 1
       },
       "perMethodOutcome" : {
-        "R000" : 1,
-        "R002" : 1
+        "R000" : 3
       },
       "perTestOutcome" : {
-        "R000" : 1
+        "R000" : 2
       },
       "warnings" : {
         "W001" : 2
@@ -1526,21 +1526,21 @@
       }
     },
     "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory" : {
-      "methodsCount" : 7,
-      "completeTestCount" : 6,
+      "methodsCount" : 9,
+      "completeTestCount" : 7,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 3,
+        "T001" : 2,
         "T003" : 3,
         "T005" : 1
       },
       "perMethodOutcome" : {
-        "R000" : 3,
-        "R002" : 1,
+        "R000" : 6,
         "T003" : 3
       },
       "perTestOutcome" : {
-        "R000" : 6
+        "R000" : 7
       }
     },
     "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory$DummyTypeAdapterFactory" : {
@@ -1558,7 +1558,7 @@
     },
     "com.google.gson.internal.bind.JsonElementTypeAdapter" : {
       "methodsCount" : 6,
-      "completeTestCount" : 32,
+      "completeTestCount" : 46,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 2,
@@ -1571,7 +1571,7 @@
         "T012" : 1
       },
       "perTestOutcome" : {
-        "R000" : 32
+        "R000" : 46
       }
     },
     "com.google.gson.internal.bind.JsonTreeReader" : {
@@ -1604,22 +1604,21 @@
       }
     },
     "com.google.gson.internal.bind.JsonTreeWriter" : {
-      "methodsCount" : 20,
-      "completeTestCount" : 24,
+      "methodsCount" : 23,
+      "completeTestCount" : 26,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 17,
+        "T001" : 3,
         "T003" : 2,
         "T021" : 1
       },
       "perMethodOutcome" : {
-        "R000" : 16,
-        "R002" : 1,
-        "R004" : 1,
+        "R000" : 21,
         "T003" : 2
       },
       "perTestOutcome" : {
-        "R000" : 24
+        "R000" : 26
       },
       "warnings" : {
         "W001" : 1
@@ -1736,23 +1735,23 @@
       }
     },
     "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory" : {
-      "methodsCount" : 9,
-      "completeTestCount" : 3,
+      "methodsCount" : 14,
+      "completeTestCount" : 4,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 1,
+        "T001" : 5,
         "T003" : 6,
         "T005" : 1,
         "T012" : 1
       },
       "perMethodOutcome" : {
-        "R000" : 1,
-        "R002" : 1,
+        "R000" : 7,
         "T003" : 6,
         "T012" : 1
       },
       "perTestOutcome" : {
-        "R000" : 3
+        "R000" : 4
       }
     },
     "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$1" : {
@@ -1849,7 +1848,7 @@
     },
     "com.google.gson.internal.bind.TreeTypeAdapter" : {
       "methodsCount" : 9,
-      "completeTestCount" : 43,
+      "completeTestCount" : 45,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 8,
@@ -1860,7 +1859,7 @@
         "T003" : 1
       },
       "perTestOutcome" : {
-        "R000" : 43
+        "R000" : 45
       }
     },
     "com.google.gson.internal.bind.TreeTypeAdapter$GsonContextImpl" : {
@@ -1888,21 +1887,21 @@
       }
     },
     "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper" : {
-      "methodsCount" : 5,
-      "completeTestCount" : 18,
+      "methodsCount" : 8,
+      "completeTestCount" : 27,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 2,
+        "T001" : 3,
         "T003" : 2,
         "T005" : 1
       },
       "perMethodOutcome" : {
-        "R000" : 2,
-        "R002" : 1,
+        "R000" : 6,
         "T003" : 2
       },
       "perTestOutcome" : {
-        "R000" : 18
+        "R000" : 27
       }
     },
     "com.google.gson.internal.bind.TypeAdapters" : {
@@ -2608,17 +2607,17 @@
       }
     },
     "com.google.gson.stream.JsonWriter" : {
-      "methodsCount" : 39,
+      "methodsCount" : 46,
       "completeTestCount" : 65,
       "incompleteTestCount" : 0,
       "perMethodTestability" : {
         "T000" : 21,
-        "T001" : 4,
+        "T001" : 11,
         "T002" : 3,
         "T003" : 11
       },
       "perMethodOutcome" : {
-        "R000" : 27,
+        "R000" : 34,
         "T003" : 11,
         "W002" : 1
       },
@@ -3277,10 +3276,13 @@
       ]
     },
     "com.google.gson.Gson$FutureTypeAdapter.<init>:()V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R002",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         1494,
         1495
@@ -3292,10 +3294,22 @@
       "perMethodTestability" : "T003",
       "perMethodOutcome" : "T003",
       "lineNumbers" : [
-        1505,
-        1506,
+        1509,
         1510,
-        1514
+        1514,
+        1518
+      ]
+    },
+    "com.google.gson.Gson$FutureTypeAdapter.getDelegate:()Lcom/google/gson/TypeAdapter;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        1505
       ]
     },
     "com.google.gson.Gson$FutureTypeAdapter.getSerializationDelegate:()Lcom/google/gson/TypeAdapter;" : {
@@ -3307,7 +3321,7 @@
         "R000" : 2
       },
       "lineNumbers" : [
-        1519
+        1523
       ]
     },
     "com.google.gson.Gson$FutureTypeAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/lang/Object;" : {
@@ -3319,7 +3333,7 @@
         "R000" : 3
       },
       "lineNumbers" : [
-        1524
+        1528
       ]
     },
     "com.google.gson.Gson$FutureTypeAdapter.setDelegate:(Lcom/google/gson/TypeAdapter;)V" : {
@@ -3343,8 +3357,8 @@
         "R000" : 3
       },
       "lineNumbers" : [
-        1529,
-        1530
+        1533,
+        1534
       ]
     },
     "com.google.gson.Gson.<init>:()V" : {
@@ -3939,12 +3953,12 @@
       ]
     },
     "com.google.gson.Gson.toJson:(Lcom/google/gson/JsonElement;Lcom/google/gson/stream/JsonWriter;)V" : {
-      "completeTestCount" : 10,
+      "completeTestCount" : 23,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
       "perMethodOutcome" : "R000",
       "perTestOutcome" : {
-        "R000" : 10
+        "R000" : 23
       },
       "lineNumbers" : [
         1007,
@@ -3974,12 +3988,12 @@
       ]
     },
     "com.google.gson.Gson.toJson:(Lcom/google/gson/JsonElement;Ljava/lang/Appendable;)V" : {
-      "completeTestCount" : 21,
+      "completeTestCount" : 22,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
       "perMethodOutcome" : "R000",
       "perTestOutcome" : {
-        "R000" : 21
+        "R000" : 22
       },
       "lineNumbers" : [
         979,
@@ -4034,12 +4048,12 @@
       ]
     },
     "com.google.gson.Gson.toJson:(Ljava/lang/Object;Ljava/lang/reflect/Type;Lcom/google/gson/stream/JsonWriter;)V" : {
-      "completeTestCount" : 8,
+      "completeTestCount" : 12,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
       "perMethodOutcome" : "R000",
       "perTestOutcome" : {
-        "R000" : 8
+        "R000" : 12
       },
       "lineNumbers" : [
         927,
@@ -4123,7 +4137,7 @@
         "R000" : 1
       },
       "lineNumbers" : [
-        1535
+        1539
       ]
     },
     "com.google.gson.GsonBuilder.<init>:()V" : {
@@ -7504,10 +7518,13 @@
       ]
     },
     "com.google.gson.internal.Excluder.disableInnerClassSerialization:()Lcom/google/gson/internal/Excluder;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R002",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         85,
         86,
@@ -7583,6 +7600,54 @@
         93
       ]
     },
+    "com.google.gson.internal.Excluder.getDeserializationStrategies:()Ljava/util/List;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        279
+      ]
+    },
+    "com.google.gson.internal.Excluder.getModifiers:()I" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        263
+      ]
+    },
+    "com.google.gson.internal.Excluder.getSerializationStrategies:()Ljava/util/List;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        275
+      ]
+    },
+    "com.google.gson.internal.Excluder.getVersion:()D" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        259
+      ]
+    },
     "com.google.gson.internal.Excluder.isInnerClass:(Ljava/lang/Class;)Z" : {
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
@@ -7590,6 +7655,30 @@
       "perMethodOutcome" : "T003",
       "lineNumbers" : [
         235
+      ]
+    },
+    "com.google.gson.internal.Excluder.isRequireExpose:()Z" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        271
+      ]
+    },
+    "com.google.gson.internal.Excluder.isSerializeInnerClasses:()Z" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        267
       ]
     },
     "com.google.gson.internal.Excluder.isValidSince:(Lcom/google/gson/annotations/Since;)Z" : {
@@ -7662,10 +7751,13 @@
       ]
     },
     "com.google.gson.internal.Excluder.withVersion:(D)Lcom/google/gson/internal/Excluder;" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R002",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         70,
         71,
@@ -10110,12 +10202,12 @@
       ]
     },
     "com.google.gson.internal.Streams.write:(Lcom/google/gson/JsonElement;Lcom/google/gson/stream/JsonWriter;)V" : {
-      "completeTestCount" : 1,
+      "completeTestCount" : 19,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
       "perMethodOutcome" : "R000",
       "perTestOutcome" : {
-        "R000" : 1
+        "R000" : 19
       },
       "lineNumbers" : [
         68,
@@ -10323,15 +10415,42 @@
       ]
     },
     "com.google.gson.internal.bind.ArrayTypeAdapter.<init>:(Lcom/google/gson/Gson;Lcom/google/gson/TypeAdapter;Ljava/lang/Class;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R002",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         59,
         60,
         62,
         63
+      ]
+    },
+    "com.google.gson.internal.bind.ArrayTypeAdapter.getComponentType:()Ljava/lang/Class;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        114
+      ]
+    },
+    "com.google.gson.internal.bind.ArrayTypeAdapter.getComponentTypeAdapter:()Lcom/google/gson/TypeAdapter;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        118
       ]
     },
     "com.google.gson.internal.bind.ArrayTypeAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/lang/Object;" : {
@@ -10446,10 +10565,13 @@
       ]
     },
     "com.google.gson.internal.bind.CollectionTypeAdapterFactory.<init>:(Lcom/google/gson/internal/ConstructorConstructor;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R002",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         37,
         38,
@@ -10479,6 +10601,18 @@
         57,
         60,
         61
+      ]
+    },
+    "com.google.gson.internal.bind.CollectionTypeAdapterFactory.getConstructorConstructor:()Lcom/google/gson/internal/ConstructorConstructor;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        107
       ]
     },
     "com.google.gson.internal.bind.DefaultDateTypeAdapter$1.<init>:()V" : {
@@ -10832,10 +10966,13 @@
       ]
     },
     "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory.<init>:(Lcom/google/gson/internal/ConstructorConstructor;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R002",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         64,
         65,
@@ -10871,6 +11008,18 @@
         96
       ]
     },
+    "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory.getAdapterFactoryMap:()Ljava/util/concurrent/ConcurrentMap;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        210
+      ]
+    },
     "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory.getAnnotation:(Ljava/lang/Class;)Lcom/google/gson/annotations/JsonAdapter;" : {
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
@@ -10878,6 +11027,18 @@
       "perMethodOutcome" : "T003",
       "lineNumbers" : [
         71
+      ]
+    },
+    "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory.getConstructorConstructor:()Lcom/google/gson/internal/ConstructorConstructor;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        206
       ]
     },
     "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter:(Lcom/google/gson/internal/ConstructorConstructor;Lcom/google/gson/Gson;Lcom/google/gson/reflect/TypeToken;Lcom/google/gson/annotations/JsonAdapter;Z)Lcom/google/gson/TypeAdapter;" : {
@@ -11034,12 +11195,12 @@
       ]
     },
     "com.google.gson.internal.bind.JsonElementTypeAdapter.write:(Lcom/google/gson/stream/JsonWriter;Lcom/google/gson/JsonElement;)V" : {
-      "completeTestCount" : 13,
+      "completeTestCount" : 27,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
       "perMethodOutcome" : "R000",
       "perTestOutcome" : {
-        "R000" : 13
+        "R000" : 27
       },
       "lineNumbers" : [
         140,
@@ -11650,10 +11811,13 @@
       ]
     },
     "com.google.gson.internal.bind.JsonTreeWriter.close:()V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
-      "perMethodOutcome" : "R004",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         249,
         250,
@@ -11698,10 +11862,13 @@
       ]
     },
     "com.google.gson.internal.bind.JsonTreeWriter.flush:()V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T021",
-      "perMethodOutcome" : "R002",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         245
       ]
@@ -11718,6 +11885,42 @@
         70,
         71,
         73
+      ]
+    },
+    "com.google.gson.internal.bind.JsonTreeWriter.getElementStack:()Ljava/util/List;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        256
+      ]
+    },
+    "com.google.gson.internal.bind.JsonTreeWriter.getPendingName:()Ljava/lang/String;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        260
+      ]
+    },
+    "com.google.gson.internal.bind.JsonTreeWriter.getProduct:()Lcom/google/gson/JsonElement;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        264
       ]
     },
     "com.google.gson.internal.bind.JsonTreeWriter.jsonValue:(Ljava/lang/String;)Lcom/google/gson/stream/JsonWriter;" : {
@@ -12689,10 +12892,13 @@
       ]
     },
     "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.<init>:(Lcom/google/gson/internal/ConstructorConstructor;Lcom/google/gson/FieldNamingStrategy;Lcom/google/gson/internal/Excluder;Lcom/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory;Ljava/util/List;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R002",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         72,
         73,
@@ -12855,6 +13061,30 @@
         427
       ]
     },
+    "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getConstructorConstructor:()Lcom/google/gson/internal/ConstructorConstructor;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        674
+      ]
+    },
+    "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getExcluder:()Lcom/google/gson/internal/Excluder;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        682
+      ]
+    },
     "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getFieldNames:(Ljava/lang/reflect/Field;)Ljava/util/List;" : {
       "completeTestCount" : 0,
       "incompleteTestCount" : 0,
@@ -12873,6 +13103,42 @@
         104,
         105,
         106
+      ]
+    },
+    "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getFieldNamingPolicy:()Lcom/google/gson/FieldNamingStrategy;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        678
+      ]
+    },
+    "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getJsonAdapterFactory:()Lcom/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        686
+      ]
+    },
+    "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getReflectionFilters:()Ljava/util/List;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        690
       ]
     },
     "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.includeField:(Ljava/lang/reflect/Field;Z)Z" : {
@@ -13091,12 +13357,12 @@
       ]
     },
     "com.google.gson.internal.bind.TreeTypeAdapter.write:(Lcom/google/gson/stream/JsonWriter;Ljava/lang/Object;)V" : {
-      "completeTestCount" : 14,
+      "completeTestCount" : 16,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
       "perMethodOutcome" : "R000",
       "perTestOutcome" : {
-        "R000" : 14
+        "R000" : 16
       },
       "lineNumbers" : [
         100,
@@ -13111,16 +13377,43 @@
       ]
     },
     "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.<init>:(Lcom/google/gson/Gson;Lcom/google/gson/TypeAdapter;Ljava/lang/reflect/Type;)V" : {
-      "completeTestCount" : 0,
+      "completeTestCount" : 1,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T005",
-      "perMethodOutcome" : "R002",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
       "lineNumbers" : [
         32,
         33,
         34,
         35,
         36
+      ]
+    },
+    "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.getContext:()Lcom/google/gson/Gson;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        105
+      ]
+    },
+    "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.getDelegate:()Lcom/google/gson/TypeAdapter;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        109
       ]
     },
     "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.getRuntimeTypeIfMoreSpecific:(Ljava/lang/reflect/Type;Ljava/lang/Object;)Ljava/lang/reflect/Type;" : {
@@ -13132,6 +13425,18 @@
         98,
         99,
         101
+      ]
+    },
+    "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.getType:()Ljava/lang/reflect/Type;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        113
       ]
     },
     "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.isReflective:(Lcom/google/gson/TypeAdapter;)Z" : {
@@ -13163,12 +13468,12 @@
       ]
     },
     "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.write:(Lcom/google/gson/stream/JsonWriter;Ljava/lang/Object;)V" : {
-      "completeTestCount" : 17,
+      "completeTestCount" : 25,
       "incompleteTestCount" : 0,
       "perMethodTestability" : "T000",
       "perMethodOutcome" : "R000",
       "perTestOutcome" : {
-        "R000" : 17
+        "R000" : 25
       },
       "lineNumbers" : [
         52,
@@ -17384,6 +17689,42 @@
         712
       ]
     },
+    "com.google.gson.stream.JsonWriter.getDeferredName:()Ljava/lang/String;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        863
+      ]
+    },
+    "com.google.gson.stream.JsonWriter.getFormattedColon:()Ljava/lang/String;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        851
+      ]
+    },
+    "com.google.gson.stream.JsonWriter.getFormattedComma:()Ljava/lang/String;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        855
+      ]
+    },
     "com.google.gson.stream.JsonWriter.getFormattingStyle:()Lcom/google/gson/FormattingStyle;" : {
       "completeTestCount" : 1,
       "incompleteTestCount" : 0,
@@ -17396,6 +17737,18 @@
         294
       ]
     },
+    "com.google.gson.stream.JsonWriter.getOut:()Ljava/io/Writer;" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        839
+      ]
+    },
     "com.google.gson.stream.JsonWriter.getSerializeNulls:()Z" : {
       "completeTestCount" : 1,
       "incompleteTestCount" : 0,
@@ -17406,6 +17759,30 @@
       },
       "lineNumbers" : [
         398
+      ]
+    },
+    "com.google.gson.stream.JsonWriter.getStack:()[I" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        843
+      ]
+    },
+    "com.google.gson.stream.JsonWriter.getStackSize:()I" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        847
       ]
     },
     "com.google.gson.stream.JsonWriter.getStrictness:()Lcom/google/gson/Strictness;" : {
@@ -17442,6 +17819,18 @@
       },
       "lineNumbers" : [
         324
+      ]
+    },
+    "com.google.gson.stream.JsonWriter.isUsesEmptyNewlineAndIndent:()Z" : {
+      "completeTestCount" : 1,
+      "incompleteTestCount" : 0,
+      "perMethodTestability" : "T001",
+      "perMethodOutcome" : "R000",
+      "perTestOutcome" : {
+        "R000" : 1
+      },
+      "lineNumbers" : [
+        859
       ]
     },
     "com.google.gson.stream.JsonWriter.jsonValue:(Ljava/lang/String;)Lcom/google/gson/stream/JsonWriter;" : {
@@ -17864,7 +18253,11 @@
       ]
     }
   },
-  "validationMetrics" : { },
+  "validationMetrics" : {
+    "failingTests" : [
+      "com.google.gson.internal.bind.JsonTreeWriterTest.testOverrides"
+    ]
+  },
   "outputCodes" : [
     {
       "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.ArrangeThrowsMessage\",\"constructingMethod\":{\"binaryClassName\":\"com.google.gson.FieldAttributes\",\"descriptor\":\"()Ljava/lang/String;\",\"methodName\":\"toString\"},\"serializableCause\":{\"cause\":null,\"message\":null,\"originalClassName\":\"java.lang.NullPointerException\",\"stackTrace\":[{\"classLoaderName\":null,\"className\":\"java.util.Objects\",\"fileName\":\"Objects.java\",\"lineNumber\":222,\"methodName\":\"requireNonNull\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.google.gson.FieldAttributes\",\"fileName\":\"FieldAttributes.java\",\"lineNumber\":44,\"methodName\":\"<init>\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.NativeConstructorAccessorImpl\",\"fileName\":\"NativeConstructorAccessorImpl.java\",\"lineNumber\":-2,\"methodName\":\"newInstance0\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":true},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.NativeConstructorAccessorImpl\",\"fileName\":\"NativeConstructorAccessorImpl.java\",\"lineNumber\":62,\"methodName\":\"newInstance\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.DelegatingConstructorAccessorImpl\",\"fileName\":\"DelegatingConstructorAccessorImpl.java\",\"lineNumber\":45,\"methodName\":\"newInstance\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.lang.reflect.Constructor\",\"fileName\":\"Constructor.java\",\"lineNumber\":490,\"methodName\":\"newInstance\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.h\",\"fileName\":\"SourceFile\",\"lineNumber\":142,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.a.f\",\"fileName\":\"SourceFile\",\"lineNumber\":842,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.a.f\",\"fileName\":\"SourceFile\",\"lineNumber\":750,\"methodName\":\"b\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.f\",\"fileName\":\"SourceFile\",\"lineNumber\":449,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.f\",\"fileName\":\"SourceFile\",\"lineNumber\":99,\"methodName\":\"b\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.g.c\",\"fileName\":\"SourceFile\",\"lineNumber\":32,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.g\",\"fileName\":\"SourceFile\",\"lineNumber\":394,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.g\",\"fileName\":\"SourceFile\",\"lineNumber\":261,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.g\",\"fileName\":\"SourceFile\",\"lineNumber\":213,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.fuzztest.b.j\",\"fileName\":\"SourceFile\",\"lineNumber\":1279,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.sandbox.execution.TimedCallableExecutor$CallableFuture\",\"fileName\":\"SourceFile\",\"lineNumber\":29,\"methodName\":\"executeTask\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.sandbox.execution.TaskQueueRunner\",\"fileName\":\"SourceFile\",\"lineNumber\":39,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.sandbox.execution.WorkerThread\",\"fileName\":\"SourceFile\",\"lineNumber\":265,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false}]}}",
@@ -18006,18 +18399,6 @@
             "binaryClassName" : "com.google.gson.FieldNamingStrategy",
             "descriptor" : "(Ljava/lang/reflect/Field;)Ljava/util/List;",
             "methodName" : "alternateNames"
-          }
-        ]
-      }
-    },
-    {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.MissingObserverMessage\",\"fields\":[{\"className\":{\"descriptor\":\"Lcom/google/gson/Gson$FutureTypeAdapter;\",\"simpleNames\":[\"Gson\",\"FutureTypeAdapter\"]},\"fieldName\":\"delegate\"}],\"serializableCause\":null}",
-      "methodGroup" : {
-        "methods" : [
-          {
-            "binaryClassName" : "com.google.gson.Gson$FutureTypeAdapter",
-            "descriptor" : "()V",
-            "methodName" : "<init>"
           }
         ]
       }
@@ -18191,18 +18572,6 @@
       }
     },
     {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.MissingObserverMessage\",\"fields\":[{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"deserializationStrategies\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"modifiers\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"requireExpose\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"serializationStrategies\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"serializeInnerClasses\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"version\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"deserializationStrategies\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"modifiers\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"requireExpose\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"serializationStrategies\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"serializeInnerClasses\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"version\"}],\"serializableCause\":null}",
-      "methodGroup" : {
-        "methods" : [
-          {
-            "binaryClassName" : "com.google.gson.internal.Excluder",
-            "descriptor" : "()Lcom/google/gson/internal/Excluder;",
-            "methodName" : "disableInnerClassSerialization"
-          }
-        ]
-      }
-    },
-    {
       "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.NoNonThrowingInputsMessage\",\"serializableCause\":{\"cause\":null,\"message\":null,\"originalClassName\":\"java.lang.NullPointerException\",\"stackTrace\":[{\"classLoaderName\":null,\"className\":\"com.google.gson.internal.Excluder\",\"fileName\":\"Excluder.java\",\"lineNumber\":159,\"methodName\":\"excludeField\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.NativeMethodAccessorImpl\",\"fileName\":\"NativeMethodAccessorImpl.java\",\"lineNumber\":-2,\"methodName\":\"invoke0\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":true},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.NativeMethodAccessorImpl\",\"fileName\":\"NativeMethodAccessorImpl.java\",\"lineNumber\":62,\"methodName\":\"invoke\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.DelegatingMethodAccessorImpl\",\"fileName\":\"DelegatingMethodAccessorImpl.java\",\"lineNumber\":43,\"methodName\":\"invoke\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.lang.reflect.Method\",\"fileName\":\"Method.java\",\"lineNumber\":566,\"methodName\":\"invoke\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.h\",\"fileName\":\"SourceFile\",\"lineNumber\":140,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.h\",\"fileName\":\"SourceFile\",\"lineNumber\":77,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.a.f\",\"fileName\":\"SourceFile\",\"lineNumber\":852,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.f\",\"fileName\":\"SourceFile\",\"lineNumber\":463,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.f\",\"fileName\":\"SourceFile\",\"lineNumber\":99,\"methodName\":\"b\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.g.d\",\"fileName\":\"SourceFile\",\"lineNumber\":51,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.g\",\"fileName\":\"SourceFile\",\"lineNumber\":368,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.tir.b.g\",\"fileName\":\"SourceFile\",\"lineNumber\":261,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.fuzztest.b.f\",\"fileName\":\"SourceFile\",\"lineNumber\":1105,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.sandbox.execution.SafeTimedExecutor\",\"fileName\":\"SourceFile\",\"lineNumber\":171,\"methodName\":\"lambda$runWithLoopIterationLimit$5\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.sandbox.execution.TimedCallableExecutor$CallableFuture\",\"fileName\":\"SourceFile\",\"lineNumber\":29,\"methodName\":\"executeTask\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.sandbox.execution.TaskQueueRunner\",\"fileName\":\"SourceFile\",\"lineNumber\":39,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.sandbox.execution.WorkerThread\",\"fileName\":\"SourceFile\",\"lineNumber\":265,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false}]}}",
       "methodGroup" : {
         "methods" : [
@@ -18210,18 +18579,6 @@
             "binaryClassName" : "com.google.gson.internal.Excluder",
             "descriptor" : "(Ljava/lang/reflect/Field;Z)Z",
             "methodName" : "excludeField"
-          }
-        ]
-      }
-    },
-    {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.MissingObserverMessage\",\"fields\":[{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"deserializationStrategies\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"modifiers\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"requireExpose\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"serializationStrategies\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"serializeInnerClasses\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"version\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"deserializationStrategies\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"modifiers\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"requireExpose\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"serializationStrategies\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"serializeInnerClasses\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/Excluder;\",\"simpleNames\":[\"Excluder\"]},\"fieldName\":\"version\"}],\"serializableCause\":null}",
-      "methodGroup" : {
-        "methods" : [
-          {
-            "binaryClassName" : "com.google.gson.internal.Excluder",
-            "descriptor" : "(D)Lcom/google/gson/internal/Excluder;",
-            "methodName" : "withVersion"
           }
         ]
       }
@@ -18537,30 +18894,6 @@
       }
     },
     {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.MissingObserverMessage\",\"fields\":[{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/ArrayTypeAdapter;\",\"simpleNames\":[\"ArrayTypeAdapter\"]},\"fieldName\":\"componentType\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/ArrayTypeAdapter;\",\"simpleNames\":[\"ArrayTypeAdapter\"]},\"fieldName\":\"componentTypeAdapter\"}],\"serializableCause\":null}",
-      "methodGroup" : {
-        "methods" : [
-          {
-            "binaryClassName" : "com.google.gson.internal.bind.ArrayTypeAdapter",
-            "descriptor" : "(Lcom/google/gson/Gson;Lcom/google/gson/TypeAdapter;Ljava/lang/Class;)V",
-            "methodName" : "<init>"
-          }
-        ]
-      }
-    },
-    {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.MissingObserverMessage\",\"fields\":[{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/CollectionTypeAdapterFactory;\",\"simpleNames\":[\"CollectionTypeAdapterFactory\"]},\"fieldName\":\"constructorConstructor\"}],\"serializableCause\":null}",
-      "methodGroup" : {
-        "methods" : [
-          {
-            "binaryClassName" : "com.google.gson.internal.bind.CollectionTypeAdapterFactory",
-            "descriptor" : "(Lcom/google/gson/internal/ConstructorConstructor;)V",
-            "methodName" : "<init>"
-          }
-        ]
-      }
-    },
-    {
       "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.NoSuitableConstructorMessage\",\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/DefaultDateTypeAdapter;\",\"simpleNames\":[\"DefaultDateTypeAdapter\"]},\"serializableCause\":{\"cause\":null,\"message\":\"Can't find a suitable constructor\",\"originalClassName\":\"com.diffblue.cover.exception.BaseException\",\"stackTrace\":[{\"classLoaderName\":null,\"className\":\"com.diffblue.fuzztest.g.i\",\"fileName\":\"SourceFile\",\"lineNumber\":107,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.fuzztest.g.a\",\"fileName\":\"SourceFile\",\"lineNumber\":46,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.fuzztest.g.p\",\"fileName\":\"SourceFile\",\"lineNumber\":128,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.fuzztest.g.a\",\"fileName\":\"SourceFile\",\"lineNumber\":46,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.fuzztest.g.ae\",\"fileName\":\"SourceFile\",\"lineNumber\":94,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.fuzztest.g.af\",\"fileName\":\"SourceFile\",\"lineNumber\":162,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.fuzztest.g.ae\",\"fileName\":\"SourceFile\",\"lineNumber\":193,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.fuzztest.g.e\",\"fileName\":\"SourceFile\",\"lineNumber\":499,\"methodName\":\"r\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.sandbox.execution.WorkerThread\",\"fileName\":\"SourceFile\",\"lineNumber\":164,\"methodName\":\"lambda$callWorkerThread$3\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.sandbox.execution.WorkerThread\",\"fileName\":\"SourceFile\",\"lineNumber\":265,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false}]}}",
       "methodGroup" : {
         "methods" : [
@@ -18645,47 +18978,11 @@
       }
     },
     {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.MissingObserverMessage\",\"fields\":[{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory;\",\"simpleNames\":[\"JsonAdapterAnnotationTypeAdapterFactory\"]},\"fieldName\":\"adapterFactoryMap\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory;\",\"simpleNames\":[\"JsonAdapterAnnotationTypeAdapterFactory\"]},\"fieldName\":\"constructorConstructor\"}],\"serializableCause\":null}",
-      "methodGroup" : {
-        "methods" : [
-          {
-            "binaryClassName" : "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory",
-            "descriptor" : "(Lcom/google/gson/internal/ConstructorConstructor;)V",
-            "methodName" : "<init>"
-          }
-        ]
-      }
-    },
-    {
       "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.NoMeaningfulAssertionMessage\",\"serializableCause\":null}",
       "methodGroup" : {
         "methods" : [
           {
             "binaryClassName" : "com.google.gson.internal.bind.JsonTreeReader",
-            "descriptor" : "()V",
-            "methodName" : "close"
-          }
-        ]
-      }
-    },
-    {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.MissingObserverMessage\",\"fields\":[{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/JsonTreeWriter;\",\"simpleNames\":[\"JsonTreeWriter\"]},\"fieldName\":\"pendingName\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/JsonTreeWriter;\",\"simpleNames\":[\"JsonTreeWriter\"]},\"fieldName\":\"product\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/JsonTreeWriter;\",\"simpleNames\":[\"JsonTreeWriter\"]},\"fieldName\":\"stack\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"deferredName\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"formattedColon\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"formattedComma\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"formattingStyle\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"htmlSafe\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"out\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"serializeNulls\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"stack\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"stackSize\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"strictness\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/stream/JsonWriter;\",\"simpleNames\":[\"JsonWriter\"]},\"fieldName\":\"usesEmptyNewlineAndIndent\"}],\"serializableCause\":null}",
-      "methodGroup" : {
-        "methods" : [
-          {
-            "binaryClassName" : "com.google.gson.internal.bind.JsonTreeWriter",
-            "descriptor" : "()V",
-            "methodName" : "flush"
-          }
-        ]
-      }
-    },
-    {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.NoMeaningfulAssertionMessage\",\"serializableCause\":null}",
-      "methodGroup" : {
-        "methods" : [
-          {
-            "binaryClassName" : "com.google.gson.internal.bind.JsonTreeWriter",
             "descriptor" : "()V",
             "methodName" : "close"
           }
@@ -18741,18 +19038,6 @@
       }
     },
     {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.MissingObserverMessage\",\"fields\":[{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/ReflectiveTypeAdapterFactory;\",\"simpleNames\":[\"ReflectiveTypeAdapterFactory\"]},\"fieldName\":\"constructorConstructor\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/ReflectiveTypeAdapterFactory;\",\"simpleNames\":[\"ReflectiveTypeAdapterFactory\"]},\"fieldName\":\"excluder\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/ReflectiveTypeAdapterFactory;\",\"simpleNames\":[\"ReflectiveTypeAdapterFactory\"]},\"fieldName\":\"fieldNamingPolicy\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/ReflectiveTypeAdapterFactory;\",\"simpleNames\":[\"ReflectiveTypeAdapterFactory\"]},\"fieldName\":\"jsonAdapterFactory\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/ReflectiveTypeAdapterFactory;\",\"simpleNames\":[\"ReflectiveTypeAdapterFactory\"]},\"fieldName\":\"reflectionFilters\"}],\"serializableCause\":null}",
-      "methodGroup" : {
-        "methods" : [
-          {
-            "binaryClassName" : "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory",
-            "descriptor" : "(Lcom/google/gson/internal/ConstructorConstructor;Lcom/google/gson/FieldNamingStrategy;Lcom/google/gson/internal/Excluder;Lcom/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory;Ljava/util/List;)V",
-            "methodName" : "<init>"
-          }
-        ]
-      }
-    },
-    {
       "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.testability.NonAbstractMethodInAbstractClassMessage\",\"serializableCause\":null}",
       "methodGroup" : {
         "methods" : [
@@ -18777,19 +19062,7 @@
       }
     },
     {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.limitation.MissingObserverMessage\",\"fields\":[{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper;\",\"simpleNames\":[\"TypeAdapterRuntimeTypeWrapper\"]},\"fieldName\":\"context\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper;\",\"simpleNames\":[\"TypeAdapterRuntimeTypeWrapper\"]},\"fieldName\":\"delegate\"},{\"className\":{\"descriptor\":\"Lcom/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper;\",\"simpleNames\":[\"TypeAdapterRuntimeTypeWrapper\"]},\"fieldName\":\"type\"}],\"serializableCause\":null}",
-      "methodGroup" : {
-        "methods" : [
-          {
-            "binaryClassName" : "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper",
-            "descriptor" : "(Lcom/google/gson/Gson;Lcom/google/gson/TypeAdapter;Ljava/lang/reflect/Type;)V",
-            "methodName" : "<init>"
-          }
-        ]
-      }
-    },
-    {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.verification.TestCompilationMessage\",\"compilerErrors\":[{\"className\":\"com.google.gson.internal.bind.TypeAdaptersDiffblueTest8791985360982354332\",\"line\":51,\"message\":\"method newTypeHierarchyFactory in class TypeAdapters cannot be applied to given types;\\nrequired: Class<T1>,TypeAdapter<T1>\\nfound: Class<Boolean>,ArrayTypeAdapter<Object>\\nreason: inference variable T1 has incompatible equality constraints Object,Boolean\\nwhere T1 is a type-variable:\\n  T1 extends Object declared in method <T1>newTypeHierarchyFactory(Class<T1>,TypeAdapter<T1>)\",\"methodSignature\":\"testNewTypeHierarchyFactory_thenReturnCreateGsonAndObjectIsNull:()V\",\"sourceFile\":\"/tmp/TypeAdaptersDiffblueTest8791985360982354332.java\"}],\"serializableCause\":null,\"testClassJavaCode\":\"File /tmp/TypeAdaptersDiffblueTest8791985360982354332.java, 60 lines:\\n   1: package com.google.gson.internal.bind;\\n   2: \\n   3: import static org.junit.Assert.assertNull;\\n   4: import static org.mockito.Mockito.mock;\\n   5: import com.diffblue.cover.annotations.ContributionFromDiffblue;\\n   6: import com.diffblue.cover.annotations.ManagedByDiffblue;\\n   7: import com.diffblue.cover.annotations.MethodsUnderTest;\\n   8: import com.google.gson.Gson;\\n   9: import com.google.gson.JsonDeserializer;\\n  10: import com.google.gson.JsonSerializer;\\n  11: import com.google.gson.TypeAdapter;\\n  12: import com.google.gson.TypeAdapterFactory;\\n  13: import com.google.gson.reflect.TypeToken;\\n  14: import org.junit.Test;\\n  15: import org.junit.experimental.categories.Category;\\n  16: \\n  17: public class TypeAdaptersDiffblueTest8791985360982354332 {\\n  18:   /**\\n  19:    * Test {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}.\\n  20:    *\\n  21:    * <ul>\\n  22:    *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.\\n  23:    * </ul>\\n  24:    *\\n  25:    * <p>Method under test: {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}\\n  26:    */\\n  27:   @Test\\n  28:   @Category(ContributionFromDiffblue.class)\\n  29:   @ManagedByDiffblue\\n  30:   @MethodsUnderTest({\\\"TypeAdapterFactory TypeAdapters.newTypeHierarchyFactory(Class, TypeAdapter)\\\"})\\n  31:   public void testNewTypeHierarchyFactory_thenReturnCreateGsonAndObjectIsNull() {\\n  32:     // Arrange\\n  33:     Class<Boolean> clazz = Boolean.class;\\n  34:     Gson context = new Gson();\\n  35:     JsonSerializer<Object> serializer = mock(JsonSerializer.class);\\n  36:     JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);\\n  37:     Gson gson = new Gson();\\n  38:     Class<Object> type = Object.class;\\n  39:     TypeToken<Object> typeToken = TypeToken.get(type);\\n  40: \\n  41:     TreeTypeAdapter<Object> componentTypeAdapter =\\n  42:         new TreeTypeAdapter<>(\\n  43:             serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));\\n  44:     Class<Object> componentType = Object.class;\\n  45: \\n  46:     ArrayTypeAdapter<Object> typeAdapter =\\n  47:         new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);\\n  48: \\n  49:     // Act\\n  50:     TypeAdapterFactory actualNewTypeHierarchyFactoryResult =\\n  51:         TypeAdapters.newTypeHierarchyFactory(clazz, typeAdapter);\\n  52:     Gson gson2 = new Gson();\\n  53:     Class<Object> type2 = Object.class;\\n  54:     TypeToken<Object> getResult = TypeToken.get(type2);\\n  55: \\n  56:     // Assert\\n  57:     assertNull(actualNewTypeHierarchyFactoryResult.create(gson2, getResult));\\n  58:   }\\n  59: }\\n  60: \\nTest compilation failed for method com.google.gson.internal.bind.TypeAdapters.newTypeHierarchyFactory\\n\"}",
+      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.verification.TestCompilationMessage\",\"compilerErrors\":[{\"className\":\"com.google.gson.internal.bind.TypeAdaptersDiffblueTest17876772762143523127\",\"line\":51,\"message\":\"method newTypeHierarchyFactory in class TypeAdapters cannot be applied to given types;\\nrequired: Class<T1>,TypeAdapter<T1>\\nfound: Class<Boolean>,ArrayTypeAdapter<Object>\\nreason: inference variable T1 has incompatible equality constraints Object,Boolean\\nwhere T1 is a type-variable:\\n  T1 extends Object declared in method <T1>newTypeHierarchyFactory(Class<T1>,TypeAdapter<T1>)\",\"methodSignature\":\"testNewTypeHierarchyFactory_thenReturnCreateGsonAndObjectIsNull:()V\",\"sourceFile\":\"/tmp/TypeAdaptersDiffblueTest17876772762143523127.java\"}],\"serializableCause\":null,\"testClassJavaCode\":\"File /tmp/TypeAdaptersDiffblueTest17876772762143523127.java, 60 lines:\\n   1: package com.google.gson.internal.bind;\\n   2: \\n   3: import static org.junit.Assert.assertNull;\\n   4: import static org.mockito.Mockito.mock;\\n   5: import com.diffblue.cover.annotations.ContributionFromDiffblue;\\n   6: import com.diffblue.cover.annotations.ManagedByDiffblue;\\n   7: import com.diffblue.cover.annotations.MethodsUnderTest;\\n   8: import com.google.gson.Gson;\\n   9: import com.google.gson.JsonDeserializer;\\n  10: import com.google.gson.JsonSerializer;\\n  11: import com.google.gson.TypeAdapter;\\n  12: import com.google.gson.TypeAdapterFactory;\\n  13: import com.google.gson.reflect.TypeToken;\\n  14: import org.junit.Test;\\n  15: import org.junit.experimental.categories.Category;\\n  16: \\n  17: public class TypeAdaptersDiffblueTest17876772762143523127 {\\n  18:   /**\\n  19:    * Test {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}.\\n  20:    *\\n  21:    * <ul>\\n  22:    *   <li>Then return create {@link Gson#Gson()} and {@link Object} is {@code null}.\\n  23:    * </ul>\\n  24:    *\\n  25:    * <p>Method under test: {@link TypeAdapters#newTypeHierarchyFactory(Class, TypeAdapter)}\\n  26:    */\\n  27:   @Test\\n  28:   @Category(ContributionFromDiffblue.class)\\n  29:   @ManagedByDiffblue\\n  30:   @MethodsUnderTest({\\\"TypeAdapterFactory TypeAdapters.newTypeHierarchyFactory(Class, TypeAdapter)\\\"})\\n  31:   public void testNewTypeHierarchyFactory_thenReturnCreateGsonAndObjectIsNull() {\\n  32:     // Arrange\\n  33:     Class<Boolean> clazz = Boolean.class;\\n  34:     Gson context = new Gson();\\n  35:     JsonSerializer<Object> serializer = mock(JsonSerializer.class);\\n  36:     JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);\\n  37:     Gson gson = new Gson();\\n  38:     Class<Object> type = Object.class;\\n  39:     TypeToken<Object> typeToken = TypeToken.get(type);\\n  40: \\n  41:     TreeTypeAdapter<Object> componentTypeAdapter =\\n  42:         new TreeTypeAdapter<>(\\n  43:             serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));\\n  44:     Class<Object> componentType = Object.class;\\n  45: \\n  46:     ArrayTypeAdapter<Object> typeAdapter =\\n  47:         new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);\\n  48: \\n  49:     // Act\\n  50:     TypeAdapterFactory actualNewTypeHierarchyFactoryResult =\\n  51:         TypeAdapters.newTypeHierarchyFactory(clazz, typeAdapter);\\n  52:     Gson gson2 = new Gson();\\n  53:     Class<Object> type2 = Object.class;\\n  54:     TypeToken<Object> getResult = TypeToken.get(type2);\\n  55: \\n  56:     // Assert\\n  57:     assertNull(actualNewTypeHierarchyFactoryResult.create(gson2, getResult));\\n  58:   }\\n  59: }\\n  60: \\nTest compilation failed for method com.google.gson.internal.bind.TypeAdapters.newTypeHierarchyFactory\\n\"}",
       "methodGroup" : {
         "methods" : [
           {
@@ -19005,7 +19278,7 @@
       }
     },
     {
-      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.verification.TestExecutionMessage\",\"serializableCause\":{\"cause\":null,\"message\":\"Incomplete document\",\"originalClassName\":\"java.io.IOException\",\"stackTrace\":[{\"classLoaderName\":null,\"className\":\"com.google.gson.stream.JsonWriter\",\"fileName\":\"JsonWriter.java\",\"lineNumber\":725,\"methodName\":\"close\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.google.gson.stream.JsonWriterDiffblueTest17354318348174664837\",\"fileName\":\"JsonWriterDiffblueTest17354318348174664837.java\",\"lineNumber\":30,\"methodName\":\"testClose_givenJsonWriterWithOutIsStringWriter_thenThrowIOException\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.NativeMethodAccessorImpl\",\"fileName\":\"NativeMethodAccessorImpl.java\",\"lineNumber\":-2,\"methodName\":\"invoke0\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":true},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.NativeMethodAccessorImpl\",\"fileName\":\"NativeMethodAccessorImpl.java\",\"lineNumber\":62,\"methodName\":\"invoke\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.DelegatingMethodAccessorImpl\",\"fileName\":\"DelegatingMethodAccessorImpl.java\",\"lineNumber\":43,\"methodName\":\"invoke\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.lang.reflect.Method\",\"fileName\":\"Method.java\",\"lineNumber\":566,\"methodName\":\"invoke\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.model.FrameworkMethod$1\",\"fileName\":\"FrameworkMethod.java\",\"lineNumber\":59,\"methodName\":\"runReflectiveCall\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.internal.runners.model.ReflectiveCallable\",\"fileName\":\"ReflectiveCallable.java\",\"lineNumber\":12,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.model.FrameworkMethod\",\"fileName\":\"FrameworkMethod.java\",\"lineNumber\":56,\"methodName\":\"invokeExplosively\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.internal.runners.statements.InvokeMethod\",\"fileName\":\"InvokeMethod.java\",\"lineNumber\":17,\"methodName\":\"evaluate\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner$3\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":306,\"methodName\":\"evaluate\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.BlockJUnit4ClassRunner$1\",\"fileName\":\"BlockJUnit4ClassRunner.java\",\"lineNumber\":100,\"methodName\":\"evaluate\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":366,\"methodName\":\"runLeaf\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.BlockJUnit4ClassRunner\",\"fileName\":\"BlockJUnit4ClassRunner.java\",\"lineNumber\":103,\"methodName\":\"runChild\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.BlockJUnit4ClassRunner\",\"fileName\":\"BlockJUnit4ClassRunner.java\",\"lineNumber\":63,\"methodName\":\"runChild\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner$4\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":331,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner$1\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":79,\"methodName\":\"schedule\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":329,\"methodName\":\"runChildren\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":66,\"methodName\":\"access$100\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner$2\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":293,\"methodName\":\"evaluate\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner$3\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":306,\"methodName\":\"evaluate\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":413,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runner.JUnitCore\",\"fileName\":\"JUnitCore.java\",\"lineNumber\":137,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runner.JUnitCore\",\"fileName\":\"JUnitCore.java\",\"lineNumber\":115,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.junit4.isolation.IJunitCoreImpl\",\"fileName\":\"IJunitCoreImpl.java\",\"lineNumber\":35,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.l.a.b\",\"fileName\":\"SourceFile\",\"lineNumber\":54,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.m.c.f\",\"fileName\":\"SourceFile\",\"lineNumber\":83,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.util.concurrent.CompletableFuture$AsyncSupply\",\"fileName\":\"CompletableFuture.java\",\"lineNumber\":1700,\"methodName\":\"run\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.util.concurrent.ThreadPoolExecutor\",\"fileName\":\"ThreadPoolExecutor.java\",\"lineNumber\":1128,\"methodName\":\"runWorker\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.util.concurrent.ThreadPoolExecutor$Worker\",\"fileName\":\"ThreadPoolExecutor.java\",\"lineNumber\":628,\"methodName\":\"run\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.lang.Thread\",\"fileName\":\"Thread.java\",\"lineNumber\":829,\"methodName\":\"run\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false}]},\"testClassJavaCode\":\"File /tmp/JsonWriterDiffblueTest17354318348174664837.java, 33 lines:\\n   1: package com.google.gson.stream;\\n   2: \\n   3: import com.diffblue.cover.annotations.ContributionFromDiffblue;\\n   4: import com.diffblue.cover.annotations.ManagedByDiffblue;\\n   5: import com.diffblue.cover.annotations.MethodsUnderTest;\\n   6: import java.io.IOException;\\n   7: import java.io.StringWriter;\\n   8: import org.junit.Test;\\n   9: import org.junit.experimental.categories.Category;\\n  10: \\n  11: public class JsonWriterDiffblueTest17354318348174664837 {\\n  12:   /**\\n  13:    * Test {@link JsonWriter#close()}.\\n  14:    *\\n  15:    * <ul>\\n  16:    *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link\\n  17:    *       StringWriter#StringWriter()}.\\n  18:    *   <li>Then throw {@link IOException}.\\n  19:    * </ul>\\n  20:    *\\n  21:    * <p>Method under test: {@link JsonWriter#close()}\\n  22:    */\\n  23:   @Test\\n  24:   @Category(ContributionFromDiffblue.class)\\n  25:   @ManagedByDiffblue\\n  26:   @MethodsUnderTest({\\\"void JsonWriter.close()\\\"})\\n  27:   public void testClose_givenJsonWriterWithOutIsStringWriter_thenThrowIOException()\\n  28:       throws IOException {\\n  29:     // Arrange\\n  30:     try (JsonWriter jsonWriter = new JsonWriter(new StringWriter())) {}\\n  31:   }\\n  32: }\\n  33: \\nTest execution failed for method com.google.gson.stream.JsonWriter.close\\nFailure reason: Incomplete document\\n\"}",
+      "baseMessage" : "{\"__type\":\"com.diffblue.cover.message.verification.TestExecutionMessage\",\"serializableCause\":{\"cause\":null,\"message\":\"Incomplete document\",\"originalClassName\":\"java.io.IOException\",\"stackTrace\":[{\"classLoaderName\":null,\"className\":\"com.google.gson.stream.JsonWriter\",\"fileName\":\"JsonWriter.java\",\"lineNumber\":725,\"methodName\":\"close\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.google.gson.stream.JsonWriterDiffblueTest13765326128248131209\",\"fileName\":\"JsonWriterDiffblueTest13765326128248131209.java\",\"lineNumber\":30,\"methodName\":\"testClose_givenJsonWriterWithOutIsStringWriter_thenThrowIOException\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.NativeMethodAccessorImpl\",\"fileName\":\"NativeMethodAccessorImpl.java\",\"lineNumber\":-2,\"methodName\":\"invoke0\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":true},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.NativeMethodAccessorImpl\",\"fileName\":\"NativeMethodAccessorImpl.java\",\"lineNumber\":62,\"methodName\":\"invoke\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"jdk.internal.reflect.DelegatingMethodAccessorImpl\",\"fileName\":\"DelegatingMethodAccessorImpl.java\",\"lineNumber\":43,\"methodName\":\"invoke\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.lang.reflect.Method\",\"fileName\":\"Method.java\",\"lineNumber\":566,\"methodName\":\"invoke\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.model.FrameworkMethod$1\",\"fileName\":\"FrameworkMethod.java\",\"lineNumber\":59,\"methodName\":\"runReflectiveCall\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.internal.runners.model.ReflectiveCallable\",\"fileName\":\"ReflectiveCallable.java\",\"lineNumber\":12,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.model.FrameworkMethod\",\"fileName\":\"FrameworkMethod.java\",\"lineNumber\":56,\"methodName\":\"invokeExplosively\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.internal.runners.statements.InvokeMethod\",\"fileName\":\"InvokeMethod.java\",\"lineNumber\":17,\"methodName\":\"evaluate\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner$3\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":306,\"methodName\":\"evaluate\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.BlockJUnit4ClassRunner$1\",\"fileName\":\"BlockJUnit4ClassRunner.java\",\"lineNumber\":100,\"methodName\":\"evaluate\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":366,\"methodName\":\"runLeaf\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.BlockJUnit4ClassRunner\",\"fileName\":\"BlockJUnit4ClassRunner.java\",\"lineNumber\":103,\"methodName\":\"runChild\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.BlockJUnit4ClassRunner\",\"fileName\":\"BlockJUnit4ClassRunner.java\",\"lineNumber\":63,\"methodName\":\"runChild\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner$4\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":331,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner$1\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":79,\"methodName\":\"schedule\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":329,\"methodName\":\"runChildren\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":66,\"methodName\":\"access$100\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner$2\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":293,\"methodName\":\"evaluate\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner$3\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":306,\"methodName\":\"evaluate\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runners.ParentRunner\",\"fileName\":\"ParentRunner.java\",\"lineNumber\":413,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runner.JUnitCore\",\"fileName\":\"JUnitCore.java\",\"lineNumber\":137,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"org.junit.runner.JUnitCore\",\"fileName\":\"JUnitCore.java\",\"lineNumber\":115,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.junit4.isolation.IJunitCoreImpl\",\"fileName\":\"IJunitCoreImpl.java\",\"lineNumber\":35,\"methodName\":\"run\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.l.a.b\",\"fileName\":\"SourceFile\",\"lineNumber\":54,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"com.diffblue.cover.m.c.f\",\"fileName\":\"SourceFile\",\"lineNumber\":83,\"methodName\":\"a\",\"moduleName\":null,\"moduleVersion\":null,\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.util.concurrent.CompletableFuture$AsyncSupply\",\"fileName\":\"CompletableFuture.java\",\"lineNumber\":1700,\"methodName\":\"run\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.util.concurrent.ThreadPoolExecutor\",\"fileName\":\"ThreadPoolExecutor.java\",\"lineNumber\":1128,\"methodName\":\"runWorker\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.util.concurrent.ThreadPoolExecutor$Worker\",\"fileName\":\"ThreadPoolExecutor.java\",\"lineNumber\":628,\"methodName\":\"run\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false},{\"classLoaderName\":null,\"className\":\"java.lang.Thread\",\"fileName\":\"Thread.java\",\"lineNumber\":829,\"methodName\":\"run\",\"moduleName\":\"java.base\",\"moduleVersion\":\"11.0.29\",\"nativeMethod\":false}]},\"testClassJavaCode\":\"File /tmp/JsonWriterDiffblueTest13765326128248131209.java, 33 lines:\\n   1: package com.google.gson.stream;\\n   2: \\n   3: import com.diffblue.cover.annotations.ContributionFromDiffblue;\\n   4: import com.diffblue.cover.annotations.ManagedByDiffblue;\\n   5: import com.diffblue.cover.annotations.MethodsUnderTest;\\n   6: import java.io.IOException;\\n   7: import java.io.StringWriter;\\n   8: import org.junit.Test;\\n   9: import org.junit.experimental.categories.Category;\\n  10: \\n  11: public class JsonWriterDiffblueTest13765326128248131209 {\\n  12:   /**\\n  13:    * Test {@link JsonWriter#close()}.\\n  14:    *\\n  15:    * <ul>\\n  16:    *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link\\n  17:    *       StringWriter#StringWriter()}.\\n  18:    *   <li>Then throw {@link IOException}.\\n  19:    * </ul>\\n  20:    *\\n  21:    * <p>Method under test: {@link JsonWriter#close()}\\n  22:    */\\n  23:   @Test\\n  24:   @Category(ContributionFromDiffblue.class)\\n  25:   @ManagedByDiffblue\\n  26:   @MethodsUnderTest({\\\"void JsonWriter.close()\\\"})\\n  27:   public void testClose_givenJsonWriterWithOutIsStringWriter_thenThrowIOException()\\n  28:       throws IOException {\\n  29:     // Arrange\\n  30:     try (JsonWriter jsonWriter = new JsonWriter(new StringWriter())) {}\\n  31:   }\\n  32: }\\n  33: \\nTest execution failed for method com.google.gson.stream.JsonWriter.close\\nFailure reason: Incomplete document\\n\"}",
       "methodGroup" : {
         "methods" : [
           {

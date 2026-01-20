@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doNothing;
@@ -26,6 +27,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.graph.GraphAdapterBuilder.Element;
 import com.google.gson.graph.GraphAdapterBuilder.Factory;
@@ -40,62 +42,64 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
 public class GraphAdapterBuilderDiffblueTest {
   /**
-   * Test {@link GraphAdapterBuilder#addType(Type, InstanceCreator)} with {@code type}, {@code
-   * instanceCreator}.
+   * Test Element getters and setters.
+   *
+   * <p>Methods under test:
    *
    * <ul>
-   *   <li>Then return {@link GraphAdapterBuilder} (default constructor).
+   *   <li>{@link Element#Element(Object, String, TypeAdapter, JsonElement)}
+   *   <li>{@link Element#getElement()}
+   *   <li>{@link Element#getId()}
+   *   <li>{@link Element#getTypeAdapter()}
+   *   <li>{@link Element#getValue()}
    * </ul>
-   *
-   * <p>Method under test: {@link GraphAdapterBuilder#addType(Type, InstanceCreator)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"GraphAdapterBuilder GraphAdapterBuilder.addType(Type, InstanceCreator)"})
-  public void testAddTypeWithTypeInstanceCreator_thenReturnGraphAdapterBuilder() {
+  @MethodsUnderTest({
+    "void Element.<init>(Object, String, TypeAdapter, JsonElement)",
+    "JsonElement Element.getElement()",
+    "String Element.getId()",
+    "TypeAdapter Element.getTypeAdapter()",
+    "Object Element.getValue()"
+  })
+  public void testElementGettersAndSetters() {
     // Arrange
-    GraphAdapterBuilder graphAdapterBuilder = new GraphAdapterBuilder();
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
     Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+    JsonArray element = new JsonArray();
 
     // Act
-    GraphAdapterBuilder actualAddTypeResult =
-        graphAdapterBuilder.addType(type, mock(InstanceCreator.class));
+    Element<Object> actualElement = new Element<>("Value", "42", typeAdapter, element);
+    JsonElement actualElement2 = actualElement.getElement();
+    String actualId = actualElement.getId();
+    TypeAdapter<Object> actualTypeAdapter = actualElement.getTypeAdapter();
 
     // Assert
-    assertSame(graphAdapterBuilder, actualAddTypeResult);
-  }
-
-  /**
-   * Test {@link GraphAdapterBuilder#addType(Type)} with {@code type}.
-   *
-   * <ul>
-   *   <li>When {@code Object}.
-   *   <li>Then return {@link GraphAdapterBuilder} (default constructor).
-   * </ul>
-   *
-   * <p>Method under test: {@link GraphAdapterBuilder#addType(Type)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"GraphAdapterBuilder GraphAdapterBuilder.addType(Type)"})
-  public void testAddTypeWithType_whenJavaLangObject_thenReturnGraphAdapterBuilder() {
-    // Arrange
-    GraphAdapterBuilder graphAdapterBuilder = new GraphAdapterBuilder();
-    Class<Object> type = Object.class;
-
-    // Act
-    GraphAdapterBuilder actualAddTypeResult = graphAdapterBuilder.addType(type);
-
-    // Assert
-    assertSame(graphAdapterBuilder, actualAddTypeResult);
+    assertEquals("42", actualId);
+    assertEquals("Value", actualElement.getValue());
+    assertSame(element, actualElement2);
+    assertSame(typeAdapter, actualTypeAdapter);
   }
 
   /**
@@ -108,6 +112,142 @@ public class GraphAdapterBuilderDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void Element.read(Graph)"})
   public void testElementRead() {
+    // Arrange
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer,
+            deserializer,
+            new Gson(),
+            mock(TypeToken.class),
+            mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+    Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonArray());
+
+    // Act
+    element.read(mock(Graph.class));
+
+    // Assert
+    Object value = element.getValue();
+    assertTrue(value instanceof Object[]);
+    assertEquals(0, ((Object[]) value).length);
+  }
+
+  /**
+   * Test Element {@link Element#read(Graph)}.
+   *
+   * <p>Method under test: {@link Element#read(Graph)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Element.read(Graph)"})
+  public void testElementRead2() {
+    // Arrange
+    StringReader stringReader = new StringReader("in == null");
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer,
+            deserializer,
+            new Gson(),
+            mock(TypeToken.class),
+            mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> typeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    Element<Object> element = new Element<>(stringReader, "42", typeAdapter, new JsonArray());
+
+    // Act
+    element.read(mock(Graph.class));
+
+    // Assert
+    Object value = element.getValue();
+    assertTrue(value instanceof Object[]);
+    assertEquals(0, ((Object[]) value).length);
+  }
+
+  /**
+   * Test Element {@link Element#read(Graph)}.
+   *
+   * <p>Method under test: {@link Element#read(Graph)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Element.read(Graph)"})
+  public void testElementRead3() throws JsonParseException {
+    // Arrange
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    when(deserializer.deserialize(
+            Mockito.<JsonElement>any(),
+            Mockito.<Type>any(),
+            Mockito.<JsonDeserializationContext>any()))
+        .thenReturn("Deserialize");
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> typeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonArray());
+
+    // Act
+    element.read(mock(Graph.class));
+
+    // Assert
+    verify(deserializer)
+        .deserialize(
+            isA(JsonElement.class), isA(Type.class), isA(JsonDeserializationContext.class));
+    assertEquals("Deserialize", element.getValue());
+  }
+
+  /**
+   * Test Element {@link Element#read(Graph)}.
+   *
+   * <p>Method under test: {@link Element#read(Graph)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Element.read(Graph)"})
+  public void testElementRead4() {
+    // Arrange
+    ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
+    when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn("From Json Tree");
+    Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonArray());
+
+    // Act
+    element.read(mock(Graph.class));
+
+    // Assert
+    verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
+    assertEquals("From Json Tree", element.getValue());
+  }
+
+  /**
+   * Test Element {@link Element#read(Graph)}.
+   *
+   * <p>Method under test: {@link Element#read(Graph)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Element.read(Graph)"})
+  public void testElementRead5() {
     // Arrange
     ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
     when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn(null);
@@ -127,7 +267,7 @@ public class GraphAdapterBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead2() {
+  public void testElementRead6() {
     // Arrange
     ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
     when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn(null);
@@ -147,7 +287,7 @@ public class GraphAdapterBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead3() {
+  public void testElementRead7() {
     // Arrange
     ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
     when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn(null);
@@ -167,7 +307,7 @@ public class GraphAdapterBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead4() {
+  public void testElementRead8() {
     // Arrange
     ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
     when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn(null);
@@ -522,149 +662,6 @@ public class GraphAdapterBuilderDiffblueTest {
   }
 
   /**
-   * Test Element {@link Element#read(Graph)}.
-   *
-   * <ul>
-   *   <li>Given {@link ObjectTypeAdapter} {@link ObjectTypeAdapter#fromJsonTree(JsonElement)}
-   *       return {@code From Json Tree}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Element#read(Graph)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead_givenObjectTypeAdapterFromJsonTreeReturnFromJsonTree() {
-    // Arrange
-    ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
-    when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn("From Json Tree");
-    Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonArray());
-
-    // Act
-    element.read(mock(Graph.class));
-
-    // Assert
-    verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
-  }
-
-  /**
-   * Test Element {@link Element#read(Graph)}.
-   *
-   * <ul>
-   *   <li>Given {@link StringReader#StringReader(String)} with {@code in == null}.
-   *   <li>Then does not throw.
-   * </ul>
-   *
-   * <p>Method under test: {@link Element#read(Graph)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead_givenStringReaderWithInNull_thenDoesNotThrow() {
-    // Arrange
-    StringReader stringReader = new StringReader("in == null");
-    Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer,
-            deserializer,
-            new Gson(),
-            mock(TypeToken.class),
-            mock(TypeAdapterFactory.class));
-    Class<Object> componentType = Object.class;
-
-    ArrayTypeAdapter<Object> typeAdapter =
-        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
-
-    Element<Object> element = new Element<>(stringReader, "42", typeAdapter, new JsonArray());
-
-    // Act and Assert
-    element.read(mock(Graph.class));
-  }
-
-  /**
-   * Test Element {@link Element#read(Graph)}.
-   *
-   * <ul>
-   *   <li>Then calls {@link JsonDeserializer#deserialize(JsonElement, Type,
-   *       JsonDeserializationContext)}.
-   * </ul>
-   *
-   * <p>Method under test: {@link Element#read(Graph)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead_thenCallsDeserialize() throws JsonParseException {
-    // Arrange
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    when(deserializer.deserialize(
-            Mockito.<JsonElement>any(),
-            Mockito.<Type>any(),
-            Mockito.<JsonDeserializationContext>any()))
-        .thenReturn("Deserialize");
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> typeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
-    Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonArray());
-
-    // Act
-    element.read(mock(Graph.class));
-
-    // Assert
-    verify(deserializer)
-        .deserialize(
-            isA(JsonElement.class), isA(Type.class), isA(JsonDeserializationContext.class));
-  }
-
-  /**
-   * Test Element {@link Element#read(Graph)}.
-   *
-   * <ul>
-   *   <li>Then does not throw.
-   * </ul>
-   *
-   * <p>Method under test: {@link Element#read(Graph)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead_thenDoesNotThrow() {
-    // Arrange
-    Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer,
-            deserializer,
-            new Gson(),
-            mock(TypeToken.class),
-            mock(TypeAdapterFactory.class));
-    Class<Object> componentType = Object.class;
-
-    ArrayTypeAdapter<Object> typeAdapter =
-        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
-    Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonArray());
-
-    // Act and Assert
-    element.read(mock(Graph.class));
-  }
-
-  /**
    * Test Element {@link Element#write(JsonWriter)}.
    *
    * <ul>
@@ -727,7 +724,7 @@ public class GraphAdapterBuilderDiffblueTest {
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"com.google.gson.TypeAdapter Factory.create(Gson, TypeToken)"})
+  @MethodsUnderTest({"TypeAdapter Factory.create(Gson, TypeToken)"})
   public void testFactoryCreate_givenJavaLangObject_whenGson_thenReturnToJsonValueIs0x1Value() {
     // Arrange
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
@@ -755,7 +752,7 @@ public class GraphAdapterBuilderDiffblueTest {
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
-  @MethodsUnderTest({"com.google.gson.TypeAdapter Factory.create(Gson, TypeToken)"})
+  @MethodsUnderTest({"TypeAdapter Factory.create(Gson, TypeToken)"})
   public void testFactoryCreate_whenGson_thenReturnNull() {
     // Arrange
     Factory factory = new Factory(new HashMap<>());
@@ -765,6 +762,54 @@ public class GraphAdapterBuilderDiffblueTest {
 
     // Act and Assert
     assertNull(factory.create(gson, type2));
+  }
+
+  /**
+   * Test Factory getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>{@link Factory#Factory(Map)}
+   *   <li>{@link Factory#getGraphThreadLocal()}
+   *   <li>{@link Factory#getInstanceCreators()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "void Factory.<init>(Map)",
+    "ThreadLocal Factory.getGraphThreadLocal()",
+    "Map Factory.getInstanceCreators()"
+  })
+  public void testFactoryGettersAndSetters() {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+
+    // Act
+    Factory actualFactory = new Factory(instanceCreators);
+    ThreadLocal<Graph> actualGraphThreadLocal = actualFactory.getGraphThreadLocal();
+    Map<Type, InstanceCreator<?>> actualInstanceCreators = actualFactory.getInstanceCreators();
+
+    // Assert
+    assertNull(actualGraphThreadLocal.get());
+    assertTrue(actualInstanceCreators.isEmpty());
+    assertSame(instanceCreators, actualInstanceCreators);
+  }
+
+  /**
+   * Test new {@link GraphAdapterBuilder} (default constructor).
+   *
+   * <p>Method under test: default or parameterless constructor of {@link GraphAdapterBuilder}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void GraphAdapterBuilder.<init>()"})
+  public void testNewGraphAdapterBuilder() {
+    // Arrange, Act and Assert
+    assertTrue(new GraphAdapterBuilder().getInstanceCreators().isEmpty());
   }
 
   /**
@@ -827,5 +872,34 @@ public class GraphAdapterBuilderDiffblueTest {
     // Assert
     verify(gsonBuilder).registerTypeAdapter(isA(Type.class), isA(Object.class));
     verify(gsonBuilder).registerTypeAdapterFactory(isA(TypeAdapterFactory.class));
+  }
+
+  /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>{@link GraphAdapterBuilder#getConstructorConstructor()}
+   *   <li>{@link GraphAdapterBuilder#getInstanceCreators()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "com.google.gson.internal.ConstructorConstructor"
+        + " GraphAdapterBuilder.getConstructorConstructor()",
+    "Map GraphAdapterBuilder.getInstanceCreators()"
+  })
+  public void testGettersAndSetters() {
+    // Arrange
+    GraphAdapterBuilder graphAdapterBuilder = new GraphAdapterBuilder();
+
+    // Act
+    graphAdapterBuilder.getConstructorConstructor();
+
+    // Assert
+    assertTrue(graphAdapterBuilder.getInstanceCreators().isEmpty());
   }
 }

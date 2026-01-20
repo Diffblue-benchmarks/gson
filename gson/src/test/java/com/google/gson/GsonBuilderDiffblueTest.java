@@ -609,9 +609,13 @@ public class GsonBuilderDiffblueTest {
     Gson createResult2 = actualSetDateFormatResult.create();
     List<TypeAdapterFactory> typeAdapterFactoryList2 = createResult2.factories;
     assertEquals(45, typeAdapterFactoryList2.size());
-    assertTrue(typeAdapterFactoryList2.get(44) instanceof ReflectiveTypeAdapterFactory);
+    TypeAdapterFactory getResult = typeAdapterFactoryList2.get(44);
+    assertTrue(getResult instanceof ReflectiveTypeAdapterFactory);
     assertEquals("42", createResult.datePattern);
     assertEquals("42", createResult2.datePattern);
+    Excluder excluderResult = createResult2.excluder();
+    assertSame(excluderResult, ((ReflectiveTypeAdapterFactory) getResult).getExcluder());
+    assertSame(excluderResult, createResult2.excluder);
   }
 
   /**
@@ -636,11 +640,20 @@ public class GsonBuilderDiffblueTest {
     Gson createResult = gsonBuilder.setDateFormat(null).create();
     List<TypeAdapterFactory> typeAdapterFactoryList = createResult.factories;
     assertEquals(42, typeAdapterFactoryList.size());
-    assertTrue(typeAdapterFactoryList.get(41) instanceof ReflectiveTypeAdapterFactory);
+    TypeAdapterFactory getResult = typeAdapterFactoryList.get(41);
+    assertTrue(getResult instanceof ReflectiveTypeAdapterFactory);
     Gson createResult2 = gsonBuilder.create();
     assertNull(createResult2.datePattern);
     assertNull(createResult.datePattern);
     assertEquals(42, createResult2.factories.size());
+    assertTrue(
+        ((ReflectiveTypeAdapterFactory) getResult)
+            .getJsonAdapterFactory()
+            .getAdapterFactoryMap()
+            .isEmpty());
+    Excluder excluderResult = createResult.excluder();
+    assertSame(excluderResult, ((ReflectiveTypeAdapterFactory) getResult).getExcluder());
+    assertSame(excluderResult, createResult.excluder);
   }
 
   /**
@@ -708,17 +721,19 @@ public class GsonBuilderDiffblueTest {
     GsonBuilder gsonBuilder = new GsonBuilder();
     Class<Object> baseType = Object.class;
 
-    // Act
-    GsonBuilder actualRegisterTypeHierarchyAdapterResult =
-        gsonBuilder.registerTypeHierarchyAdapter(baseType, new FutureTypeAdapter<>());
-
-    // Assert
-    Gson createResult = gsonBuilder.create();
+    // Act and Assert
+    Gson createResult =
+        gsonBuilder.registerTypeHierarchyAdapter(baseType, new FutureTypeAdapter<>()).create();
+    List<TypeAdapterFactory> typeAdapterFactoryList = createResult.factories;
+    assertEquals(43, typeAdapterFactoryList.size());
+    TypeAdapterFactory getResult = typeAdapterFactoryList.get(42);
+    assertTrue(getResult instanceof ReflectiveTypeAdapterFactory);
+    assertEquals(1, gsonBuilder.create().builderFactories.size());
     assertEquals(1, createResult.builderFactories.size());
-    Gson createResult2 = actualRegisterTypeHierarchyAdapterResult.create();
-    assertEquals(1, createResult2.builderFactories.size());
     assertTrue(createResult.builderHierarchyFactories.isEmpty());
-    assertTrue(createResult2.builderHierarchyFactories.isEmpty());
+    Excluder excluderResult = createResult.excluder();
+    assertSame(excluderResult, ((ReflectiveTypeAdapterFactory) getResult).getExcluder());
+    assertSame(excluderResult, createResult.excluder);
   }
 
   /**
@@ -763,17 +778,16 @@ public class GsonBuilderDiffblueTest {
     GsonBuilder gsonBuilder = new GsonBuilder();
     Class<Object> baseType = Object.class;
 
-    // Act
-    GsonBuilder actualRegisterTypeHierarchyAdapterResult =
-        gsonBuilder.registerTypeHierarchyAdapter(baseType, mock(JsonDeserializer.class));
-
-    // Assert
-    Gson createResult = gsonBuilder.create();
-    assertEquals(1, createResult.builderHierarchyFactories.size());
-    Gson createResult2 = actualRegisterTypeHierarchyAdapterResult.create();
-    assertEquals(1, createResult2.builderHierarchyFactories.size());
-    assertTrue(createResult.builderFactories.isEmpty());
-    assertTrue(createResult2.builderFactories.isEmpty());
+    // Act and Assert
+    Gson createResult =
+        gsonBuilder.registerTypeHierarchyAdapter(baseType, mock(JsonDeserializer.class)).create();
+    List<TypeAdapterFactory> typeAdapterFactoryList = createResult.factories;
+    assertEquals(43, typeAdapterFactoryList.size());
+    TypeAdapterFactory getResult = typeAdapterFactoryList.get(42);
+    assertTrue(getResult instanceof ReflectiveTypeAdapterFactory);
+    Excluder excluderResult = createResult.excluder();
+    assertSame(excluderResult, ((ReflectiveTypeAdapterFactory) getResult).getExcluder());
+    assertSame(excluderResult, createResult.excluder);
   }
 
   /**
@@ -794,17 +808,16 @@ public class GsonBuilderDiffblueTest {
     GsonBuilder gsonBuilder = new GsonBuilder();
     Class<Object> baseType = Object.class;
 
-    // Act
-    GsonBuilder actualRegisterTypeHierarchyAdapterResult =
-        gsonBuilder.registerTypeHierarchyAdapter(baseType, mock(JsonSerializer.class));
-
-    // Assert
-    Gson createResult = gsonBuilder.create();
-    assertEquals(1, createResult.builderHierarchyFactories.size());
-    Gson createResult2 = actualRegisterTypeHierarchyAdapterResult.create();
-    assertEquals(1, createResult2.builderHierarchyFactories.size());
-    assertTrue(createResult.builderFactories.isEmpty());
-    assertTrue(createResult2.builderFactories.isEmpty());
+    // Act and Assert
+    Gson createResult =
+        gsonBuilder.registerTypeHierarchyAdapter(baseType, mock(JsonSerializer.class)).create();
+    List<TypeAdapterFactory> typeAdapterFactoryList = createResult.factories;
+    assertEquals(43, typeAdapterFactoryList.size());
+    TypeAdapterFactory getResult = typeAdapterFactoryList.get(42);
+    assertTrue(getResult instanceof ReflectiveTypeAdapterFactory);
+    Excluder excluderResult = createResult.excluder();
+    assertSame(excluderResult, ((ReflectiveTypeAdapterFactory) getResult).getExcluder());
+    assertSame(excluderResult, createResult.excluder);
   }
 
   /**

@@ -1,13 +1,12 @@
 package com.google.gson.internal.bind;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
@@ -17,6 +16,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonSerializer;
+import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -27,6 +27,45 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class ArrayTypeAdapterDiffblueTest {
+  /**
+   * Test {@link ArrayTypeAdapter#ArrayTypeAdapter(Gson, TypeAdapter, Class)}.
+   *
+   * <p>Method under test: {@link ArrayTypeAdapter#ArrayTypeAdapter(Gson, TypeAdapter, Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void ArrayTypeAdapter.<init>(Gson, TypeAdapter, Class)"})
+  public void testNewArrayTypeAdapter() {
+    // Arrange
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    // Act
+    ArrayTypeAdapter<Object> actualArrayTypeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    // Assert
+    TypeAdapter<Object> componentTypeAdapter2 = actualArrayTypeAdapter.getComponentTypeAdapter();
+    assertTrue(componentTypeAdapter2 instanceof TypeAdapterRuntimeTypeWrapper);
+    Class<Object> expectedComponentType = Object.class;
+    assertEquals(expectedComponentType, actualArrayTypeAdapter.getComponentType());
+    assertSame(
+        context, ((TypeAdapterRuntimeTypeWrapper<Object>) componentTypeAdapter2).getContext());
+    assertSame(
+        componentTypeAdapter,
+        ((TypeAdapterRuntimeTypeWrapper<Object>) componentTypeAdapter2).getDelegate());
+  }
+
   /**
    * Test {@link ArrayTypeAdapter#read(JsonReader)}.
    *
@@ -114,8 +153,8 @@ public class ArrayTypeAdapterDiffblueTest {
    * Test {@link ArrayTypeAdapter#write(JsonWriter, Object)}.
    *
    * <ul>
-   *   <li>Given {@link IOException#IOException()}.
-   *   <li>Then throw {@link IOException}.
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code null}.
    * </ul>
    *
    * <p>Method under test: {@link ArrayTypeAdapter#write(JsonWriter, Object)}
@@ -124,7 +163,7 @@ public class ArrayTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void ArrayTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenIOException_thenThrowIOException() throws IOException {
+  public void testWrite_thenJsonWriterWithOutIsStringWriterOutToStringIsNull() throws IOException {
     // Arrange
     Gson context = new Gson();
     JsonSerializer<Object> serializer = mock(JsonSerializer.class);
@@ -140,21 +179,28 @@ public class ArrayTypeAdapterDiffblueTest {
 
     ArrayTypeAdapter<Object> arrayTypeAdapter =
         new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+    JsonWriter out = new JsonWriter(new StringWriter());
 
-    JsonWriter out = mock(JsonWriter.class);
-    when(out.nullValue()).thenThrow(new IOException());
+    // Act
+    arrayTypeAdapter.write(out, null);
 
-    // Act and Assert
-    assertThrows(IOException.class, () -> arrayTypeAdapter.write(out, null));
-    verify(out).nullValue();
+    // Assert
+    assertEquals("null", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
   }
 
   /**
    * Test {@link ArrayTypeAdapter#write(JsonWriter, Object)}.
    *
    * <ul>
-   *   <li>When {@link JsonWriter} {@link JsonWriter#nullValue()} return {@link
-   *       JsonWriter#JsonWriter(Writer)} with out is {@link StringWriter#StringWriter()}.
+   *   <li>When {@link JsonTreeWriter} (default constructor).
+   *   <li>Then {@link JsonTreeWriter} (default constructor) Stack is array of {@code int} with six
+   *       and zero.
    * </ul>
    *
    * <p>Method under test: {@link ArrayTypeAdapter#write(JsonWriter, Object)}
@@ -163,7 +209,7 @@ public class ArrayTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void ArrayTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_whenJsonWriterNullValueReturnJsonWriterWithOutIsStringWriter()
+  public void testWrite_whenJsonTreeWriter_thenJsonTreeWriterStackIsArrayOfIntWithSixAndZero()
       throws IOException {
     // Arrange
     Gson context = new Gson();
@@ -180,14 +226,60 @@ public class ArrayTypeAdapterDiffblueTest {
 
     ArrayTypeAdapter<Object> arrayTypeAdapter =
         new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
-
-    JsonWriter out = mock(JsonWriter.class);
-    when(out.nullValue()).thenReturn(new JsonWriter(new StringWriter()));
+    JsonTreeWriter out = new JsonTreeWriter();
 
     // Act
     arrayTypeAdapter.write(out, null);
 
+    // Assert that nothing has changed
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>{@link ArrayTypeAdapter#getComponentType()}
+   *   <li>{@link ArrayTypeAdapter#getComponentTypeAdapter()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "Class ArrayTypeAdapter.getComponentType()",
+    "TypeAdapter ArrayTypeAdapter.getComponentTypeAdapter()"
+  })
+  public void testGettersAndSetters() {
+    // Arrange
+    Gson context = new Gson();
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> componentTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Class<Object> componentType = Object.class;
+
+    ArrayTypeAdapter<Object> arrayTypeAdapter =
+        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
+
+    // Act
+    Class<Object> actualComponentType = arrayTypeAdapter.getComponentType();
+
     // Assert
-    verify(out).nullValue();
+    assertTrue(arrayTypeAdapter.getComponentTypeAdapter() instanceof TypeAdapterRuntimeTypeWrapper);
+    Class<Object> expectedComponentType = Object.class;
+    assertEquals(expectedComponentType, actualComponentType);
   }
 }

@@ -1,5 +1,6 @@
 package com.google.gson.internal.bind;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -19,6 +20,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -640,6 +642,407 @@ public class JsonElementTypeAdapterDiffblueTest {
   @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
   public void testWriteWithJsonWriterJsonElement() throws IOException {
     // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, JsonNull.INSTANCE);
+
+    // Assert
+    assertEquals("null", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement2() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, null);
+
+    // Assert
+    assertEquals("null", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement3() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, new JsonArray(3));
+
+    // Assert
+    assertEquals("[]", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement4() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    JsonArray value = new JsonArray(3);
+    value.add((Boolean) null);
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, value);
+
+    // Assert
+    assertEquals("[null]", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement5() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, new JsonPrimitive(Boolean.TRUE.toString()));
+
+    // Assert
+    assertEquals("\"true\"", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement6() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, new JsonObject());
+
+    // Assert
+    assertEquals("{}", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement7() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, new JsonPrimitive(true));
+
+    // Assert
+    assertEquals(Boolean.TRUE.toString(), out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement8() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, new JsonPrimitive('\u0003'));
+
+    // Assert
+    assertEquals("\"\\u0003\"", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement9() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    JsonArray value = new JsonArray(3);
+    value.add(Integer.valueOf(3));
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, value);
+
+    // Assert
+    assertEquals("[3]", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement10() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    JsonArray value = new JsonArray(3);
+    value.add(false);
+    value.add(Integer.valueOf(3));
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, value);
+
+    // Assert
+    assertEquals("[false,3]", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement11() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    JsonObject value = new JsonObject();
+    value.add("42", JsonNull.INSTANCE);
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, value);
+
+    // Assert
+    assertEquals("{\"42\":null}", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement12() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    JsonObject value = new JsonObject();
+    value.add("name == null", JsonNull.INSTANCE);
+    value.add("42", JsonNull.INSTANCE);
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, value);
+
+    // Assert
+    assertEquals("{\"name == null\":null,\"42\":null}", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement13() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+    out.setHtmlSafe(true);
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, new JsonPrimitive(Boolean.TRUE.toString()));
+
+    // Assert
+    assertEquals("\"true\"", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement14() throws IOException {
+    // Arrange
+    JsonWriter out = new JsonWriter(new StringWriter());
+    out.setHtmlSafe(true);
+
+    JsonObject value = new JsonObject();
+    value.add("name == null", JsonNull.INSTANCE);
+    value.add("42", JsonNull.INSTANCE);
+
+    // Act
+    JsonElementTypeAdapter.ADAPTER.write(out, value);
+
+    // Assert
+    assertEquals("{\"name \\u003d\\u003d null\":null,\"42\":null}", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)} with {@code JsonWriter},
+   * {@code JsonElement}.
+   *
+   * <p>Method under test: {@link JsonElementTypeAdapter#write(JsonWriter, JsonElement)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
+  public void testWriteWithJsonWriterJsonElement15() throws IOException {
+    // Arrange
     JsonTreeWriter out = new JsonTreeWriter();
     JsonArray value = new JsonArray(3);
 
@@ -662,7 +1065,7 @@ public class JsonElementTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement2() throws IOException {
+  public void testWriteWithJsonWriterJsonElement16() throws IOException {
     // Arrange
     JsonTreeWriter out = new JsonTreeWriter();
     JsonPrimitive value = new JsonPrimitive(true);
@@ -686,7 +1089,7 @@ public class JsonElementTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement3() throws IOException {
+  public void testWriteWithJsonWriterJsonElement17() throws IOException {
     // Arrange
     JsonTreeWriter out = new JsonTreeWriter();
 
@@ -712,7 +1115,7 @@ public class JsonElementTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement4() throws IOException {
+  public void testWriteWithJsonWriterJsonElement18() throws IOException {
     // Arrange
     JsonTreeWriter out = new JsonTreeWriter();
 
@@ -741,7 +1144,7 @@ public class JsonElementTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonElementTypeAdapter.write(JsonWriter, JsonElement)"})
-  public void testWriteWithJsonWriterJsonElement5() throws IOException {
+  public void testWriteWithJsonWriterJsonElement19() throws IOException {
     // Arrange
     JsonTreeWriter out = new JsonTreeWriter();
 
@@ -1009,7 +1412,12 @@ public class JsonElementTypeAdapterDiffblueTest {
     // Assert that nothing has changed
     JsonElement getResult = out.get();
     assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
     assertFalse(getResult.isJsonObject());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
   }
 }

@@ -201,4 +201,12 @@ public final class JsonAdapterAnnotationTypeAdapterFactory implements TypeAdapte
 
     return putFactoryAndGetCurrent(rawType, newFactory) == factory;
   }
+
+  public ConstructorConstructor getConstructorConstructor() {
+    return constructorConstructor;
+  }
+
+  public ConcurrentMap<Class<?>, TypeAdapterFactory> getAdapterFactoryMap() {
+    return adapterFactoryMap;
+  }
 }

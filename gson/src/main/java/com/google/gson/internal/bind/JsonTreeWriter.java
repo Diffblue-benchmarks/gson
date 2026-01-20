@@ -251,4 +251,16 @@ public final class JsonTreeWriter extends JsonWriter {
     }
     stack.add(SENTINEL_CLOSED);
   }
+
+  public List<JsonElement> getElementStack() {
+    return stack;
+  }
+
+  public String getPendingName() {
+    return pendingName;
+  }
+
+  public JsonElement getProduct() {
+    return product;
+  }
 }

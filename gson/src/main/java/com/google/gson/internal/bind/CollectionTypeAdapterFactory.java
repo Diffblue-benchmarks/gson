@@ -102,4 +102,8 @@ public final class CollectionTypeAdapterFactory implements TypeAdapterFactory {
       out.endArray();
     }
   }
+
+  public ConstructorConstructor getConstructorConstructor() {
+    return constructorConstructor;
+  }
 }

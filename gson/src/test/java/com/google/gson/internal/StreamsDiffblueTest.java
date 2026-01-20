@@ -1,13 +1,11 @@
 package com.google.gson.internal;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
@@ -714,10 +712,64 @@ public class StreamsDiffblueTest {
   /**
    * Test {@link Streams#write(JsonElement, JsonWriter)}.
    *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite() throws IOException {
+    // Arrange
+    JsonArray element = new JsonArray(3);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite2() throws IOException {
+    // Arrange
+    JsonObject element = new JsonObject();
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("{}", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
    * <ul>
-   *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link
-   *       StringWriter#StringWriter()}.
-   *   <li>Then calls {@link JsonWriter#nullValue()}.
+   *   <li>Given {@code A}.
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code [65,true]}.
    * </ul>
    *
    * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
@@ -726,17 +778,572 @@ public class StreamsDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
-  public void testWrite_givenJsonWriterWithOutIsStringWriter_thenCallsNullValue()
+  public void testWrite_givenA_thenJsonWriterWithOutIsStringWriterOutToStringIs65True()
       throws IOException {
     // Arrange
-    JsonWriter writer = mock(JsonWriter.class);
-    when(writer.nullValue()).thenReturn(new JsonWriter(new StringWriter()));
+    JsonArray element = new JsonArray(3);
+    element.add((byte) 'A');
+    element.add(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[65,true]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Given {@code false}.
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code [false,true]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_givenFalse_thenJsonWriterWithOutIsStringWriterOutToStringIsFalseTrue()
+      throws IOException {
+    // Arrange
+    JsonArray element = new JsonArray(3);
+    element.add(false);
+    element.add(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[false,true]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Given ten.
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code [10.0,true]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_givenTen_thenJsonWriterWithOutIsStringWriterOutToStringIs100True()
+      throws IOException {
+    // Arrange
+    JsonArray element = new JsonArray(3);
+    element.add(10.0d);
+    element.add(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[10.0,true]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Given ten.
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code [10.0,true]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_givenTen_thenJsonWriterWithOutIsStringWriterOutToStringIs100True2()
+      throws IOException {
+    // Arrange
+    JsonArray element = new JsonArray(3);
+    element.add(10.0f);
+    element.add(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[10.0,true]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Given three.
+   *   <li>When {@link JsonArray#JsonArray(int)} with capacity is three add three.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_givenThree_whenJsonArrayWithCapacityIsThreeAddThree() throws IOException {
+    // Arrange
+    JsonArray element = new JsonArray(3);
+    element.add(3L);
+    element.add(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[3,true]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Given three.
+   *   <li>When {@link JsonArray#JsonArray(int)} with capacity is three add three.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_givenThree_whenJsonArrayWithCapacityIsThreeAddThree2() throws IOException {
+    // Arrange
+    JsonArray element = new JsonArray(3);
+    element.add((short) 3);
+    element.add(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[3,true]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Given valueOf three.
+   *   <li>When {@link JsonArray#JsonArray(int)} with capacity is three add valueOf three.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_givenValueOfThree_whenJsonArrayWithCapacityIsThreeAddValueOfThree()
+      throws IOException {
+    // Arrange
+    JsonArray element = new JsonArray(3);
+    element.add(Integer.valueOf(3));
+    element.add(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[3,true]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code "null"}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_thenJsonWriterWithOutIsStringWriterOutToStringIsNull() throws IOException {
+    // Arrange
+    JsonPrimitive element = new JsonPrimitive("null");
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("\"null\"", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code {"null":null,"Property":null}}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_thenJsonWriterWithOutIsStringWriterOutToStringIsNullNullPropertyNull()
+      throws IOException {
+    // Arrange
+    JsonObject element = new JsonObject();
+    element.add("null", JsonNull.INSTANCE);
+    element.add("Property", JsonNull.INSTANCE);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("{\"null\":null,\"Property\":null}", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code [null,true]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_thenJsonWriterWithOutIsStringWriterOutToStringIsNullTrue()
+      throws IOException {
+    // Arrange
+    JsonArray element = new JsonArray(3);
+    element.add(JsonNull.INSTANCE);
+    element.add(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[null,true]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code {"Property":null}}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_thenJsonWriterWithOutIsStringWriterOutToStringIsPropertyNull()
+      throws IOException {
+    // Arrange
+    JsonObject element = new JsonObject();
+    element.add("Property", JsonNull.INSTANCE);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("{\"Property\":null}", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code [true]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_thenJsonWriterWithOutIsStringWriterOutToStringIsTrue() throws IOException {
+    // Arrange
+    JsonArray element = new JsonArray(3);
+    element.add(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[true]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@link Boolean#TRUE} toString.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_thenJsonWriterWithOutIsStringWriterOutToStringIsTrueToString()
+      throws IOException {
+    // Arrange
+    JsonPrimitive element = new JsonPrimitive(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals(Boolean.TRUE.toString(), writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code ["\u0001",true]}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_thenJsonWriterWithOutIsStringWriterOutToStringIsU0001True()
+      throws IOException {
+    // Arrange
+    JsonArray element = new JsonArray(3);
+    element.add('\u0001');
+    element.add(true);
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("[\"\\u0001\",true]", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code "\u0003"}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_thenJsonWriterWithOutIsStringWriterOutToStringIsU0003() throws IOException {
+    // Arrange
+    JsonPrimitive element = new JsonPrimitive('\u0003');
+    JsonWriter writer = new JsonWriter(new StringWriter());
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("\"\\u0003\"", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonNull#INSTANCE}.
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenInstance_thenJsonWriterWithOutIsStringWriterOutToStringIsNull()
+      throws IOException {
+    // Arrange
+    JsonWriter writer = new JsonWriter(new StringWriter());
 
     // Act
     Streams.write(JsonNull.INSTANCE, writer);
 
     // Assert
-    verify(writer).nullValue();
+    assertEquals("null", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
+  }
+
+  /**
+   * Test {@link Streams#write(JsonElement, JsonWriter)}.
+   *
+   * <ul>
+   *   <li>When {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} HtmlSafe is {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Streams#write(JsonElement, JsonWriter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Streams.write(JsonElement, JsonWriter)"})
+  public void testWrite_whenJsonWriterWithOutIsStringWriterHtmlSafeIsTrue() throws IOException {
+    // Arrange
+    JsonPrimitive element = new JsonPrimitive("null");
+
+    JsonWriter writer = new JsonWriter(new StringWriter());
+    writer.setHtmlSafe(true);
+
+    // Act
+    Streams.write(element, writer);
+
+    // Assert
+    assertEquals("\"null\"", writer.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        writer.getStack());
   }
 
   /**

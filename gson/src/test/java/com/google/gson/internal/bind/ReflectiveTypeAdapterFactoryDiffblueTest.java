@@ -1,6 +1,8 @@
 package com.google.gson.internal.bind;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -21,11 +23,78 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
 public class ReflectiveTypeAdapterFactoryDiffblueTest {
+  /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>{@link ReflectiveTypeAdapterFactory#ReflectiveTypeAdapterFactory(ConstructorConstructor,
+   *       FieldNamingStrategy, Excluder, JsonAdapterAnnotationTypeAdapterFactory, List)}
+   *   <li>{@link ReflectiveTypeAdapterFactory#getConstructorConstructor()}
+   *   <li>{@link ReflectiveTypeAdapterFactory#getExcluder()}
+   *   <li>{@link ReflectiveTypeAdapterFactory#getFieldNamingPolicy()}
+   *   <li>{@link ReflectiveTypeAdapterFactory#getJsonAdapterFactory()}
+   *   <li>{@link ReflectiveTypeAdapterFactory#getReflectionFilters()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "void ReflectiveTypeAdapterFactory.<init>(ConstructorConstructor, FieldNamingStrategy,"
+        + " Excluder, JsonAdapterAnnotationTypeAdapterFactory, List)",
+    "ConstructorConstructor ReflectiveTypeAdapterFactory.getConstructorConstructor()",
+    "Excluder ReflectiveTypeAdapterFactory.getExcluder()",
+    "FieldNamingStrategy ReflectiveTypeAdapterFactory.getFieldNamingPolicy()",
+    "JsonAdapterAnnotationTypeAdapterFactory ReflectiveTypeAdapterFactory.getJsonAdapterFactory()",
+    "List ReflectiveTypeAdapterFactory.getReflectionFilters()"
+  })
+  public void testGettersAndSetters() {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ConstructorConstructor constructorConstructor =
+        new ConstructorConstructor(instanceCreators, true, new ArrayList<>());
+    FieldNamingStrategy fieldNamingPolicy = mock(FieldNamingStrategy.class);
+    HashMap<Type, InstanceCreator<?>> instanceCreators2 = new HashMap<>();
+    JsonAdapterAnnotationTypeAdapterFactory jsonAdapterFactory =
+        new JsonAdapterAnnotationTypeAdapterFactory(
+            new ConstructorConstructor(instanceCreators2, true, new ArrayList<>()));
+    ArrayList<ReflectionAccessFilter> reflectionFilters = new ArrayList<>();
+
+    // Act
+    ReflectiveTypeAdapterFactory actualReflectiveTypeAdapterFactory =
+        new ReflectiveTypeAdapterFactory(
+            constructorConstructor,
+            fieldNamingPolicy,
+            Excluder.DEFAULT,
+            jsonAdapterFactory,
+            reflectionFilters);
+    ConstructorConstructor actualConstructorConstructor =
+        actualReflectiveTypeAdapterFactory.getConstructorConstructor();
+    Excluder actualExcluder = actualReflectiveTypeAdapterFactory.getExcluder();
+    FieldNamingStrategy actualFieldNamingPolicy =
+        actualReflectiveTypeAdapterFactory.getFieldNamingPolicy();
+    JsonAdapterAnnotationTypeAdapterFactory actualJsonAdapterFactory =
+        actualReflectiveTypeAdapterFactory.getJsonAdapterFactory();
+    List<ReflectionAccessFilter> actualReflectionFilters =
+        actualReflectiveTypeAdapterFactory.getReflectionFilters();
+
+    // Assert
+    assertTrue(actualReflectionFilters.isEmpty());
+    assertSame(constructorConstructor, actualConstructorConstructor);
+    assertSame(jsonAdapterFactory, actualJsonAdapterFactory);
+    assertSame(reflectionFilters, actualReflectionFilters);
+    assertSame(Excluder.DEFAULT, actualExcluder);
+    assertSame(fieldNamingPolicy, actualFieldNamingPolicy);
+  }
+
   /**
    * Test {@link ReflectiveTypeAdapterFactory#create(Gson, TypeToken)}.
    *

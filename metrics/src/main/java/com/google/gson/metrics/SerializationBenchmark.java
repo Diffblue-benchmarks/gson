@@ -48,4 +48,16 @@ public class SerializationBenchmark {
       String unused = gson.toJson(bag);
     }
   }
+
+  public Gson getGson() {
+    return gson;
+  }
+
+  public BagOfPrimitives getBag() {
+    return bag;
+  }
+
+  public boolean isPretty() {
+    return pretty;
+  }
 }

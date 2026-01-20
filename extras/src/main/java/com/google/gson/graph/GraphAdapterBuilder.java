@@ -133,6 +133,14 @@ public final class GraphAdapterBuilder {
     }
   }
 
+  public Map<Type, InstanceCreator<?>> getInstanceCreators() {
+    return instanceCreators;
+  }
+
+  public ConstructorConstructor getConstructorConstructor() {
+    return constructorConstructor;
+  }
+
   /**
    * A factory that creates type adapters capable of serializing and deserializing object graphs.
    *
@@ -292,6 +300,14 @@ public final class GraphAdapterBuilder {
       graph.nextCreate = null;
       return result;
     }
+
+    public Map<Type, InstanceCreator<?>> getInstanceCreators() {
+      return instanceCreators;
+    }
+
+    public ThreadLocal<Graph> getGraphThreadLocal() {
+      return graphThreadLocal;
+    }
   }
 
   static class Graph {
@@ -355,6 +371,22 @@ public final class GraphAdapterBuilder {
       if (value == null) {
         throw new IllegalStateException("non-null value deserialized to null: " + element);
       }
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public T getValue() {
+      return value;
+    }
+
+    public TypeAdapter<T> getTypeAdapter() {
+      return typeAdapter;
+    }
+
+    public JsonElement getElement() {
+      return element;
     }
   }
 }

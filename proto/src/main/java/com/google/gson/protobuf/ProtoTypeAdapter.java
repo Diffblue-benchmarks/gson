@@ -213,6 +213,30 @@ public class ProtoTypeAdapter implements JsonSerializer<Message>, JsonDeserializ
           serializedEnumValueExtensions,
           shouldUseJsonNameFieldOption);
     }
+
+    public Set<Extension<FieldOptions, String>> getSerializedNameExtensions() {
+      return serializedNameExtensions;
+    }
+
+    public Set<Extension<EnumValueOptions, String>> getSerializedEnumValueExtensions() {
+      return serializedEnumValueExtensions;
+    }
+
+    public EnumSerialization getEnumSerialization() {
+      return enumSerialization;
+    }
+
+    public CaseFormat getProtoFormat() {
+      return protoFormat;
+    }
+
+    public CaseFormat getJsonFormat() {
+      return jsonFormat;
+    }
+
+    public boolean isShouldUseJsonNameFieldOption() {
+      return shouldUseJsonNameFieldOption;
+    }
   }
 
   /**
@@ -447,5 +471,29 @@ public class ProtoTypeAdapter implements JsonSerializer<Message>, JsonDeserializ
       // NB: it doesn't matter which method we return in the event of a race.
     }
     return method;
+  }
+
+  public EnumSerialization getEnumSerialization() {
+    return enumSerialization;
+  }
+
+  public CaseFormat getProtoFormat() {
+    return protoFormat;
+  }
+
+  public CaseFormat getJsonFormat() {
+    return jsonFormat;
+  }
+
+  public Set<Extension<FieldOptions, String>> getSerializedNameExtensions() {
+    return serializedNameExtensions;
+  }
+
+  public Set<Extension<EnumValueOptions, String>> getSerializedEnumValueExtensions() {
+    return serializedEnumValueExtensions;
+  }
+
+  public boolean isShouldUseJsonNameFieldOption() {
+    return shouldUseJsonNameFieldOption;
   }
 }

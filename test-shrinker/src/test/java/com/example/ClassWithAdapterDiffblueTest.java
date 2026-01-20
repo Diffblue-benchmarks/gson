@@ -1,5 +1,6 @@
 package com.example;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -21,6 +22,7 @@ import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -124,6 +126,34 @@ public class ClassWithAdapterDiffblueTest {
    * Test Adapter {@link Adapter#write(JsonWriter, ClassWithAdapter)} with {@code JsonWriter},
    * {@code ClassWithAdapter}.
    *
+   * <p>Method under test: {@link Adapter#write(JsonWriter, ClassWithAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Adapter.write(JsonWriter, ClassWithAdapter)"})
+  public void testAdapterWriteWithJsonWriterClassWithAdapter() throws IOException {
+    // Arrange
+    Adapter adapter = new Adapter();
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    adapter.write(out, new ClassWithAdapter(1));
+
+    // Assert
+    assertEquals("{\"custom\":1}", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test Adapter {@link Adapter#write(JsonWriter, ClassWithAdapter)} with {@code JsonWriter},
+   * {@code ClassWithAdapter}.
+   *
    * <ul>
    *   <li>Given {@code LENIENT}.
    * </ul>
@@ -152,6 +182,46 @@ public class ClassWithAdapterDiffblueTest {
     assertFalse(((JsonObject) getResult).isEmpty());
     assertTrue(getResult.isJsonObject());
     assertSame(getResult, getResult.getAsJsonObject());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test Adapter {@link Adapter#write(JsonWriter, ClassWithAdapter)} with {@code JsonWriter},
+   * {@code ClassWithAdapter}.
+   *
+   * <ul>
+   *   <li>Given {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Adapter#write(JsonWriter, ClassWithAdapter)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Adapter.write(JsonWriter, ClassWithAdapter)"})
+  public void testAdapterWriteWithJsonWriterClassWithAdapter_givenTrue() throws IOException {
+    // Arrange
+    Adapter adapter = new Adapter();
+
+    JsonWriter out = new JsonWriter(new StringWriter());
+    out.setHtmlSafe(true);
+
+    // Act
+    adapter.write(out, new ClassWithAdapter(1));
+
+    // Assert
+    assertEquals("{\"custom\":1}", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
   }
 
   /**
@@ -185,6 +255,12 @@ public class ClassWithAdapterDiffblueTest {
     assertFalse(((JsonObject) getResult).isEmpty());
     assertTrue(getResult.isJsonObject());
     assertSame(getResult, getResult.getAsJsonObject());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
   }
 
   /**

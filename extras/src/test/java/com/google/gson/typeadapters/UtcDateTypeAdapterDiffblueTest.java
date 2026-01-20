@@ -1,5 +1,6 @@
 package com.google.gson.typeadapters;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -23,6 +24,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -30,6 +32,101 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class UtcDateTypeAdapterDiffblueTest {
+  /**
+   * Test {@link UtcDateTypeAdapter#write(JsonWriter, Date)} with {@code JsonWriter}, {@code Date}.
+   *
+   * <p>Method under test: {@link UtcDateTypeAdapter#write(JsonWriter, Date)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void UtcDateTypeAdapter.write(JsonWriter, Date)"})
+  public void testWriteWithJsonWriterDate() throws IOException {
+    // Arrange
+    UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    utcDateTypeAdapter.write(
+        out, Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
+
+    // Assert
+    assertEquals("\"1970-01-01T00:00:00.000Z\"", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link UtcDateTypeAdapter#write(JsonWriter, Date)} with {@code JsonWriter}, {@code Date}.
+   *
+   * <ul>
+   *   <li>Given {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link UtcDateTypeAdapter#write(JsonWriter, Date)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void UtcDateTypeAdapter.write(JsonWriter, Date)"})
+  public void testWriteWithJsonWriterDate_givenTrue() throws IOException {
+    // Arrange
+    UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
+
+    JsonWriter out = new JsonWriter(new StringWriter());
+    out.setHtmlSafe(true);
+
+    // Act
+    utcDateTypeAdapter.write(
+        out, Date.from(LocalDate.of(1970, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant()));
+
+    // Assert
+    assertEquals("\"1970-01-01T00:00:00.000Z\"", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test {@link UtcDateTypeAdapter#write(JsonWriter, Date)} with {@code JsonWriter}, {@code Date}.
+   *
+   * <ul>
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} Out toString is {@code null}.
+   * </ul>
+   *
+   * <p>Method under test: {@link UtcDateTypeAdapter#write(JsonWriter, Date)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void UtcDateTypeAdapter.write(JsonWriter, Date)"})
+  public void testWriteWithJsonWriterDate_thenJsonWriterWithOutIsStringWriterOutToStringIsNull()
+      throws IOException {
+    // Arrange
+    UtcDateTypeAdapter utcDateTypeAdapter = new UtcDateTypeAdapter();
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    utcDateTypeAdapter.write(out, null);
+
+    // Assert
+    assertEquals("null", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
   /**
    * Test {@link UtcDateTypeAdapter#write(JsonWriter, Date)} with {@code JsonWriter}, {@code Date}.
    *
@@ -58,6 +155,12 @@ public class UtcDateTypeAdapterDiffblueTest {
     assertTrue(getResult instanceof JsonNull);
     assertFalse(getResult.isJsonPrimitive());
     assertTrue(getResult.isJsonNull());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
   }
 
   /**

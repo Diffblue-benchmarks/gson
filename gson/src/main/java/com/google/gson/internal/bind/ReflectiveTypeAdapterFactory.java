@@ -669,4 +669,24 @@ public final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
       }
     }
   }
+
+  public ConstructorConstructor getConstructorConstructor() {
+    return constructorConstructor;
+  }
+
+  public FieldNamingStrategy getFieldNamingPolicy() {
+    return fieldNamingPolicy;
+  }
+
+  public Excluder getExcluder() {
+    return excluder;
+  }
+
+  public JsonAdapterAnnotationTypeAdapterFactory getJsonAdapterFactory() {
+    return jsonAdapterFactory;
+  }
+
+  public List<ReflectionAccessFilter> getReflectionFilters() {
+    return reflectionFilters;
+  }
 }

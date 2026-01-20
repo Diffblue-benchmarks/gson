@@ -100,4 +100,16 @@ final class TypeAdapterRuntimeTypeWrapper<T> extends TypeAdapter<T> {
     }
     return type;
   }
+
+  public Gson getContext() {
+    return context;
+  }
+
+  public TypeAdapter<T> getDelegate() {
+    return delegate;
+  }
+
+  public Type getType() {
+    return type;
+  }
 }

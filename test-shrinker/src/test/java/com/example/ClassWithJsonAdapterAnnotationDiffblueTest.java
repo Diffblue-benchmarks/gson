@@ -1,5 +1,6 @@
 package com.example;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -27,6 +28,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Type;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -87,6 +89,40 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
    * DummyClass}.
    *
    * <ul>
+   *   <li>Given {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Adapter#write(JsonWriter, DummyClass)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Adapter.write(JsonWriter, DummyClass)"})
+  public void testAdapterWriteWithJsonWriterDummyClass_givenTrue() throws IOException {
+    // Arrange
+    Adapter adapter = new Adapter();
+
+    JsonWriter out = new JsonWriter(new StringWriter());
+    out.setHtmlSafe(true);
+
+    // Act
+    adapter.write(out, new DummyClass("foo"));
+
+    // Assert
+    assertEquals("\"adapter-foo\"", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test Adapter {@link Adapter#write(JsonWriter, DummyClass)} with {@code JsonWriter}, {@code
+   * DummyClass}.
+   *
+   * <ul>
    *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonPrimitive}.
    * </ul>
    *
@@ -108,10 +144,8 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
     // Assert
     JsonElement getResult = out.get();
     assertTrue(getResult instanceof JsonPrimitive);
-    Number asNumber = getResult.getAsNumber();
-    assertTrue(asNumber instanceof LazilyParsedNumber);
+    assertTrue(getResult.getAsNumber() instanceof LazilyParsedNumber);
     assertEquals("adapter-foo", getResult.getAsString());
-    assertEquals("adapter-foo", asNumber.toString());
     assertEquals('a', getResult.getAsCharacter());
     assertFalse(getResult.getAsBoolean());
     assertFalse(getResult.isJsonNull());
@@ -120,6 +154,46 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
     assertTrue(getResult.isJsonPrimitive());
     assertTrue(((JsonPrimitive) getResult).isString());
     assertSame(getResult, getResult.getAsJsonPrimitive());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
+  }
+
+  /**
+   * Test Adapter {@link Adapter#write(JsonWriter, DummyClass)} with {@code JsonWriter}, {@code
+   * DummyClass}.
+   *
+   * <ul>
+   *   <li>When {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Adapter#write(JsonWriter, DummyClass)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Adapter.write(JsonWriter, DummyClass)"})
+  public void testAdapterWriteWithJsonWriterDummyClass_whenJsonWriterWithOutIsStringWriter()
+      throws IOException {
+    // Arrange
+    Adapter adapter = new Adapter();
+    JsonWriter out = new JsonWriter(new StringWriter());
+
+    // Act
+    adapter.write(out, new DummyClass("foo"));
+
+    // Assert
+    assertEquals("\"adapter-foo\"", out.getOut().toString());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        out.getStack());
   }
 
   /**

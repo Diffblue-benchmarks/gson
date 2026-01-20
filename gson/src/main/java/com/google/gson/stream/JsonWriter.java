@@ -834,4 +834,32 @@ public class JsonWriter implements Closeable, Flushable {
         throw new IllegalStateException("Nesting problem.");
     }
   }
+
+  public Writer getOut() {
+    return out;
+  }
+
+  public int[] getStack() {
+    return stack;
+  }
+
+  public int getStackSize() {
+    return stackSize;
+  }
+
+  public String getFormattedColon() {
+    return formattedColon;
+  }
+
+  public String getFormattedComma() {
+    return formattedComma;
+  }
+
+  public boolean isUsesEmptyNewlineAndIndent() {
+    return usesEmptyNewlineAndIndent;
+  }
+
+  public String getDeferredName() {
+    return deferredName;
+  }
 }

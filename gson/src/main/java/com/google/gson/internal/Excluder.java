@@ -254,4 +254,28 @@ public final class Excluder implements TypeAdapterFactory, Cloneable {
     }
     return true;
   }
+
+  public double getVersion() {
+    return version;
+  }
+
+  public int getModifiers() {
+    return modifiers;
+  }
+
+  public boolean isSerializeInnerClasses() {
+    return serializeInnerClasses;
+  }
+
+  public boolean isRequireExpose() {
+    return requireExpose;
+  }
+
+  public List<ExclusionStrategy> getSerializationStrategies() {
+    return serializationStrategies;
+  }
+
+  public List<ExclusionStrategy> getDeserializationStrategies() {
+    return deserializationStrategies;
+  }
 }

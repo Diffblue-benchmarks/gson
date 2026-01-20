@@ -1,31 +1,3 @@
 name: com.diffblue.cover.refactoring.Recipe
-recipeList:
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.BagOfPrimitivesDeserializationBenchmark,
-    fieldName: gson}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.BagOfPrimitivesDeserializationBenchmark,
-    fieldName: json}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.BagOfPrimitivesDeserializationBenchmark,
-    fieldName: gson}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.BagOfPrimitivesDeserializationBenchmark,
-    fieldName: json}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.CollectionsDeserializationBenchmark,
-    fieldName: gson}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.CollectionsDeserializationBenchmark,
-    fieldName: json}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.CollectionsDeserializationBenchmark,
-    fieldName: gson}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.CollectionsDeserializationBenchmark,
-    fieldName: json}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.SerializationBenchmark,
-    fieldName: bag}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.SerializationBenchmark,
-    fieldName: gson}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.SerializationBenchmark,
-    fieldName: pretty}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.SerializationBenchmark,
-    fieldName: bag}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.SerializationBenchmark,
-    fieldName: gson}
-- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.metrics.SerializationBenchmark,
-    fieldName: pretty}
+recipeList: []
 type: specs.openrewrite.org/v1beta/recipe

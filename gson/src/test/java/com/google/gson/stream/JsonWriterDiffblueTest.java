@@ -1,7 +1,9 @@
 package com.google.gson.stream;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -43,7 +45,7 @@ public class JsonWriterDiffblueTest {
    *
    * <ul>
    *   <li>When {@link StringWriter#StringWriter()}.
-   *   <li>Then return FormattingStyle Indent is empty string.
+   *   <li>Then return FormattedComma is {@code ,}.
    * </ul>
    *
    * <p>Method under test: {@link JsonWriter#JsonWriter(Writer)}
@@ -52,18 +54,30 @@ public class JsonWriterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonWriter.<init>(Writer)"})
-  public void testNewJsonWriter_whenStringWriter_thenReturnFormattingStyleIndentIsEmptyString() {
-    // Arrange and Act
-    JsonWriter actualJsonWriter = new JsonWriter(new StringWriter());
+  public void testNewJsonWriter_whenStringWriter_thenReturnFormattedCommaIsComma() {
+    // Arrange
+    StringWriter out = new StringWriter();
+
+    // Act
+    JsonWriter actualJsonWriter = new JsonWriter(out);
 
     // Assert
-    FormattingStyle formattingStyle = actualJsonWriter.getFormattingStyle();
-    assertEquals("", formattingStyle.getIndent());
-    assertEquals("", formattingStyle.getNewline());
+    assertEquals(",", actualJsonWriter.getFormattedComma());
+    assertEquals(":", actualJsonWriter.getFormattedColon());
+    assertNull(actualJsonWriter.getDeferredName());
+    assertEquals(1, actualJsonWriter.getStackSize());
     assertEquals(Strictness.LEGACY_STRICT, actualJsonWriter.getStrictness());
     assertFalse(actualJsonWriter.isHtmlSafe());
     assertFalse(actualJsonWriter.isLenient());
     assertTrue(actualJsonWriter.getSerializeNulls());
+    assertTrue(actualJsonWriter.isUsesEmptyNewlineAndIndent());
+    assertSame(out, actualJsonWriter.getOut());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualJsonWriter.getStack());
   }
 
   /**
@@ -86,6 +100,8 @@ public class JsonWriterDiffblueTest {
     FormattingStyle formattingStyle = jsonWriter.getFormattingStyle();
     assertEquals("", formattingStyle.getIndent());
     assertEquals("", formattingStyle.getNewline());
+    assertEquals(":", jsonWriter.getFormattedColon());
+    assertTrue(jsonWriter.isUsesEmptyNewlineAndIndent());
   }
 
   /**
@@ -112,7 +128,9 @@ public class JsonWriterDiffblueTest {
     // Assert
     FormattingStyle formattingStyle = jsonWriter.getFormattingStyle();
     assertEquals(" ", formattingStyle.getIndent());
+    assertEquals(": ", jsonWriter.getFormattedColon());
     assertEquals("\n", formattingStyle.getNewline());
+    assertFalse(jsonWriter.isUsesEmptyNewlineAndIndent());
   }
 
   /**
@@ -136,7 +154,9 @@ public class JsonWriterDiffblueTest {
     // Assert
     FormattingStyle formattingStyle = jsonWriter.getFormattingStyle();
     assertEquals("  ", formattingStyle.getIndent());
+    assertEquals(": ", jsonWriter.getFormattedColon());
     assertEquals("\n", formattingStyle.getNewline());
+    assertFalse(jsonWriter.isUsesEmptyNewlineAndIndent());
   }
 
   /**
@@ -156,6 +176,8 @@ public class JsonWriterDiffblueTest {
     jsonWriter.setFormattingStyle(FormattingStyle.COMPACT);
 
     // Assert that nothing has changed
+    assertEquals(":", jsonWriter.getFormattedColon());
+    assertTrue(jsonWriter.isUsesEmptyNewlineAndIndent());
     assertSame(FormattingStyle.COMPACT, jsonWriter.getFormattingStyle());
   }
 
@@ -176,6 +198,8 @@ public class JsonWriterDiffblueTest {
     jsonWriter.setFormattingStyle(FormattingStyle.PRETTY);
 
     // Assert
+    assertEquals(": ", jsonWriter.getFormattedColon());
+    assertFalse(jsonWriter.isUsesEmptyNewlineAndIndent());
     assertSame(FormattingStyle.PRETTY, jsonWriter.getFormattingStyle());
   }
 
@@ -205,6 +229,9 @@ public class JsonWriterDiffblueTest {
     verify(formattingStyle).getIndent();
     verify(formattingStyle, atLeast(1)).getNewline();
     verify(formattingStyle).usesSpaceAfterSeparators();
+    assertEquals(", ", jsonWriter.getFormattedComma());
+    assertEquals(": ", jsonWriter.getFormattedColon());
+    assertFalse(jsonWriter.isUsesEmptyNewlineAndIndent());
     assertSame(formattingStyle, jsonWriter.getFormattingStyle());
   }
 
@@ -239,7 +266,7 @@ public class JsonWriterDiffblueTest {
    * Test {@link JsonWriter#setFormattingStyle(FormattingStyle)}.
    *
    * <ul>
-   *   <li>Then {@link JsonWriter} FormattingStyle is {@link FormattingStyle}.
+   *   <li>Then {@link JsonWriter} FormattedComma is {@code ,}.
    * </ul>
    *
    * <p>Method under test: {@link JsonWriter#setFormattingStyle(FormattingStyle)}
@@ -248,7 +275,7 @@ public class JsonWriterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void JsonWriter.setFormattingStyle(FormattingStyle)"})
-  public void testSetFormattingStyle_thenJsonWriterFormattingStyleIsFormattingStyle() {
+  public void testSetFormattingStyle_thenJsonWriterFormattedCommaIsComma() {
     // Arrange
     when(formattingStyle.usesSpaceAfterSeparators()).thenReturn(true);
     when(formattingStyle.getNewline()).thenReturn("Newline");
@@ -259,53 +286,10 @@ public class JsonWriterDiffblueTest {
     // Assert
     verify(formattingStyle, atLeast(1)).getNewline();
     verify(formattingStyle).usesSpaceAfterSeparators();
+    assertEquals(",", jsonWriter.getFormattedComma());
+    assertEquals(": ", jsonWriter.getFormattedColon());
+    assertFalse(jsonWriter.isUsesEmptyNewlineAndIndent());
     assertSame(formattingStyle, jsonWriter.getFormattingStyle());
-  }
-
-  /**
-   * Test getters and setters.
-   *
-   * <p>Methods under test:
-   *
-   * <ul>
-   *   <li>{@link JsonWriter#setHtmlSafe(boolean)}
-   *   <li>{@link JsonWriter#setSerializeNulls(boolean)}
-   *   <li>{@link JsonWriter#setStrictness(Strictness)}
-   *   <li>{@link JsonWriter#getFormattingStyle()}
-   *   <li>{@link JsonWriter#getSerializeNulls()}
-   *   <li>{@link JsonWriter#getStrictness()}
-   *   <li>{@link JsonWriter#isHtmlSafe()}
-   * </ul>
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({
-    "FormattingStyle JsonWriter.getFormattingStyle()",
-    "boolean JsonWriter.getSerializeNulls()",
-    "Strictness JsonWriter.getStrictness()",
-    "boolean JsonWriter.isHtmlSafe()",
-    "void JsonWriter.setHtmlSafe(boolean)",
-    "void JsonWriter.setSerializeNulls(boolean)",
-    "void JsonWriter.setStrictness(Strictness)"
-  })
-  public void testGettersAndSetters() {
-    // Arrange
-    JsonWriter jsonWriter = new JsonWriter(new StringWriter());
-
-    // Act
-    jsonWriter.setHtmlSafe(true);
-    jsonWriter.setSerializeNulls(true);
-    jsonWriter.setStrictness(Strictness.LENIENT);
-    FormattingStyle actualFormattingStyle = jsonWriter.getFormattingStyle();
-    boolean actualSerializeNulls = jsonWriter.getSerializeNulls();
-    Strictness actualStrictness = jsonWriter.getStrictness();
-
-    // Assert
-    assertEquals(Strictness.LENIENT, actualStrictness);
-    assertTrue(actualSerializeNulls);
-    assertTrue(jsonWriter.isHtmlSafe());
-    assertSame(FormattingStyle.COMPACT, actualFormattingStyle);
   }
 
   /**
@@ -407,8 +391,8 @@ public class JsonWriterDiffblueTest {
    * Test {@link JsonWriter#beginArray()}.
    *
    * <ul>
-   *   <li>Then return {@link JsonWriter#JsonWriter(Writer)} with out is {@link
-   *       StringWriter#StringWriter()}.
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} StackSize is two.
    * </ul>
    *
    * <p>Method under test: {@link JsonWriter#beginArray()}
@@ -417,7 +401,8 @@ public class JsonWriterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonWriter JsonWriter.beginArray()"})
-  public void testBeginArray_thenReturnJsonWriterWithOutIsStringWriter() throws IOException {
+  public void testBeginArray_thenJsonWriterWithOutIsStringWriterStackSizeIsTwo()
+      throws IOException {
     // Arrange
     JsonWriter jsonWriter = new JsonWriter(new StringWriter());
 
@@ -425,6 +410,7 @@ public class JsonWriterDiffblueTest {
     JsonWriter actualBeginArrayResult = jsonWriter.beginArray();
 
     // Assert
+    assertEquals(2, jsonWriter.getStackSize());
     assertSame(jsonWriter, actualBeginArrayResult);
   }
 
@@ -468,8 +454,8 @@ public class JsonWriterDiffblueTest {
    * Test {@link JsonWriter#beginObject()}.
    *
    * <ul>
-   *   <li>Then return {@link JsonWriter#JsonWriter(Writer)} with out is {@link
-   *       StringWriter#StringWriter()}.
+   *   <li>Then {@link JsonWriter#JsonWriter(Writer)} with out is {@link
+   *       StringWriter#StringWriter()} StackSize is two.
    * </ul>
    *
    * <p>Method under test: {@link JsonWriter#beginObject()}
@@ -478,7 +464,8 @@ public class JsonWriterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonWriter JsonWriter.beginObject()"})
-  public void testBeginObject_thenReturnJsonWriterWithOutIsStringWriter() throws IOException {
+  public void testBeginObject_thenJsonWriterWithOutIsStringWriterStackSizeIsTwo()
+      throws IOException {
     // Arrange
     JsonWriter jsonWriter = new JsonWriter(new StringWriter());
 
@@ -486,6 +473,7 @@ public class JsonWriterDiffblueTest {
     JsonWriter actualBeginObjectResult = jsonWriter.beginObject();
 
     // Assert
+    assertEquals(2, jsonWriter.getStackSize());
     assertSame(jsonWriter, actualBeginObjectResult);
   }
 
@@ -963,33 +951,6 @@ public class JsonWriterDiffblueTest {
    * Test {@link JsonWriter#value(Number)} with {@code Number}.
    *
    * <ul>
-   *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link
-   *       StringWriter#StringWriter()} Strictness is {@code LENIENT}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonWriter#value(Number)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonWriter JsonWriter.value(Number)"})
-  public void testValueWithNumber_givenJsonWriterWithOutIsStringWriterStrictnessIsLenient()
-      throws IOException {
-    // Arrange
-    JsonWriter jsonWriter = new JsonWriter(new StringWriter());
-    jsonWriter.setStrictness(Strictness.LENIENT);
-
-    // Act
-    JsonWriter actualValueResult = jsonWriter.value((Number) Double.NaN);
-
-    // Assert
-    assertSame(jsonWriter, actualValueResult);
-  }
-
-  /**
-   * Test {@link JsonWriter#value(Number)} with {@code Number}.
-   *
-   * <ul>
    *   <li>Given {@link Writer} {@link Writer#append(CharSequence)} throw {@link
    *       IllegalStateException#IllegalStateException()}.
    *   <li>Then calls {@link Writer#append(CharSequence)}.
@@ -1034,6 +995,39 @@ public class JsonWriterDiffblueTest {
     // Act and Assert
     assertThrows(IllegalStateException.class, () -> jsonWriter.value((Number) null));
     verify(writer).write("null");
+  }
+
+  /**
+   * Test {@link JsonWriter#value(Number)} with {@code Number}.
+   *
+   * <ul>
+   *   <li>Then return Out toString is {@code NaN}.
+   * </ul>
+   *
+   * <p>Method under test: {@link JsonWriter#value(Number)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"JsonWriter JsonWriter.value(Number)"})
+  public void testValueWithNumber_thenReturnOutToStringIsNaN() throws IOException {
+    // Arrange
+    JsonWriter jsonWriter = new JsonWriter(new StringWriter());
+    jsonWriter.setStrictness(Strictness.LENIENT);
+
+    // Act
+    JsonWriter actualValueResult = jsonWriter.value((Number) Double.NaN);
+
+    // Assert
+    assertEquals("NaN", actualValueResult.getOut().toString());
+    assertEquals(Strictness.LENIENT, actualValueResult.getStrictness());
+    assertTrue(actualValueResult.isLenient());
+    assertArrayEquals(
+        new int[] {
+          7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualValueResult.getStack());
   }
 
   /**
@@ -1657,5 +1651,86 @@ public class JsonWriterDiffblueTest {
 
     // Assert
     verify(writer).flush();
+  }
+
+  /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>{@link JsonWriter#setHtmlSafe(boolean)}
+   *   <li>{@link JsonWriter#setSerializeNulls(boolean)}
+   *   <li>{@link JsonWriter#setStrictness(Strictness)}
+   *   <li>{@link JsonWriter#getDeferredName()}
+   *   <li>{@link JsonWriter#getFormattedColon()}
+   *   <li>{@link JsonWriter#getFormattedComma()}
+   *   <li>{@link JsonWriter#getFormattingStyle()}
+   *   <li>{@link JsonWriter#getOut()}
+   *   <li>{@link JsonWriter#getSerializeNulls()}
+   *   <li>{@link JsonWriter#getStack()}
+   *   <li>{@link JsonWriter#getStackSize()}
+   *   <li>{@link JsonWriter#getStrictness()}
+   *   <li>{@link JsonWriter#isHtmlSafe()}
+   *   <li>{@link JsonWriter#isUsesEmptyNewlineAndIndent()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "String JsonWriter.getDeferredName()",
+    "String JsonWriter.getFormattedColon()",
+    "String JsonWriter.getFormattedComma()",
+    "FormattingStyle JsonWriter.getFormattingStyle()",
+    "Writer JsonWriter.getOut()",
+    "boolean JsonWriter.getSerializeNulls()",
+    "int[] JsonWriter.getStack()",
+    "int JsonWriter.getStackSize()",
+    "Strictness JsonWriter.getStrictness()",
+    "boolean JsonWriter.isHtmlSafe()",
+    "boolean JsonWriter.isUsesEmptyNewlineAndIndent()",
+    "void JsonWriter.setHtmlSafe(boolean)",
+    "void JsonWriter.setSerializeNulls(boolean)",
+    "void JsonWriter.setStrictness(Strictness)"
+  })
+  public void testGettersAndSetters() {
+    // Arrange
+    StringWriter out = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(out);
+
+    // Act
+    jsonWriter.setHtmlSafe(true);
+    jsonWriter.setSerializeNulls(true);
+    jsonWriter.setStrictness(Strictness.LENIENT);
+    String actualDeferredName = jsonWriter.getDeferredName();
+    String actualFormattedColon = jsonWriter.getFormattedColon();
+    String actualFormattedComma = jsonWriter.getFormattedComma();
+    FormattingStyle actualFormattingStyle = jsonWriter.getFormattingStyle();
+    Writer actualOut = jsonWriter.getOut();
+    boolean actualSerializeNulls = jsonWriter.getSerializeNulls();
+    int[] actualStack = jsonWriter.getStack();
+    int actualStackSize = jsonWriter.getStackSize();
+    Strictness actualStrictness = jsonWriter.getStrictness();
+    boolean actualIsHtmlSafeResult = jsonWriter.isHtmlSafe();
+
+    // Assert
+    assertEquals("", actualOut.toString());
+    assertEquals(",", actualFormattedComma);
+    assertEquals(":", actualFormattedColon);
+    assertNull(actualDeferredName);
+    assertEquals(1, actualStackSize);
+    assertEquals(Strictness.LENIENT, actualStrictness);
+    assertTrue(actualSerializeNulls);
+    assertTrue(actualIsHtmlSafeResult);
+    assertTrue(jsonWriter.isUsesEmptyNewlineAndIndent());
+    assertSame(out, actualOut);
+    assertSame(FormattingStyle.COMPACT, actualFormattingStyle);
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualStack);
   }
 }

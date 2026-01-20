@@ -1,7 +1,9 @@
 package com.google.gson.internal.bind;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -9,15 +11,13 @@ import static org.junit.Assert.assertTrue;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
-import com.google.gson.FormattingStyle;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.Strictness;
-import com.google.gson.internal.LazilyParsedNumber;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.util.List;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -38,18 +38,24 @@ public class JsonTreeWriterDiffblueTest {
     // Assert
     JsonElement getResult = actualJsonTreeWriter.get();
     assertTrue(getResult instanceof JsonNull);
-    FormattingStyle formattingStyle = actualJsonTreeWriter.getFormattingStyle();
-    assertEquals("", formattingStyle.getIndent());
-    assertEquals("", formattingStyle.getNewline());
+    assertEquals(",", actualJsonTreeWriter.getFormattedComma());
+    assertEquals(":", actualJsonTreeWriter.getFormattedColon());
+    assertNull(actualJsonTreeWriter.getPendingName());
+    assertNull(actualJsonTreeWriter.getDeferredName());
+    assertEquals(1, actualJsonTreeWriter.getStackSize());
     assertEquals(Strictness.LEGACY_STRICT, actualJsonTreeWriter.getStrictness());
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
-    assertFalse(getResult.isJsonPrimitive());
     assertFalse(actualJsonTreeWriter.isHtmlSafe());
     assertFalse(actualJsonTreeWriter.isLenient());
-    assertTrue(getResult.isJsonNull());
     assertTrue(actualJsonTreeWriter.getSerializeNulls());
-    assertSame(getResult, getResult.getAsJsonNull());
+    assertTrue(actualJsonTreeWriter.isUsesEmptyNewlineAndIndent());
+    assertTrue(actualJsonTreeWriter.getElementStack().isEmpty());
+    assertSame(getResult, actualJsonTreeWriter.getProduct());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualJsonTreeWriter.getStack());
   }
 
   /**
@@ -62,11 +68,16 @@ public class JsonTreeWriterDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"JsonElement JsonTreeWriter.get()"})
   public void testGet() {
-    // Arrange and Act
-    JsonElement actualGetResult = new JsonTreeWriter().get();
+    // Arrange
+    JsonTreeWriter jsonTreeWriter = new JsonTreeWriter();
+
+    // Act
+    JsonElement actualGetResult = jsonTreeWriter.get();
 
     // Assert
-    assertSame(((JsonNull) actualGetResult).INSTANCE, actualGetResult);
+    JsonNull jsonNull = ((JsonNull) actualGetResult).INSTANCE;
+    assertSame(jsonNull, actualGetResult);
+    assertSame(jsonNull, jsonTreeWriter.getProduct());
   }
 
   /**
@@ -201,6 +212,13 @@ public class JsonTreeWriterDiffblueTest {
     assertFalse(getResult.isJsonPrimitive());
     assertTrue(getResult.isJsonNull());
     assertSame(getResult, getResult.getAsJsonNull());
+    assertSame(getResult, ((JsonTreeWriter) actualValueResult).getProduct());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualValueResult.getStack());
   }
 
   /**
@@ -234,6 +252,13 @@ public class JsonTreeWriterDiffblueTest {
     assertTrue(((JsonPrimitive) getResult).isBoolean());
     assertEquals(Boolean.TRUE.toString(), getResult.getAsString());
     assertSame(getResult, getResult.getAsJsonPrimitive());
+    assertSame(getResult, ((JsonTreeWriter) actualValueResult).getProduct());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualValueResult.getStack());
   }
 
   /**
@@ -427,6 +452,13 @@ public class JsonTreeWriterDiffblueTest {
     assertFalse(getResult.isJsonPrimitive());
     assertTrue(getResult.isJsonNull());
     assertSame(getResult, getResult.getAsJsonNull());
+    assertSame(getResult, ((JsonTreeWriter) actualValueResult).getProduct());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualValueResult.getStack());
   }
 
   /**
@@ -451,10 +483,18 @@ public class JsonTreeWriterDiffblueTest {
     JsonWriter actualValueResult = jsonTreeWriter.value(Integer.valueOf(1));
 
     // Assert
-    assertTrue(((JsonTreeWriter) actualValueResult).get() instanceof JsonPrimitive);
+    JsonElement getResult = ((JsonTreeWriter) actualValueResult).get();
+    assertTrue(getResult instanceof JsonPrimitive);
     assertTrue(actualValueResult instanceof JsonTreeWriter);
     assertEquals(Strictness.LENIENT, actualValueResult.getStrictness());
     assertTrue(actualValueResult.isLenient());
+    assertSame(getResult, ((JsonTreeWriter) actualValueResult).getProduct());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualValueResult.getStack());
   }
 
   /**
@@ -477,10 +517,18 @@ public class JsonTreeWriterDiffblueTest {
     JsonWriter actualValueResult = new JsonTreeWriter().value(Integer.valueOf(1));
 
     // Assert
-    assertTrue(((JsonTreeWriter) actualValueResult).get() instanceof JsonPrimitive);
+    JsonElement getResult = ((JsonTreeWriter) actualValueResult).get();
+    assertTrue(getResult instanceof JsonPrimitive);
     assertTrue(actualValueResult instanceof JsonTreeWriter);
     assertEquals(Strictness.LEGACY_STRICT, actualValueResult.getStrictness());
     assertFalse(actualValueResult.isLenient());
+    assertSame(getResult, ((JsonTreeWriter) actualValueResult).getProduct());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualValueResult.getStack());
   }
 
   /**
@@ -504,24 +552,14 @@ public class JsonTreeWriterDiffblueTest {
     // Assert
     JsonElement getResult = ((JsonTreeWriter) actualValueResult).get();
     assertTrue(getResult instanceof JsonPrimitive);
-    assertTrue(getResult.getAsNumber() instanceof LazilyParsedNumber);
     assertTrue(actualValueResult instanceof JsonTreeWriter);
-    assertEquals("42", getResult.getAsString());
-    assertEquals('4', getResult.getAsCharacter());
-    assertEquals(42, getResult.getAsInt());
-    assertEquals(42.0d, getResult.getAsDouble(), 0.0);
-    assertEquals(42.0f, getResult.getAsFloat(), 0.0f);
-    assertEquals(42L, getResult.getAsLong());
-    assertEquals((short) 42, getResult.getAsShort());
-    assertFalse(getResult.getAsBoolean());
-    assertFalse(getResult.isJsonNull());
-    assertFalse(((JsonPrimitive) getResult).isBoolean());
-    assertFalse(((JsonPrimitive) getResult).isNumber());
-    assertTrue(getResult.isJsonPrimitive());
-    assertTrue(((JsonPrimitive) getResult).isString());
-    assertEquals(new BigDecimal("42"), getResult.getAsBigDecimal());
-    assertEquals('*', getResult.getAsByte());
-    assertSame(getResult, getResult.getAsJsonPrimitive());
+    assertSame(getResult, ((JsonTreeWriter) actualValueResult).getProduct());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualValueResult.getStack());
   }
 
   /**
@@ -549,6 +587,13 @@ public class JsonTreeWriterDiffblueTest {
     assertFalse(getResult.isJsonPrimitive());
     assertTrue(getResult.isJsonNull());
     assertSame(getResult, getResult.getAsJsonNull());
+    assertSame(getResult, ((JsonTreeWriter) actualValueResult).getProduct());
+    assertArrayEquals(
+        new int[] {
+          6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0
+        },
+        actualValueResult.getStack());
   }
 
   /**
@@ -583,5 +628,71 @@ public class JsonTreeWriterDiffblueTest {
   public void testJsonValue() throws IOException {
     // Arrange, Act and Assert
     assertThrows(UnsupportedOperationException.class, () -> new JsonTreeWriter().jsonValue("42"));
+  }
+
+  /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>{@link JsonTreeWriter#flush()}
+   *   <li>{@link JsonTreeWriter#getElementStack()}
+   *   <li>{@link JsonTreeWriter#getPendingName()}
+   *   <li>{@link JsonTreeWriter#getProduct()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "void JsonTreeWriter.flush()",
+    "List JsonTreeWriter.getElementStack()",
+    "String JsonTreeWriter.getPendingName()",
+    "JsonElement JsonTreeWriter.getProduct()"
+  })
+  public void testGettersAndSetters() throws IOException {
+    // Arrange
+    JsonTreeWriter jsonTreeWriter = new JsonTreeWriter();
+
+    // Act
+    jsonTreeWriter.flush();
+    List<JsonElement> actualElementStack = jsonTreeWriter.getElementStack();
+    String actualPendingName = jsonTreeWriter.getPendingName();
+    JsonElement actualProduct = jsonTreeWriter.getProduct();
+
+    // Assert
+    assertNull(actualPendingName);
+    assertTrue(actualElementStack.isEmpty());
+    assertSame(((JsonNull) actualProduct).INSTANCE, actualProduct);
+  }
+
+  /**
+   * Test {@link JsonTreeWriter#close()}.
+   *
+   * <p>Method under test: {@link JsonTreeWriter#close()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonTreeWriter.close()"})
+  public void testClose() throws IOException {
+    // Arrange
+    JsonTreeWriter jsonTreeWriter = new JsonTreeWriter();
+
+    // Act
+    jsonTreeWriter.close();
+
+    // Assert
+    JsonElement product = jsonTreeWriter.getProduct();
+    assertTrue(product instanceof JsonNull);
+    List<JsonElement> elementStack = jsonTreeWriter.getElementStack();
+    assertEquals(1, elementStack.size());
+    assertTrue(elementStack.get(0) instanceof JsonPrimitive);
+    assertFalse(product.isJsonArray());
+    assertFalse(product.isJsonObject());
+    assertFalse(product.isJsonPrimitive());
+    assertTrue(product.isJsonNull());
+    assertSame(product, product.getAsJsonNull());
   }
 }

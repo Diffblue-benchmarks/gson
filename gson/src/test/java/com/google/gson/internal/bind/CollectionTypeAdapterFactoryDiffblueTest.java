@@ -1,6 +1,7 @@
 package com.google.gson.internal.bind;
 
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
@@ -16,6 +17,35 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class CollectionTypeAdapterFactoryDiffblueTest {
+  /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>{@link CollectionTypeAdapterFactory#CollectionTypeAdapterFactory(ConstructorConstructor)}
+   *   <li>{@link CollectionTypeAdapterFactory#getConstructorConstructor()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "void CollectionTypeAdapterFactory.<init>(ConstructorConstructor)",
+    "ConstructorConstructor CollectionTypeAdapterFactory.getConstructorConstructor()"
+  })
+  public void testGettersAndSetters() {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ConstructorConstructor constructorConstructor =
+        new ConstructorConstructor(instanceCreators, true, new ArrayList<>());
+
+    // Act and Assert
+    assertSame(
+        constructorConstructor,
+        new CollectionTypeAdapterFactory(constructorConstructor).getConstructorConstructor());
+  }
+
   /**
    * Test {@link CollectionTypeAdapterFactory#create(Gson, TypeToken)}.
    *

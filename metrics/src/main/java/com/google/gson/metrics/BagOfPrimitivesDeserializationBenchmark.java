@@ -119,4 +119,12 @@ public class BagOfPrimitivesDeserializationBenchmark {
       jr.endObject();
     }
   }
+
+  public Gson getGson() {
+    return gson;
+  }
+
+  public String getJson() {
+    return json;
+  }
 }

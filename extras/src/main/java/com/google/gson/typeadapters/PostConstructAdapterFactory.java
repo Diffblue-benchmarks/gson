@@ -76,5 +76,13 @@ public class PostConstructAdapterFactory implements TypeAdapterFactory {
     public void write(JsonWriter out, T value) throws IOException {
       delegate.write(out, value);
     }
+
+    public TypeAdapter<T> getDelegate() {
+      return delegate;
+    }
+
+    public Method getMethod() {
+      return method;
+    }
   }
 }

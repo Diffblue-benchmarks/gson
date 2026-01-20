@@ -2,7 +2,9 @@ package com.google.gson.internal.bind;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -22,11 +24,51 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
 public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
+  /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>{@link
+   *       JsonAdapterAnnotationTypeAdapterFactory#JsonAdapterAnnotationTypeAdapterFactory(ConstructorConstructor)}
+   *   <li>{@link JsonAdapterAnnotationTypeAdapterFactory#getAdapterFactoryMap()}
+   *   <li>{@link JsonAdapterAnnotationTypeAdapterFactory#getConstructorConstructor()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "void JsonAdapterAnnotationTypeAdapterFactory.<init>(ConstructorConstructor)",
+    "ConcurrentMap JsonAdapterAnnotationTypeAdapterFactory.getAdapterFactoryMap()",
+    "ConstructorConstructor JsonAdapterAnnotationTypeAdapterFactory.getConstructorConstructor()"
+  })
+  public void testGettersAndSetters() {
+    // Arrange
+    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    ConstructorConstructor constructorConstructor =
+        new ConstructorConstructor(instanceCreators, true, new ArrayList<>());
+
+    // Act
+    JsonAdapterAnnotationTypeAdapterFactory actualJsonAdapterAnnotationTypeAdapterFactory =
+        new JsonAdapterAnnotationTypeAdapterFactory(constructorConstructor);
+    ConcurrentMap<Class<?>, TypeAdapterFactory> actualAdapterFactoryMap =
+        actualJsonAdapterAnnotationTypeAdapterFactory.getAdapterFactoryMap();
+    ConstructorConstructor actualConstructorConstructor =
+        actualJsonAdapterAnnotationTypeAdapterFactory.getConstructorConstructor();
+
+    // Assert
+    assertTrue(actualAdapterFactoryMap.isEmpty());
+    assertSame(constructorConstructor, actualConstructorConstructor);
+  }
+
   /**
    * Test {@link JsonAdapterAnnotationTypeAdapterFactory#create(Gson, TypeToken)}.
    *
