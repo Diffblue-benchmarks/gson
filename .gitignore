@@ -18,3 +18,9 @@ local.properties
 build
 
 .DS_Store
+
+.diffblue/cache
+**.diffblue/cache
+**/.diffblue/cache
+**/**.diffblue/cache
+**/**/.diffblue/cache
