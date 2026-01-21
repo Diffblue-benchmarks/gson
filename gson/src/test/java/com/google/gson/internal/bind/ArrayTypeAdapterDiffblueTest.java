@@ -13,12 +13,9 @@ import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonNull;
-import com.google.gson.JsonSerializer;
+import com.google.gson.ToNumberStrategy;
 import com.google.gson.TypeAdapter;
-import com.google.gson.TypeAdapterFactory;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
@@ -39,15 +36,8 @@ public class ArrayTypeAdapterDiffblueTest {
   public void testNewArrayTypeAdapter() {
     // Arrange
     Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    ObjectTypeAdapter componentTypeAdapter =
+        new ObjectTypeAdapter(new Gson(), mock(ToNumberStrategy.class));
     Class<Object> componentType = Object.class;
 
     // Act
@@ -56,14 +46,15 @@ public class ArrayTypeAdapterDiffblueTest {
 
     // Assert
     TypeAdapter<Object> componentTypeAdapter2 = actualArrayTypeAdapter.getComponentTypeAdapter();
+    TypeAdapter<Object> delegate =
+        ((TypeAdapterRuntimeTypeWrapper<Object>) componentTypeAdapter2).getDelegate();
+    assertTrue(delegate instanceof ObjectTypeAdapter);
     assertTrue(componentTypeAdapter2 instanceof TypeAdapterRuntimeTypeWrapper);
     Class<Object> expectedComponentType = Object.class;
     assertEquals(expectedComponentType, actualArrayTypeAdapter.getComponentType());
     assertSame(
         context, ((TypeAdapterRuntimeTypeWrapper<Object>) componentTypeAdapter2).getContext());
-    assertSame(
-        componentTypeAdapter,
-        ((TypeAdapterRuntimeTypeWrapper<Object>) componentTypeAdapter2).getDelegate());
+    assertSame(componentTypeAdapter, delegate);
   }
 
   /**
@@ -84,15 +75,8 @@ public class ArrayTypeAdapterDiffblueTest {
       throws IOException {
     // Arrange
     Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    ObjectTypeAdapter componentTypeAdapter =
+        new ObjectTypeAdapter(new Gson(), mock(ToNumberStrategy.class));
     Class<Object> componentType = Object.class;
 
     ArrayTypeAdapter<Object> arrayTypeAdapter =
@@ -126,15 +110,8 @@ public class ArrayTypeAdapterDiffblueTest {
   public void testRead_whenJsonTreeReaderWithElementIsInstance_thenReturnNull() throws IOException {
     // Arrange
     Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    ObjectTypeAdapter componentTypeAdapter =
+        new ObjectTypeAdapter(new Gson(), mock(ToNumberStrategy.class));
     Class<Object> componentType = Object.class;
 
     ArrayTypeAdapter<Object> arrayTypeAdapter =
@@ -166,15 +143,8 @@ public class ArrayTypeAdapterDiffblueTest {
   public void testWrite_thenJsonWriterWithOutIsStringWriterOutToStringIsNull() throws IOException {
     // Arrange
     Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    ObjectTypeAdapter componentTypeAdapter =
+        new ObjectTypeAdapter(new Gson(), mock(ToNumberStrategy.class));
     Class<Object> componentType = Object.class;
 
     ArrayTypeAdapter<Object> arrayTypeAdapter =
@@ -213,15 +183,8 @@ public class ArrayTypeAdapterDiffblueTest {
       throws IOException {
     // Arrange
     Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    ObjectTypeAdapter componentTypeAdapter =
+        new ObjectTypeAdapter(new Gson(), mock(ToNumberStrategy.class));
     Class<Object> componentType = Object.class;
 
     ArrayTypeAdapter<Object> arrayTypeAdapter =
@@ -260,15 +223,8 @@ public class ArrayTypeAdapterDiffblueTest {
   public void testGettersAndSetters() {
     // Arrange
     Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    ObjectTypeAdapter componentTypeAdapter =
+        new ObjectTypeAdapter(new Gson(), mock(ToNumberStrategy.class));
     Class<Object> componentType = Object.class;
 
     ArrayTypeAdapter<Object> arrayTypeAdapter =

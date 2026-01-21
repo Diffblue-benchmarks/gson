@@ -54,7 +54,7 @@ class EnumTypeAdapter<T extends Enum<T>> extends TypeAdapter<T> {
   private final Map<String, T> stringToConstant = new HashMap<>();
   private final Map<T, String> constantToName = new HashMap<>();
 
-  private EnumTypeAdapter(Class<T> classOfT) {
+  EnumTypeAdapter(Class<T> classOfT) {
     try {
       // Uses reflection to find enum constants to work around name mismatches for obfuscated
       // classes
@@ -95,6 +95,21 @@ class EnumTypeAdapter<T extends Enum<T>> extends TypeAdapter<T> {
       // and even that should probably not fail since enum constants are implicitly public
       throw new AssertionError(e);
     }
+  }
+
+  /** For testing purposes only */
+  public Map getConstantToName() {
+    return constantToName;
+  }
+
+  /** For testing purposes only */
+  public Map getNameToConstant() {
+    return nameToConstant;
+  }
+
+  /** For testing purposes only */
+  public Map getStringToConstant() {
+    return stringToConstant;
   }
 
   @Override

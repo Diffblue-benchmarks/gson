@@ -20,6 +20,7 @@ import com.google.gson.ReflectionAccessFilter.FilterResult;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.internal.ConstructorConstructor;
+import com.google.gson.internal.reflect.ReflectionHelperFactory;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -130,13 +131,13 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
     ConstructorConstructor constructorConstructor =
         new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
     Gson gson = new Gson();
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperFactory.createRecordClass();
     TypeToken<?> type2 = TypeToken.get(type);
 
     JsonAdapter annotation = mock(JsonAdapter.class);
     when(annotation.nullSafe()).thenReturn(false);
-    Class<Object> forNameResult = Object.class;
-    Mockito.<Class<?>>when(annotation.value()).thenReturn(forNameResult);
+    Class<?> createRecordClassResult = ReflectionHelperFactory.createRecordClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createRecordClassResult);
 
     // Act and Assert
     assertThrows(
@@ -185,13 +186,13 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
     ConstructorConstructor constructorConstructor =
         new ConstructorConstructor(new HashMap<>(), true, reflectionFilters);
     Gson gson = new Gson();
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperFactory.createRecordClass();
     TypeToken<?> type2 = TypeToken.get(type);
 
     JsonAdapter annotation = mock(JsonAdapter.class);
     when(annotation.nullSafe()).thenReturn(false);
-    Class<Object> forNameResult = Object.class;
-    Mockito.<Class<?>>when(annotation.value()).thenReturn(forNameResult);
+    Class<?> createRecordClassResult = ReflectionHelperFactory.createRecordClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createRecordClassResult);
 
     // Act and Assert
     assertThrows(
@@ -235,13 +236,13 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
     ConstructorConstructor constructorConstructor =
         new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
     Gson gson = new Gson();
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperFactory.createRecordClass();
     TypeToken<?> type2 = TypeToken.get(type);
 
     JsonAdapter annotation = mock(JsonAdapter.class);
     when(annotation.nullSafe()).thenThrow(new IllegalArgumentException());
-    Class<Object> forNameResult = Object.class;
-    Mockito.<Class<?>>when(annotation.value()).thenReturn(forNameResult);
+    Class<?> createRecordClassResult = ReflectionHelperFactory.createRecordClass();
+    Mockito.<Class<?>>when(annotation.value()).thenReturn(createRecordClassResult);
 
     // Act and Assert
     assertThrows(
@@ -284,7 +285,7 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
     ConstructorConstructor constructorConstructor =
         new ConstructorConstructor(instanceCreators2, true, new ArrayList<>());
     Gson gson = new Gson();
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperFactory.createRecordClass();
     TypeToken<?> type2 = TypeToken.get(type);
 
     JsonAdapter annotation = mock(JsonAdapter.class);
@@ -304,7 +305,7 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
    * TypeAdapterFactory)}.
    *
    * <ul>
-   *   <li>When {@code Object}.
+   *   <li>When createRecordClass.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -319,13 +320,13 @@ public class JsonAdapterAnnotationTypeAdapterFactoryDiffblueTest {
     "boolean JsonAdapterAnnotationTypeAdapterFactory.isClassJsonAdapterFactory(TypeToken,"
         + " TypeAdapterFactory)"
   })
-  public void testIsClassJsonAdapterFactory_whenJavaLangObject_thenReturnFalse() {
+  public void testIsClassJsonAdapterFactory_whenCreateRecordClass_thenReturnFalse() {
     // Arrange
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
     JsonAdapterAnnotationTypeAdapterFactory jsonAdapterAnnotationTypeAdapterFactory =
         new JsonAdapterAnnotationTypeAdapterFactory(
             new ConstructorConstructor(instanceCreators, true, new ArrayList<>()));
-    Class<Object> type = Object.class;
+    Class<?> type = ReflectionHelperFactory.createRecordClass();
     TypeToken<?> type2 = TypeToken.get(type);
 
     // Act and Assert

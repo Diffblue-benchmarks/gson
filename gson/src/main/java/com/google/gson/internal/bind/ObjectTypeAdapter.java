@@ -44,7 +44,7 @@ public final class ObjectTypeAdapter extends TypeAdapter<Object> {
   private final Gson gson;
   private final ToNumberStrategy toNumberStrategy;
 
-  private ObjectTypeAdapter(Gson gson, ToNumberStrategy toNumberStrategy) {
+  ObjectTypeAdapter(Gson gson, ToNumberStrategy toNumberStrategy) {
     this.gson = gson;
     this.toNumberStrategy = toNumberStrategy;
   }
@@ -68,6 +68,16 @@ public final class ObjectTypeAdapter extends TypeAdapter<Object> {
     } else {
       return newFactory(toNumberStrategy);
     }
+  }
+
+  /** For testing purposes only */
+  public Gson getGson() {
+    return gson;
+  }
+
+  /** For testing purposes only */
+  public ToNumberStrategy getToNumberStrategy() {
+    return toNumberStrategy;
   }
 
   /**

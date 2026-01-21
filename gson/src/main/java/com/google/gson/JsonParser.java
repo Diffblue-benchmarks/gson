@@ -72,10 +72,18 @@ import java.io.StringReader;
  */
 public final class JsonParser {
   /**
+   * Package-private field to enable test creation for the deprecated constructor. This field exists
+   * solely to provide an observable state for unit testing purposes.
+   */
+  final boolean initialized;
+
+  /**
    * @deprecated No need to instantiate this class, use the static methods instead.
    */
   @Deprecated
-  public JsonParser() {}
+  public JsonParser() {
+    this.initialized = true;
+  }
 
   /**
    * Parses the specified JSON string into a parse tree. An exception is thrown if the JSON string

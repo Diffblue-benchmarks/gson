@@ -7,10 +7,10 @@ import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.Gson;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonSerializer;
+import com.google.gson.ToNumberStrategy;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
+import com.google.gson.internal.reflect.ReflectionHelperFactory;
 import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -31,15 +31,8 @@ public class TypeAdaptersDiffblueTest {
     Class<Object> unboxed = Object.class;
     Class<Object> boxed = Object.class;
     Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    ObjectTypeAdapter componentTypeAdapter =
+        new ObjectTypeAdapter(new Gson(), mock(ToNumberStrategy.class));
     Class<Object> componentType = Object.class;
 
     ArrayTypeAdapter<Object> typeAdapter =
@@ -48,12 +41,12 @@ public class TypeAdaptersDiffblueTest {
     // Act
     TypeAdapterFactory actualNewFactoryResult =
         TypeAdapters.newFactory(unboxed, boxed, typeAdapter);
-    Gson gson2 = new Gson();
-    Class<Object> type2 = Object.class;
-    TypeToken<Object> getResult = TypeToken.get(type2);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
 
     // Assert
-    assertSame(typeAdapter, actualNewFactoryResult.create(gson2, getResult));
+    assertSame(typeAdapter, actualNewFactoryResult.create(gson, getResult));
   }
 
   /**
@@ -70,15 +63,8 @@ public class TypeAdaptersDiffblueTest {
     // Arrange
     Class<Object> type = Object.class;
     Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type2 = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type2);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    ObjectTypeAdapter componentTypeAdapter =
+        new ObjectTypeAdapter(new Gson(), mock(ToNumberStrategy.class));
     Class<Object> componentType = Object.class;
 
     ArrayTypeAdapter<Object> typeAdapter =
@@ -86,12 +72,12 @@ public class TypeAdaptersDiffblueTest {
 
     // Act
     TypeAdapterFactory actualNewFactoryResult = TypeAdapters.newFactory(type, typeAdapter);
-    Gson gson2 = new Gson();
-    Class<Object> type3 = Object.class;
-    TypeToken<Object> getResult = TypeToken.get(type3);
+    Gson gson = new Gson();
+    Class<Object> type2 = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type2);
 
     // Assert
-    assertSame(typeAdapter, actualNewFactoryResult.create(gson2, getResult));
+    assertSame(typeAdapter, actualNewFactoryResult.create(gson, getResult));
   }
 
   /**
@@ -109,15 +95,8 @@ public class TypeAdaptersDiffblueTest {
     Class<Object> type = Object.class;
     TypeToken<Object> type2 = TypeToken.get(type);
     Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type3 = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type3);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    ObjectTypeAdapter componentTypeAdapter =
+        new ObjectTypeAdapter(new Gson(), mock(ToNumberStrategy.class));
     Class<Object> componentType = Object.class;
 
     ArrayTypeAdapter<Object> typeAdapter =
@@ -125,12 +104,12 @@ public class TypeAdaptersDiffblueTest {
 
     // Act
     TypeAdapterFactory actualNewFactoryResult = TypeAdapters.newFactory(type2, typeAdapter);
-    Gson gson2 = new Gson();
-    Class<Object> type4 = Object.class;
-    TypeToken<Object> getResult = TypeToken.get(type4);
+    Gson gson = new Gson();
+    Class<Object> type3 = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type3);
 
     // Assert
-    assertSame(typeAdapter, actualNewFactoryResult.create(gson2, getResult));
+    assertSame(typeAdapter, actualNewFactoryResult.create(gson, getResult));
   }
 
   /**
@@ -148,17 +127,10 @@ public class TypeAdaptersDiffblueTest {
   public void testNewFactoryForMultipleTypes() {
     // Arrange
     Class<Object> base = Object.class;
-    Class<Object> sub = Object.class;
+    Class<?> sub = ReflectionHelperFactory.createRecordClass();
     Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    ObjectTypeAdapter componentTypeAdapter =
+        new ObjectTypeAdapter(new Gson(), mock(ToNumberStrategy.class));
     Class<Object> componentType = Object.class;
 
     ArrayTypeAdapter<Object> typeAdapter =
@@ -167,11 +139,11 @@ public class TypeAdaptersDiffblueTest {
     // Act
     TypeAdapterFactory actualNewFactoryForMultipleTypesResult =
         TypeAdapters.newFactoryForMultipleTypes(base, sub, typeAdapter);
-    Gson gson2 = new Gson();
-    Class<Object> type2 = Object.class;
-    TypeToken<Object> getResult = TypeToken.get(type2);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
 
     // Assert
-    assertSame(typeAdapter, actualNewFactoryForMultipleTypesResult.create(gson2, getResult));
+    assertSame(typeAdapter, actualNewFactoryForMultipleTypesResult.create(gson, getResult));
   }
 }

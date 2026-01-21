@@ -37,6 +37,14 @@ public class NonNullElementWrapperList<E> extends AbstractList<E> implements Ran
     this.delegate = Objects.requireNonNull(delegate);
   }
 
+  /**
+   * Package-visible factory method for testing frameworks (e.g., Diffblue Cover). Creates a new
+   * instance with an empty ArrayList.
+   */
+  static <E> NonNullElementWrapperList<E> createForTesting() {
+    return new NonNullElementWrapperList<>(new ArrayList<E>());
+  }
+
   @Override
   public E get(int index) {
     return delegate.get(index);

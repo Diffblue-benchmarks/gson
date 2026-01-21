@@ -14,6 +14,7 @@ import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.Gson.FutureTypeAdapter;
 import com.google.gson.internal.Excluder;
 import com.google.gson.internal.bind.ReflectiveTypeAdapterFactory;
+import com.google.gson.internal.reflect.ReflectionHelperFactory;
 import java.util.List;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -719,7 +720,7 @@ public class GsonBuilderDiffblueTest {
   public void testRegisterTypeHierarchyAdapter_thenGsonBuilderCreateBuilderFactoriesSizeIsOne() {
     // Arrange
     GsonBuilder gsonBuilder = new GsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperFactory.createRecordClass();
 
     // Act and Assert
     Gson createResult =
@@ -752,7 +753,7 @@ public class GsonBuilderDiffblueTest {
   public void testRegisterTypeHierarchyAdapter_thenThrowIllegalArgumentException() {
     // Arrange
     GsonBuilder gsonBuilder = new GsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperFactory.createRecordClass();
 
     // Act and Assert
     assertThrows(
@@ -776,7 +777,7 @@ public class GsonBuilderDiffblueTest {
   public void testRegisterTypeHierarchyAdapter_whenJsonDeserializer() {
     // Arrange
     GsonBuilder gsonBuilder = new GsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperFactory.createRecordClass();
 
     // Act and Assert
     Gson createResult =
@@ -806,7 +807,7 @@ public class GsonBuilderDiffblueTest {
   public void testRegisterTypeHierarchyAdapter_whenJsonSerializer() {
     // Arrange
     GsonBuilder gsonBuilder = new GsonBuilder();
-    Class<Object> baseType = Object.class;
+    Class<?> baseType = ReflectionHelperFactory.createRecordClass();
 
     // Act and Assert
     Gson createResult =

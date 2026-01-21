@@ -597,6 +597,11 @@ public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Seri
     }
   }
 
+  // Package-visible factory method for testing frameworks (e.g., Diffblue Cover)
+  EntrySet createEntrySetForTesting() {
+    return new EntrySet();
+  }
+
   class EntrySet extends AbstractSet<Entry<K, V>> {
     @Override
     public int size() {
@@ -636,6 +641,11 @@ public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Seri
     public void clear() {
       LinkedTreeMap.this.clear();
     }
+  }
+
+  // Package-visible factory method for testing frameworks (e.g., Diffblue Cover)
+  KeySet createKeySetForTesting() {
+    return new KeySet();
   }
 
   final class KeySet extends AbstractSet<K> {

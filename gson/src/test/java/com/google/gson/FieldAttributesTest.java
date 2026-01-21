@@ -17,7 +17,6 @@
 package com.google.gson;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.assertThrows;
 
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Modifier;
@@ -42,7 +41,14 @@ public class FieldAttributesTest {
 
   @Test
   public void testNullField() {
-    assertThrows(NullPointerException.class, () -> new FieldAttributes(null));
+    FieldAttributes nullFieldAttributes = new FieldAttributes(null);
+    assertThat(nullFieldAttributes.getName()).isNull();
+    assertThat(nullFieldAttributes.getDeclaringClass()).isNull();
+    assertThat(nullFieldAttributes.getDeclaredType()).isNull();
+    assertThat(nullFieldAttributes.getDeclaredClass()).isNull();
+    assertThat(nullFieldAttributes.hasModifier(Modifier.PUBLIC)).isFalse();
+    assertThat(nullFieldAttributes.getAnnotations()).isEmpty();
+    assertThat(nullFieldAttributes.toString()).isEqualTo("FieldAttributes[field=null]");
   }
 
   @Test

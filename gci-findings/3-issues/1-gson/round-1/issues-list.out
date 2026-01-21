@@ -1,0 +1,43 @@
+[1;34mINFO  [0;39mDiffblue Cover 2026.01.01-SNAPSHOT-f2f2d79-local
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCommand: issues
+[1;34mINFO  [0;39mOutput a prioritized list of issues.
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mSelected modules:
+[1;34mINFO  [0;39m- com.google.code.gson:gson
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1/1] Diagnosing issues for module: com.google.code.gson:gson
+[1;34mINFO  [0;39m=============================================================
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mDetected Java version 11.0.29
+[1;34mINFO  [0;39mSelected build system: Maven
+[1;34mINFO  [0;39mSelected classpath from build system maven
+[1;34mINFO  [0;39mReading report file '/Users/john/Diffblue/gson/gson/.diffblue/reports/report.json'
+[1;34mINFO  [0;39mCopied report file to '/Users/john/Diffblue/gson/gson/.diffblue/reports/report-20260121T110930.json'
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+[1;34mINFO  [0;39mIssues: 13
+[1;34mINFO  [0;39mAffected methods: 18
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR083: Can't find a suitable constructor[m
+[1;34mINFO  [0;39mIssues: 8
+[1;34mINFO  [0;39mAffected methods: 16
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR002: Missing observers[m
+[1;34mINFO  [0;39mIssues: 1
+[1;34mINFO  [0;39mAffected methods: 1
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR081: Exception in arrange section[m
+[1;34mINFO  [0;39mIssues: 1
+[1;34mINFO  [0;39mAffected methods: 1
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR008: Failed to instantiate class under test[m
+[1;34mINFO  [0;39mIssues: 4
+[1;34mINFO  [0;39mAffected methods: 21
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m27 issues were found, rerun with --prompts to list with actionable advice
+[1;34mINFO  [0;39mRerun with --prompts --limit 10 --skip 10 to restrict which issues are displayed
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mLog file: /Users/john/Diffblue/gson/.diffblue/log/user-20260121T121243.log
+[1;34mINFO  [0;39mFinished in 3s

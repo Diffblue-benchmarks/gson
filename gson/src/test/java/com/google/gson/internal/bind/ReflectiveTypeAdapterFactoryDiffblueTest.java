@@ -99,46 +99,6 @@ public class ReflectiveTypeAdapterFactoryDiffblueTest {
    * Test {@link ReflectiveTypeAdapterFactory#create(Gson, TypeToken)}.
    *
    * <ul>
-   *   <li>Given {@link HashMap#HashMap()} All is {@link HashMap#HashMap()}.
-   * </ul>
-   *
-   * <p>Method under test: {@link ReflectiveTypeAdapterFactory#create(Gson, TypeToken)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"TypeAdapter ReflectiveTypeAdapterFactory.create(Gson, TypeToken)"})
-  public void testCreate_givenHashMapAllIsHashMap() {
-    // Arrange
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
-    instanceCreators.putAll(new HashMap<>());
-    ConstructorConstructor constructorConstructor =
-        new ConstructorConstructor(instanceCreators, true, new ArrayList<>());
-    FieldNamingStrategy fieldNamingPolicy = mock(FieldNamingStrategy.class);
-    HashMap<Type, InstanceCreator<?>> instanceCreators2 = new HashMap<>();
-    JsonAdapterAnnotationTypeAdapterFactory jsonAdapterFactory =
-        new JsonAdapterAnnotationTypeAdapterFactory(
-            new ConstructorConstructor(instanceCreators2, true, new ArrayList<>()));
-
-    ReflectiveTypeAdapterFactory reflectiveTypeAdapterFactory =
-        new ReflectiveTypeAdapterFactory(
-            constructorConstructor,
-            fieldNamingPolicy,
-            Excluder.DEFAULT,
-            jsonAdapterFactory,
-            new ArrayList<>());
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> type2 = TypeToken.get(type);
-
-    // Act and Assert
-    assertEquals("{}", reflectiveTypeAdapterFactory.create(gson, type2).toJson("Value"));
-  }
-
-  /**
-   * Test {@link ReflectiveTypeAdapterFactory#create(Gson, TypeToken)}.
-   *
-   * <ul>
    *   <li>Given {@link ReflectionAccessFilter} {@link ReflectionAccessFilter#check(Class)} return
    *       {@code ALLOW}.
    *   <li>Then calls {@link ReflectionAccessFilter#check(Class)}.

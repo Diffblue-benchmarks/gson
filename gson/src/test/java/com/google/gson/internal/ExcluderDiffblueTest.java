@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,7 +17,9 @@ import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
+import com.google.gson.internal.reflect.ReflectionHelperFactory;
 import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -287,6 +290,137 @@ public class ExcluderDiffblueTest {
   }
 
   /**
+   * Test {@link Excluder#excludeField(Field, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link Excluder#DEFAULT}.
+   *   <li>When {@code false}.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeField(Field, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeField(Field, boolean)"})
+  public void testExcludeField_givenDefault_whenFalse_thenReturnFalse() {
+    // Arrange, Act and Assert
+    assertFalse(
+        Excluder.DEFAULT.excludeField(ReflectionHelperFactory.createNonRecordField(), false));
+  }
+
+  /**
+   * Test {@link Excluder#excludeField(Field, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link Excluder#DEFAULT}.
+   *   <li>When {@code true}.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeField(Field, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeField(Field, boolean)"})
+  public void testExcludeField_givenDefault_whenTrue_thenReturnFalse() {
+    // Arrange, Act and Assert
+    assertFalse(
+        Excluder.DEFAULT.excludeField(ReflectionHelperFactory.createNonRecordField(), true));
+  }
+
+  /**
+   * Test {@link Excluder#excludeField(Field, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link ExclusionStrategy} {@link ExclusionStrategy#shouldSkipClass(Class)} return
+   *       {@code true}.
+   *   <li>Then return {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeField(Field, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeField(Field, boolean)"})
+  public void testExcludeField_givenExclusionStrategyShouldSkipClassReturnTrue_thenReturnTrue() {
+    // Arrange
+    ExclusionStrategy exclusionStrategy = mock(ExclusionStrategy.class);
+    when(exclusionStrategy.shouldSkipClass(Mockito.<Class<?>>any())).thenReturn(true);
+
+    ArrayList<ExclusionStrategy> exclusionStrategyList = new ArrayList<>();
+    exclusionStrategyList.add(exclusionStrategy);
+    when(list.iterator()).thenReturn(exclusionStrategyList.iterator());
+
+    // Act
+    boolean actualExcludeFieldResult =
+        excluder.excludeField(ReflectionHelperFactory.createNonRecordField(), false);
+
+    // Assert
+    verify(exclusionStrategy).shouldSkipClass(isA(Class.class));
+    verify(list).iterator();
+    assertTrue(actualExcludeFieldResult);
+  }
+
+  /**
+   * Test {@link Excluder#excludeField(Field, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link List} {@link List#isEmpty()} return {@code false}.
+   *   <li>When {@code false}.
+   *   <li>Then calls {@link List#isEmpty()}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeField(Field, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeField(Field, boolean)"})
+  public void testExcludeField_givenListIsEmptyReturnFalse_whenFalse_thenCallsIsEmpty() {
+    // Arrange
+    when(list.isEmpty()).thenReturn(false);
+
+    ArrayList<ExclusionStrategy> exclusionStrategyList = new ArrayList<>();
+    when(list.iterator()).thenReturn(exclusionStrategyList.iterator());
+
+    // Act
+    boolean actualExcludeFieldResult =
+        excluder.excludeField(ReflectionHelperFactory.createNonRecordField(), false);
+
+    // Assert
+    verify(list).isEmpty();
+    verify(list, atLeast(1)).iterator();
+    assertFalse(actualExcludeFieldResult);
+  }
+
+  /**
+   * Test {@link Excluder#excludeClass(Class, boolean)}.
+   *
+   * <ul>
+   *   <li>Given {@link Excluder#DEFAULT}.
+   *   <li>When createRecordClass.
+   *   <li>Then return {@code false}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Excluder#excludeClass(Class, boolean)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean Excluder.excludeClass(Class, boolean)"})
+  public void testExcludeClass_givenDefault_whenCreateRecordClass_thenReturnFalse() {
+    // Arrange
+    Class<?> clazz = ReflectionHelperFactory.createRecordClass();
+
+    // Act and Assert
+    assertFalse(Excluder.DEFAULT.excludeClass(clazz, false));
+  }
+
+  /**
    * Test {@link Excluder#excludeClass(Class, boolean)}.
    *
    * <ul>
@@ -349,7 +483,7 @@ public class ExcluderDiffblueTest {
   @MethodsUnderTest({"boolean Excluder.excludeClass(Class, boolean)"})
   public void testExcludeClass_givenDefault_whenTrue_thenReturnFalse() {
     // Arrange
-    Class<Object> clazz = Object.class;
+    Class<?> clazz = ReflectionHelperFactory.createRecordClass();
 
     // Act and Assert
     assertFalse(Excluder.DEFAULT.excludeClass(clazz, true));
@@ -378,7 +512,7 @@ public class ExcluderDiffblueTest {
     ArrayList<ExclusionStrategy> exclusionStrategyList = new ArrayList<>();
     exclusionStrategyList.add(exclusionStrategy);
     when(list.iterator()).thenReturn(exclusionStrategyList.iterator());
-    Class<Object> clazz = Object.class;
+    Class<?> clazz = ReflectionHelperFactory.createRecordClass();
 
     // Act
     boolean actualExcludeClassResult = excluder.excludeClass(clazz, false);

@@ -13,6 +13,7 @@ import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.gson.InstanceCreator;
 import com.google.gson.ReflectionAccessFilter;
 import com.google.gson.ReflectionAccessFilter.FilterResult;
+import com.google.gson.internal.reflect.ReflectionHelperFactory;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -56,7 +57,7 @@ public class ConstructorConstructorDiffblueTest {
    * Test {@link ConstructorConstructor#checkInstantiable(Class)}.
    *
    * <ul>
-   *   <li>When {@code Object}.
+   *   <li>When createRecordClass.
    *   <li>Then return {@code null}.
    * </ul>
    *
@@ -66,9 +67,9 @@ public class ConstructorConstructorDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"java.lang.String ConstructorConstructor.checkInstantiable(Class)"})
-  public void testCheckInstantiable_whenJavaLangObject_thenReturnNull() {
+  public void testCheckInstantiable_whenCreateRecordClass_thenReturnNull() {
     // Arrange
-    Class<Object> c = Object.class;
+    Class<?> c = ReflectionHelperFactory.createRecordClass();
 
     // Act and Assert
     assertNull(ConstructorConstructor.checkInstantiable(c));

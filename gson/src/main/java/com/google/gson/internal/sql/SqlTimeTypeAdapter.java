@@ -52,7 +52,12 @@ final class SqlTimeTypeAdapter extends TypeAdapter<Time> {
 
   private final DateFormat format = new SimpleDateFormat("hh:mm:ss a");
 
-  private SqlTimeTypeAdapter() {}
+  SqlTimeTypeAdapter() {}
+
+  /** For testing purposes only */
+  public DateFormat getFormat() {
+    return format;
+  }
 
   @Override
   public Time read(JsonReader in) throws IOException {

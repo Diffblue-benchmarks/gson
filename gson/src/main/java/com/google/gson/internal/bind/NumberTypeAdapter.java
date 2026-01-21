@@ -36,7 +36,7 @@ public final class NumberTypeAdapter extends TypeAdapter<Number> {
 
   private final ToNumberStrategy toNumberStrategy;
 
-  private NumberTypeAdapter(ToNumberStrategy toNumberStrategy) {
+  NumberTypeAdapter(ToNumberStrategy toNumberStrategy) {
     this.toNumberStrategy = toNumberStrategy;
   }
 
@@ -57,6 +57,11 @@ public final class NumberTypeAdapter extends TypeAdapter<Number> {
     } else {
       return newFactory(toNumberStrategy);
     }
+  }
+
+  /** For testing purposes only */
+  public ToNumberStrategy getToNumberStrategy() {
+    return toNumberStrategy;
   }
 
   @Override

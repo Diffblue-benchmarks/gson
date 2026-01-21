@@ -117,4 +117,23 @@ public class JavaVersionDiffblueTest {
     // Arrange, Act and Assert
     assertTrue(JavaVersion.isJava9OrLater());
   }
+
+  /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>default or parameterless constructor of {@link JavaVersion}
+   *   <li>{@link JavaVersion#getMajorJavaVersion()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JavaVersion.<init>()", "int JavaVersion.getMajorJavaVersion()"})
+  public void testGettersAndSetters() {
+    // Arrange, Act and Assert
+    assertEquals(11, new JavaVersion().getMajorJavaVersion());
+  }
 }

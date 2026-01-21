@@ -93,5 +93,5 @@ public final class JavaVersion {
     return majorJavaVersion >= 9;
   }
 
-  private JavaVersion() {}
+  JavaVersion() {}
 }

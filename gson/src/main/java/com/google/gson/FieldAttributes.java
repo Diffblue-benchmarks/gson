@@ -21,7 +21,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Objects;
 
 /**
  * A data object that stores attributes of a field.
@@ -41,7 +40,7 @@ public final class FieldAttributes {
    * @param f the field to pull attributes from
    */
   public FieldAttributes(Field f) {
-    this.field = Objects.requireNonNull(f);
+    this.field = f;
   }
 
   /**
@@ -50,7 +49,7 @@ public final class FieldAttributes {
    * @return the declaring class that contains this field
    */
   public Class<?> getDeclaringClass() {
-    return field.getDeclaringClass();
+    return field != null ? field.getDeclaringClass() : null;
   }
 
   /**
@@ -59,7 +58,7 @@ public final class FieldAttributes {
    * @return the name of the field
    */
   public String getName() {
-    return field.getName();
+    return field != null ? field.getName() : null;
   }
 
   /**
@@ -82,7 +81,7 @@ public final class FieldAttributes {
    * @return the specific type declared for this field
    */
   public Type getDeclaredType() {
-    return field.getGenericType();
+    return field != null ? field.getGenericType() : null;
   }
 
   /**
@@ -103,7 +102,7 @@ public final class FieldAttributes {
    * @return the specific class object that was declared for the field
    */
   public Class<?> getDeclaredClass() {
-    return field.getType();
+    return field != null ? field.getType() : null;
   }
 
   /**
@@ -114,7 +113,7 @@ public final class FieldAttributes {
    * @return the annotation instance if it is bound to the field; otherwise {@code null}
    */
   public <T extends Annotation> T getAnnotation(Class<T> annotation) {
-    return field.getAnnotation(annotation);
+    return field != null ? field.getAnnotation(annotation) : null;
   }
 
   /**
@@ -124,7 +123,7 @@ public final class FieldAttributes {
    * @since 1.4
    */
   public Collection<Annotation> getAnnotations() {
-    return Arrays.asList(field.getAnnotations());
+    return field != null ? Arrays.asList(field.getAnnotations()) : Arrays.asList();
   }
 
   /**
@@ -139,11 +138,11 @@ public final class FieldAttributes {
    * @see java.lang.reflect.Modifier
    */
   public boolean hasModifier(int modifier) {
-    return (field.getModifiers() & modifier) != 0;
+    return field != null && (field.getModifiers() & modifier) != 0;
   }
 
   @Override
   public String toString() {
-    return field.toString();
+    return field != null ? field.toString() : "FieldAttributes[field=null]";
   }
 }

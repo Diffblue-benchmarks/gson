@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
+import com.google.gson.internal.reflect.ReflectionHelperFactory;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -74,30 +75,6 @@ public class TypeTokenDiffblueTest {
    *
    * <ul>
    *   <li>Given {@code Object}.
-   *   <li>Then return {@code true}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeToken#isAssignableFrom(Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"boolean TypeToken.isAssignableFrom(Class)"})
-  public void testIsAssignableFromWithCls_givenJavaLangObject_thenReturnTrue() {
-    // Arrange
-    Class<Object> type = Object.class;
-    TypeToken<Object> getResult = TypeToken.get(type);
-    Class<Object> cls = Object.class;
-
-    // Act and Assert
-    assertTrue(getResult.isAssignableFrom(cls));
-  }
-
-  /**
-   * Test {@link TypeToken#isAssignableFrom(Class)} with {@code cls}.
-   *
-   * <ul>
-   *   <li>Given {@code Object}.
    *   <li>When {@code null}.
    *   <li>Then return {@code false}.
    * </ul>
@@ -115,6 +92,54 @@ public class TypeTokenDiffblueTest {
 
     // Act and Assert
     assertFalse(getResult.isAssignableFrom((Class<?>) null));
+  }
+
+  /**
+   * Test {@link TypeToken#isAssignableFrom(Class)} with {@code cls}.
+   *
+   * <ul>
+   *   <li>When createRecordClass.
+   *   <li>Then return {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeToken#isAssignableFrom(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean TypeToken.isAssignableFrom(Class)"})
+  public void testIsAssignableFromWithCls_whenCreateRecordClass_thenReturnTrue() {
+    // Arrange
+    Class<Object> type = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+    Class<?> cls = ReflectionHelperFactory.createRecordClass();
+
+    // Act and Assert
+    assertTrue(getResult.isAssignableFrom(cls));
+  }
+
+  /**
+   * Test {@link TypeToken#isAssignableFrom(Class)} with {@code cls}.
+   *
+   * <ul>
+   *   <li>When {@code Object}.
+   *   <li>Then return {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeToken#isAssignableFrom(Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean TypeToken.isAssignableFrom(Class)"})
+  public void testIsAssignableFromWithCls_whenJavaLangObject_thenReturnTrue() {
+    // Arrange
+    Class<Object> type = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+    Class<Object> cls = Object.class;
+
+    // Act and Assert
+    assertTrue(getResult.isAssignableFrom(cls));
   }
 
   /**
@@ -211,6 +236,31 @@ public class TypeTokenDiffblueTest {
     TypeToken<Object> getResult = TypeToken.get(type);
     Class<Object> componentType = Object.class;
     TypeToken<?> token = TypeToken.getArray(componentType);
+
+    // Act and Assert
+    assertTrue(getResult.isAssignableFrom(token));
+  }
+
+  /**
+   * Test {@link TypeToken#isAssignableFrom(TypeToken)} with {@code token}.
+   *
+   * <ul>
+   *   <li>When createRecordClass.
+   *   <li>Then return {@code true}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeToken#isAssignableFrom(TypeToken)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"boolean TypeToken.isAssignableFrom(TypeToken)"})
+  public void testIsAssignableFromWithToken_whenCreateRecordClass_thenReturnTrue() {
+    // Arrange
+    Class<Object> type = Object.class;
+    TypeToken<Object> getResult = TypeToken.get(type);
+    Class<?> type2 = ReflectionHelperFactory.createRecordClass();
+    TypeToken<?> token = TypeToken.get(type2);
 
     // Act and Assert
     assertTrue(getResult.isAssignableFrom(token));

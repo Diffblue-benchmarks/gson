@@ -1,0 +1,679 @@
+[1;34mINFO  [0;39mDiffblue Cover 2026.01.01-SNAPSHOT-f2f2d79-local
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCommand: issues
+[1;34mINFO  [0;39mOutput a prioritized list of issues.
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mSelected modules:
+[1;34mINFO  [0;39m- com.google.code.gson:gson
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1/1] Diagnosing issues for module: com.google.code.gson:gson
+[1;34mINFO  [0;39m=============================================================
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mDetected Java version 11.0.29
+[1;34mINFO  [0;39mSelected build system: Maven
+[1;34mINFO  [0;39mSelected classpath from build system maven
+[1;34mINFO  [0;39mReading report file '/Users/john/Diffblue/gson/gson/.diffblue/reports/report.json'
+[1;34mINFO  [0;39mCopied report file to '/Users/john/Diffblue/gson/gson/.diffblue/reports/report-20260121T110930.json'
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.FieldAttributes.getAnnotations:()Ljava/util/Collection;`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.NullPointerException
+        at java.util.Objects.requireNonNull(Objects.java:222)
+        at com.google.gson.FieldAttributes.<init>(FieldAttributes.java:44)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.FieldAttributes.<init>:(Ljava/lang/reflect/Field;)V`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.NullPointerException
+        at java.util.Objects.requireNonNull(Objects.java:222)
+        at com.google.gson.FieldAttributes.<init>(FieldAttributes.java:44)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.FieldAttributes.getAnnotation:(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.NullPointerException
+        at java.util.Objects.requireNonNull(Objects.java:222)
+        at com.google.gson.FieldAttributes.<init>(FieldAttributes.java:44)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.internal.Excluder.excludeField:(Ljava/lang/reflect/Field;Z)Z`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.NullPointerException
+        at com.google.gson.internal.Excluder.excludeField(Excluder.java:159)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.internal.ReflectionAccessFilterHelper.canAccess:(Ljava/lang/reflect/AccessibleObject;Ljava/lang/Object;)Z`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.RuntimeException: Failed invoking canAccess
+        at com.google.gson.internal.ReflectionAccessFilterHelper$AccessChecker$1.canAccess(ReflectionAccessFilterHelper.java:97)
+        at com.google.gson.internal.ReflectionAccessFilterHelper.canAccess(ReflectionAccessFilterHelper.java:77)
+      java.lang.NullPointerException
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.internal.reflect.ReflectionHelper.constructorToString:(Ljava/lang/reflect/Constructor;)Ljava/lang/String;`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.NullPointerException
+        at com.google.gson.internal.reflect.ReflectionHelper.constructorToString(ReflectionHelper.java:125)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.internal.reflect.ReflectionHelper.fieldToString:(Ljava/lang/reflect/Field;)Ljava/lang/String;`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.NullPointerException
+        at com.google.gson.internal.reflect.ReflectionHelper.fieldToString(ReflectionHelper.java:117)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.internal.reflect.ReflectionHelper.getAccessibleObjectDescription:(Ljava/lang/reflect/AccessibleObject;Z)Ljava/lang/String;`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.NullPointerException
+        at com.google.gson.internal.reflect.ReflectionHelper.getAccessibleObjectDescription(ReflectionHelper.java:106)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.internal.reflect.ReflectionHelper.getAccessor:(Ljava/lang/Class;Ljava/lang/reflect/Field;)Ljava/lang/reflect/Method;`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.UnsupportedOperationException: Records are not supported on this JVM, this method should not be called
+        at com.google.gson.internal.reflect.ReflectionHelper$RecordNotSupportedHelper.getAccessor(ReflectionHelper.java:321)
+        at com.google.gson.internal.reflect.ReflectionHelper.getAccessor(ReflectionHelper.java:192)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.internal.reflect.ReflectionHelper.getCanonicalRecordConstructor:(Ljava/lang/Class;)Ljava/lang/reflect/Constructor;`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.UnsupportedOperationException: Records are not supported on this JVM, this method should not be called
+        at com.google.gson.internal.reflect.ReflectionHelper$RecordNotSupportedHelper.getCanonicalRecordConstructor(ReflectionHelper.java:315)
+        at com.google.gson.internal.reflect.ReflectionHelper.getCanonicalRecordConstructor(ReflectionHelper.java:196)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.internal.reflect.ReflectionHelper.getRecordComponentNames:(Ljava/lang/Class;)[Ljava/lang/String;`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.UnsupportedOperationException: Records are not supported on this JVM, this method should not be called
+        at com.google.gson.internal.reflect.ReflectionHelper$RecordNotSupportedHelper.getRecordComponentNames(ReflectionHelper.java:309)
+        at com.google.gson.internal.reflect.ReflectionHelper.getRecordComponentNames(ReflectionHelper.java:187)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.internal.reflect.ReflectionHelper.makeAccessible:(Ljava/lang/reflect/AccessibleObject;)V`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.NullPointerException
+        at com.google.gson.internal.reflect.ReflectionHelper.getAccessibleObjectDescription(ReflectionHelper.java:106)
+        at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:70)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.google.gson.internal.reflect.ReflectionHelper.tryMakeAccessible:(Ljava/lang/reflect/Constructor;)Ljava/lang/String;`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.NullPointerException
+        at com.google.gson.internal.reflect.ReflectionHelper.constructorToString(ReflectionHelper.java:125)
+        at com.google.gson.internal.reflect.ReflectionHelper.tryMakeAccessible(ReflectionHelper.java:172)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR083: Can't find a suitable constructor[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.bind.DefaultDateTypeAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/util/Date;
+      com.google.gson.internal.bind.DefaultDateTypeAdapter.toString:()Ljava/lang/String;
+      com.google.gson.internal.bind.DefaultDateTypeAdapter.write:(Lcom/google/gson/stream/JsonWriter;Ljava/util/Date;)V
+      
+      Diffblue Cover was unable to construct an instance of DefaultDateTypeAdapter.
+      No suitable constructor or factory method found. Please check that the class
+      under test has a non-private constructor or factory method.
+      See https://diff.blue/R083 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR083: Can't find a suitable constructor[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.bind.EnumTypeAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/lang/Enum;
+      com.google.gson.internal.bind.EnumTypeAdapter.write:(Lcom/google/gson/stream/JsonWriter;Ljava/lang/Enum;)V
+      
+      Diffblue Cover was unable to construct an instance of EnumTypeAdapter.
+      No suitable constructor or factory method found. Please check that the class
+      under test has a non-private constructor or factory method.
+      See https://diff.blue/R083 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR083: Can't find a suitable constructor[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.bind.NumberTypeAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/lang/Number;
+      com.google.gson.internal.bind.NumberTypeAdapter.write:(Lcom/google/gson/stream/JsonWriter;Ljava/lang/Number;)V
+      
+      Diffblue Cover was unable to construct an instance of NumberTypeAdapter.
+      No suitable constructor or factory method found. Please check that the class
+      under test has a non-private constructor or factory method.
+      See https://diff.blue/R083 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR083: Can't find a suitable constructor[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.bind.ObjectTypeAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/lang/Object;
+      com.google.gson.internal.bind.ObjectTypeAdapter.write:(Lcom/google/gson/stream/JsonWriter;Ljava/lang/Object;)V
+      
+      Diffblue Cover was unable to construct an instance of ObjectTypeAdapter.
+      No suitable constructor or factory method found. Please check that the class
+      under test has a non-private constructor or factory method.
+      See https://diff.blue/R083 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR083: Can't find a suitable constructor[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.sql.SqlDateTypeAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/sql/Date;
+      com.google.gson.internal.sql.SqlDateTypeAdapter.write:(Lcom/google/gson/stream/JsonWriter;Ljava/sql/Date;)V
+      
+      Diffblue Cover was unable to construct an instance of SqlDateTypeAdapter.
+      No suitable constructor or factory method found. Please check that the class
+      under test has a non-private constructor or factory method.
+      See https://diff.blue/R083 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR083: Can't find a suitable constructor[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.sql.SqlTimeTypeAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/sql/Time;
+      com.google.gson.internal.sql.SqlTimeTypeAdapter.write:(Lcom/google/gson/stream/JsonWriter;Ljava/sql/Time;)V
+      
+      Diffblue Cover was unable to construct an instance of SqlTimeTypeAdapter.
+      No suitable constructor or factory method found. Please check that the class
+      under test has a non-private constructor or factory method.
+      See https://diff.blue/R083 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR083: Can't find a suitable constructor[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.sql.SqlTimestampTypeAdapter.read:(Lcom/google/gson/stream/JsonReader;)Ljava/sql/Timestamp;
+      com.google.gson.internal.sql.SqlTimestampTypeAdapter.write:(Lcom/google/gson/stream/JsonWriter;Ljava/sql/Timestamp;)V
+      
+      Diffblue Cover was unable to construct an instance of SqlTimestampTypeAdapter.
+      No suitable constructor or factory method found. Please check that the class
+      under test has a non-private constructor or factory method.
+      See https://diff.blue/R083 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR083: Can't find a suitable constructor[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.JavaVersion.getMajorJavaVersion:()I
+      
+      Diffblue Cover was unable to construct an instance of JavaVersion.
+      No suitable constructor or factory method found. Please check that the class
+      under test has a non-private constructor or factory method.
+      See https://diff.blue/R083 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR002: Missing observers[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.JsonParser.<init>:()V
+      
+      Diffblue Cover was unable to create an assertion.
+      There are no fields that could be asserted on.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR081: Exception in arrange section[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.FieldAttributes.toString:()Ljava/lang/String;
+      
+      Diffblue Cover was unable to construct an instance of the class under test using
+      com.google.gson.FieldAttributes.toString().
+      The arrange section threw
+      java.lang.NullPointerException
+          at java.util.Objects.requireNonNull(Objects.java:222)
+          at com.google.gson.FieldAttributes.<init>(FieldAttributes.java:44)
+      More information about the exception is provided in the support log.
+      See https://diff.blue/R081 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR008: Failed to instantiate class under test[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.LinkedTreeMap$EntrySet.clear:()V
+      com.google.gson.internal.LinkedTreeMap$EntrySet.contains:(Ljava/lang/Object;)Z
+      com.google.gson.internal.LinkedTreeMap$EntrySet.iterator:()Ljava/util/Iterator;
+      com.google.gson.internal.LinkedTreeMap$EntrySet.remove:(Ljava/lang/Object;)Z
+      com.google.gson.internal.LinkedTreeMap$EntrySet.size:()I
+      
+      Diffblue Cover was unable to construct an instance of LinkedTreeMap.EntrySet.
+      Ensure there is a package-visible constructor or factory method that does not
+      throw for the class under test.
+      If such a method is already present but Diffblue Cover does not find it, it can
+      be specified using custom rules for inputs:
+      https://docs.diffblue.com/knowledge-base/cli/custom-inputs/
+      This can happen because the factory method takes arguments, throws, returns null
+      or returns a subtype.
+      See https://diff.blue/R008 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR008: Failed to instantiate class under test[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.LinkedTreeMap$KeySet.clear:()V
+      com.google.gson.internal.LinkedTreeMap$KeySet.iterator:()Ljava/util/Iterator;
+      com.google.gson.internal.LinkedTreeMap$KeySet.remove:(Ljava/lang/Object;)Z
+      com.google.gson.internal.LinkedTreeMap$KeySet.size:()I
+      
+      Diffblue Cover was unable to construct an instance of LinkedTreeMap.KeySet.
+      Ensure there is a package-visible constructor or factory method that does not
+      throw for the class under test.
+      If such a method is already present but Diffblue Cover does not find it, it can
+      be specified using custom rules for inputs:
+      https://docs.diffblue.com/knowledge-base/cli/custom-inputs/
+      This can happen because the factory method takes arguments, throws, returns null
+      or returns a subtype.
+      See https://diff.blue/R008 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR008: Failed to instantiate class under test[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.NonNullElementWrapperList.equals:(Ljava/lang/Object;)Z
+      com.google.gson.internal.NonNullElementWrapperList.hashCode:()I
+      
+      Diffblue Cover was unable to construct an instance of NonNullElementWrapperList.
+      Ensure there is a package-visible constructor or factory method that does not
+      throw for the class under test.
+      If such a method is already present but Diffblue Cover does not find it, it can
+      be specified using custom rules for inputs:
+      https://docs.diffblue.com/knowledge-base/cli/custom-inputs/
+      This can happen because the factory method takes arguments, throws, returns null
+      or returns a subtype.
+      See https://diff.blue/R008 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR008: Failed to instantiate class under test[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.google.gson.internal.NonNullElementWrapperList.add:(ILjava/lang/Object;)V
+      com.google.gson.internal.NonNullElementWrapperList.clear:()V
+      com.google.gson.internal.NonNullElementWrapperList.get:(I)Ljava/lang/Object;
+      com.google.gson.internal.NonNullElementWrapperList.remove:(I)Ljava/lang/Object;
+      com.google.gson.internal.NonNullElementWrapperList.removeAll:(Ljava/util/Collection;)Z
+      com.google.gson.internal.NonNullElementWrapperList.retainAll:(Ljava/util/Collection;)Z
+      com.google.gson.internal.NonNullElementWrapperList.set:(ILjava/lang/Object;)Ljava/lang/Object;
+      com.google.gson.internal.NonNullElementWrapperList.size:()I
+      com.google.gson.internal.NonNullElementWrapperList.toArray:()[Ljava/lang/Object;
+      com.google.gson.internal.NonNullElementWrapperList.toArray:([Ljava/lang/Object;)[Ljava/lang/Object;
+      
+      Diffblue Cover was unable to construct an instance of NonNullElementWrapperList.
+      Ensure there is a package-visible constructor or factory method that does not
+      throw for the class under test.
+      If such a method is already present but Diffblue Cover does not find it, it can
+      be specified using custom rules for inputs:
+      https://docs.diffblue.com/knowledge-base/cli/custom-inputs/
+      This can happen because the factory method takes arguments, throws, returns null
+      or returns a subtype.
+      See https://diff.blue/R008 for further troubleshooting of this issue.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m27 issues were found and displayed
+[1;34mINFO  [0;39mRerun with --prompts --limit 10 --skip 10 to focus on a subset of the issues
+[1;34mINFO  [0;39mRerun without --prompts to summarise all the issues
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mLog file: /Users/john/Diffblue/gson/.diffblue/log/user-20260121T121259.log
+[1;34mINFO  [0;39mFinished in 3s

@@ -117,7 +117,7 @@ public final class DefaultDateTypeAdapter<T extends Date> extends TypeAdapter<T>
    */
   private final List<DateFormat> dateFormats = new ArrayList<>();
 
-  private DefaultDateTypeAdapter(DateType<T> dateType, String datePattern) {
+  DefaultDateTypeAdapter(DateType<T> dateType, String datePattern) {
     this.dateType = Objects.requireNonNull(dateType);
     dateFormats.add(new SimpleDateFormat(datePattern, Locale.US));
     if (!Locale.getDefault().equals(Locale.US)) {
@@ -125,7 +125,7 @@ public final class DefaultDateTypeAdapter<T extends Date> extends TypeAdapter<T>
     }
   }
 
-  private DefaultDateTypeAdapter(DateType<T> dateType, int dateStyle, int timeStyle) {
+  DefaultDateTypeAdapter(DateType<T> dateType, int dateStyle, int timeStyle) {
     this.dateType = Objects.requireNonNull(dateType);
     dateFormats.add(DateFormat.getDateTimeInstance(dateStyle, timeStyle, Locale.US));
     if (!Locale.getDefault().equals(Locale.US)) {
@@ -134,6 +134,16 @@ public final class DefaultDateTypeAdapter<T extends Date> extends TypeAdapter<T>
     if (JavaVersion.isJava9OrLater()) {
       dateFormats.add(PreJava9DateFormatProvider.getUsDateTimeFormat(dateStyle, timeStyle));
     }
+  }
+
+  /** For testing purposes only */
+  public List getDateFormats() {
+    return dateFormats;
+  }
+
+  /** For testing purposes only */
+  public DefaultDateTypeAdapter.DateType getDateType() {
+    return dateType;
   }
 
   @Override

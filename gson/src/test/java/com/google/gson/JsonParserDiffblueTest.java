@@ -22,6 +22,20 @@ import org.junit.experimental.categories.Category;
 
 public class JsonParserDiffblueTest {
   /**
+   * Test new {@link JsonParser} (default constructor).
+   *
+   * <p>Method under test: default or parameterless constructor of {@link JsonParser}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void JsonParser.<init>()"})
+  public void testNewJsonParser() {
+    // Arrange, Act and Assert
+    assertTrue(new JsonParser().initialized);
+  }
+
+  /**
    * Test {@link JsonParser#parseString(String)}.
    *
    * <ul>

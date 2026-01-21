@@ -44,8 +44,13 @@ class SqlTimestampTypeAdapter extends TypeAdapter<Timestamp> {
 
   private final TypeAdapter<Date> dateTypeAdapter;
 
-  private SqlTimestampTypeAdapter(TypeAdapter<Date> dateTypeAdapter) {
+  SqlTimestampTypeAdapter(TypeAdapter<Date> dateTypeAdapter) {
     this.dateTypeAdapter = dateTypeAdapter;
+  }
+
+  /** For testing purposes only */
+  public TypeAdapter getDateTypeAdapter() {
+    return dateTypeAdapter;
   }
 
   @Override

@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
+import com.google.gson.internal.reflect.ReflectionHelperFactory;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -39,7 +40,7 @@ public class GsonTypesDiffblueTest {
   public void testNewParameterizedTypeWithOwner() {
     // Arrange
     TypeVarBoundedType ownerType = new TypeVarBoundedType(null);
-    Class<Object> rawType = Object.class;
+    Class<?> rawType = ReflectionHelperFactory.createRecordClass();
     Class<Object> forNameResult = Object.class;
 
     // Act
@@ -48,7 +49,7 @@ public class GsonTypesDiffblueTest {
 
     // Assert
     assertEquals(
-        "java.lang.Object<java.lang.Object>",
+        "com.google.gson.internal.reflect.ReflectionHelperFactory$TestClass<java.lang.Object>",
         actualNewParameterizedTypeWithOwnerResult.getTypeName());
   }
 
@@ -635,7 +636,7 @@ public class GsonTypesDiffblueTest {
   public void testGetCollectionElementType_thenThrowIllegalArgumentException() {
     // Arrange
     TypeVarBoundedType context = new TypeVarBoundedType(null);
-    Class<Object> contextRawType = Object.class;
+    Class<?> contextRawType = ReflectionHelperFactory.createRecordClass();
 
     // Act and Assert
     assertThrows(
@@ -693,6 +694,30 @@ public class GsonTypesDiffblueTest {
    * Test {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}.
    *
    * <ul>
+   *   <li>Then throw {@link IllegalArgumentException}.
+   * </ul>
+   *
+   * <p>Method under test: {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"Type[] GsonTypes.getMapKeyAndValueTypes(Type, Class)"})
+  public void testGetMapKeyAndValueTypes_thenThrowIllegalArgumentException() {
+    // Arrange
+    TypeVarBoundedType context = new TypeVarBoundedType(null);
+    Class<?> contextRawType = ReflectionHelperFactory.createRecordClass();
+
+    // Act and Assert
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> GsonTypes.getMapKeyAndValueTypes(context, contextRawType));
+  }
+
+  /**
+   * Test {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}.
+   *
+   * <ul>
    *   <li>When {@code Object}.
    *   <li>Then return array length is two.
    * </ul>
@@ -710,31 +735,6 @@ public class GsonTypesDiffblueTest {
 
     // Act and Assert
     assertEquals(2, GsonTypes.getMapKeyAndValueTypes(context, contextRawType).length);
-  }
-
-  /**
-   * Test {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}.
-   *
-   * <ul>
-   *   <li>When {@code Object}.
-   *   <li>Then throw {@link IllegalArgumentException}.
-   * </ul>
-   *
-   * <p>Method under test: {@link GsonTypes#getMapKeyAndValueTypes(Type, Class)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Type[] GsonTypes.getMapKeyAndValueTypes(Type, Class)"})
-  public void testGetMapKeyAndValueTypes_whenJavaLangObject_thenThrowIllegalArgumentException() {
-    // Arrange
-    TypeVarBoundedType context = new TypeVarBoundedType(null);
-    Class<Object> contextRawType = Object.class;
-
-    // Act and Assert
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> GsonTypes.getMapKeyAndValueTypes(context, contextRawType));
   }
 
   /**
@@ -776,7 +776,7 @@ public class GsonTypesDiffblueTest {
   @MethodsUnderTest({"Type[] GsonTypes.getMapKeyAndValueTypes(Type, Class)"})
   public void testGetMapKeyAndValueTypes_whenJavaUtilProperties_thenReturnArrayLengthIsTwo() {
     // Arrange
-    TypeVarBoundedType context = new TypeVarBoundedType(null);
+    Class<Object> context = Object.class;
     Class<Properties> contextRawType = Properties.class;
 
     // Act and Assert
@@ -800,7 +800,7 @@ public class GsonTypesDiffblueTest {
   public void testResolveWithContextContextRawTypeToResolve_thenReturnTypeVarBoundedType() {
     // Arrange
     TypeVarBoundedType context = new TypeVarBoundedType(null);
-    Class<Object> contextRawType = Object.class;
+    Class<?> contextRawType = ReflectionHelperFactory.createRecordClass();
 
     // Act
     Type actualResolveResult =

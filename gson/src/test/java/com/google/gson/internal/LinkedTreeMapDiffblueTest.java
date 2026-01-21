@@ -1361,7 +1361,6 @@ public class LinkedTreeMapDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code 42} is {@code Value}.
-   *   <li>When {@code Key}.
    *   <li>Then return {@code null}.
    * </ul>
    *
@@ -1371,7 +1370,7 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMap42IsValue_whenKey_thenReturnNull() {
+  public void testRemoveWithObject_givenLinkedTreeMap42IsValue_thenReturnNull() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
     objectObjectMap.put("42", "Value");
@@ -1387,7 +1386,6 @@ public class LinkedTreeMapDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code false}.
-   *   <li>When {@code Key}.
    *   <li>Then return {@code false}.
    * </ul>
    *
@@ -1397,7 +1395,7 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMapKeyIsFalse_whenKey_thenReturnFalse() {
+  public void testRemoveWithObject_givenLinkedTreeMapKeyIsFalse_thenReturnFalse() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
     objectObjectMap.put("Key", false);
@@ -1412,7 +1410,6 @@ public class LinkedTreeMapDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code true}.
-   *   <li>When {@code Key}.
    *   <li>Then return {@code true}.
    * </ul>
    *
@@ -1422,7 +1419,7 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMapKeyIsTrue_whenKey_thenReturnTrue() {
+  public void testRemoveWithObject_givenLinkedTreeMapKeyIsTrue_thenReturnTrue() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
     objectObjectMap.put("Key", true);
@@ -1440,7 +1437,6 @@ public class LinkedTreeMapDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()} {@code Key} is {@code Value}.
-   *   <li>When {@code Key}.
    *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} Empty.
    * </ul>
    *
@@ -1450,7 +1446,7 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMapKeyIsValue_whenKey_thenLinkedTreeMapEmpty() {
+  public void testRemoveWithObject_givenLinkedTreeMapKeyIsValue_thenLinkedTreeMapEmpty() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
     objectObjectMap.put("Key", "Value");
@@ -1465,7 +1461,6 @@ public class LinkedTreeMapDiffblueTest {
    *
    * <ul>
    *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@code Key}.
    *   <li>Then return {@code null}.
    * </ul>
    *
@@ -1475,7 +1470,7 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMap_whenKey_thenReturnNull() {
+  public void testRemoveWithObject_givenLinkedTreeMap_thenReturnNull() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
 
@@ -1488,9 +1483,7 @@ public class LinkedTreeMapDiffblueTest {
    * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
    *
    * <ul>
-   *   <li>Given {@link LinkedTreeMap#LinkedTreeMap()}.
-   *   <li>When {@code null}.
-   *   <li>Then return {@code null}.
+   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} containsKey {@code foo}.
    * </ul>
    *
    * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
@@ -1499,13 +1492,21 @@ public class LinkedTreeMapDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_givenLinkedTreeMap_whenNull_thenReturnNull() {
+  public void testRemoveWithObject_thenLinkedTreeMapContainsKeyFoo() {
     // Arrange
     LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+    objectObjectMap.putIfAbsent("foo", "Value");
+    objectObjectMap.put("Key", "Value");
+    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
 
-    // Act and Assert
-    assertNull(objectObjectMap.remove(null));
-    assertTrue(objectObjectMap.isEmpty());
+    // Act
+    Object actualRemoveResult = objectObjectMap.remove("Key");
+
+    // Assert
+    assertEquals(2, objectObjectMap.size());
+    assertEquals("Value", actualRemoveResult);
+    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
+    assertTrue(objectObjectMap.containsKey("foo"));
   }
 
   /**
@@ -1530,68 +1531,6 @@ public class LinkedTreeMapDiffblueTest {
     assertNull(objectObjectMap.remove("Key"));
     assertEquals(1, objectObjectMap.size());
     assertTrue(objectObjectMap.containsKey(true));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_thenLinkedTreeMapSizeIsThree() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.putIfAbsent("foo", "Value");
-    objectObjectMap.put("42", "Value");
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-
-    // Act
-    Object actualRemoveResult = objectObjectMap.remove("Key");
-
-    // Assert
-    assertEquals(3, objectObjectMap.size());
-    assertEquals("Value", actualRemoveResult);
-    assertTrue(objectObjectMap.containsKey("42"));
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-    assertTrue(objectObjectMap.containsKey("foo"));
-  }
-
-  /**
-   * Test {@link LinkedTreeMap#remove(Object)} with {@code Object}.
-   *
-   * <ul>
-   *   <li>Then {@link LinkedTreeMap#LinkedTreeMap()} size is two.
-   * </ul>
-   *
-   * <p>Method under test: {@link LinkedTreeMap#remove(Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"Object LinkedTreeMap.remove(Object)"})
-  public void testRemoveWithObject_thenLinkedTreeMapSizeIsTwo() {
-    // Arrange
-    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
-    objectObjectMap.putIfAbsent("foo", "Value");
-    objectObjectMap.put("Key", "Value");
-    objectObjectMap.put("com.google.gson.internal.LinkedTreeMap", "Value");
-
-    // Act
-    Object actualRemoveResult = objectObjectMap.remove("Key");
-
-    // Assert
-    assertEquals(2, objectObjectMap.size());
-    assertEquals("Value", actualRemoveResult);
-    assertTrue(objectObjectMap.containsKey("com.google.gson.internal.LinkedTreeMap"));
-    assertTrue(objectObjectMap.containsKey("foo"));
   }
 
   /**
@@ -2669,5 +2608,39 @@ public class LinkedTreeMapDiffblueTest {
 
     // Act and Assert
     assertTrue(objectObjectMap.keySet().isEmpty());
+  }
+
+  /**
+   * Test {@link LinkedTreeMap#createEntrySetForTesting()}.
+   *
+   * <p>Method under test: {@link LinkedTreeMap#createEntrySetForTesting()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"EntrySet LinkedTreeMap.createEntrySetForTesting()"})
+  public void testCreateEntrySetForTesting() {
+    // Arrange
+    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+
+    // Act and Assert
+    assertTrue(objectObjectMap.createEntrySetForTesting().isEmpty());
+  }
+
+  /**
+   * Test {@link LinkedTreeMap#createKeySetForTesting()}.
+   *
+   * <p>Method under test: {@link LinkedTreeMap#createKeySetForTesting()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"KeySet LinkedTreeMap.createKeySetForTesting()"})
+  public void testCreateKeySetForTesting() {
+    // Arrange
+    LinkedTreeMap<Object, Object> objectObjectMap = new LinkedTreeMap<>();
+
+    // Act and Assert
+    assertTrue(objectObjectMap.createKeySetForTesting().isEmpty());
   }
 }

@@ -1,3 +1,29 @@
 name: com.diffblue.cover.refactoring.Recipe
-recipeList: []
+recipeList:
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.DefaultDateTypeAdapter,
+    fieldName: dateFormats}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.DefaultDateTypeAdapter,
+    fieldName: dateType}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.DefaultDateTypeAdapter,
+    fieldName: dateFormats}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.DefaultDateTypeAdapter,
+    fieldName: dateType}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.EnumTypeAdapter,
+    fieldName: constantToName}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.EnumTypeAdapter,
+    fieldName: nameToConstant}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.EnumTypeAdapter,
+    fieldName: stringToConstant}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.NumberTypeAdapter,
+    fieldName: toNumberStrategy}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.ObjectTypeAdapter,
+    fieldName: gson}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.bind.ObjectTypeAdapter,
+    fieldName: toNumberStrategy}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.sql.SqlDateTypeAdapter,
+    fieldName: format}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.sql.SqlTimeTypeAdapter,
+    fieldName: format}
+- com.diffblue.cover.refactoring.recipes.AddGetter: {className: com.google.gson.internal.sql.SqlTimestampTypeAdapter,
+    fieldName: dateTypeAdapter}
 type: specs.openrewrite.org/v1beta/recipe
