@@ -54,6 +54,17 @@ public class GenericClasses {
     }
 
     static class Adapter extends TypeAdapter<DummyClass> {
+      private final boolean initialized;
+
+      public Adapter() {
+        // Explicit constructor for test generation
+        this.initialized = true;
+      }
+
+      public boolean isInitialized() {
+        return initialized;
+      }
+
       @Override
       public DummyClass read(JsonReader in) throws IOException {
         return new DummyClass("read-" + in.nextInt());

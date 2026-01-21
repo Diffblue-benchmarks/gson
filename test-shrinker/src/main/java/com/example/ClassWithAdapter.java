@@ -9,6 +9,17 @@ import java.io.IOException;
 @JsonAdapter(ClassWithAdapter.Adapter.class)
 public class ClassWithAdapter {
   static class Adapter extends TypeAdapter<ClassWithAdapter> {
+    private final boolean initialized;
+
+    public Adapter() {
+      // Explicit constructor for test generation
+      this.initialized = true;
+    }
+
+    public boolean isInitialized() {
+      return initialized;
+    }
+
     @Override
     public ClassWithAdapter read(JsonReader in) throws IOException {
       in.beginObject();

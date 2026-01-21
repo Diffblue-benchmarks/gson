@@ -1,0 +1,199 @@
+[1;34mINFO  [0;39mDiffblue Cover 2026.01.01-SNAPSHOT-f2f2d79-local
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCommand: issues
+[1;34mINFO  [0;39mOutput a prioritized list of issues.
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mSelected modules:
+[1;34mINFO  [0;39m- com.google.code.gson:test-shrinker
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1/1] Diagnosing issues for module: com.google.code.gson:test-shrinker
+[1;34mINFO  [0;39m======================================================================
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mDetected Java version 11.0.29
+[1;34mINFO  [0;39mSelected build system: Maven
+[1;34mINFO  [0;39mSelected classpath from build system maven
+[1;34mINFO  [0;39mReading report file '/Users/john/Diffblue/gson/test-shrinker/.diffblue/reports/report.json'
+[1;34mINFO  [0;39mCopied report file to '/Users/john/Diffblue/gson/test-shrinker/.diffblue/reports/report-20260121T131455.json'
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.example.Main.runTests:(Ljava/util/function/BiConsumer;)V`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.RuntimeException: Test failed: Read: Named fields
+        at com.example.TestExecutor.run(TestExecutor.java:20)
+        at com.example.Main.testNamedFields(Main.java:100)
+        at com.example.Main.runTests(Main.java:38)
+      java.lang.RuntimeException: Unable to create instance of class com.example.ClassWithNamedFields. Registering an InstanceCreator or a TypeAdapter for this type, or adding a no-args constructor may fix this problem.
+        at com.google.gson.internal.ConstructorConstructor.lambda$newUnsafeAllocator$19(ConstructorConstructor.java:410)
+        at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$FieldReflectionAdapter.createAccumulator(ReflectiveTypeAdapterFactory.java:555)
+        at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:508)
+        at com.google.gson.Gson.fromJson(Gson.java:1358)
+        at com.google.gson.Gson.fromJson(Gson.java:1259)
+        at com.google.gson.Gson.fromJson(Gson.java:1169)
+        at com.google.gson.Gson.fromJson(Gson.java:1106)
+        at com.example.Main.fromJson(Main.java:93)
+        at com.example.Main.lambda$testNamedFields$5(Main.java:105)
+        at com.example.TestExecutor.run(TestExecutor.java:18)
+        at com.example.Main.testNamedFields(Main.java:100)
+        at com.example.Main.runTests(Main.java:38)
+      java.lang.UnsupportedOperationException: Cannot allocate class com.example.ClassWithNamedFields. Usage of JDK sun.misc.Unsafe is enabled, but it could not be used. Make sure your runtime is configured correctly.
+        at com.google.gson.internal.UnsafeAllocator$4.newInstance(UnsafeAllocator.java:121)
+        at com.google.gson.internal.ConstructorConstructor.lambda$newUnsafeAllocator$19(ConstructorConstructor.java:407)
+        at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$FieldReflectionAdapter.createAccumulator(ReflectiveTypeAdapterFactory.java:555)
+        at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:508)
+        at com.google.gson.Gson.fromJson(Gson.java:1358)
+        at com.google.gson.Gson.fromJson(Gson.java:1259)
+        at com.google.gson.Gson.fromJson(Gson.java:1169)
+        at com.google.gson.Gson.fromJson(Gson.java:1106)
+        at com.example.Main.fromJson(Main.java:93)
+        at com.example.Main.lambda$testNamedFields$5(Main.java:105)
+        at com.example.TestExecutor.run(TestExecutor.java:18)
+        at com.example.Main.testNamedFields(Main.java:100)
+        at com.example.Main.runTests(Main.java:38)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      We are unit testing `com.example.NoSerializedNameMain.runTestHasArgsConstructor:()Ljava/lang/String;`.
+      
+      Create a parameterless factory method for the problematic
+      parameter/this object, determining which by reading the error message below.
+      The new factory method should be in the test classpath, not production.
+      Create a new factory class if there isn't already one for the class under test.
+      Do not create a test yourself, only a factory (don't test the factory either).
+      The factory method must be annotated with 
+      `@com.diffblue.cover.annotations.InterestingTestFactory`.
+      Avoid using mocks, these tend to produce unused stubbing errors or a
+      `java.lang.NullPointerException`.
+      If your environment has internet access then further documentation on
+      factory methods for Cover can be found here:
+      https://docs.diffblue.com/features/tutorials/increase-code-coverage#test-factory-pattern
+      
+      The factory should produce a parameter/this object such that
+      the following exception does not occur:
+      
+      ```
+      java.lang.RuntimeException: Unable to create instance of class com.example.NoSerializedNameMain$TestClassHasArgsConstructor. Registering an InstanceCreator or a TypeAdapter for this type, or adding a no-args constructor may fix this problem.
+        at com.google.gson.internal.ConstructorConstructor.lambda$newUnsafeAllocator$19(ConstructorConstructor.java:410)
+        at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$FieldReflectionAdapter.createAccumulator(ReflectiveTypeAdapterFactory.java:555)
+        at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:508)
+        at com.google.gson.Gson.fromJson(Gson.java:1358)
+        at com.google.gson.Gson.fromJson(Gson.java:1259)
+        at com.google.gson.Gson.fromJson(Gson.java:1169)
+        at com.google.gson.Gson.fromJson(Gson.java:1106)
+        at com.example.NoSerializedNameMain.runTestHasArgsConstructor(NoSerializedNameMain.java:56)
+      java.lang.UnsupportedOperationException: Cannot allocate class com.example.NoSerializedNameMain$TestClassHasArgsConstructor. Usage of JDK sun.misc.Unsafe is enabled, but it could not be used. Make sure your runtime is configured correctly.
+        at com.google.gson.internal.UnsafeAllocator$4.newInstance(UnsafeAllocator.java:121)
+        at com.google.gson.internal.ConstructorConstructor.lambda$newUnsafeAllocator$19(ConstructorConstructor.java:407)
+        at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$FieldReflectionAdapter.createAccumulator(ReflectiveTypeAdapterFactory.java:555)
+        at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:508)
+        at com.google.gson.Gson.fromJson(Gson.java:1358)
+        at com.google.gson.Gson.fromJson(Gson.java:1259)
+        at com.google.gson.Gson.fromJson(Gson.java:1169)
+        at com.google.gson.Gson.fromJson(Gson.java:1106)
+        at com.example.NoSerializedNameMain.runTestHasArgsConstructor(NoSerializedNameMain.java:56)
+      ```
+      
+      Recompile the project to make sure the new factory / annotation / getter / etc
+      is available to Cover.
+      For example run `mvn install -DskipTests` or `gradle install -x test`.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR002: Missing observers[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.example.GenericClasses$DummyClass$Adapter.<init>:()V
+      
+      Diffblue Cover was unable to create an assertion.
+      There are no fields that could be asserted on.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR002: Missing observers[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.example.ClassWithJsonAdapterAnnotation$Factory.<init>:()V
+      
+      Diffblue Cover was unable to create an assertion.
+      There are no fields that could be asserted on.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR002: Missing observers[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.example.ClassWithAdapter$Adapter.<init>:()V
+      
+      Diffblue Cover was unable to create an assertion.
+      There are no fields that could be asserted on.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR002: Missing observers[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.example.ClassWithJsonAdapterAnnotation$Serializer.<init>:()V
+      
+      Diffblue Cover was unable to create an assertion.
+      There are no fields that could be asserted on.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR002: Missing observers[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.example.ClassWithJsonAdapterAnnotation$Deserializer.<init>:()V
+      
+      Diffblue Cover was unable to create an assertion.
+      There are no fields that could be asserted on.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR002: Missing observers[m
+      
+[1;34mINFO  [0;39m[1mTo resolve the issue, use the following prompt with your AI assistant:[m
+      
+      Fix the following issue preventing test creation for the following affected methods:
+      com.example.ClassWithJsonAdapterAnnotation$Adapter.<init>:()V
+      
+      Diffblue Cover was unable to create an assertion.
+      There are no fields that could be asserted on.
+      
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m8 issues were found and displayed
+[1;34mINFO  [0;39mRerun without --prompts to summarise all the issues
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mLog file: /Users/john/Diffblue/gson/.diffblue/log/user-20260121T131738.log
+[1;34mINFO  [0;39mFinished in 3s

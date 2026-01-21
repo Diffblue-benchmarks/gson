@@ -1,0 +1,116 @@
+[1;34mINFO  [0;39mDiffblue Cover 2026.01.01-SNAPSHOT-f2f2d79-local
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCommand: create
+[1;34mINFO  [0;39mCreate tests for the specified package/class/method.
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mSelected modules:
+[1;34mINFO  [0;39m- com.google.code.gson:test-shrinker
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1/1] Creating tests for module: com.google.code.gson:test-shrinker
+[1;34mINFO  [0;39m===================================================================
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mDetecting environment:
+[1;34mINFO  [0;39m----------------------
+[1;34mINFO  [0;39mDetected Java version 11.0.29
+[1;34mINFO  [0;39mSelected build system: Maven
+[1;34mINFO  [0;39mSelected classpath from build system maven
+[1;34mINFO  [0;39mSelected test framework: JUnit
+[1;34mINFO  [0;39mSelected Java language compliance level: 11
+[1;34mINFO  [0;39mSelected test validation: enabled
+[1;34mINFO  [0;39mPrefixes for filtering classes/methods:
+[1;34mINFO  [0;39m- com.example
+[1;34mINFO  [0;39mGathering methods to test...
+[1;34mINFO  [0;39mFound 60 callable methods in 31 classes
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCreating tests:
+[1;34mINFO  [0;39m---------------
+[1;34mINFO  [0;39m [1/31] com.example.ClassWithAdapter
+[1;34mINFO  [0;39m [1/31]   Tests created: 1
+[1;34mINFO  [0;39m [2/31] com.example.ClassWithAdapter$Adapter
+[1;34mINFO  [0;39m [2/31]   Tests created: 8
+[1;34mINFO  [0;39m [3/31] com.example.ClassWithExposeAnnotation
+[1;34mINFO  [0;39m [3/31]   Tests created: 1
+[1;34mINFO  [0;39m [4/31] com.example.ClassWithHasArgsConstructor
+[1;34mINFO  [0;39m [4/31]   Tests created: 1
+[1;34mINFO  [0;39m [5/31] com.example.ClassWithJsonAdapterAnnotation
+[1;34mINFO  [0;39m [5/31]   Tests created: 2
+[1;34mINFO  [0;39m [6/31] com.example.ClassWithJsonAdapterAnnotation$Adapter
+[1;34mINFO  [0;39m [6/31]   Tests created: 6
+[1;34mINFO  [0;39m [7/31] com.example.ClassWithJsonAdapterAnnotation$Deserializer
+[1;34mINFO  [0;39m [7/31]   Tests created: 2
+[1;34mINFO  [0;39m [8/31] com.example.ClassWithJsonAdapterAnnotation$DummyClass
+[1;34mINFO  [0;39m [8/31]   Tests created: 1
+[1;34mINFO  [0;39m [9/31] com.example.ClassWithJsonAdapterAnnotation$Factory
+[1;34mINFO  [0;39m [9/31]   Tests created: 1
+[1;34mINFO  [0;39m[10/31] com.example.ClassWithJsonAdapterAnnotation$Serializer
+[1;34mINFO  [0;39m[10/31]   Tests created: 2
+[1;34mINFO  [0;39m[11/31] com.example.ClassWithNamedFields
+[1;34mINFO  [0;39m[11/31]   Tests created: 1
+[1;34mINFO  [0;39m[12/31] com.example.ClassWithNoArgsConstructor
+[1;34mINFO  [0;39m[12/31]   Tests created: 1
+[1;34mINFO  [0;39m[13/31] com.example.ClassWithSerializedName
+[1;34mINFO  [0;39m[13/31]   Tests created: 1
+[1;34mINFO  [0;39m[14/31] com.example.ClassWithUnreferencedHasArgsConstructor
+[1;34mINFO  [0;39m[14/31]   Tests created: 1
+[1;34mINFO  [0;39m[15/31] com.example.ClassWithUnreferencedNoArgsConstructor
+[1;34mINFO  [0;39m[15/31]   Tests created: 1
+[1;34mINFO  [0;39m[16/31] com.example.ClassWithVersionAnnotations
+[1;34mINFO  [0;39m[16/31]   Tests created: 1
+[1;34mINFO  [0;39m[17/31] com.example.EnumClass
+[1;34mINFO  [0;39m[17/31]   Tests created: 0
+[1;34mINFO  [0;39m[18/31] com.example.EnumClassWithSerializedName
+[1;34mINFO  [0;39m[18/31]   Tests created: 0
+[1;34mINFO  [0;39m[19/31] com.example.GenericClasses$DummyClass
+[1;34mINFO  [0;39m[19/31]   Tests created: 1
+[1;34mINFO  [0;39m[20/31] com.example.GenericClasses$DummyClass$Adapter
+[1;34mINFO  [0;39m[20/31]   Tests created: 4
+[1;34mINFO  [0;39m[21/31] com.example.GenericClasses$GenericClass
+[1;34mINFO  [0;39m[21/31]   Tests created: 1
+[1;34mINFO  [0;39m[22/31] com.example.GenericClasses$GenericUsingGenericClass
+[1;34mINFO  [0;39m[22/31]   Tests created: 1
+[1;34mINFO  [0;39m[23/31] com.example.GenericClasses$UsingGenericClass
+[1;34mINFO  [0;39m[23/31]   Tests created: 1
+[1;34mINFO  [0;39m[24/31] com.example.InterfaceWithImplementation$Implementation
+[1;34mINFO  [0;39m[24/31]   Tests created: 1
+[1;34mINFO  [0;39m[25/31] com.example.Main
+[1;34mINFO  [0;39m[25/31]   Tests created: 0
+[1;34mINFO  [0;39m[26/31] com.example.NoSerializedNameMain
+[1;34mINFO  [0;39m[26/31]   Tests created: 2
+[1;34mINFO  [0;39m[27/31] com.example.NoSerializedNameMain$TestClassHasArgsConstructor
+[1;34mINFO  [0;39m[27/31]   Tests created: 1
+[1;34mINFO  [0;39m[28/31] com.example.NoSerializedNameMain$TestClassNoArgsConstructor
+[1;34mINFO  [0;39m[28/31]   Tests created: 1
+[1;34mINFO  [0;39m[29/31] com.example.NoSerializedNameMain$TestClassNotAbstract
+[1;34mINFO  [0;39m[29/31]   Tests created: 1
+[1;34mINFO  [0;39m[30/31] com.example.TestExecutor
+[1;34mINFO  [0;39m[30/31]   Tests created: 4
+[1;34mINFO  [0;39m[31/31] com.example.UnusedClass
+[1;34mINFO  [0;39m[31/31]   Tests created: 1
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mTest creation summary for module: com.google.code.gson:test-shrinker
+[1;34mINFO  [0;39m--------------------------------------------------------------------
+[1;34mINFO  [0;39mTotal:                                              60 methods
+[1;34mINFO  [0;39m50 tests created for:                               53 methods
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mNo tests created for:                                3 methods
+[1;34mINFO  [0;39m    2 R013: No inputs found that don't throw a trivial exception
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mRunning validation command.
+[1;34mINFO  [0;39mThis can take a couple of minutes.
+[1;34mINFO  [0;39mAll 50 created tests were successfully validated.
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCalculating coverage from manual tests.
+[1;34mINFO  [0;39mThis can take a while, please be patient...
+[1;34mINFO  [0;39mJaCoCo report file created in /Users/john/Diffblue/gson/test-shrinker/.diffblue/reports/manual-tests-jacoco-report.xml
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCalculating coverage from Diffblue tests.
+[1;34mINFO  [0;39mThis can take a while, please be patient...
+[1;34mINFO  [0;39mJaCoCo report file created in /Users/john/Diffblue/gson/test-shrinker/.diffblue/reports/diffblue-tests-jacoco-report.xml
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mManual tests cover 0 of 265 lines to cover (0.0%)
+[1;34mINFO  [0;39mDiffblue tests cover 115 of 265 lines to cover (43.4%)
+[1;34mINFO  [0;39mWriting JSON report to /Users/john/Diffblue/gson/test-shrinker/.diffblue/reports/report.json
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mLog file: /Users/john/Diffblue/gson/.diffblue/log/user-20260121T132845.log
+[1;34mINFO  [0;39mFinished in 2m 5s

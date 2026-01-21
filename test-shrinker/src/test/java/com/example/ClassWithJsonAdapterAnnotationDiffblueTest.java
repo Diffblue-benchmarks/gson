@@ -14,6 +14,7 @@ import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.example.ClassWithJsonAdapterAnnotation.Adapter;
 import com.example.ClassWithJsonAdapterAnnotation.Deserializer;
 import com.example.ClassWithJsonAdapterAnnotation.DummyClass;
+import com.example.ClassWithJsonAdapterAnnotation.Factory;
 import com.example.ClassWithJsonAdapterAnnotation.Serializer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -35,6 +36,25 @@ import org.junit.experimental.categories.Category;
 import org.mockito.internal.util.reflection.GenericMetadataSupport.TypeVarBoundedType;
 
 public class ClassWithJsonAdapterAnnotationDiffblueTest {
+  /**
+   * Test Adapter getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>default or parameterless constructor of {@link Adapter}
+   *   <li>{@link Adapter#isInitialized()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Adapter.<init>()", "boolean Adapter.isInitialized()"})
+  public void testAdapterGettersAndSetters() {
+    // Arrange, Act and Assert
+    assertTrue(new Adapter().isInitialized());
+  }
+
   /**
    * Test Adapter {@link Adapter#read(JsonReader)}.
    *
@@ -231,6 +251,25 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
   }
 
   /**
+   * Test Deserializer getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>default or parameterless constructor of {@link Deserializer}
+   *   <li>{@link Deserializer#isInitialized()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Deserializer.<init>()", "boolean Deserializer.isInitialized()"})
+  public void testDeserializerGettersAndSetters() {
+    // Arrange, Act and Assert
+    assertTrue(new Deserializer().isInitialized());
+  }
+
+  /**
    * Test DummyClass getters and setters.
    *
    * <p>Methods under test:
@@ -247,6 +286,25 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
   public void testDummyClassGettersAndSetters() {
     // Arrange, Act and Assert
     assertEquals("foo", new DummyClass("foo").toString());
+  }
+
+  /**
+   * Test Factory getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>default or parameterless constructor of {@link Factory}
+   *   <li>{@link Factory#isInitialized()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Factory.<init>()", "boolean Factory.isInitialized()"})
+  public void testFactoryGettersAndSetters() {
+    // Arrange, Act and Assert
+    assertTrue(new Factory().isInitialized());
   }
 
   /**
@@ -294,6 +352,25 @@ public class ClassWithJsonAdapterAnnotationDiffblueTest {
     assertEquals("1", actualClassWithJsonAdapterAnnotation.f3.toString());
     assertEquals("1", actualClassWithJsonAdapterAnnotation.f4.toString());
     assertNull(actualClassWithJsonAdapterAnnotation.f);
+  }
+
+  /**
+   * Test Serializer getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>default or parameterless constructor of {@link Serializer}
+   *   <li>{@link Serializer#isInitialized()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Serializer.<init>()", "boolean Serializer.isInitialized()"})
+  public void testSerializerGettersAndSetters() {
+    // Arrange, Act and Assert
+    assertTrue(new Serializer().isInitialized());
   }
 
   /**

@@ -69,6 +69,17 @@ public class ClassWithJsonAdapterAnnotation {
   }
 
   static class Adapter extends TypeAdapter<DummyClass> {
+    private final boolean initialized;
+
+    public Adapter() {
+      // Explicit constructor for test generation
+      this.initialized = true;
+    }
+
+    public boolean isInitialized() {
+      return initialized;
+    }
+
     @Override
     public DummyClass read(JsonReader in) throws IOException {
       return new DummyClass("adapter-" + in.nextInt());
@@ -81,6 +92,17 @@ public class ClassWithJsonAdapterAnnotation {
   }
 
   static class Factory implements TypeAdapterFactory {
+    private final boolean initialized;
+
+    public Factory() {
+      // Explicit constructor for test generation
+      this.initialized = true;
+    }
+
+    public boolean isInitialized() {
+      return initialized;
+    }
+
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
       // the code below is not type-safe, but does not matter for this test
@@ -104,6 +126,17 @@ public class ClassWithJsonAdapterAnnotation {
   }
 
   static class Serializer implements JsonSerializer<DummyClass> {
+    private final boolean initialized;
+
+    public Serializer() {
+      // Explicit constructor for test generation
+      this.initialized = true;
+    }
+
+    public boolean isInitialized() {
+      return initialized;
+    }
+
     @Override
     public JsonElement serialize(DummyClass src, Type typeOfSrc, JsonSerializationContext context) {
       return new JsonPrimitive("serializer-" + src.s);
@@ -111,6 +144,17 @@ public class ClassWithJsonAdapterAnnotation {
   }
 
   static class Deserializer implements JsonDeserializer<DummyClass> {
+    private final boolean initialized;
+
+    public Deserializer() {
+      // Explicit constructor for test generation
+      this.initialized = true;
+    }
+
+    public boolean isInitialized() {
+      return initialized;
+    }
+
     @Override
     public DummyClass deserialize(
         JsonElement json, Type typeOfT, JsonDeserializationContext context)

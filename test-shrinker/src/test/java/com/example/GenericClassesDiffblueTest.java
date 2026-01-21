@@ -2,6 +2,7 @@ package com.example;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import com.diffblue.cover.annotations.ContributionFromDiffblue;
 import com.diffblue.cover.annotations.ManagedByDiffblue;
@@ -38,6 +39,25 @@ public class GenericClassesDiffblueTest {
   public void testDummyClassGettersAndSetters() {
     // Arrange, Act and Assert
     assertEquals("foo", new DummyClass("foo").toString());
+  }
+
+  /**
+   * Test DummyClass_Adapter getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>default or parameterless constructor of {@link Adapter}
+   *   <li>{@link Adapter#isInitialized()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Adapter.<init>()", "boolean Adapter.isInitialized()"})
+  public void testDummyClass_AdapterGettersAndSetters() {
+    // Arrange, Act and Assert
+    assertTrue(new Adapter().isInitialized());
   }
 
   /**

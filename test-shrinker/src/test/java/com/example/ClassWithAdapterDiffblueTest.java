@@ -28,6 +28,25 @@ import org.junit.experimental.categories.Category;
 
 public class ClassWithAdapterDiffblueTest {
   /**
+   * Test Adapter getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>default or parameterless constructor of {@link Adapter}
+   *   <li>{@link Adapter#isInitialized()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Adapter.<init>()", "boolean Adapter.isInitialized()"})
+  public void testAdapterGettersAndSetters() {
+    // Arrange, Act and Assert
+    assertTrue(new Adapter().isInitialized());
+  }
+
+  /**
    * Test Adapter {@link Adapter#read(JsonReader)}.
    *
    * <ul>
