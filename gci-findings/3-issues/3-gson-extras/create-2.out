@@ -1,0 +1,85 @@
+[1;34mINFO  [0;39mDiffblue Cover 2026.01.01-SNAPSHOT-f2f2d79-local
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCommand: create
+[1;34mINFO  [0;39mCreate tests for the specified package/class/method.
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mSelected modules:
+[1;34mINFO  [0;39m- com.google.code.gson:gson-extras
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1/1] Creating tests for module: com.google.code.gson:gson-extras
+[1;34mINFO  [0;39m=================================================================
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mDetecting environment:
+[1;34mINFO  [0;39m----------------------
+[1;34mINFO  [0;39mDetected Java version 11.0.29
+[1;34mINFO  [0;39mSelected build system: Maven
+[1;34mINFO  [0;39mSelected classpath from build system maven
+[1;34mINFO  [0;39mSelected test framework: JUnit
+[1;34mINFO  [0;39mSelected Java language compliance level: 11
+[1;34mINFO  [0;39mSelected test validation: enabled
+[1;34mINFO  [0;39mPrefixes for filtering classes/methods:
+[1;34mINFO  [0;39m- com.google.gson.extras.examples.rawcollections
+[1;34mINFO  [0;39m- com.google.gson.graph
+[1;34mINFO  [0;39m- com.google.gson.interceptors
+[1;34mINFO  [0;39m- com.google.gson.typeadapters
+[1;34mINFO  [0;39mGathering methods to test...
+[1;34mINFO  [0;39mFound 48 callable methods in 12 classes
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCreating tests:
+[1;34mINFO  [0;39m---------------
+[1;34mINFO  [0;39m [1/12] com.google.gson.extras.examples.rawcollections.RawCollectionsExample
+[1;34mINFO  [0;39m [1/12]   Tests created: 0
+[1;34mINFO  [0;39m [2/12] com.google.gson.extras.examples.rawcollections.RawCollectionsExample$Event
+[1;34mINFO  [0;39m [2/12]   Tests created: 1
+[1;34mINFO  [0;39m [3/12] com.google.gson.graph.GraphAdapterBuilder
+[1;34mINFO  [0;39m [3/12]   Tests created: 4
+[1;34mINFO  [0;39m [4/12] com.google.gson.graph.GraphAdapterBuilder$Element
+[1;34mINFO  [0;39m [4/12]   Tests created: 21
+[1;34mINFO  [0;39m [5/12] com.google.gson.graph.GraphAdapterBuilder$Factory
+[1;34mINFO  [0;39m [5/12]   Tests created: 4
+[1;34mINFO  [0;39m [6/12] com.google.gson.graph.GraphAdapterBuilder$Graph
+[1;34mINFO  [0;39m [6/12]   Tests created: 1
+[1;34mINFO  [0;39m [7/12] com.google.gson.interceptors.InterceptorFactory
+[1;34mINFO  [0;39m [7/12]   Tests created: 2
+[1;34mINFO  [0;39m [8/12] com.google.gson.interceptors.InterceptorFactory$InterceptorAdapter
+[1;34mINFO  [0;39m [8/12]   Tests created: 11
+[1;34mINFO  [0;39m [9/12] com.google.gson.typeadapters.PostConstructAdapterFactory
+[1;34mINFO  [0;39m [9/12]   Tests created: 2
+[1;34mINFO  [0;39m[10/12] com.google.gson.typeadapters.PostConstructAdapterFactory$PostConstructAdapter
+[1;34mINFO  [0;39m[10/12]   Tests created: 14
+[1;34mINFO  [0;39m[11/12] com.google.gson.typeadapters.RuntimeTypeAdapterFactory
+[1;34mINFO  [0;39m[11/12]   Tests created: 4
+[1;34mINFO  [0;39m[12/12] com.google.gson.typeadapters.UtcDateTypeAdapter
+[1;34mINFO  [0;39m[12/12]   Tests created: 16
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mTest creation summary for module: com.google.code.gson:gson-extras
+[1;34mINFO  [0;39m------------------------------------------------------------------
+[1;34mINFO  [0;39mTotal:                                              48 methods
+[1;34mINFO  [0;39m80 tests created for:                               40 methods
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mTested indirectly via other methods:                 1 method
+[1;34mINFO  [0;39m    1 T005: Trivial constructor
+[1;34mINFO  [0;39mNot unit-testable:                                   1 method
+[1;34mINFO  [0;39m    1 T006: Main method
+[1;34mINFO  [0;39mNo tests created for:                                6 methods
+[1;34mINFO  [0;39m    3 R013: No inputs found that don't throw a trivial exception
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mRunning validation command.
+[1;34mINFO  [0;39mThis can take a couple of minutes.
+[1;34mINFO  [0;39mAll 80 created tests were successfully validated.
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCalculating coverage from manual tests.
+[1;34mINFO  [0;39mThis can take a while, please be patient...
+[1;34mINFO  [0;39mJaCoCo report file created in /Users/john/Diffblue/gson/extras/.diffblue/reports/manual-tests-jacoco-report.xml
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCalculating coverage from Diffblue tests.
+[1;34mINFO  [0;39mThis can take a while, please be patient...
+[1;34mINFO  [0;39mJaCoCo report file created in /Users/john/Diffblue/gson/extras/.diffblue/reports/diffblue-tests-jacoco-report.xml
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mManual tests cover 320 of 389 lines to cover (82.3%)
+[1;34mINFO  [0;39mDiffblue tests cover 198 of 389 lines to cover (50.9%)
+[1;34mINFO  [0;39mWriting JSON report to /Users/john/Diffblue/gson/extras/.diffblue/reports/report.json
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mLog file: /Users/john/Diffblue/gson/.diffblue/log/user-20260121T134601.log
+[1;34mINFO  [0;39mFinished in 1m 27s

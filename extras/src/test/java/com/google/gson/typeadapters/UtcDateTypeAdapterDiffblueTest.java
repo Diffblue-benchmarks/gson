@@ -33,6 +33,28 @@ import org.junit.experimental.categories.Category;
 
 public class UtcDateTypeAdapterDiffblueTest {
   /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>default or parameterless constructor of {@link UtcDateTypeAdapter}
+   *   <li>{@link UtcDateTypeAdapter#isInitialized()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "void UtcDateTypeAdapter.<init>()",
+    "boolean UtcDateTypeAdapter.isInitialized()"
+  })
+  public void testGettersAndSetters() {
+    // Arrange, Act and Assert
+    assertTrue(new UtcDateTypeAdapter().isInitialized());
+  }
+
+  /**
    * Test {@link UtcDateTypeAdapter#write(JsonWriter, Date)} with {@code JsonWriter}, {@code Date}.
    *
    * <p>Method under test: {@link UtcDateTypeAdapter#write(JsonWriter, Date)}

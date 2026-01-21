@@ -4,6 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -40,6 +41,28 @@ import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
 public class PostConstructAdapterFactoryDiffblueTest {
+  /**
+   * Test getters and setters.
+   *
+   * <p>Methods under test:
+   *
+   * <ul>
+   *   <li>default or parameterless constructor of {@link PostConstructAdapterFactory}
+   *   <li>{@link PostConstructAdapterFactory#isInitialized()}
+   * </ul>
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({
+    "void PostConstructAdapterFactory.<init>()",
+    "boolean PostConstructAdapterFactory.isInitialized()"
+  })
+  public void testGettersAndSetters() {
+    // Arrange, Act and Assert
+    assertTrue(new PostConstructAdapterFactory().isInitialized());
+  }
+
   /**
    * Test {@link PostConstructAdapterFactory#create(Gson, TypeToken)}.
    *

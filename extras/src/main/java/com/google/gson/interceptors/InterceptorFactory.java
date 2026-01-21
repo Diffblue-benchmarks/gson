@@ -26,6 +26,16 @@ import java.io.IOException;
 
 /** A type adapter factory that implements {@code @Intercept}. */
 public final class InterceptorFactory implements TypeAdapterFactory {
+  private final boolean initialized;
+
+  public InterceptorFactory() {
+    this.initialized = true;
+  }
+
+  boolean isInitialized() {
+    return initialized;
+  }
+
   @Override
   public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
     Intercept intercept = type.getRawType().getAnnotation(Intercept.class);

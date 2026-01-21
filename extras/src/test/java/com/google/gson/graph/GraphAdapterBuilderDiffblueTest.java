@@ -38,7 +38,6 @@ import com.google.gson.internal.bind.TreeTypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -131,7 +130,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonArray());
 
     // Act
-    element.read(mock(Graph.class));
+    element.read(GraphTestFactory.createGraph());
 
     // Assert
     Object value = element.getValue();
@@ -148,46 +147,7 @@ public class GraphAdapterBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead2() {
-    // Arrange
-    StringReader stringReader = new StringReader("in == null");
-    Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer,
-            deserializer,
-            new Gson(),
-            mock(TypeToken.class),
-            mock(TypeAdapterFactory.class));
-    Class<Object> componentType = Object.class;
-
-    ArrayTypeAdapter<Object> typeAdapter =
-        new ArrayTypeAdapter<>(context, componentTypeAdapter, componentType);
-
-    Element<Object> element = new Element<>(stringReader, "42", typeAdapter, new JsonArray());
-
-    // Act
-    element.read(mock(Graph.class));
-
-    // Assert
-    Object value = element.getValue();
-    assertTrue(value instanceof Object[]);
-    assertEquals(0, ((Object[]) value).length);
-  }
-
-  /**
-   * Test Element {@link Element#read(Graph)}.
-   *
-   * <p>Method under test: {@link Element#read(Graph)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead3() throws JsonParseException {
+  public void testElementRead2() throws JsonParseException {
     // Arrange
     JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
     when(deserializer.deserialize(
@@ -206,7 +166,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonArray());
 
     // Act
-    element.read(mock(Graph.class));
+    element.read(GraphTestFactory.createGraph());
 
     // Assert
     verify(deserializer)
@@ -224,14 +184,14 @@ public class GraphAdapterBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead4() {
+  public void testElementRead3() {
     // Arrange
     ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
     when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn("From Json Tree");
     Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonArray());
 
     // Act
-    element.read(mock(Graph.class));
+    element.read(GraphTestFactory.createGraph());
 
     // Assert
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
@@ -247,14 +207,34 @@ public class GraphAdapterBuilderDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead5() {
+  public void testElementRead4() {
     // Arrange
     ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
     when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn(null);
     Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonArray());
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element.read(GraphTestFactory.createGraph()));
+    verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
+  }
+
+  /**
+   * Test Element {@link Element#read(Graph)}.
+   *
+   * <p>Method under test: {@link Element#read(Graph)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void Element.read(Graph)"})
+  public void testElementRead5() {
+    // Arrange
+    ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
+    when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn(null);
+    Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonNull());
+
+    // Act and Assert
+    assertThrows(IllegalStateException.class, () -> element.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -271,11 +251,11 @@ public class GraphAdapterBuilderDiffblueTest {
     // Arrange
     ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
     when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn(null);
-    Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonNull());
+    Element<Object> element = new Element<>("Value", "42", typeAdapter, null);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element.read(mock(Graph.class)));
-    verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
+    assertThrows(IllegalStateException.class, () -> element.read(GraphTestFactory.createGraph()));
+    verify(typeAdapter).fromJsonTree(isNull());
   }
 
   /**
@@ -291,30 +271,10 @@ public class GraphAdapterBuilderDiffblueTest {
     // Arrange
     ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
     when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn(null);
-    Element<Object> element = new Element<>("Value", "42", typeAdapter, null);
-
-    // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element.read(mock(Graph.class)));
-    verify(typeAdapter).fromJsonTree(isNull());
-  }
-
-  /**
-   * Test Element {@link Element#read(Graph)}.
-   *
-   * <p>Method under test: {@link Element#read(Graph)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void Element.read(Graph)"})
-  public void testElementRead8() {
-    // Arrange
-    ObjectTypeAdapter typeAdapter = mock(ObjectTypeAdapter.class);
-    when(typeAdapter.fromJsonTree(Mockito.<JsonElement>any())).thenReturn(null);
     Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonObject());
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -344,7 +304,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element2 = new Element<>("Value", "42", typeAdapter, element);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element2.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element2.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -373,7 +333,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element2 = new Element<>("Value", "42", typeAdapter, element);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element2.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element2.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -402,7 +362,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element2 = new Element<>("Value", "42", typeAdapter, element);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element2.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element2.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -431,7 +391,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element2 = new Element<>("Value", "42", typeAdapter, element);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element2.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element2.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -460,7 +420,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element2 = new Element<>("Value", "42", typeAdapter, element);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element2.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element2.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -489,7 +449,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element2 = new Element<>("Value", "42", typeAdapter, element);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element2.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element2.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -518,7 +478,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element2 = new Element<>("Value", "42", typeAdapter, element);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element2.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element2.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -547,7 +507,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element2 = new Element<>("Value", "42", typeAdapter, element);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element2.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element2.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -576,7 +536,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element2 = new Element<>("Value", "42", typeAdapter, element);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element2.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element2.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -606,7 +566,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element2 = new Element<>("Value", "42", typeAdapter, element);
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element2.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element2.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -631,7 +591,7 @@ public class GraphAdapterBuilderDiffblueTest {
     Element<Object> element = new Element<>("Value", "42", typeAdapter, new JsonPrimitive(true));
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -657,7 +617,7 @@ public class GraphAdapterBuilderDiffblueTest {
         new Element<>("Value", "42", typeAdapter, new JsonPrimitive("String"));
 
     // Act and Assert
-    assertThrows(IllegalStateException.class, () -> element.read(mock(Graph.class)));
+    assertThrows(IllegalStateException.class, () -> element.read(GraphTestFactory.createGraph()));
     verify(typeAdapter).fromJsonTree(isA(JsonElement.class));
   }
 
@@ -796,6 +756,20 @@ public class GraphAdapterBuilderDiffblueTest {
     assertNull(actualGraphThreadLocal.get());
     assertTrue(actualInstanceCreators.isEmpty());
     assertSame(instanceCreators, actualInstanceCreators);
+  }
+
+  /**
+   * Test Graph {@link Graph#nextName()}.
+   *
+   * <p>Method under test: {@link Graph#nextName()}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"String Graph.nextName()"})
+  public void testGraphNextName() {
+    // Arrange, Act and Assert
+    assertEquals("0x1", GraphTestFactory.createGraph().nextName());
   }
 
   /**

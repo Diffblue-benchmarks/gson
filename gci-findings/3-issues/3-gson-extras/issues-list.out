@@ -1,0 +1,35 @@
+[1;34mINFO  [0;39mDiffblue Cover 2026.01.01-SNAPSHOT-f2f2d79-local
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCommand: issues
+[1;34mINFO  [0;39mOutput a prioritized list of issues.
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mSelected modules:
+[1;34mINFO  [0;39m- com.google.code.gson:gson-extras
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1/1] Diagnosing issues for module: com.google.code.gson:gson-extras
+[1;34mINFO  [0;39m====================================================================
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mDetected Java version 11.0.29
+[1;34mINFO  [0;39mSelected build system: Maven
+[1;34mINFO  [0;39mSelected classpath from build system maven
+[1;34mINFO  [0;39mReading report file '/Users/john/Diffblue/gson/extras/.diffblue/reports/report.json'
+[1;34mINFO  [0;39mCopied report file to '/Users/john/Diffblue/gson/extras/.diffblue/reports/report-20260121T133548.json'
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR013: No inputs found that don't throw a trivial exception[m
+[1;34mINFO  [0;39mIssues: 5
+[1;34mINFO  [0;39mAffected methods: 6
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR083: Can't find a suitable constructor[m
+[1;34mINFO  [0;39mIssues: 1
+[1;34mINFO  [0;39mAffected methods: 1
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1mR002: Missing observers[m
+[1;34mINFO  [0;39mIssues: 3
+[1;34mINFO  [0;39mAffected methods: 3
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m9 issues were found, rerun with --prompts to list with actionable advice
+[1;34mINFO  [0;39mRerun with --prompts --limit 10 --skip 10 to restrict which issues are displayed
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mLog file: /Users/john/Diffblue/gson/.diffblue/log/user-20260121T133730.log
+[1;34mINFO  [0;39mFinished in 3s

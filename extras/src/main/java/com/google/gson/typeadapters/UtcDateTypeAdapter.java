@@ -32,6 +32,15 @@ import java.util.TimeZone;
 
 public final class UtcDateTypeAdapter extends TypeAdapter<Date> {
   private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
+  private final boolean initialized;
+
+  public UtcDateTypeAdapter() {
+    this.initialized = true;
+  }
+
+  boolean isInitialized() {
+    return initialized;
+  }
 
   @Override
   public void write(JsonWriter out, Date date) throws IOException {

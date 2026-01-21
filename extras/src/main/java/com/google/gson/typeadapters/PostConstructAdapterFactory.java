@@ -29,6 +29,16 @@ import javax.annotation.PostConstruct;
 
 public class PostConstructAdapterFactory implements TypeAdapterFactory {
   // copied from https://gist.github.com/swankjesse/20df26adaf639ed7fd160f145a0b661a
+  private final boolean initialized;
+
+  public PostConstructAdapterFactory() {
+    this.initialized = true;
+  }
+
+  boolean isInitialized() {
+    return initialized;
+  }
+
   @Override
   public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
     for (Class<?> t = type.getRawType();

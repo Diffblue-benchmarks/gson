@@ -27,7 +27,7 @@ public class RawCollectionsExample {
     private String name;
     private String source;
 
-    private Event(String name, String source) {
+    Event(String name, String source) {
       this.name = name;
       this.source = source;
     }
