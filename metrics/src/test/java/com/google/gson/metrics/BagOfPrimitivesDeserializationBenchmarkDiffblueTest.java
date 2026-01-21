@@ -36,11 +36,7 @@ class BagOfPrimitivesDeserializationBenchmarkDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void BagOfPrimitivesDeserializationBenchmark.setUp()"})
   void testSetUp() throws Exception {
-    // Arrange
-    BagOfPrimitivesDeserializationBenchmark bagOfPrimitivesDeserializationBenchmark =
-        new BagOfPrimitivesDeserializationBenchmark();
-
-    // Act
+    // Arrange and Act
     bagOfPrimitivesDeserializationBenchmark.setUp();
 
     // Assert

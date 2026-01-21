@@ -62,6 +62,30 @@ class ParseBenchmarkDiffblueTest {
   }
 
   /**
+   * Test Feed {@link Feed#toString()}.
+   *
+   * <ul>
+   *   <li>Given createFeed.
+   *   <li>Then return {@code test-feed-id Test Feed Test Description [] 0}.
+   * </ul>
+   *
+   * <p>Method under test: {@link Feed#toString()}
+   */
+  @Test
+  @DisplayName(
+      "Test Feed toString(); given createFeed; then return 'test-feed-id Test Feed Test Description"
+          + " [] 0'")
+  @Tag("ContributionFromDiffblue")
+  @ManagedByDiffblue
+  @MethodsUnderTest({"java.lang.String Feed.toString()"})
+  void testFeedToString_givenCreateFeed_thenReturnTestFeedIdTestFeedTestDescription0() {
+    // Arrange, Act and Assert
+    assertEquals(
+        "test-feed-id\nTest Feed\nTest Description\n[]\n0",
+        ParseBenchmarkFactory.createFeed().toString());
+  }
+
+  /**
    * Test Item getters and setters.
    *
    * <p>Methods under test:

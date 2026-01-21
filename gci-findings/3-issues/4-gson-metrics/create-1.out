@@ -1,0 +1,82 @@
+[1;34mINFO  [0;39mDiffblue Cover 2026.01.01-SNAPSHOT-f2f2d79-local
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCommand: create
+[1;34mINFO  [0;39mCreate tests for the specified package/class/method.
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mSelected modules:
+[1;34mINFO  [0;39m- com.google.code.gson:gson-metrics
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39m[1/1] Creating tests for module: com.google.code.gson:gson-metrics
+[1;34mINFO  [0;39m==================================================================
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mDetecting environment:
+[1;34mINFO  [0;39m----------------------
+[1;34mINFO  [0;39mDetected Java version 11.0.29
+[1;34mINFO  [0;39mSelected build system: Maven
+[1;34mINFO  [0;39mSelected classpath from build system maven
+[1;34mINFO  [0;39mSelected test framework: JUnit Jupiter API
+[1;34mINFO  [0;39mSelected Java language compliance level: 11
+[1;34mINFO  [0;39mSelected test validation: enabled
+[1;34mINFO  [0;39mPrefixes for filtering classes/methods:
+[1;34mINFO  [0;39m- com.google.gson.metrics
+[1;34mINFO  [0;39mGathering methods to test...
+[1;34mINFO  [0;39mFound 47 callable methods in 13 classes
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCreating tests:
+[1;34mINFO  [0;39m---------------
+[1;34mINFO  [0;39m [1/13] com.google.gson.metrics.BagOfPrimitives
+[1;34mINFO  [0;39m [1/13]   Tests created: 12
+[1;34mINFO  [0;39m [2/13] com.google.gson.metrics.BagOfPrimitivesDeserializationBenchmark
+[1;34mINFO  [0;39m [2/13]   Tests created: 3
+[1;34mINFO  [0;39m [3/13] com.google.gson.metrics.CollectionsDeserializationBenchmark
+[1;34mINFO  [0;39m [3/13]   Tests created: 3
+[1;34mINFO  [0;39m [4/13] com.google.gson.metrics.NonUploadingCaliperRunner
+[1;34mINFO  [0;39m [4/13]   Tests created: 4
+[1;34mINFO  [0;39m [5/13] com.google.gson.metrics.ParseBenchmark
+[1;34mINFO  [0;39m [5/13]   Tests created: 1
+[1;34mINFO  [0;39m [6/13] com.google.gson.metrics.ParseBenchmark$Content
+[1;34mINFO  [0;39m [6/13]   Tests created: 1
+[1;34mINFO  [0;39m [7/13] com.google.gson.metrics.ParseBenchmark$Feed
+[1;34mINFO  [0;39m [7/13]   Tests created: 1
+[1;34mINFO  [0;39m [8/13] com.google.gson.metrics.ParseBenchmark$Item
+[1;34mINFO  [0;39m [8/13]   Tests created: 1
+[1;34mINFO  [0;39m [9/13] com.google.gson.metrics.ParseBenchmark$Link
+[1;34mINFO  [0;39m [9/13]   Tests created: 1
+[1;34mINFO  [0;39m[10/13] com.google.gson.metrics.ParseBenchmark$ReaderUser
+[1;34mINFO  [0;39m[10/13]   Tests created: 1
+[1;34mINFO  [0;39m[11/13] com.google.gson.metrics.ParseBenchmark$Tweet
+[1;34mINFO  [0;39m[11/13]   Tests created: 1
+[1;34mINFO  [0;39m[12/13] com.google.gson.metrics.ParseBenchmark$User
+[1;34mINFO  [0;39m[12/13]   Tests created: 1
+[1;34mINFO  [0;39m[13/13] com.google.gson.metrics.SerializationBenchmark
+[1;34mINFO  [0;39m[13/13]   Tests created: 2
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mTest creation summary for module: com.google.code.gson:gson-metrics
+[1;34mINFO  [0;39m-------------------------------------------------------------------
+[1;34mINFO  [0;39mTotal:                                              47 methods
+[1;34mINFO  [0;39m32 tests created for:                               35 methods
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mNot unit-testable:                                   4 methods
+[1;34mINFO  [0;39m    4 T006: Main method
+[1;34mINFO  [0;39mNo tests created for:                                8 methods
+[1;34mINFO  [0;39m    7 R013: No inputs found that don't throw a trivial exception
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mRunning validation command.
+[1;34mINFO  [0;39mThis can take a couple of minutes.
+[1;34mINFO  [0;39mAll 32 created tests were successfully validated.
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCalculating coverage from manual tests.
+[1;34mINFO  [0;39mThis can take a while, please be patient...
+[1;34mINFO  [0;39mJaCoCo report file created in /Users/john/Diffblue/gson/metrics/.diffblue/reports/manual-tests-jacoco-report.xml
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mCalculating coverage from Diffblue tests.
+[1;34mINFO  [0;39mThis can take a while, please be patient...
+[1;34mINFO  [0;39mJaCoCo report file created in /Users/john/Diffblue/gson/metrics/.diffblue/reports/diffblue-tests-jacoco-report.xml
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mManual tests cover 0 of 318 lines to cover (0.0%)
+[1;34mINFO  [0;39mDiffblue tests cover 75 of 318 lines to cover (23.6%)
+[1;34mINFO  [0;39mWriting JSON report to /Users/john/Diffblue/gson/metrics/.diffblue/reports/report.json
+[1;34mINFO  [0;39m
+[1;34mINFO  [0;39mLog file: /Users/john/Diffblue/gson/.diffblue/log/user-20260121T135659.log
+[1;34mINFO  [0;39mFinished in 1m 32s

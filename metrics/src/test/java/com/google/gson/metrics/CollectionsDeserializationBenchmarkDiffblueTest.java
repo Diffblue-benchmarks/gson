@@ -35,11 +35,7 @@ class CollectionsDeserializationBenchmarkDiffblueTest {
   @ManagedByDiffblue
   @MethodsUnderTest({"void CollectionsDeserializationBenchmark.setUp()"})
   void testSetUp() throws Exception {
-    // Arrange
-    CollectionsDeserializationBenchmark collectionsDeserializationBenchmark =
-        new CollectionsDeserializationBenchmark();
-
-    // Act
+    // Arrange and Act
     collectionsDeserializationBenchmark.setUp();
 
     // Assert
