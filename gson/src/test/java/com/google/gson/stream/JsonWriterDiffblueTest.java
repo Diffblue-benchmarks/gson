@@ -18,14 +18,10 @@ import com.diffblue.cover.annotations.ManagedByDiffblue;
 import com.diffblue.cover.annotations.MethodsUnderTest;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.gson.FormattingStyle;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.Strictness;
-import com.google.gson.internal.bind.JsonTreeWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.math.BigDecimal;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -732,58 +728,6 @@ public class JsonWriterDiffblueTest {
    * Test {@link JsonWriter#value(double)} with {@code double}.
    *
    * <ul>
-   *   <li>Given {@link JsonTreeWriter} (default constructor) Strictness is {@code LENIENT}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonWriter#value(double)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonWriter JsonWriter.value(double)"})
-  public void testValueWithDouble_givenJsonTreeWriterStrictnessIsLenient() throws IOException {
-    // Arrange
-    JsonTreeWriter jsonTreeWriter = new JsonTreeWriter();
-    jsonTreeWriter.setStrictness(Strictness.LENIENT);
-
-    // Act
-    JsonWriter actualValueResult = jsonTreeWriter.value(10.0d);
-
-    // Assert
-    assertSame(jsonTreeWriter, actualValueResult);
-  }
-
-  /**
-   * Test {@link JsonWriter#value(double)} with {@code double}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonTreeWriter} (default constructor).
-   *   <li>When ten.
-   *   <li>Then return {@link JsonTreeWriter} (default constructor).
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonWriter#value(double)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonWriter JsonWriter.value(double)"})
-  public void testValueWithDouble_givenJsonTreeWriter_whenTen_thenReturnJsonTreeWriter()
-      throws IOException {
-    // Arrange
-    JsonTreeWriter jsonTreeWriter = new JsonTreeWriter();
-
-    // Act
-    JsonWriter actualValueResult = jsonTreeWriter.value(10.0d);
-
-    // Assert
-    assertSame(jsonTreeWriter, actualValueResult);
-  }
-
-  /**
-   * Test {@link JsonWriter#value(double)} with {@code double}.
-   *
-   * <ul>
    *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link
    *       StringWriter#StringWriter()} Strictness is {@code LENIENT}.
    * </ul>
@@ -872,58 +816,6 @@ public class JsonWriterDiffblueTest {
     // Arrange, Act and Assert
     assertThrows(
         IllegalArgumentException.class, () -> new JsonWriter(new StringWriter()).value(Double.NaN));
-  }
-
-  /**
-   * Test {@link JsonWriter#value(float)} with {@code float}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonTreeWriter} (default constructor) Strictness is {@code LENIENT}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonWriter#value(float)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonWriter JsonWriter.value(float)"})
-  public void testValueWithFloat_givenJsonTreeWriterStrictnessIsLenient() throws IOException {
-    // Arrange
-    JsonTreeWriter jsonTreeWriter = new JsonTreeWriter();
-    jsonTreeWriter.setStrictness(Strictness.LENIENT);
-
-    // Act
-    JsonWriter actualValueResult = jsonTreeWriter.value(10.0f);
-
-    // Assert
-    assertSame(jsonTreeWriter, actualValueResult);
-  }
-
-  /**
-   * Test {@link JsonWriter#value(float)} with {@code float}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonTreeWriter} (default constructor).
-   *   <li>When ten.
-   *   <li>Then return {@link JsonTreeWriter} (default constructor).
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonWriter#value(float)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonWriter JsonWriter.value(float)"})
-  public void testValueWithFloat_givenJsonTreeWriter_whenTen_thenReturnJsonTreeWriter()
-      throws IOException {
-    // Arrange
-    JsonTreeWriter jsonTreeWriter = new JsonTreeWriter();
-
-    // Act
-    JsonWriter actualValueResult = jsonTreeWriter.value(10.0f);
-
-    // Assert
-    assertSame(jsonTreeWriter, actualValueResult);
   }
 
   /**
@@ -1071,53 +963,6 @@ public class JsonWriterDiffblueTest {
    * Test {@link JsonWriter#value(Number)} with {@code Number}.
    *
    * <ul>
-   *   <li>Given {@link JsonTreeWriter} (default constructor).
-   *   <li>Then {@link JsonTreeWriter#get()} return {@link JsonPrimitive}.
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonWriter#value(Number)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonWriter JsonWriter.value(Number)"})
-  public void testValueWithNumber_givenJsonTreeWriter_thenGetReturnJsonPrimitive()
-      throws IOException {
-    // Arrange
-    Integer value = Integer.valueOf(1);
-
-    // Act
-    JsonWriter actualValueResult = new JsonTreeWriter().value(value);
-
-    // Assert
-    JsonElement getResult = ((JsonTreeWriter) actualValueResult).get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertTrue(actualValueResult instanceof JsonTreeWriter);
-    assertEquals("1", getResult.getAsString());
-    assertEquals('1', getResult.getAsCharacter());
-    assertEquals(1, getResult.getAsInt());
-    assertEquals(1.0d, getResult.getAsDouble(), 0.0);
-    assertEquals(1.0f, getResult.getAsFloat(), 0.0f);
-    assertEquals(1L, getResult.getAsLong());
-    assertEquals((byte) 1, getResult.getAsByte());
-    assertEquals((short) 1, getResult.getAsShort());
-    assertFalse(getResult.getAsBoolean());
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonNull());
-    assertFalse(getResult.isJsonObject());
-    assertFalse(((JsonPrimitive) getResult).isBoolean());
-    assertFalse(((JsonPrimitive) getResult).isString());
-    assertTrue(getResult.isJsonPrimitive());
-    assertTrue(((JsonPrimitive) getResult).isNumber());
-    assertEquals(new BigDecimal("1"), getResult.getAsBigDecimal());
-    assertSame(value, getResult.getAsNumber());
-    assertSame(getResult, getResult.getAsJsonPrimitive());
-  }
-
-  /**
-   * Test {@link JsonWriter#value(Number)} with {@code Number}.
-   *
-   * <ul>
    *   <li>Given {@link JsonWriter#JsonWriter(Writer)} with out is {@link
    *       StringWriter#StringWriter()} Strictness is {@code LENIENT}.
    * </ul>
@@ -1189,31 +1034,6 @@ public class JsonWriterDiffblueTest {
     // Act and Assert
     assertThrows(IllegalStateException.class, () -> jsonWriter.value((Number) null));
     verify(writer).write("null");
-  }
-
-  /**
-   * Test {@link JsonWriter#value(Number)} with {@code Number}.
-   *
-   * <ul>
-   *   <li>Then return {@link JsonTreeWriter} (default constructor).
-   * </ul>
-   *
-   * <p>Method under test: {@link JsonWriter#value(Number)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"JsonWriter JsonWriter.value(Number)"})
-  public void testValueWithNumber_thenReturnJsonTreeWriter() throws IOException {
-    // Arrange
-    JsonTreeWriter jsonTreeWriter = new JsonTreeWriter();
-    jsonTreeWriter.setStrictness(Strictness.LENIENT);
-
-    // Act
-    JsonWriter actualValueResult = jsonTreeWriter.value(Integer.valueOf(1));
-
-    // Assert
-    assertSame(jsonTreeWriter, actualValueResult);
   }
 
   /**

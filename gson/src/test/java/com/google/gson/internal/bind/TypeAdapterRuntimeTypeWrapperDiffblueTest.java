@@ -1,9 +1,6 @@
 package com.google.gson.internal.bind;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doNothing;
@@ -18,7 +15,6 @@ import com.google.gson.Gson;
 import com.google.gson.InstanceCreator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -26,7 +22,6 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.ConstructorConstructor;
-import com.google.gson.internal.LazilyParsedNumber;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -34,11 +29,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.TreeMap;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
@@ -95,17 +87,12 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
 
     TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
         new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
-    JsonTreeWriter out = new JsonTreeWriter();
 
     // Act
-    typeAdapterRuntimeTypeWrapper.write(out, null);
+    typeAdapterRuntimeTypeWrapper.write(new JsonWriter(new StringWriter()), null);
 
-    // Assert that nothing has changed
+    // Assert
     verify(delegate).write(isA(JsonWriter.class), (Object) isNull());
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
   }
 
   /**
@@ -126,7 +113,7 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
 
     TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
         new TypeAdapterRuntimeTypeWrapper<>(context, delegate, type);
-    JsonTreeWriter out = new JsonTreeWriter();
+    JsonWriter out = new JsonWriter(new StringWriter());
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
 
     // Act
@@ -135,12 +122,8 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
         new CollectionTypeAdapterFactory(
             new ConstructorConstructor(instanceCreators, true, new ArrayList<>())));
 
-    // Assert that nothing has changed
+    // Assert
     verify(delegate).write(isA(JsonWriter.class), isA(Object.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
   }
 
   /**
@@ -161,52 +144,7 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
 
     TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
         new TypeAdapterRuntimeTypeWrapper<>(context, delegate, type);
-    JsonTreeWriter out = new JsonTreeWriter();
-    Gson context2 = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type2 = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type2);
-
-    TreeTypeAdapter<Object> componentTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
-    Class<Object> componentType = Object.class;
-
-    ArrayTypeAdapter<Object> arrayTypeAdapter =
-        new ArrayTypeAdapter<>(context2, componentTypeAdapter, componentType);
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, arrayTypeAdapter);
-
-    // Assert that nothing has changed
-    verify(delegate).write(isA(JsonWriter.class), isA(Object.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite4() throws IOException {
-    // Arrange
-    ObjectTypeAdapter delegate = mock(ObjectTypeAdapter.class);
-    doNothing().when(delegate).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
-    Gson context = new Gson();
-    Class<Object> type = Object.class;
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, type);
-    JsonTreeWriter out = new JsonTreeWriter();
+    JsonWriter out = new JsonWriter(new StringWriter());
     HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
 
     // Act
@@ -215,16 +153,17 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
         new JsonAdapterAnnotationTypeAdapterFactory(
             new ConstructorConstructor(instanceCreators, true, new ArrayList<>())));
 
-    // Assert that nothing has changed
+    // Assert
     verify(delegate).write(isA(JsonWriter.class), isA(Object.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
   }
 
   /**
    * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add end of text.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
    *
    * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
    */
@@ -232,40 +171,92 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite5() throws IOException {
+  public void testWrite_givenJsonArrayWithCapacityIsThreeAddEndOfText_thenCallsSerialize()
+      throws IOException {
     // Arrange
-    ObjectTypeAdapter delegate = mock(ObjectTypeAdapter.class);
-    doNothing().when(delegate).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
-    Gson context = new Gson();
+    JsonArray jsonArray = new JsonArray(3);
+    jsonArray.add('\u0003');
+    jsonArray.add(true);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonArray);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
     Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> delegate =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Gson context = new Gson();
 
     TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, type);
-    JsonTreeWriter out = new JsonTreeWriter();
-    HashMap<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
 
     // Act
-    typeAdapterRuntimeTypeWrapper.write(
-        out,
-        new MapTypeAdapterFactory(
-            new ConstructorConstructor(instanceCreators, true, new ArrayList<>()), true));
+    typeAdapterRuntimeTypeWrapper.write(new JsonWriter(new StringWriter()), "Value");
 
-    // Assert that nothing has changed
-    verify(delegate).write(isA(JsonWriter.class), isA(Object.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
   }
 
   /**
    * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
+   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code false}.
+   *   <li>When {@code Value}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonArrayWithCapacityIsThreeAddFalse_whenValue_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonArray jsonArray = new JsonArray(3);
+    jsonArray.add(false);
+    jsonArray.add(true);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonArray);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> delegate =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Gson context = new Gson();
+
+    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
+        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
+
+    // Act
+    typeAdapterRuntimeTypeWrapper.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link
    *       JsonNull#INSTANCE}.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link JsonObject} (default
-   *       constructor).
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
    * </ul>
    *
    * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
@@ -274,11 +265,152 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonObjectAdd42AndInstance_thenJsonTreeWriterIsJsonObject()
+  public void testWrite_givenJsonArrayWithCapacityIsThreeAddInstance_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonArray jsonArray = new JsonArray(3);
+    jsonArray.add(JsonNull.INSTANCE);
+    jsonArray.add(true);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonArray);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> delegate =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Gson context = new Gson();
+
+    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
+        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
+
+    // Act
+    typeAdapterRuntimeTypeWrapper.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code true}.
+   *   <li>When {@code Value}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonArrayWithCapacityIsThreeAddTrue_whenValue_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonArray jsonArray = new JsonArray(3);
+    jsonArray.add(true);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonArray);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> delegate =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Gson context = new Gson();
+
+    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
+        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
+
+    // Act
+    typeAdapterRuntimeTypeWrapper.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add valueOf one.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonArrayWithCapacityIsThreeAddValueOfOne_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonArray jsonArray = new JsonArray(3);
+    jsonArray.add(Integer.valueOf(1));
+    jsonArray.add(true);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonArray);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> delegate =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+    Gson context = new Gson();
+
+    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
+        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
+
+    // Act
+    typeAdapterRuntimeTypeWrapper.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonObject} (default constructor) add {@code null} and {@link
+   *       JsonNull#INSTANCE}.
+   *   <li>When {@code Value}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonObjectAddNullAndInstance_whenValue_thenCallsSerialize()
       throws IOException {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
+    jsonObject.add("null", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonNull.INSTANCE);
 
     JsonSerializer<Object> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
@@ -291,30 +423,28 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
 
     TreeTypeAdapter<Object> delegate =
         new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
     Gson context = new Gson();
 
     TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
         new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
-    JsonTreeWriter out = new JsonTreeWriter();
 
     // Act
-    typeAdapterRuntimeTypeWrapper.write(out, "Value");
+    typeAdapterRuntimeTypeWrapper.write(new JsonWriter(new StringWriter()), "Value");
 
     // Assert
     verify(serializer)
         .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonObject, getResult);
   }
 
   /**
    * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
    *
    * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) addProperty {@code 42} and {@code
-   *       JsonObject}.
+   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
+   *       JsonNull#INSTANCE}.
+   *   <li>When {@code Value}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
    * </ul>
    *
    * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
@@ -323,61 +453,16 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonObjectAddProperty42AndComGoogleGsonJsonObject()
+  public void testWrite_givenJsonObjectAddPropertyAndInstance_whenValue_thenCallsSerialize()
       throws IOException {
     // Arrange
     JsonObject jsonObject = new JsonObject();
-    jsonObject.addProperty("42", "com.google.gson.JsonObject");
+    jsonObject.add("Property", JsonNull.INSTANCE);
 
     JsonSerializer<Object> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
             Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
         .thenReturn(jsonObject);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> delegate =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    Gson context = new Gson();
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonObject, getResult);
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonSerializer} {@link JsonSerializer#serialize(Object, Type,
-   *       JsonSerializationContext)} return {@link JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonSerializerSerializeReturnInstance() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(JsonNull.INSTANCE);
     JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
     Gson gson = new Gson();
     Class<Object> type = Object.class;
@@ -405,7 +490,7 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
    * <ul>
    *   <li>Given {@link JsonSerializer} {@link JsonSerializer#serialize(Object, Type,
    *       JsonSerializationContext)} return {@link JsonNull#INSTANCE}.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonNull}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
    * </ul>
    *
    * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
@@ -414,7 +499,7 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonSerializerSerializeReturnInstance_thenJsonTreeWriterJsonNull()
+  public void testWrite_givenJsonSerializerSerializeReturnInstance_thenCallsSerialize()
       throws IOException {
     // Arrange
     JsonSerializer<Object> serializer = mock(JsonSerializer.class);
@@ -428,23 +513,18 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
 
     TreeTypeAdapter<Object> delegate =
         new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
     Gson context = new Gson();
 
     TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
         new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
-    JsonTreeWriter out = new JsonTreeWriter();
 
     // Act
-    typeAdapterRuntimeTypeWrapper.write(out, "Value");
+    typeAdapterRuntimeTypeWrapper.write(new JsonWriter(new StringWriter()), "Value");
 
-    // Assert that nothing has changed
+    // Assert
     verify(serializer)
         .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
   }
 
   /**
@@ -496,6 +576,7 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
    * <ul>
    *   <li>Given {@link JsonSerializer} {@link JsonSerializer#serialize(Object, Type,
    *       JsonSerializationContext)} return {@link JsonObject} (default constructor).
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
    * </ul>
    *
    * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
@@ -504,7 +585,8 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonSerializerSerializeReturnJsonObject() throws IOException {
+  public void testWrite_givenJsonSerializerSerializeReturnJsonObject_thenCallsSerialize()
+      throws IOException {
     // Arrange
     JsonSerializer<Object> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
@@ -664,9 +746,8 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
    * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
    *
    * <ul>
-   *   <li>Given {@code Key}.
-   *   <li>When {@link HashMap#HashMap()} {@code Key} is {@code Value}.
-   *   <li>Then not {@link JsonTreeWriter} (default constructor) Empty.
+   *   <li>When {@link DefaultDateTypeAdapter}.
+   *   <li>Then calls {@link ObjectTypeAdapter#write(JsonWriter, Object)}.
    * </ul>
    *
    * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
@@ -675,513 +756,21 @@ public class TypeAdapterRuntimeTypeWrapperDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_givenKey_whenHashMapKeyIsValue_thenNotJsonTreeWriterEmpty()
-      throws IOException {
+  public void testWrite_whenDefaultDateTypeAdapter_thenCallsWrite() throws IOException {
     // Arrange
-    Gson context = new Gson();
     ObjectTypeAdapter delegate = mock(ObjectTypeAdapter.class);
+    doNothing().when(delegate).write(Mockito.<JsonWriter>any(), Mockito.<Object>any());
+    Gson context = new Gson();
     Class<Object> type = Object.class;
 
     TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
         new TypeAdapterRuntimeTypeWrapper<>(context, delegate, type);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    HashMap<Object, Object> objectObjectMap = new HashMap<>();
-    objectObjectMap.put("Key", "Value");
 
     // Act
-    typeAdapterRuntimeTypeWrapper.write(out, objectObjectMap);
+    typeAdapterRuntimeTypeWrapper.write(
+        new JsonWriter(new StringWriter()), mock(DefaultDateTypeAdapter.class));
 
     // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(1, ((JsonObject) getResult).size());
-    assertFalse(((JsonObject) getResult).isEmpty());
-    assertTrue(getResult.isJsonObject());
-    assertSame(getResult, getResult.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) AsCharacter is {@code t}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterAsCharacterIsT() throws IOException {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(true);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonArray);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> delegate =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    Gson context = new Gson();
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonArray);
-    Iterator<JsonElement> iteratorResult = ((JsonArray) getResult).iterator();
-    JsonElement nextResult = iteratorResult.next();
-    assertTrue(nextResult instanceof JsonPrimitive);
-    assertEquals('t', getResult.getAsCharacter());
-    assertEquals('t', nextResult.getAsCharacter());
-    assertEquals(1, ((JsonArray) getResult).size());
-    assertFalse(iteratorResult.hasNext());
-    assertTrue(getResult.getAsBoolean());
-    assertTrue(nextResult.getAsBoolean());
-    assertTrue(((JsonPrimitive) nextResult).isBoolean());
-    assertEquals(Boolean.TRUE.toString(), getResult.getAsString());
-    assertEquals(Boolean.TRUE.toString(), nextResult.getAsString());
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) AsNumber {@link LazilyParsedNumber}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterAsNumberLazilyParsedNumber() throws IOException {
-    // Arrange
-    Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> delegate =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    Class<Object> type2 = Object.class;
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, type2);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, "Value");
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    Number asNumber = getResult.getAsNumber();
-    assertTrue(asNumber instanceof LazilyParsedNumber);
-    assertEquals("Value", getResult.getAsString());
-    assertEquals("Value", asNumber.toString());
-    assertEquals('V', getResult.getAsCharacter());
-    assertTrue(((JsonPrimitive) getResult).isString());
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link JsonArray#JsonArray(int)}
-   *       with capacity is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterIsJsonArrayWithCapacityIsThree() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonArray jsonArray = new JsonArray(3);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonArray);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> delegate =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    Gson context = new Gson();
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonArray);
-    assertEquals(jsonArray, getResult);
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link JsonObject} (default
-   *       constructor).
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterIsJsonObject() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonObject jsonObject = new JsonObject();
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonObject);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> delegate =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    Gson context = new Gson();
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonObject, getResult);
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link
-   *       JsonPrimitive#JsonPrimitive(Boolean)} with bool is {@code true}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterIsJsonPrimitiveWithBoolIsTrue() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonPrimitive jsonPrimitive = new JsonPrimitive(true);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonPrimitive);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> delegate =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    Gson context = new Gson();
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals(jsonPrimitive, getResult);
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link
-   *       JsonPrimitive#JsonPrimitive(String)} with string is {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterIsJsonPrimitiveWithStringIsNull() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonPrimitive jsonPrimitive = new JsonPrimitive("null");
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonPrimitive);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> delegate =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    Gson context = new Gson();
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals(jsonPrimitive, getResult);
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>When {@code A}.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) AsString is {@code 65}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_whenA_thenJsonTreeWriterAsStringIs65() throws IOException {
-    // Arrange
-    Gson context = new Gson();
-    ObjectTypeAdapter delegate = mock(ObjectTypeAdapter.class);
-    Class<Object> type = Object.class;
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, type);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, (byte) 'A');
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals("65", getResult.getAsString());
-    assertEquals('6', getResult.getAsCharacter());
-    assertEquals(65, getResult.getAsInt());
-    assertEquals(65.0d, getResult.getAsDouble(), 0.0);
-    assertEquals(65.0f, getResult.getAsFloat(), 0.0f);
-    assertEquals(65L, getResult.getAsLong());
-    assertEquals(65L, getResult.getAsNumber().longValue());
-    assertEquals((short) 65, getResult.getAsShort());
-    assertEquals(new BigDecimal("65"), getResult.getAsBigDecimal());
-    assertEquals('A', getResult.getAsByte());
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>When forty-two.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) AsString is {@code 42}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_whenFortyTwo_thenJsonTreeWriterAsStringIs42() throws IOException {
-    // Arrange
-    Gson context = new Gson();
-    ObjectTypeAdapter delegate = mock(ObjectTypeAdapter.class);
-    Class<Object> type = Object.class;
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, type);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, 42);
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals("42", getResult.getAsString());
-    assertEquals('4', getResult.getAsCharacter());
-    assertEquals(42, getResult.getAsInt());
-    assertEquals(42.0d, getResult.getAsDouble(), 0.0);
-    assertEquals(42.0f, getResult.getAsFloat(), 0.0f);
-    assertEquals(42L, getResult.getAsLong());
-    assertEquals(42L, getResult.getAsNumber().longValue());
-    assertEquals((short) 42, getResult.getAsShort());
-    assertEquals(new BigDecimal("42"), getResult.getAsBigDecimal());
-    assertEquals('*', getResult.getAsByte());
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>When {@link HashMap#HashMap()}.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) size is zero.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_whenHashMap_thenJsonTreeWriterSizeIsZero() throws IOException {
-    // Arrange
-    Gson context = new Gson();
-    ObjectTypeAdapter delegate = mock(ObjectTypeAdapter.class);
-    Class<Object> type = Object.class;
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, type);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, new HashMap<>());
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(0, ((JsonObject) getResult).size());
-    assertTrue(getResult.isJsonObject());
-    assertTrue(((JsonObject) getResult).isEmpty());
-    assertSame(getResult, getResult.getAsJsonObject());
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>When {@code null}.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonNull}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_whenNull_thenJsonTreeWriterJsonNull() throws IOException {
-    // Arrange
-    Gson context = new Gson();
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> delegate =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, new TypeVarBoundedType(null));
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, null);
-
-    // Assert that nothing has changed
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
-  }
-
-  /**
-   * Test {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>When {@link TreeMap#TreeMap()}.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) size is zero.
-   * </ul>
-   *
-   * <p>Method under test: {@link TypeAdapterRuntimeTypeWrapper#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TypeAdapterRuntimeTypeWrapper.write(JsonWriter, Object)"})
-  public void testWrite_whenTreeMap_thenJsonTreeWriterSizeIsZero() throws IOException {
-    // Arrange
-    Gson context = new Gson();
-    ObjectTypeAdapter delegate = mock(ObjectTypeAdapter.class);
-    Class<Object> type = Object.class;
-
-    TypeAdapterRuntimeTypeWrapper<Object> typeAdapterRuntimeTypeWrapper =
-        new TypeAdapterRuntimeTypeWrapper<>(context, delegate, type);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    typeAdapterRuntimeTypeWrapper.write(out, new TreeMap<>());
-
-    // Assert
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(0, ((JsonObject) getResult).size());
-    assertTrue(getResult.isJsonObject());
-    assertTrue(((JsonObject) getResult).isEmpty());
-    assertSame(getResult, getResult.getAsJsonObject());
+    verify(delegate).write(isA(JsonWriter.class), isA(Object.class));
   }
 }

@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
-import java.util.Iterator;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
@@ -736,13 +735,353 @@ public class TreeTypeAdapterDiffblueTest {
   /**
    * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
    *
+   * <ul>
+   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add end of text.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
    * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
    */
   @Test
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite() throws IOException {
+  public void testWrite_givenJsonArrayWithCapacityIsThreeAddEndOfText_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonArray jsonArray = new JsonArray(3);
+    jsonArray.add('\u0003');
+    jsonArray.add(true);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonArray);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> treeTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+
+    // Act
+    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code false}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonArrayWithCapacityIsThreeAddFalse_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonArray jsonArray = new JsonArray(3);
+    jsonArray.add(false);
+    jsonArray.add(true);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonArray);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> treeTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+
+    // Act
+    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link
+   *       JsonNull#INSTANCE}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonArrayWithCapacityIsThreeAddInstance_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonArray jsonArray = new JsonArray(3);
+    jsonArray.add(JsonNull.INSTANCE);
+    jsonArray.add(true);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonArray);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> treeTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+
+    // Act
+    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code true}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonArrayWithCapacityIsThreeAddTrue_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonArray jsonArray = new JsonArray(3);
+    jsonArray.add(true);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonArray);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> treeTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+
+    // Act
+    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add valueOf one.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonArrayWithCapacityIsThreeAddValueOfOne_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonArray jsonArray = new JsonArray(3);
+    jsonArray.add(Integer.valueOf(1));
+    jsonArray.add(true);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonArray);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> treeTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+
+    // Act
+    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonObject} (default constructor) add {@code null} and {@link
+   *       JsonNull#INSTANCE}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonObjectAddNullAndInstance_thenCallsSerialize() throws IOException {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("null", JsonNull.INSTANCE);
+    jsonObject.add("Property", JsonNull.INSTANCE);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonObject);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> treeTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+
+    // Act
+    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonObject} (default constructor) add {@code Property} and {@link
+   *       JsonNull#INSTANCE}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonObjectAddPropertyAndInstance_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("Property", JsonNull.INSTANCE);
+
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(jsonObject);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> treeTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+
+    // Act
+    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonSerializer} {@link JsonSerializer#serialize(Object, Type,
+   *       JsonSerializationContext)} return {@link JsonNull#INSTANCE}.
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
+   * </ul>
+   *
+   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonSerializerSerializeReturnInstance_thenCallsSerialize()
+      throws IOException {
+    // Arrange
+    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
+    when(serializer.serialize(
+            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
+        .thenReturn(JsonNull.INSTANCE);
+    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
+    Gson gson = new Gson();
+    Class<Object> type = Object.class;
+    TypeToken<Object> typeToken = TypeToken.get(type);
+
+    TreeTypeAdapter<Object> treeTypeAdapter =
+        new TreeTypeAdapter<>(
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
+
+    // Act
+    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
+
+    // Assert
+    verify(serializer)
+        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
+  }
+
+  /**
+   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
+   *
+   * <ul>
+   *   <li>Given {@link JsonSerializer} {@link JsonSerializer#serialize(Object, Type,
+   *       JsonSerializationContext)} return {@link JsonArray#JsonArray(int)} with capacity is
+   *       three.
+   * </ul>
+   *
+   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
+   */
+  @Test
+  @Category(ContributionFromDiffblue.class)
+  @ManagedByDiffblue
+  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
+  public void testWrite_givenJsonSerializerSerializeReturnJsonArrayWithCapacityIsThree()
+      throws IOException {
     // Arrange
     JsonSerializer<Object> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
@@ -768,547 +1107,10 @@ public class TreeTypeAdapterDiffblueTest {
   /**
    * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
    *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite2() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(JsonNull.INSTANCE);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), false);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    treeTypeAdapter.write(out, "Value");
-
-    // Assert that nothing has changed
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add end of text.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonArrayWithCapacityIsThreeAddEndOfText() throws IOException {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add('\u0003');
-    jsonArray.add(true);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonArray);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-
-    // Act
-    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code false}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonArrayWithCapacityIsThreeAddFalse() throws IOException {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(false);
-    jsonArray.add('\u0003');
-    jsonArray.add(true);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonArray);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-
-    // Act
-    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonArrayWithCapacityIsThreeAddInstance() throws IOException {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(JsonNull.INSTANCE);
-    jsonArray.add(true);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonArray);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-
-    // Act
-    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add {@code true}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonArrayWithCapacityIsThreeAddTrue() throws IOException {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(true);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonArray);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-
-    // Act
-    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonArray#JsonArray(int)} with capacity is three add valueOf one.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonArrayWithCapacityIsThreeAddValueOfOne() throws IOException {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(Integer.valueOf(1));
-    jsonArray.add(true);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonArray);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-
-    // Act
-    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonObject}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonObjectAdd42AndInstance_thenJsonTreeWriterJsonObject()
-      throws IOException {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonObject);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    treeTypeAdapter.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonObject, getResult);
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code 42} and {@link
-   *       JsonNull#INSTANCE}.
-   *   <li>When {@link JsonWriter#JsonWriter(Writer)} with out is {@link
-   *       StringWriter#StringWriter()}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonObjectAdd42AndInstance_whenJsonWriterWithOutIsStringWriter()
-      throws IOException {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("42", JsonNull.INSTANCE);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonObject);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-
-    // Act
-    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code name == null} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonObjectAddNameNullAndInstance() throws IOException {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("name == null", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonObject);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-
-    // Act
-    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) add {@code name == null} and {@link
-   *       JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonObjectAddNameNullAndInstance2() throws IOException {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.add("name == null", JsonNull.INSTANCE);
-    jsonObject.add("42", JsonNull.INSTANCE);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonObject);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-
-    JsonWriter out = new JsonWriter(new StringWriter());
-    out.setHtmlSafe(true);
-
-    // Act
-    treeTypeAdapter.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonObject} (default constructor) addProperty {@code 42} and {@code
-   *       JsonObject}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonObjectAddProperty42AndComGoogleGsonJsonObject()
-      throws IOException {
-    // Arrange
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.addProperty("42", "com.google.gson.JsonObject");
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonObject);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    treeTypeAdapter.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonObject, getResult);
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonSerializer} {@link JsonSerializer#serialize(Object, Type,
-   *       JsonSerializationContext)} return {@link JsonNull#INSTANCE}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonSerializerSerializeReturnInstance() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(JsonNull.INSTANCE);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
-
-    // Act
-    treeTypeAdapter.write(new JsonWriter(new StringWriter()), "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Given {@link JsonSerializer} {@link JsonSerializer#serialize(Object, Type,
-   *       JsonSerializationContext)} return {@link JsonNull#INSTANCE}.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonNull}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonSerializerSerializeReturnInstance_thenJsonTreeWriterJsonNull()
-      throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(JsonNull.INSTANCE);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    treeTypeAdapter.write(out, "Value");
-
-    // Assert that nothing has changed
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
    * <ul>
    *   <li>Given {@link JsonSerializer} {@link JsonSerializer#serialize(Object, Type,
    *       JsonSerializationContext)} return {@link JsonObject} (default constructor).
+   *   <li>Then calls {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)}.
    * </ul>
    *
    * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
@@ -1317,7 +1119,8 @@ public class TreeTypeAdapterDiffblueTest {
   @Category(ContributionFromDiffblue.class)
   @ManagedByDiffblue
   @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_givenJsonSerializerSerializeReturnJsonObject() throws IOException {
+  public void testWrite_givenJsonSerializerSerializeReturnJsonObject_thenCallsSerialize()
+      throws IOException {
     // Arrange
     JsonSerializer<Object> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
@@ -1475,14 +1278,10 @@ public class TreeTypeAdapterDiffblueTest {
   public void testWrite_givenTrue_whenJsonWriterWithOutIsStringWriterHtmlSafeIsTrue()
       throws IOException {
     // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add('\u0003');
-    jsonArray.add(true);
-
     JsonSerializer<Object> serializer = mock(JsonSerializer.class);
     when(serializer.serialize(
             Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonArray);
+        .thenReturn(new JsonPrimitive("null"));
     JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
     Gson gson = new Gson();
     Class<Object> type = Object.class;
@@ -1490,7 +1289,7 @@ public class TreeTypeAdapterDiffblueTest {
 
     TreeTypeAdapter<Object> treeTypeAdapter =
         new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
+            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class));
 
     JsonWriter out = new JsonWriter(new StringWriter());
     out.setHtmlSafe(true);
@@ -1501,264 +1300,6 @@ public class TreeTypeAdapterDiffblueTest {
     // Assert
     verify(serializer)
         .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) AsCharacter is {@code t}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterAsCharacterIsT() throws IOException {
-    // Arrange
-    JsonArray jsonArray = new JsonArray(3);
-    jsonArray.add(true);
-
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonArray);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    treeTypeAdapter.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonArray);
-    Iterator<JsonElement> iteratorResult = ((JsonArray) getResult).iterator();
-    JsonElement nextResult = iteratorResult.next();
-    assertTrue(nextResult instanceof JsonPrimitive);
-    assertEquals('t', getResult.getAsCharacter());
-    assertEquals('t', nextResult.getAsCharacter());
-    assertEquals(1, ((JsonArray) getResult).size());
-    assertFalse(iteratorResult.hasNext());
-    assertTrue(getResult.getAsBoolean());
-    assertTrue(nextResult.getAsBoolean());
-    assertTrue(((JsonPrimitive) nextResult).isBoolean());
-    assertEquals(Boolean.TRUE.toString(), getResult.getAsString());
-    assertEquals(Boolean.TRUE.toString(), nextResult.getAsString());
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link JsonArray#JsonArray(int)}
-   *       with capacity is three.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterIsJsonArrayWithCapacityIsThree() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonArray jsonArray = new JsonArray(3);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonArray);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    treeTypeAdapter.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonArray);
-    assertEquals(jsonArray, getResult);
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link
-   *       JsonPrimitive#JsonPrimitive(Boolean)} with bool is {@code true}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterIsJsonPrimitiveWithBoolIsTrue() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonPrimitive jsonPrimitive = new JsonPrimitive(true);
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonPrimitive);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    treeTypeAdapter.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals(jsonPrimitive, getResult);
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) is {@link
-   *       JsonPrimitive#JsonPrimitive(String)} with string is {@code null}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterIsJsonPrimitiveWithStringIsNull() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonPrimitive jsonPrimitive = new JsonPrimitive("null");
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonPrimitive);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    treeTypeAdapter.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonPrimitive);
-    assertEquals(jsonPrimitive, getResult);
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonObject}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_thenJsonTreeWriterJsonObject() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonObject jsonObject = new JsonObject();
-    when(serializer.serialize(
-            Mockito.<Object>any(), Mockito.<Type>any(), Mockito.<JsonSerializationContext>any()))
-        .thenReturn(jsonObject);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    treeTypeAdapter.write(out, "Value");
-
-    // Assert
-    verify(serializer)
-        .serialize(isA(Object.class), isA(Type.class), isA(JsonSerializationContext.class));
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonObject);
-    assertEquals(jsonObject, getResult);
-  }
-
-  /**
-   * Test {@link TreeTypeAdapter#write(JsonWriter, Object)}.
-   *
-   * <ul>
-   *   <li>When {@code null}.
-   *   <li>Then {@link JsonTreeWriter} (default constructor) {@link JsonNull}.
-   * </ul>
-   *
-   * <p>Method under test: {@link TreeTypeAdapter#write(JsonWriter, Object)}
-   */
-  @Test
-  @Category(ContributionFromDiffblue.class)
-  @ManagedByDiffblue
-  @MethodsUnderTest({"void TreeTypeAdapter.write(JsonWriter, Object)"})
-  public void testWrite_whenNull_thenJsonTreeWriterJsonNull() throws IOException {
-    // Arrange
-    JsonSerializer<Object> serializer = mock(JsonSerializer.class);
-    JsonDeserializer<Object> deserializer = mock(JsonDeserializer.class);
-    Gson gson = new Gson();
-    Class<Object> type = Object.class;
-    TypeToken<Object> typeToken = TypeToken.get(type);
-
-    TreeTypeAdapter<Object> treeTypeAdapter =
-        new TreeTypeAdapter<>(
-            serializer, deserializer, gson, typeToken, mock(TypeAdapterFactory.class), true);
-    JsonTreeWriter out = new JsonTreeWriter();
-
-    // Act
-    treeTypeAdapter.write(out, null);
-
-    // Assert that nothing has changed
-    JsonElement getResult = out.get();
-    assertTrue(getResult instanceof JsonNull);
-    assertFalse(getResult.isJsonArray());
-    assertFalse(getResult.isJsonObject());
   }
 
   /**
