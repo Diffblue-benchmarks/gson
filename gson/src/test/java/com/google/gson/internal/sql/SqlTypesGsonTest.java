@@ -17,8 +17,10 @@
 package com.google.gson.internal.sql;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.GsonBuilder;
 import com.google.gson.functional.DefaultTypeAdaptersTest;
 import java.sql.Time;
@@ -107,6 +109,15 @@ public class SqlTypesGsonTest {
     String json = "'1:18:02 PM'";
     Time extracted = gson.fromJson(json, Time.class);
     DefaultTypeAdaptersTest.assertEqualsTime(extracted, 13, 18, 2);
+  }
+
+  @Test
+  public void testSqlTimeDeserializationWithInvalidFormat() {
+    String json = "\"invalid-time-format\"";
+    JsonSyntaxException e =
+        assertThrows(JsonSyntaxException.class, () -> gson.fromJson(json, Time.class));
+    assertThat(e).hasMessageThat().contains("Failed parsing 'invalid-time-format' as SQL Time");
+    assertThat(e).hasCauseThat().isInstanceOf(java.text.ParseException.class);
   }
 
   @Test
