@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThrows;
 import java.io.EOFException;
 import java.util.NoSuchElementException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -101,5 +102,10 @@ public class JsonStreamParserTest {
 
     parser = new JsonStreamParser(":");
     assertThrows(JsonSyntaxException.class, parser::next);
+  }
+
+  @Test
+  public void testRemoveThrowsUnsupportedOperation() {
+    assertThrows(UnsupportedOperationException.class, parser::remove);
   }
 }
