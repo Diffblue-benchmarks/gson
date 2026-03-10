@@ -21,8 +21,13 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -55,19 +60,6 @@ public class MapAsArrayTypeAdapterTest {
             gson.<Object>fromJson(
                 "{\"t\":true,\"f\":false}", new TypeToken<Map<String, Boolean>>() {}.getType()))
         .isEqualTo(otherMap);
-  }
-
-  @Test
-  @Ignore("we no longer hash keys at serialization time")
-  public void testTwoTypesCollapseToOneSerialize() {
-    Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
-
-    Map<Number, String> original = new LinkedHashMap<>();
-    original.put(1.0D, "a");
-    original.put(1.0F, "b");
-    Type type = new TypeToken<Map<Number, String>>() {}.getType();
-    var e = assertThrows(JsonSyntaxException.class, () -> gson.toJson(original, type));
-    assertThat(e).hasMessageThat().isEqualTo("TODO");
   }
 
   @Test
@@ -148,5 +140,98 @@ public class MapAsArrayTypeAdapterTest {
 
   static class PointWithProperty<T> {
     Map<Point, T> map = new HashMap<>();
+  }
+
+  @Test
+  public void testSerializeMapWithIntegerKeyAndComplexKeySerialization() {
+    Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+    Map<Integer, String> map = new LinkedHashMap<>();
+    map.put(123, "a");
+    map.put(456, "b");
+    Type type = new TypeToken<Map<Integer, String>>() {}.getType();
+    String json = gson.toJson(map, type);
+    assertThat(json).isEqualTo("{\"123\":\"a\",\"456\":\"b\"}");
+  }
+
+  @Test
+  public void testSerializeMapWithDoubleKeyAndComplexKeySerialization() {
+    Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+    Map<Double, String> map = new LinkedHashMap<>();
+    map.put(1.5, "a");
+    map.put(2.75, "b");
+    Type type = new TypeToken<Map<Double, String>>() {}.getType();
+    String json = gson.toJson(map, type);
+    assertThat(json).isEqualTo("{\"1.5\":\"a\",\"2.75\":\"b\"}");
+  }
+
+  @Test
+  public void testSerializeMapWithBooleanKeyAndComplexKeySerialization() {
+    Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+    Map<Boolean, String> map = new LinkedHashMap<>();
+    map.put(true, "a");
+    map.put(false, "b");
+    Type type = new TypeToken<Map<Boolean, String>>() {}.getType();
+    String json = gson.toJson(map, type);
+    assertThat(json).isEqualTo("{\"true\":\"a\",\"false\":\"b\"}");
+  }
+
+  @Test
+  public void testSerializeMapWithNullKeyAndComplexKeySerialization() {
+    Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+    Map<String, String> map = new LinkedHashMap<>();
+    map.put(null, "a");
+    map.put("key", "b");
+    Type type = new TypeToken<Map<String, String>>() {}.getType();
+    String json = gson.toJson(map, type);
+    assertThat(json).isEqualTo("{\"null\":\"a\",\"key\":\"b\"}");
+  }
+
+  @Test
+  public void testSerializeMapWithCustomBooleanKeyAdapter() {
+    // Custom adapter that converts BooleanKey to a boolean JsonPrimitive
+    // The write() method outputs a boolean, so toJsonTree() returns a boolean JsonPrimitive
+    TypeAdapter<BooleanKey> booleanKeyAdapter =
+        new TypeAdapter<BooleanKey>() {
+          @Override
+          public void write(JsonWriter out, BooleanKey value) throws IOException {
+            out.value(value.value);
+          }
+
+          @Override
+          public BooleanKey read(JsonReader in) throws IOException {
+            return new BooleanKey(in.nextBoolean());
+          }
+        };
+
+    Gson gson =
+        new GsonBuilder()
+            .enableComplexMapKeySerialization()
+            .registerTypeAdapter(BooleanKey.class, booleanKeyAdapter)
+            .create();
+
+    Map<BooleanKey, String> map = new LinkedHashMap<>();
+    map.put(new BooleanKey(true), "yes");
+    map.put(new BooleanKey(false), "no");
+    Type type = new TypeToken<Map<BooleanKey, String>>() {}.getType();
+    String json = gson.toJson(map, type);
+    assertThat(json).isEqualTo("{\"true\":\"yes\",\"false\":\"no\"}");
+  }
+
+  static class BooleanKey {
+    final boolean value;
+
+    BooleanKey(boolean value) {
+      this.value = value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      return o instanceof BooleanKey && ((BooleanKey) o).value == value;
+    }
+
+    @Override
+    public int hashCode() {
+      return Boolean.hashCode(value);
+    }
   }
 }
