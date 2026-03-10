@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -114,6 +115,28 @@ public class PostConstructAdapterFactoryTest {
       MultipleSandwiches other = (MultipleSandwiches) o;
 
       return Objects.equals(this.sandwiches, other.sandwiches);
+    }
+  }
+
+  @Test
+  public void testPostConstructThrowsCheckedException() {
+    Gson gson =
+        new GsonBuilder().registerTypeAdapterFactory(new PostConstructAdapterFactory()).create();
+
+    RuntimeException e =
+        assertThrows(
+            RuntimeException.class,
+            () -> gson.fromJson("{\"value\": \"test\"}", ThrowsCheckedException.class));
+    assertThat(e.getCause()).isInstanceOf(IOException.class);
+    assertThat(e.getCause()).hasMessageThat().isEqualTo("checked exception from postConstruct");
+  }
+
+  static class ThrowsCheckedException {
+    public String value;
+
+    @PostConstruct
+    private void validate() throws IOException {
+      throw new IOException("checked exception from postConstruct");
     }
   }
 }
