@@ -22,6 +22,8 @@ import static org.junit.Assert.assertThrows;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -152,5 +154,72 @@ public final class UtcDateTypeAdapterTest {
         assertThrows(
             JsonParseException.class, () -> gson.fromJson("'2017-0B-20T14:32:30.000Z'", Date.class));
     assertThat(e).hasMessageThat().contains("Invalid number");
+  }
+
+  @Test
+  public void testFormatWithPositiveTimezoneOffset()
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    // Test the private format method with a positive timezone offset (e.g., +05:30 IST)
+    Method formatMethod =
+        UtcDateTypeAdapter.class.getDeclaredMethod(
+            "format", Date.class, boolean.class, TimeZone.class);
+    formatMethod.setAccessible(true);
+
+    // Create a date: 2014-12-05T09:30:00.000 in IST (+05:30)
+    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+05:30"));
+    cal.set(2014, Calendar.DECEMBER, 5, 9, 30, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+    Date date = cal.getTime();
+
+    TimeZone istZone = TimeZone.getTimeZone("GMT+05:30");
+    String formatted = (String) formatMethod.invoke(null, date, true, istZone);
+
+    // Should format with +05:30 offset
+    assertThat(formatted).isEqualTo("2014-12-05T09:30:00.000+05:30");
+  }
+
+  @Test
+  public void testFormatWithNegativeTimezoneOffset()
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    // Test the private format method with a negative timezone offset (e.g., -05:00 EST)
+    Method formatMethod =
+        UtcDateTypeAdapter.class.getDeclaredMethod(
+            "format", Date.class, boolean.class, TimeZone.class);
+    formatMethod.setAccessible(true);
+
+    // Create a date: 2014-12-04T23:00:00.000 in EST (-05:00)
+    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT-05:00"));
+    cal.set(2014, Calendar.DECEMBER, 4, 23, 0, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+    Date date = cal.getTime();
+
+    TimeZone estZone = TimeZone.getTimeZone("GMT-05:00");
+    String formatted = (String) formatMethod.invoke(null, date, true, estZone);
+
+    // Should format with -05:00 offset
+    assertThat(formatted).isEqualTo("2014-12-04T23:00:00.000-05:00");
+  }
+
+  @Test
+  public void testFormatWithNonZeroMinutesInOffset()
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    // Test the private format method with a timezone offset that has non-zero minutes
+    // e.g., Nepal Standard Time (+05:45)
+    Method formatMethod =
+        UtcDateTypeAdapter.class.getDeclaredMethod(
+            "format", Date.class, boolean.class, TimeZone.class);
+    formatMethod.setAccessible(true);
+
+    // Create a date at a specific time in Nepal timezone
+    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+05:45"));
+    cal.set(2020, Calendar.JUNE, 15, 12, 30, 45);
+    cal.set(Calendar.MILLISECOND, 123);
+    Date date = cal.getTime();
+
+    TimeZone nepalZone = TimeZone.getTimeZone("GMT+05:45");
+    String formatted = (String) formatMethod.invoke(null, date, true, nepalZone);
+
+    // Should format with +05:45 offset
+    assertThat(formatted).isEqualTo("2020-06-15T12:30:45.123+05:45");
   }
 }
