@@ -25,6 +25,7 @@ import com.google.gson.stream.JsonReader;
 import java.io.CharArrayReader;
 import java.io.CharArrayWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import org.junit.Test;
 
@@ -195,4 +196,82 @@ public class JsonParserTest {
     // Original strictness was kept
     assertThat(reader.getStrictness()).isEqualTo(strictness);
   }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testDeprecatedConstructor() {
+    JsonParser parser = new JsonParser();
+    assertThat(parser).isNotNull();
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testDeprecatedParseString() {
+    JsonParser parser = new JsonParser();
+    JsonElement e = parser.parse("{\"a\":10}");
+    assertThat(e.isJsonObject()).isTrue();
+    assertThat(e.getAsJsonObject().get("a").getAsInt()).isEqualTo(10);
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testDeprecatedParseReader() {
+    JsonParser parser = new JsonParser();
+    Reader reader = new StringReader("{\"b\":20}");
+    JsonElement e = parser.parse(reader);
+    assertThat(e.isJsonObject()).isTrue();
+    assertThat(e.getAsJsonObject().get("b").getAsInt()).isEqualTo(20);
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testDeprecatedParseJsonReader() {
+    JsonParser parser = new JsonParser();
+    JsonReader jsonReader = new JsonReader(new StringReader("{\"c\":30}"));
+    JsonElement e = parser.parse(jsonReader);
+    assertThat(e.isJsonObject()).isTrue();
+    assertThat(e.getAsJsonObject().get("c").getAsInt()).isEqualTo(30);
+  }
+
+  @Test
+  public void testParseReaderTrailingData() {
+    // Create a JsonReader with LENIENT mode so peek() can check for trailing data
+    // without throwing MalformedJsonException
+    JsonReader jsonReader = new JsonReader(new StringReader("[1] 5"));
+    jsonReader.setStrictness(Strictness.LENIENT);
+    // First parse should succeed
+    JsonElement element = JsonParser.parseReader(jsonReader);
+    assertThat(element.getAsJsonArray().get(0).getAsInt()).isEqualTo(1);
+    // Note: parseReader(JsonReader) does not check for trailing data - that's only done
+    // in parseReader(Reader). The trailing "5" is still available.
+  }
+
+  @Test
+  public void testParseReaderWithReaderTrailingData() {
+    // Use parseReader(Reader) to trigger the "Did not consume" check on line 112.
+    // However, with LEGACY_STRICT default mode, peek() throws MalformedJsonException
+    // for trailing content, so this tests the MalformedJsonException wrapping path (line 116).
+    StringReader reader = new StringReader("[1] 5");
+    JsonSyntaxException e =
+        assertThrows(JsonSyntaxException.class, () -> JsonParser.parseReader(reader));
+    assertThat(e).hasCauseThat().isInstanceOf(com.google.gson.stream.MalformedJsonException.class);
+  }
+
+  @Test
+  public void testParseReaderWrapsIOException() {
+    Reader failingReader =
+        new Reader() {
+          @Override
+          public int read(char[] cbuf, int off, int len) throws IOException {
+            throw new IOException("Simulated IO failure");
+          }
+
+          @Override
+          public void close() throws IOException {}
+        };
+    JsonIOException e =
+        assertThrows(JsonIOException.class, () -> JsonParser.parseReader(failingReader));
+    assertThat(e).hasCauseThat().hasMessageThat().isEqualTo("Simulated IO failure");
+  }
+
 }
