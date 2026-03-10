@@ -20,11 +20,18 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertThrows;
 
+import com.google.gson.InstanceCreator;
+import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -267,5 +274,164 @@ public class ConstructorConstructorTest {
             "Interfaces can't be instantiated! Register an InstanceCreator or a TypeAdapter"
                 + " for this type. Interface name: "
                 + CustomMapInterface.class.getName());
+  }
+
+  /**
+   * Tests that raw EnumSet (without type parameters) throws JsonIOException with appropriate
+   * message.
+   */
+  @Test
+  public void testEnumSetRawTypeThrowsException() {
+    @SuppressWarnings("rawtypes")
+    ObjectConstructor<EnumSet> constructor =
+        constructorConstructor.get(TypeToken.get(EnumSet.class));
+    JsonIOException exception = assertThrows(JsonIOException.class, () -> constructor.construct());
+    assertThat(exception).hasMessageThat().startsWith("Invalid EnumSet type:");
+  }
+
+  /**
+   * Tests that raw EnumMap (without type parameters) throws JsonIOException with appropriate
+   * message.
+   */
+  @Test
+  public void testEnumMapRawTypeThrowsException() {
+    @SuppressWarnings("rawtypes")
+    ObjectConstructor<EnumMap> constructor =
+        constructorConstructor.get(TypeToken.get(EnumMap.class));
+    JsonIOException exception = assertThrows(JsonIOException.class, () -> constructor.construct());
+    assertThat(exception).hasMessageThat().startsWith("Invalid EnumMap type:");
+  }
+
+  /**
+   * Tests that EnumSet with WildcardType element throws JsonIOException because the element type is
+   * not a Class.
+   */
+  @Test
+  public void testEnumSetWithWildcardTypeThrowsException() {
+    // Create a type like EnumSet<? extends MyEnum>
+    WildcardType wildcardType = GsonTypes.subtypeOf(MyEnum.class);
+    Type enumSetType = GsonTypes.newParameterizedTypeWithOwner(null, EnumSet.class, wildcardType);
+
+    @SuppressWarnings("unchecked")
+    TypeToken<EnumSet<?>> typeToken = (TypeToken<EnumSet<?>>) TypeToken.get(enumSetType);
+    ObjectConstructor<EnumSet<?>> constructor = constructorConstructor.get(typeToken);
+
+    JsonIOException exception = assertThrows(JsonIOException.class, () -> constructor.construct());
+    assertThat(exception).hasMessageThat().startsWith("Invalid EnumSet type:");
+  }
+
+  /**
+   * Tests that EnumMap with WildcardType key throws JsonIOException because the key type is not a
+   * Class.
+   */
+  @Test
+  public void testEnumMapWithWildcardKeyTypeThrowsException() {
+    // Create a type like EnumMap<? extends MyEnum, String>
+    WildcardType wildcardType = GsonTypes.subtypeOf(MyEnum.class);
+    Type enumMapType =
+        GsonTypes.newParameterizedTypeWithOwner(null, EnumMap.class, wildcardType, String.class);
+
+    @SuppressWarnings("unchecked")
+    TypeToken<EnumMap<?, String>> typeToken =
+        (TypeToken<EnumMap<?, String>>) TypeToken.get(enumMapType);
+    ObjectConstructor<EnumMap<?, String>> constructor = constructorConstructor.get(typeToken);
+
+    JsonIOException exception = assertThrows(JsonIOException.class, () -> constructor.construct());
+    assertThat(exception).hasMessageThat().startsWith("Invalid EnumMap type:");
+  }
+
+  /** Tests that ConstructorConstructor.toString() returns the instanceCreators map as string. */
+  @Test
+  public void testToString() {
+    // Create a ConstructorConstructor with empty instanceCreators
+    ConstructorConstructor emptyConstructor =
+        new ConstructorConstructor(Collections.emptyMap(), true, Collections.emptyList());
+    assertThat(emptyConstructor.toString()).isEqualTo("{}");
+
+    // Create a ConstructorConstructor with one instanceCreator
+    Map<Type, InstanceCreator<?>> creators = new HashMap<>();
+    creators.put(String.class, type -> "test");
+    ConstructorConstructor withCreator =
+        new ConstructorConstructor(creators, true, Collections.emptyList());
+    assertThat(withCreator.toString()).contains("class java.lang.String");
+  }
+
+  /**
+   * Tests that when JDK Unsafe is disabled and the class has no declared constructors, an
+   * appropriate error message is provided mentioning R8 configuration.
+   */
+  @Test
+  public void testUnsafeDisabledWithNoConstructorsShowsR8Message() {
+    // Create ConstructorConstructor with useJdkUnsafe=false
+    ConstructorConstructor noUnsafeConstructor =
+        new ConstructorConstructor(Collections.emptyMap(), false, Collections.emptyList());
+
+    // Use a custom class without a default no-args constructor
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    ObjectConstructor<CustomList> constructor =
+        noUnsafeConstructor.get(TypeToken.get(CustomList.class));
+
+    JsonIOException exception = assertThrows(JsonIOException.class, () -> constructor.construct());
+    assertThat(exception).hasMessageThat().contains("Unable to create instance of");
+    assertThat(exception).hasMessageThat().contains("usage of JDK Unsafe is disabled");
+  }
+
+  /**
+   * Tests the edge case in hasStringKeyType where a ParameterizedType has no type arguments. This
+   * is an unusual case that can occur with some custom Type implementations.
+   */
+  @Test
+  public void testMapWithEmptyTypeArguments() {
+    // Create a custom ParameterizedType with empty type arguments
+    ParameterizedType emptyArgsType =
+        new ParameterizedType() {
+          @Override
+          public Type[] getActualTypeArguments() {
+            return new Type[0];
+          }
+
+          @Override
+          public Type getRawType() {
+            return Map.class;
+          }
+
+          @Override
+          public Type getOwnerType() {
+            return null;
+          }
+        };
+
+    @SuppressWarnings("unchecked")
+    TypeToken<Map<?, ?>> typeToken = (TypeToken<Map<?, ?>>) TypeToken.get(emptyArgsType);
+    ObjectConstructor<Map<?, ?>> constructor = constructorConstructor.get(typeToken);
+
+    // Should create a LinkedHashMap (not LinkedTreeMap) because hasStringKeyType returns false
+    Object result = constructor.construct();
+    assertThat(result).isInstanceOf(LinkedHashMap.class);
+  }
+
+  /** Helper class that throws in constructor to test exception handling. */
+  private static class ThrowingConstructorClass {
+    @SuppressWarnings("unused")
+    public ThrowingConstructorClass() {
+      throw new RuntimeException("Constructor failed intentionally");
+    }
+  }
+
+  /** Tests that InvocationTargetException from constructor is properly wrapped. */
+  @Test
+  public void testConstructorThrowsExceptionIsWrapped() {
+    ObjectConstructor<ThrowingConstructorClass> constructor =
+        constructorConstructor.get(TypeToken.get(ThrowingConstructorClass.class));
+
+    RuntimeException exception =
+        assertThrows(RuntimeException.class, () -> constructor.construct());
+    assertThat(exception)
+        .hasMessageThat()
+        .contains(
+            "Failed to invoke constructor"
+                + " 'com.google.gson.internal.ConstructorConstructorTest$ThrowingConstructorClass()'");
+    assertThat(exception.getCause()).isInstanceOf(RuntimeException.class);
+    assertThat(exception.getCause()).hasMessageThat().isEqualTo("Constructor failed intentionally");
   }
 }
