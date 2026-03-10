@@ -259,6 +259,85 @@ public final class JsonTreeWriterTest {
     assertThrows(UnsupportedOperationException.class, () -> writer.jsonValue("test"));
   }
 
+  @Test
+  public void testGetThrowsWhenIncomplete() throws IOException {
+    JsonTreeWriter writer = new JsonTreeWriter();
+    writer.beginArray();
+    IllegalStateException e = assertThrows(IllegalStateException.class, () -> writer.get());
+    assertThat(e).hasMessageThat().startsWith("Expected one JSON element but was ");
+  }
+
+  @Test
+  public void testEndArrayOnEmptyStack() {
+    JsonTreeWriter writer = new JsonTreeWriter();
+    assertThrows(IllegalStateException.class, () -> writer.endArray());
+  }
+
+  @Test
+  public void testEndArrayOnObject() throws IOException {
+    JsonTreeWriter writer = new JsonTreeWriter();
+    writer.beginObject();
+    assertThrows(IllegalStateException.class, () -> writer.endArray());
+  }
+
+  @Test
+  public void testEndArrayWithPendingName() throws IOException {
+    JsonTreeWriter writer = new JsonTreeWriter();
+    writer.beginObject();
+    writer.name("key");
+    assertThrows(IllegalStateException.class, () -> writer.endArray());
+  }
+
+  @Test
+  public void testEndObjectOnEmptyStack() {
+    JsonTreeWriter writer = new JsonTreeWriter();
+    assertThrows(IllegalStateException.class, () -> writer.endObject());
+  }
+
+  @Test
+  public void testEndObjectOnArray() throws IOException {
+    JsonTreeWriter writer = new JsonTreeWriter();
+    writer.beginArray();
+    assertThrows(IllegalStateException.class, () -> writer.endObject());
+  }
+
+  @Test
+  public void testEndObjectWithPendingName() throws IOException {
+    JsonTreeWriter writer = new JsonTreeWriter();
+    writer.beginObject();
+    writer.name("key");
+    assertThrows(IllegalStateException.class, () -> writer.endObject());
+  }
+
+  @Test
+  public void testNullBooleanValue() throws IOException {
+    JsonTreeWriter writer = new JsonTreeWriter();
+    writer.beginArray();
+    Boolean nullValue = null;
+    writer.value(nullValue);
+    writer.endArray();
+    assertThat(writer.get().toString()).isEqualTo("[null]");
+  }
+
+  @Test
+  public void testNullNumberValue() throws IOException {
+    JsonTreeWriter writer = new JsonTreeWriter();
+    writer.beginArray();
+    Number nullValue = null;
+    writer.value(nullValue);
+    writer.endArray();
+    assertThat(writer.get().toString()).isEqualTo("[null]");
+  }
+
+  @Test
+  public void testFlush() throws IOException {
+    JsonTreeWriter writer = new JsonTreeWriter();
+    writer.beginArray();
+    writer.flush();
+    writer.endArray();
+    assertThat(writer.get().toString()).isEqualTo("[]");
+  }
+
   /**
    * {@link JsonTreeWriter} effectively replaces the complete writing logic of {@link JsonWriter} to
    * create a {@link JsonElement} tree instead of writing to a {@link Writer}. Therefore all
