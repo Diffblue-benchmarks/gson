@@ -22,7 +22,9 @@ import static org.junit.Assert.assertThrows;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
+import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 
 public final class RuntimeTypeAdapterFactoryTest {
@@ -206,6 +208,51 @@ public final class RuntimeTypeAdapterFactoryTest {
     BillingInstrumentWrapper deserialized =
         gson.fromJson(serialized, BillingInstrumentWrapper.class);
     assertThat(deserialized.instrument).isNull();
+  }
+
+  @Test
+  public void testMaintainTypeSerialization() {
+    // Test the of(Class, String, boolean) factory method with maintainType=true
+    // This exercises lines 183, 309-310
+    RuntimeTypeAdapterFactory<BillingInstrument> rta =
+        RuntimeTypeAdapterFactory.of(BillingInstrument.class, "type", true)
+            .registerSubtype(CreditCard.class);
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(rta).create();
+
+    CreditCard original = new CreditCard("Jesse", 234);
+    // With maintainType=true, serialization writes the object directly without adding type field
+    // The type field must already be present in the data for this to work
+    String json = gson.toJson(original, BillingInstrument.class);
+    assertThat(json).isEqualTo("{\"cvv\":234,\"ownerName\":\"Jesse\"}");
+  }
+
+  @Test
+  public void testMaintainTypeDeserialization() {
+    // Test deserialization with maintainType=true
+    // This exercises line 270 (get instead of remove)
+    RuntimeTypeAdapterFactory<BillingInstrument> rta =
+        RuntimeTypeAdapterFactory.of(BillingInstrument.class, "type", true)
+            .registerSubtype(CreditCard.class);
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(rta).create();
+
+    // With maintainType=true, the type field is preserved (not removed) during deserialization
+    BillingInstrument deserialized =
+        gson.fromJson("{\"type\":\"CreditCard\",\"cvv\":234,\"ownerName\":\"Jesse\"}", BillingInstrument.class);
+    assertThat(deserialized.ownerName).isEqualTo("Jesse");
+    assertThat(deserialized).isInstanceOf(CreditCard.class);
+  }
+
+  @Test
+  public void testCreateWithNullTypeToken() {
+    // Test that create() returns null when given a null TypeToken
+    // This exercises line 246
+    RuntimeTypeAdapterFactory<BillingInstrument> rta =
+        RuntimeTypeAdapterFactory.of(BillingInstrument.class)
+            .registerSubtype(CreditCard.class);
+    Gson gson = new GsonBuilder().registerTypeAdapterFactory(rta).create();
+
+    TypeAdapter<?> result = rta.create(gson, null);
+    assertThat(result).isNull();
   }
 
   static class BillingInstrumentWrapper {
