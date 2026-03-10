@@ -355,4 +355,53 @@ public class JsonObjectTest {
     assertThat(object.toString())
         .isEqualTo("{\"a\":null,\"b\\u0000\":NaN,\"c\":[\"\\\"\"],\"d\":{\"n\\u0000\":1}}");
   }
+
+  @Test
+  public void testGetAsJsonPrimitive() {
+    JsonObject jsonObj = new JsonObject();
+    jsonObj.addProperty("number", 42);
+    jsonObj.addProperty("string", "hello");
+    jsonObj.addProperty("boolean", true);
+
+    assertThat(jsonObj.getAsJsonPrimitive("number").getAsInt()).isEqualTo(42);
+    assertThat(jsonObj.getAsJsonPrimitive("string").getAsString()).isEqualTo("hello");
+    assertThat(jsonObj.getAsJsonPrimitive("boolean").getAsBoolean()).isTrue();
+    assertThat(jsonObj.getAsJsonPrimitive("nonexistent")).isNull();
+
+    jsonObj.add("array", new JsonArray());
+    assertThrows(ClassCastException.class, () -> jsonObj.getAsJsonPrimitive("array"));
+  }
+
+  @Test
+  public void testGetAsJsonArray() {
+    JsonObject jsonObj = new JsonObject();
+    JsonArray array = new JsonArray();
+    array.add(1);
+    array.add(2);
+    array.add(3);
+    jsonObj.add("array", array);
+
+    JsonArray retrieved = jsonObj.getAsJsonArray("array");
+    assertThat(retrieved).hasSize(3);
+    assertThat(retrieved.get(0).getAsInt()).isEqualTo(1);
+    assertThat(jsonObj.getAsJsonArray("nonexistent")).isNull();
+
+    jsonObj.addProperty("primitive", "value");
+    assertThrows(ClassCastException.class, () -> jsonObj.getAsJsonArray("primitive"));
+  }
+
+  @Test
+  public void testGetAsJsonObject() {
+    JsonObject jsonObj = new JsonObject();
+    JsonObject nested = new JsonObject();
+    nested.addProperty("key", "value");
+    jsonObj.add("nested", nested);
+
+    JsonObject retrieved = jsonObj.getAsJsonObject("nested");
+    assertThat(retrieved.get("key").getAsString()).isEqualTo("value");
+    assertThat(jsonObj.getAsJsonObject("nonexistent")).isNull();
+
+    jsonObj.addProperty("primitive", 123);
+    assertThrows(ClassCastException.class, () -> jsonObj.getAsJsonObject("primitive"));
+  }
 }
