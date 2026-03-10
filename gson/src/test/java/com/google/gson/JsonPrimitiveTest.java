@@ -89,6 +89,24 @@ public class JsonPrimitiveTest {
   }
 
   @Test
+  public void testGetAsNumberFromString() {
+    JsonPrimitive json = new JsonPrimitive("42");
+    assertThat(json.isNumber()).isFalse();
+    assertThat(json.isString()).isTrue();
+
+    // getAsNumber() returns a LazilyParsedNumber when value is a String
+    Number number = json.getAsNumber();
+    assertThat(number.intValue()).isEqualTo(42);
+    assertThat(number.longValue()).isEqualTo(42L);
+    assertThat(number.doubleValue()).isEqualTo(42.0);
+
+    // Test with decimal string
+    JsonPrimitive decimalJson = new JsonPrimitive("3.14159");
+    Number decimalNumber = decimalJson.getAsNumber();
+    assertThat(decimalNumber.doubleValue()).isEqualTo(3.14159);
+  }
+
+  @Test
   public void testAsNumber_Boolean() {
     JsonPrimitive json = new JsonPrimitive(true);
     var e = assertThrows(UnsupportedOperationException.class, () -> json.getAsNumber());
