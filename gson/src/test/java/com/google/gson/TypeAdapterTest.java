@@ -99,6 +99,31 @@ public class TypeAdapterTest {
     assertThat(e).hasCauseThat().isEqualTo(exception);
   }
 
+  /**
+   * Tests behavior when {@link TypeAdapter#read(JsonReader)} manually throws {@link IOException}
+   * which is not caused by reader usage.
+   */
+  @Test
+  public void testFromJsonTree_ThrowingIOException() {
+    IOException exception = new IOException("test");
+    TypeAdapter<Integer> adapter =
+        new TypeAdapter<>() {
+          @Override
+          public void write(JsonWriter out, Integer value) {
+            throw new AssertionError("not needed by this test");
+          }
+
+          @Override
+          public Integer read(JsonReader in) throws IOException {
+            throw exception;
+          }
+        };
+
+    JsonIOException e =
+        assertThrows(JsonIOException.class, () -> adapter.fromJsonTree(JsonNull.INSTANCE));
+    assertThat(e).hasCauseThat().isEqualTo(exception);
+  }
+
   private static final TypeAdapter<String> adapter =
       new TypeAdapter<>() {
         @Override
