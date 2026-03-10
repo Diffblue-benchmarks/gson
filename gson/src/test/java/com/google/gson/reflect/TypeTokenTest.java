@@ -559,6 +559,41 @@ public final class TypeTokenTest {
     }
     new Outer<String>().test();
   }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testIsAssignableFromGenericArrayTypeWithClassFrom() {
+    // Tests lines 228-233 - GenericArrayType assignability when 'from' is a Class
+    // This covers the else-if branch where from instanceof Class<?>
+    TypeToken<List<String>[]> listArrayToken = new TypeToken<List<String>[]>() {};
+
+    // From Class<?> array type - tests lines 228-233
+    // When from is ArrayList[].class and to is List<String>[]:
+    // - The code extracts ArrayList.class as the component type
+    // - Then checks if ArrayList.class is assignable to List<String>
+    // - This returns false because raw ArrayList doesn't match List<String>
+    assertThat(listArrayToken.isAssignableFrom(ArrayList[].class)).isFalse();
+
+    // Non-array class - covers lines 228-229 and 233 but not the while loop (230-231)
+    // Because ArrayList.class.isArray() is false
+    assertThat(listArrayToken.isAssignableFrom(ArrayList.class)).isFalse();
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testIsAssignableFromGenericArrayTypeWithMultiDimensionalArray() {
+    // Tests lines 230-231 - the while loop that unwraps multi-dimensional arrays
+    TypeToken<List<String>[]> listArrayToken = new TypeToken<List<String>[]>() {};
+
+    // Multi-dimensional array class - tests the while loop (lines 230-231)
+    // When from is ArrayList[][].class (2D array), the while loop unwraps it
+    // to ArrayList.class, then checks assignability to List<String>
+    assertThat(listArrayToken.isAssignableFrom(ArrayList[][].class)).isFalse();
+
+    // Incompatible array type
+    assertThat(listArrayToken.isAssignableFrom(String[][].class)).isFalse();
+  }
+
 }
 
 // Have to declare these classes here as top-level classes because otherwise tests for
