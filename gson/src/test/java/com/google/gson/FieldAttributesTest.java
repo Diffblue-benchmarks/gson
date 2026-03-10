@@ -20,8 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import com.google.gson.reflect.TypeToken;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,8 +76,34 @@ public class FieldAttributesTest {
     assertThat(fieldAttributes.getDeclaredClass()).isAssignableTo(List.class);
   }
 
+  @Test
+  public void testGetAnnotations() throws Exception {
+    FieldAttributes annotatedFieldAttributes =
+        new FieldAttributes(Bar.class.getField("annotatedField"));
+    Collection<Annotation> annotations = annotatedFieldAttributes.getAnnotations();
+    assertThat(annotations).hasSize(1);
+    assertThat(annotations.iterator().next()).isInstanceOf(Deprecated.class);
+  }
+
+  @Test
+  public void testGetAnnotationsEmpty() {
+    Collection<Annotation> annotations = fieldAttributes.getAnnotations();
+    assertThat(annotations).isEmpty();
+  }
+
+  @Test
+  public void testToString() {
+    String result = fieldAttributes.toString();
+    assertThat(result).contains("bar");
+    assertThat(result).contains("List");
+  }
+
   private static class Foo {
     @SuppressWarnings("unused")
     public transient List<String> bar;
+  }
+
+  private static class Bar {
+    @Deprecated public String annotatedField;
   }
 }
