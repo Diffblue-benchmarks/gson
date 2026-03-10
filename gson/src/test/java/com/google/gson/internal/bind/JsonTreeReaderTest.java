@@ -199,4 +199,52 @@ public class JsonTreeReaderTest {
             "getNestingLimit()");
     MoreAsserts.assertOverridesMethods(JsonReader.class, JsonTreeReader.class, ignoredMethods);
   }
+
+  @Test
+  public void testToString() {
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.addProperty("key", "value");
+    JsonTreeReader reader = new JsonTreeReader(jsonObject);
+
+    assertThat(reader.toString()).isEqualTo("JsonTreeReader at path $");
+  }
+
+  @Test
+  public void testToStringAtNestedPath() throws IOException {
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.addProperty("key", "value");
+    JsonTreeReader reader = new JsonTreeReader(jsonObject);
+    reader.beginObject();
+    reader.nextName();
+
+    assertThat(reader.toString()).isEqualTo("JsonTreeReader at path $.key");
+  }
+
+  @Test
+  public void testStackResize() throws IOException {
+    // Create a deeply nested array structure to trigger stack resize
+    // Default stack size is 32; each array requires 2 stack entries (array + iterator)
+    // Need more than 32 entries to trigger resize
+    int depth = 20; // 20 arrays * 2 entries = 40 stack entries, exceeds 32
+    JsonArray json = new JsonArray();
+    JsonArray current = json;
+    for (int i = 0; i < depth - 1; i++) {
+      JsonArray nested = new JsonArray();
+      current.add(nested);
+      current = nested;
+    }
+    current.add("deep value");
+
+    JsonTreeReader reader = new JsonTreeReader(json);
+
+    // Navigate through all nested arrays
+    for (int i = 0; i < depth; i++) {
+      reader.beginArray();
+    }
+    assertThat(reader.nextString()).isEqualTo("deep value");
+    for (int i = 0; i < depth; i++) {
+      reader.endArray();
+    }
+    assertThat(reader.peek()).isEqualTo(JsonToken.END_DOCUMENT);
+  }
 }
