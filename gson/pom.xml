@@ -177,7 +177,8 @@
             run with e.g. Java 11, but Maven toolchain requirements (unlike Gradle ones)
             don't seem to be portable (every developer would have to set up toolchain
             configuration locally). -->
-          <argLine>--illegal-access=deny</argLine>
+          <!-- @{argLine} is populated by JaCoCo for coverage -->
+          <argLine>@{argLine} --illegal-access=deny</argLine>
         </configuration>
       </plugin>
       <!-- Failsafe plugin for running integration tests against final JAR, see `*IT.java` test classes -->
@@ -333,6 +334,12 @@
         <configuration>
           <excludePackageNames>com.google.gson.internal:com.google.gson.internal.bind</excludePackageNames>
         </configuration>
+      </plugin>
+
+      <!-- JaCoCo for code coverage -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
