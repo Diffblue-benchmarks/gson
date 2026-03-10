@@ -123,4 +123,85 @@ public class ISO8601UtilsTest {
     String dateStr = "2018-06-25T61:60:62-03:00";
     assertThrows(ParseException.class, () -> ISO8601Utils.parse(dateStr, new ParsePosition(0)));
   }
+
+  @Test
+  @SuppressWarnings("UndefinedEquals")
+  public void testDateParseWithTwoDigitMilliseconds() throws ParseException {
+    String dateStr = "2018-06-25T12:34:56.12Z";
+    Date date = ISO8601Utils.parse(dateStr, new ParsePosition(0));
+    GregorianCalendar calendar = createUtcCalendar();
+    calendar.set(2018, Calendar.JUNE, 25, 12, 34, 56);
+    calendar.set(Calendar.MILLISECOND, 120);
+    Date expectedDate = calendar.getTime();
+    assertThat(date).isEqualTo(expectedDate);
+  }
+
+  @Test
+  @SuppressWarnings("UndefinedEquals")
+  public void testDateParseWithOneDigitMilliseconds() throws ParseException {
+    String dateStr = "2018-06-25T12:34:56.1Z";
+    Date date = ISO8601Utils.parse(dateStr, new ParsePosition(0));
+    GregorianCalendar calendar = createUtcCalendar();
+    calendar.set(2018, Calendar.JUNE, 25, 12, 34, 56);
+    calendar.set(Calendar.MILLISECOND, 100);
+    Date expectedDate = calendar.getTime();
+    assertThat(date).isEqualTo(expectedDate);
+  }
+
+  @Test
+  @SuppressWarnings("UndefinedEquals")
+  public void testDateParseWithManyDigitMilliseconds() throws ParseException {
+    String dateStr = "2018-06-25T12:34:56.123456789Z";
+    Date date = ISO8601Utils.parse(dateStr, new ParsePosition(0));
+    GregorianCalendar calendar = createUtcCalendar();
+    calendar.set(2018, Calendar.JUNE, 25, 12, 34, 56);
+    calendar.set(Calendar.MILLISECOND, 123);
+    Date expectedDate = calendar.getTime();
+    assertThat(date).isEqualTo(expectedDate);
+  }
+
+  @Test
+  public void testDateParseMissingTimezone() {
+    String dateStr = "2018-06-25T12:34:56";
+    ParseException exception =
+        assertThrows(
+            ParseException.class, () -> ISO8601Utils.parse(dateStr, new ParsePosition(0)));
+    assertThat(exception).hasMessageThat().contains("No time zone indicator");
+  }
+
+  @Test
+  public void testDateParseInvalidTimezoneIndicator() {
+    String dateStr = "2018-06-25T12:34:56X";
+    ParseException exception =
+        assertThrows(
+            ParseException.class, () -> ISO8601Utils.parse(dateStr, new ParsePosition(0)));
+    assertThat(exception).hasMessageThat().contains("Invalid time zone indicator 'X'");
+  }
+
+  @Test
+  public void testDateParseMismatchingTimezone() {
+    String dateStr = "2018-06-25T12:34:56+99:99";
+    ParseException exception =
+        assertThrows(
+            ParseException.class, () -> ISO8601Utils.parse(dateStr, new ParsePosition(0)));
+    assertThat(exception).hasMessageThat().contains("Mismatching time zone indicator");
+  }
+
+  @Test
+  public void testDateParseInvalidYearDigit() {
+    String dateStr = "20X8-06-25T12:34:56Z";
+    ParseException exception =
+        assertThrows(
+            ParseException.class, () -> ISO8601Utils.parse(dateStr, new ParsePosition(0)));
+    assertThat(exception).hasMessageThat().contains("Invalid number");
+  }
+
+  @Test
+  public void testDateParseInvalidFirstDigit() {
+    String dateStr = "X018-06-25Z";
+    ParseException exception =
+        assertThrows(
+            ParseException.class, () -> ISO8601Utils.parse(dateStr, new ParsePosition(0)));
+    assertThat(exception).hasMessageThat().contains("Invalid number");
+  }
 }
