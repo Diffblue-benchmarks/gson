@@ -142,6 +142,44 @@ public final class InterceptorTest {
     assertThat(userGroup.user.email).isEqualTo(User.DEFAULT_EMAIL);
   }
 
+  @Test
+  public void testSerialization() {
+    User user = new User("bob", "pwd");
+    user.email = "bob@example.com";
+    String json = gson.toJson(user);
+    assertThat(json).contains("\"name\":\"bob\"");
+    assertThat(json).contains("\"password\":\"pwd\"");
+    assertThat(json).contains("\"email\":\"bob@example.com\"");
+  }
+
+  @Test
+  public void testInvalidPostDeserializerThrowsRuntimeException() {
+    Gson invalidGson =
+        new GsonBuilder().registerTypeAdapterFactory(new InterceptorFactory()).create();
+    RuntimeException e =
+        assertThrows(RuntimeException.class, () -> invalidGson.getAdapter(InvalidUser.class));
+    assertThat(e.getCause()).isInstanceOf(NoSuchMethodException.class);
+  }
+
+  @Intercept(postDeserialize = InvalidPostDeserializer.class)
+  @SuppressWarnings("unused")
+  private static final class InvalidUser {
+    String name;
+  }
+
+  /** A post deserializer with no public no-arg constructor. */
+  public static final class InvalidPostDeserializer implements JsonPostDeserializer<InvalidUser> {
+    @SuppressWarnings("unused")
+    public InvalidPostDeserializer(String required) {
+      // No no-arg constructor
+    }
+
+    @Override
+    public void postDeserialize(InvalidUser user) {
+      // no-op
+    }
+  }
+
   @SuppressWarnings("unused")
   private static final class UserGroup {
     User user;
