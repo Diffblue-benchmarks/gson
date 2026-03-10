@@ -17,6 +17,7 @@
 package com.google.gson.graph;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -232,6 +233,18 @@ public final class GraphAdapterBuilderTest {
     // But first adapter should not have been affected
     company = gson.fromJson("{'0x1':{}}", Company.class);
     assertThat(company.name).isEqualTo("custom");
+  }
+
+  @Test
+  public void testAddTypeWithNullType() {
+    GraphAdapterBuilder builder = new GraphAdapterBuilder();
+    assertThrows(NullPointerException.class, () -> builder.addType(null, type -> new Company("test")));
+  }
+
+  @Test
+  public void testAddTypeWithNullInstanceCreator() {
+    GraphAdapterBuilder builder = new GraphAdapterBuilder();
+    assertThrows(NullPointerException.class, () -> builder.addType(Company.class, null));
   }
 
   static class Roshambo {
