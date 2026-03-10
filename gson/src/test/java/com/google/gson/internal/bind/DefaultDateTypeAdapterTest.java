@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.bind.DefaultDateTypeAdapter.DateType;
@@ -246,5 +247,33 @@ public class DefaultDateTypeAdapterTest {
 
   private static String toLiteral(String s) {
     return '"' + s + '"';
+  }
+
+  @Test
+  public void testInvalidDateThrowsJsonSyntaxException() {
+    TypeAdapter<Date> adapter = dateAdapter(DefaultDateTypeAdapter.DEFAULT_STYLE_FACTORY);
+    JsonSyntaxException e =
+        assertThrows(JsonSyntaxException.class, () -> adapter.fromJson("\"not a valid date\""));
+    assertThat(e).hasMessageThat().contains("Failed parsing 'not a valid date' as Date");
+    assertThat(e).hasMessageThat().contains("at path");
+    assertThat(e).hasCauseThat().isInstanceOf(java.text.ParseException.class);
+  }
+
+  @Test
+  public void testToStringWithDatePattern() {
+    TypeAdapterFactory adapterFactory = DateType.DATE.createAdapterFactory("yyyy-MM-dd");
+    TypeAdapter<Date> adapter = dateAdapter(adapterFactory);
+    String result = adapter.toString();
+    assertThat(result).isEqualTo("DefaultDateTypeAdapter(yyyy-MM-dd)");
+  }
+
+  @Test
+  public void testToStringWithDateStyle() {
+    TypeAdapterFactory adapterFactory =
+        DateType.DATE.createAdapterFactory(DateFormat.MEDIUM, DateFormat.MEDIUM);
+    TypeAdapter<Date> adapter = dateAdapter(adapterFactory);
+    String result = adapter.toString();
+    assertThat(result).startsWith("DefaultDateTypeAdapter(");
+    assertThat(result).endsWith(")");
   }
 }
