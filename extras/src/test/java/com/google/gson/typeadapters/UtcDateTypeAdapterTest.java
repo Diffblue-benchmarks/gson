@@ -95,4 +95,62 @@ public final class UtcDateTypeAdapterTest {
         .isEqualTo(
             "java.text.ParseException: Failed to parse date ['2017-06-20T14']: 2017-06-20T14");
   }
+
+  @Test
+  public void testNullDateDeserialization() {
+    Date date = gson.fromJson("null", Date.class);
+    assertThat(date).isNull();
+  }
+
+  @Test
+  public void testDateWithPositiveTimezoneOffset() {
+    // Date with +05:30 timezone offset (India Standard Time)
+    Date date = gson.fromJson("'2014-12-05T09:30:00.000+05:30'", Date.class);
+    // 2014-12-05T09:30 IST = 2014-12-05T04:00 UTC = 1417752000000L
+    assertThat(date.getTime()).isEqualTo(1417752000000L);
+  }
+
+  @Test
+  public void testDateWithNegativeTimezoneOffset() {
+    // Date with -05:00 timezone offset (EST)
+    Date date = gson.fromJson("'2014-12-04T23:00:00.000-05:00'", Date.class);
+    // 2014-12-04T23:00 EST = 2014-12-05T04:00 UTC = 1417752000000L
+    assertThat(date.getTime()).isEqualTo(1417752000000L);
+  }
+
+  @Test
+  public void testParseExceptionForMissingTimezoneIndicator() {
+    // Date without any timezone indicator
+    JsonParseException e =
+        assertThrows(
+            JsonParseException.class, () -> gson.fromJson("'2017-06-20T14:32:30.000'", Date.class));
+    assertThat(e).hasMessageThat().contains("No time zone indicator");
+  }
+
+  @Test
+  public void testParseExceptionForInvalidTimezoneIndicator() {
+    // Date with invalid timezone indicator 'X'
+    JsonParseException e =
+        assertThrows(
+            JsonParseException.class, () -> gson.fromJson("'2017-06-20T14:32:30.000X'", Date.class));
+    assertThat(e).hasMessageThat().contains("Invalid time zone indicator");
+  }
+
+  @Test
+  public void testParseExceptionForInvalidDigitInDate() {
+    // Date with invalid character 'A' in year
+    JsonParseException e =
+        assertThrows(
+            JsonParseException.class, () -> gson.fromJson("'201A-06-20T14:32:30.000Z'", Date.class));
+    assertThat(e).hasMessageThat().contains("Invalid number");
+  }
+
+  @Test
+  public void testParseExceptionForInvalidDigitInMiddleOfNumber() {
+    // Date with invalid character 'B' in month (second digit)
+    JsonParseException e =
+        assertThrows(
+            JsonParseException.class, () -> gson.fromJson("'2017-0B-20T14:32:30.000Z'", Date.class));
+    assertThat(e).hasMessageThat().contains("Invalid number");
+  }
 }
