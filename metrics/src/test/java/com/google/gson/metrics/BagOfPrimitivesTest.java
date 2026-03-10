@@ -15,7 +15,11 @@
  */
 package com.google.gson.metrics;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -28,27 +32,27 @@ public class BagOfPrimitivesTest {
   public void testDefaultConstructor() {
     BagOfPrimitives bag = new BagOfPrimitives();
 
-    assertThat(bag.longValue).isEqualTo(BagOfPrimitives.DEFAULT_VALUE);
-    assertThat(bag.intValue).isEqualTo(0);
-    assertThat(bag.booleanValue).isFalse();
-    assertThat(bag.stringValue).isEmpty();
+    assertEquals(BagOfPrimitives.DEFAULT_VALUE, bag.longValue);
+    assertEquals(0, bag.intValue);
+    assertFalse(bag.booleanValue);
+    assertEquals("", bag.stringValue);
   }
 
   @Test
   public void testParameterizedConstructor() {
     BagOfPrimitives bag = new BagOfPrimitives(10L, 5, true, "hello");
 
-    assertThat(bag.longValue).isEqualTo(10L);
-    assertThat(bag.intValue).isEqualTo(5);
-    assertThat(bag.booleanValue).isTrue();
-    assertThat(bag.stringValue).isEqualTo("hello");
+    assertEquals(10L, bag.longValue);
+    assertEquals(5, bag.intValue);
+    assertTrue(bag.booleanValue);
+    assertEquals("hello", bag.stringValue);
   }
 
   @Test
   public void testGetIntValue() {
     BagOfPrimitives bag = new BagOfPrimitives(0L, 42, false, "");
 
-    assertThat(bag.getIntValue()).isEqualTo(42);
+    assertEquals(42, bag.getIntValue());
   }
 
   @Test
@@ -57,8 +61,9 @@ public class BagOfPrimitivesTest {
 
     String expectedJson = bag.getExpectedJson();
 
-    assertThat(expectedJson).isEqualTo(
-        "{\"longValue\":100,\"intValue\":20,\"booleanValue\":true,\"stringValue\":\"test\"}");
+    assertEquals(
+        "{\"longValue\":100,\"intValue\":20,\"booleanValue\":true,\"stringValue\":\"test\"}",
+        expectedJson);
   }
 
   @Test
@@ -66,7 +71,7 @@ public class BagOfPrimitivesTest {
     BagOfPrimitives bag1 = new BagOfPrimitives(10L, 5, true, "hello");
     BagOfPrimitives bag2 = new BagOfPrimitives(10L, 5, true, "hello");
 
-    assertThat(bag1.hashCode()).isEqualTo(bag2.hashCode());
+    assertEquals(bag1.hashCode(), bag2.hashCode());
   }
 
   @Test
@@ -75,7 +80,7 @@ public class BagOfPrimitivesTest {
 
     // Should not throw exception
     int hashCode = bag.hashCode();
-    assertThat(hashCode).isNotNull();
+    assertNotNull(hashCode);
   }
 
   @Test
@@ -83,14 +88,14 @@ public class BagOfPrimitivesTest {
     BagOfPrimitives bag1 = new BagOfPrimitives(10L, 5, true, "hello");
     BagOfPrimitives bag2 = new BagOfPrimitives(20L, 10, false, "world");
 
-    assertThat(bag1.hashCode()).isNotEqualTo(bag2.hashCode());
+    assertNotEquals(bag1.hashCode(), bag2.hashCode());
   }
 
   @Test
   public void testEqualsSameInstance() {
     BagOfPrimitives bag = new BagOfPrimitives(10L, 5, true, "hello");
 
-    assertThat(bag.equals(bag)).isTrue();
+    assertTrue(bag.equals(bag));
   }
 
   @Test
@@ -98,15 +103,15 @@ public class BagOfPrimitivesTest {
     BagOfPrimitives bag1 = new BagOfPrimitives(10L, 5, true, "hello");
     BagOfPrimitives bag2 = new BagOfPrimitives(10L, 5, true, "hello");
 
-    assertThat(bag1.equals(bag2)).isTrue();
+    assertTrue(bag1.equals(bag2));
   }
 
   @Test
   public void testEqualsNotInstanceOf() {
     BagOfPrimitives bag = new BagOfPrimitives(10L, 5, true, "hello");
 
-    assertThat(bag.equals("not a BagOfPrimitives")).isFalse();
-    assertThat(bag.equals(null)).isFalse();
+    assertFalse(bag.equals("not a BagOfPrimitives"));
+    assertFalse(bag.equals(null));
   }
 
   @Test
@@ -114,7 +119,7 @@ public class BagOfPrimitivesTest {
     BagOfPrimitives bag1 = new BagOfPrimitives(10L, 5, true, "hello");
     BagOfPrimitives bag2 = new BagOfPrimitives(20L, 5, true, "hello");
 
-    assertThat(bag1.equals(bag2)).isFalse();
+    assertFalse(bag1.equals(bag2));
   }
 
   @Test
@@ -122,7 +127,7 @@ public class BagOfPrimitivesTest {
     BagOfPrimitives bag1 = new BagOfPrimitives(10L, 5, true, "hello");
     BagOfPrimitives bag2 = new BagOfPrimitives(10L, 10, true, "hello");
 
-    assertThat(bag1.equals(bag2)).isFalse();
+    assertFalse(bag1.equals(bag2));
   }
 
   @Test
@@ -130,7 +135,7 @@ public class BagOfPrimitivesTest {
     BagOfPrimitives bag1 = new BagOfPrimitives(10L, 5, true, "hello");
     BagOfPrimitives bag2 = new BagOfPrimitives(10L, 5, false, "hello");
 
-    assertThat(bag1.equals(bag2)).isFalse();
+    assertFalse(bag1.equals(bag2));
   }
 
   @Test
@@ -138,7 +143,7 @@ public class BagOfPrimitivesTest {
     BagOfPrimitives bag1 = new BagOfPrimitives(10L, 5, true, "hello");
     BagOfPrimitives bag2 = new BagOfPrimitives(10L, 5, true, "world");
 
-    assertThat(bag1.equals(bag2)).isFalse();
+    assertFalse(bag1.equals(bag2));
   }
 
   @Test
@@ -146,7 +151,7 @@ public class BagOfPrimitivesTest {
     BagOfPrimitives bag1 = new BagOfPrimitives(10L, 5, true, null);
     BagOfPrimitives bag2 = new BagOfPrimitives(10L, 5, true, null);
 
-    assertThat(bag1.equals(bag2)).isTrue();
+    assertTrue(bag1.equals(bag2));
   }
 
   @Test
@@ -155,7 +160,7 @@ public class BagOfPrimitivesTest {
 
     String result = bag.toString();
 
-    assertThat(result).isEqualTo("(longValue=100,intValue=50,booleanValue=true,stringValue=test)");
+    assertEquals("(longValue=100,intValue=50,booleanValue=true,stringValue=test)", result);
   }
 
   @Test
@@ -164,6 +169,6 @@ public class BagOfPrimitivesTest {
 
     String result = bag.toString();
 
-    assertThat(result).isEqualTo("(longValue=0,intValue=0,booleanValue=false,stringValue=)");
+    assertEquals("(longValue=0,intValue=0,booleanValue=false,stringValue=)", result);
   }
 }
