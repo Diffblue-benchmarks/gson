@@ -19,8 +19,13 @@ package com.google.gson.internal;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
+import com.google.gson.JsonIOException;
+import com.google.gson.stream.JsonReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.junit.Test;
 
 public class StreamsTest {
@@ -64,5 +69,43 @@ public class StreamsTest {
 
     // flush() and close() calls should have had no effect
     assertThat(stringBuilder.toString()).isEqualTo(actualOutput);
+  }
+
+  @Test
+  public void testPrivateConstructorThrowsException() throws Exception {
+    Constructor<Streams> constructor = Streams.class.getDeclaredConstructor();
+    constructor.setAccessible(true);
+
+    InvocationTargetException e =
+        assertThrows(InvocationTargetException.class, () -> constructor.newInstance());
+    assertThat(e).hasCauseThat().isInstanceOf(UnsupportedOperationException.class);
+  }
+
+  @Test
+  public void testParseIOException() {
+    Reader failingReader =
+        new Reader() {
+          private boolean firstRead = true;
+
+          @Override
+          public int read(char[] cbuf, int off, int len) throws IOException {
+            if (firstRead) {
+              // Return valid JSON start so peek() succeeds
+              firstRead = false;
+              cbuf[off] = '[';
+              return 1;
+            }
+            // Subsequent reads fail with IOException
+            throw new IOException("Simulated IO failure");
+          }
+
+          @Override
+          public void close() {}
+        };
+
+    JsonReader jsonReader = new JsonReader(failingReader);
+    JsonIOException e = assertThrows(JsonIOException.class, () -> Streams.parse(jsonReader));
+    assertThat(e).hasCauseThat().isInstanceOf(IOException.class);
+    assertThat(e).hasCauseThat().hasMessageThat().isEqualTo("Simulated IO failure");
   }
 }
