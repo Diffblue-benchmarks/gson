@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.junit.Test;
 
@@ -155,4 +156,45 @@ public final class GsonTypesTest {
     assertThat(types[0]).isEqualTo(String.class);
     assertThat(types[1]).isEqualTo(String.class);
   }
+
+  @Test
+  public void testParameterizedTypeToStringNoTypeArguments() {
+    // Create a parameterized type with no type arguments (raw type)
+    ParameterizedType type = GsonTypes.newParameterizedTypeWithOwner(null, List.class);
+
+    assertThat(type.toString()).isEqualTo("java.util.List");
+  }
+
+  @Test
+  public void testParameterizedTypeToStringSingleTypeArgument() {
+    // Create a parameterized type with one type argument: List<String>
+    ParameterizedType type = GsonTypes.newParameterizedTypeWithOwner(null, List.class, String.class);
+
+    assertThat(type.toString()).isEqualTo("java.util.List<java.lang.String>");
+  }
+
+  @Test
+  public void testParameterizedTypeToStringMultipleTypeArguments() {
+    // Create a parameterized type with two type arguments: Map<String, Integer>
+    ParameterizedType type =
+        GsonTypes.newParameterizedTypeWithOwner(null, Map.class, String.class, Integer.class);
+
+    assertThat(type.toString()).isEqualTo("java.util.Map<java.lang.String, java.lang.Integer>");
+  }
+
+  @Test
+  public void testParameterizedTypeToStringThreeTypeArguments() {
+    // Create a parameterized type with three type arguments to verify loop handling
+    ParameterizedType type =
+        GsonTypes.newParameterizedTypeWithOwner(
+            null, ThreeTypeArgs.class, String.class, Integer.class, Boolean.class);
+
+    assertThat(type.toString())
+        .isEqualTo(
+            "com.google.gson.internal.GsonTypesTest$ThreeTypeArgs"
+                + "<java.lang.String, java.lang.Integer, java.lang.Boolean>");
+  }
+
+  @SuppressWarnings("UnusedTypeParameter")
+  private static class ThreeTypeArgs<T, U, V> {}
 }
