@@ -17,6 +17,7 @@
 package com.google.gson;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import com.google.gson.stream.JsonReader;
 import java.io.IOException;
@@ -107,6 +108,16 @@ public final class ObjectTypeAdapterTest {
       current = (Map<String, Map<?, ?>>) current.get("a");
     }
     assertThat(actualTimes).isEqualTo(times);
+  }
+
+  @Test
+  public void testReadUnexpectedToken() throws IOException {
+    JsonReader jsonReader = new JsonReader(new StringReader("[]"));
+    jsonReader.beginArray();
+    // Now peek() returns END_ARRAY, which is not a valid token for readTerminal
+
+    IllegalStateException e = assertThrows(IllegalStateException.class, () -> adapter.read(jsonReader));
+    assertThat(e).hasMessageThat().contains("Unexpected token");
   }
 
   @SuppressWarnings({"unused", "ClassCanBeStatic"})
