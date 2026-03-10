@@ -673,4 +673,40 @@ public final class GsonTest {
       this(NO_ARG_CONSTRUCTOR_VALUE);
     }
   }
+
+  @Test
+  public void testFutureTypeAdapterSetDelegateAlreadySet() {
+    FutureTypeAdapter<String> futureAdapter = new FutureTypeAdapter<>();
+    TypeAdapter<String> delegate =
+        new TypeAdapter<String>() {
+          @Override
+          public void write(JsonWriter out, String value) throws IOException {
+            out.value(value);
+          }
+
+          @Override
+          public String read(JsonReader in) throws IOException {
+            return in.nextString();
+          }
+        };
+
+    futureAdapter.setDelegate(delegate);
+
+    AssertionError e =
+        assertThrows(AssertionError.class, () -> futureAdapter.setDelegate(delegate));
+    assertThat(e).hasMessageThat().isEqualTo("Delegate is already set");
+  }
+
+  @Test
+  public void testFutureTypeAdapterUsedBeforeDelegateSet() throws IOException {
+    FutureTypeAdapter<String> futureAdapter = new FutureTypeAdapter<>();
+
+    IllegalStateException e =
+        assertThrows(IllegalStateException.class, () -> futureAdapter.read(null));
+    assertThat(e)
+        .hasMessageThat()
+        .isEqualTo(
+            "Adapter for type with cyclic dependency has been used"
+                + " before dependency has been resolved");
+  }
 }
