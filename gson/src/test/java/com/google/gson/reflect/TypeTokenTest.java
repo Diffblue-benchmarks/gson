@@ -459,6 +459,106 @@ public final class TypeTokenTest {
                 + " preserved.\n"
                 + "See https://github.com/google/gson/blob/main/Troubleshooting.md#type-token-raw");
   }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testIsAssignableFromNull() {
+    // Tests line 188 - isAssignableFrom(Type from) returns false when from is null
+    TypeToken<String> typeToken = TypeToken.get(String.class);
+    assertThat(typeToken.isAssignableFrom((Type) null)).isFalse();
+
+    // Also test with parameterized type
+    TypeToken<List<String>> listTypeToken = new TypeToken<List<String>>() {};
+    assertThat(listTypeToken.isAssignableFrom((Type) null)).isFalse();
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testIsAssignableFromTypeToken() {
+    // Tests line 215 - isAssignableFrom(TypeToken<?> token) delegates to isAssignableFrom(Type)
+    TypeToken<Object> objectToken = TypeToken.get(Object.class);
+    TypeToken<String> stringToken = TypeToken.get(String.class);
+
+    assertThat(objectToken.isAssignableFrom(stringToken)).isTrue();
+    assertThat(stringToken.isAssignableFrom(objectToken)).isFalse();
+    assertThat(stringToken.isAssignableFrom(stringToken)).isTrue();
+
+    // Test with parameterized types
+    TypeToken<List<String>> listStringToken = new TypeToken<List<String>>() {};
+    TypeToken<ArrayList<String>> arrayListStringToken = new TypeToken<ArrayList<String>>() {};
+    assertThat(listStringToken.isAssignableFrom(arrayListStringToken)).isTrue();
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testIsAssignableFromGenericArrayType() {
+    // Tests lines 200-201 and 223-240 - GenericArrayType assignability checks
+    TypeToken<List<String>[]> listArrayToken = new TypeToken<List<String>[]>() {};
+
+    // From exact same GenericArrayType - uses line 191-192 (type.equals(from))
+    Type genericArrayFrom = new TypeToken<List<String>[]>() {}.getType();
+    assertThat(listArrayToken.isAssignableFrom(genericArrayFrom)).isTrue();
+
+    // From compatible GenericArrayType - tests lines 200-201 and 226-227
+    Type arrayListArrayType = new TypeToken<ArrayList<String>[]>() {}.getType();
+    assertThat(listArrayToken.isAssignableFrom(arrayListArrayType)).isTrue();
+
+    // Tests line 240 - when toGenericComponentType is not ParameterizedType
+    // Use raw array type as component
+    TypeToken<String[]> stringArrayToken = new TypeToken<String[]>() {};
+    assertThat(stringArrayToken.isAssignableFrom(String[].class)).isTrue();
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testIsAssignableFromParameterizedTypeEqual() {
+    // Tests line 252 - returns true when to.equals(from)
+    Type listStringType = new TypeToken<List<String>>() {}.getType();
+    TypeToken<List<String>> listStringToken = new TypeToken<List<String>>() {};
+
+    // Exact type match with parameterized type
+    assertThat(listStringToken.isAssignableFrom(listStringType)).isTrue();
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testIsAssignableFromTypeEqualsMatch() {
+    // Tests lines 277-278 and 307 - typeEquals returns true when types match
+    // This requires matching parameterized types through the type hierarchy
+    TypeToken<List<String>> listStringToken = new TypeToken<List<String>>() {};
+
+    // StringList extends ArrayList<String> which implements List<String>
+    // This should trigger the typeEquals path when checking interface assignability
+    assertThat(listStringToken.isAssignableFrom(StringList.class)).isTrue();
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testIsAssignableFromInterfaceMatch() {
+    // Tests line 284 - assignable from interface
+    TypeToken<List<String>> listToken = new TypeToken<List<String>>() {};
+    Type genericListStringType = new TypeToken<GenericList<String>>() {}.getType();
+
+    // GenericList<String> implements List<String> through ArrayList
+    assertThat(listToken.isAssignableFrom(genericListStringType)).isTrue();
+  }
+
+  @Test
+  public void testTypeTokenTypeVariableInWildcardLowerBound() {
+    // Tests line 146 - verifyNoTypeVariable with wildcard containing type variable in lower bound
+    // This requires creating a type like List<? super T> where T is a type variable
+    class Outer<T> {
+      void test() {
+        IllegalArgumentException e =
+            assertThrows(
+                IllegalArgumentException.class, () -> new TypeToken<List<? super T>>() {});
+        assertThat(e)
+            .hasMessageThat()
+            .contains("TypeToken type argument must not contain a type variable");
+      }
+    }
+    new Outer<String>().test();
+  }
 }
 
 // Have to declare these classes here as top-level classes because otherwise tests for
@@ -469,3 +569,9 @@ class GenericWithMultiBound<T extends Number & CharSequence> {}
 
 @SuppressWarnings("serial")
 abstract class ClassSatisfyingBounds extends Number implements CharSequence {}
+
+@SuppressWarnings("serial")
+class GenericList<E> extends ArrayList<E> {}
+
+@SuppressWarnings("serial")
+class StringList extends ArrayList<String> {}
