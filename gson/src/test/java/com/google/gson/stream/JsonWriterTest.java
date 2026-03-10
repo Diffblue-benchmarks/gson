@@ -988,4 +988,67 @@ public final class JsonWriterTest {
             + "}";
     assertThat(stringWriter.toString()).isEqualTo(expected);
   }
+
+  @Test
+  public void testSetIndentEmptyString() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    // First set to pretty, then set empty indent to switch to compact
+    jsonWriter.setFormattingStyle(FormattingStyle.PRETTY);
+    jsonWriter.setIndent("");
+
+    assertThat(jsonWriter.getFormattingStyle()).isSameInstanceAs(FormattingStyle.COMPACT);
+
+    jsonWriter.beginObject();
+    jsonWriter.name("a").value(1);
+    jsonWriter.name("b").value(2);
+    jsonWriter.endObject();
+
+    assertThat(stringWriter.toString()).isEqualTo("{\"a\":1,\"b\":2}");
+  }
+
+  @Test
+  public void testJsonValueNull() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    jsonWriter.beginArray();
+    jsonWriter.jsonValue(null);
+    jsonWriter.endArray();
+    jsonWriter.close();
+    assertThat(stringWriter.toString()).isEqualTo("[null]");
+  }
+
+  @Test
+  public void testFlush() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    jsonWriter.beginArray();
+    jsonWriter.value(1);
+    jsonWriter.flush();
+    // Verify content was flushed and writer is still usable
+    assertThat(stringWriter.toString()).isEqualTo("[1");
+    jsonWriter.value(2);
+    jsonWriter.endArray();
+    jsonWriter.close();
+    assertThat(stringWriter.toString()).isEqualTo("[1,2]");
+  }
+
+  @Test
+  public void testCloseIncompleteArray() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    jsonWriter.beginArray();
+    IOException e = assertThrows(IOException.class, () -> jsonWriter.close());
+    assertThat(e).hasMessageThat().isEqualTo("Incomplete document");
+  }
+
+  @Test
+  public void testCloseIncompleteObject() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    jsonWriter.beginObject();
+    jsonWriter.name("a").value(1);
+    IOException e = assertThrows(IOException.class, () -> jsonWriter.close());
+    assertThat(e).hasMessageThat().isEqualTo("Incomplete document");
+  }
 }
