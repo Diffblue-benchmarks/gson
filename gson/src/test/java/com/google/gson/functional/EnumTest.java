@@ -319,4 +319,45 @@ public class EnumTest {
     assertThat(gson.toJson(Thread.State.NEW)).isEqualTo("\"NEW\"");
     assertThat(gson.fromJson("\"NEW\"", Thread.State.class)).isEqualTo(Thread.State.NEW);
   }
+
+  @Test
+  public void testEnumNullDeserialization() {
+    MyEnum result = gson.fromJson("null", MyEnum.class);
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void testEnumWithSerializedNameAlternates() {
+    // Test that the primary value works for serialization
+    assertThat(gson.toJson(StatusWithAlternates.ACTIVE)).isEqualTo("\"enabled\"");
+    assertThat(gson.toJson(StatusWithAlternates.INACTIVE)).isEqualTo("\"disabled\"");
+
+    // Test that the primary value works for deserialization
+    assertThat(gson.fromJson("\"enabled\"", StatusWithAlternates.class))
+        .isEqualTo(StatusWithAlternates.ACTIVE);
+    assertThat(gson.fromJson("\"disabled\"", StatusWithAlternates.class))
+        .isEqualTo(StatusWithAlternates.INACTIVE);
+
+    // Test that alternate values work for deserialization
+    assertThat(gson.fromJson("\"on\"", StatusWithAlternates.class))
+        .isEqualTo(StatusWithAlternates.ACTIVE);
+    assertThat(gson.fromJson("\"yes\"", StatusWithAlternates.class))
+        .isEqualTo(StatusWithAlternates.ACTIVE);
+    assertThat(gson.fromJson("\"off\"", StatusWithAlternates.class))
+        .isEqualTo(StatusWithAlternates.INACTIVE);
+    assertThat(gson.fromJson("\"no\"", StatusWithAlternates.class))
+        .isEqualTo(StatusWithAlternates.INACTIVE);
+  }
+
+  private enum StatusWithAlternates {
+    @SerializedName(
+        value = "enabled",
+        alternate = {"on", "yes"})
+    ACTIVE,
+
+    @SerializedName(
+        value = "disabled",
+        alternate = {"off", "no"})
+    INACTIVE
+  }
 }
