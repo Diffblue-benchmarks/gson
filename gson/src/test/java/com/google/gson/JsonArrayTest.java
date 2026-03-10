@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.common.testing.EqualsTester;
 import com.google.gson.common.MoreAsserts;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import org.junit.Test;
 
@@ -353,5 +354,127 @@ public final class JsonArrayTest {
     nestedObject.addProperty("n\0", 1);
     array.add(nestedObject);
     assertThat(array.toString()).isEqualTo("[null,NaN,\"a\\u0000\",[\"\\\"\"],{\"n\\u0000\":1}]");
+  }
+
+  @Test
+  public void testAddAll() {
+    JsonArray array1 = new JsonArray();
+    array1.add("a");
+    array1.add("b");
+
+    JsonArray array2 = new JsonArray();
+    array2.add("c");
+    array2.add("d");
+
+    array1.addAll(array2);
+
+    assertThat(array1).hasSize(4);
+    assertThat(array1.get(0).getAsString()).isEqualTo("a");
+    assertThat(array1.get(1).getAsString()).isEqualTo("b");
+    assertThat(array1.get(2).getAsString()).isEqualTo("c");
+    assertThat(array1.get(3).getAsString()).isEqualTo("d");
+  }
+
+  @Test
+  public void testContains() {
+    JsonArray array = new JsonArray();
+    JsonPrimitive element = new JsonPrimitive("test");
+
+    assertThat(array.contains(element)).isFalse();
+
+    array.add(element);
+    assertThat(array.contains(element)).isTrue();
+    assertThat(array.contains(new JsonPrimitive("test"))).isTrue();
+    assertThat(array.contains(new JsonPrimitive("other"))).isFalse();
+    assertThat(array.contains(JsonNull.INSTANCE)).isFalse();
+  }
+
+  @Test
+  public void testGetAsNumberSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add(42);
+    assertThat(array.getAsNumber()).isEqualTo(42);
+  }
+
+  @Test
+  public void testGetAsStringSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add("hello");
+    assertThat(array.getAsString()).isEqualTo("hello");
+  }
+
+  @Test
+  public void testGetAsDoubleSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add(3.14);
+    assertThat(array.getAsDouble()).isEqualTo(3.14);
+  }
+
+  @Test
+  public void testGetAsBigDecimalSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add(new BigDecimal("123.456"));
+    assertThat(array.getAsBigDecimal()).isEqualTo(new BigDecimal("123.456"));
+  }
+
+  @Test
+  public void testGetAsBigIntegerSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add(BigInteger.valueOf(999));
+    assertThat(array.getAsBigInteger()).isEqualTo(BigInteger.valueOf(999));
+  }
+
+  @Test
+  public void testGetAsFloatSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add(2.5f);
+    assertThat(array.getAsFloat()).isEqualTo(2.5f);
+  }
+
+  @Test
+  public void testGetAsLongSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add(123456789L);
+    assertThat(array.getAsLong()).isEqualTo(123456789L);
+  }
+
+  @Test
+  public void testGetAsIntSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add(42);
+    assertThat(array.getAsInt()).isEqualTo(42);
+  }
+
+  @Test
+  public void testGetAsByteSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add(127);
+    assertThat(array.getAsByte()).isEqualTo((byte) 127);
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testGetAsCharacterSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add("x");
+    assertThat(array.getAsCharacter()).isEqualTo('x');
+  }
+
+  @Test
+  public void testGetAsShortSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add(32000);
+    assertThat(array.getAsShort()).isEqualTo((short) 32000);
+  }
+
+  @Test
+  public void testGetAsBooleanSingleElement() {
+    JsonArray array = new JsonArray();
+    array.add(true);
+    assertThat(array.getAsBoolean()).isTrue();
+
+    JsonArray arrayFalse = new JsonArray();
+    arrayFalse.add(false);
+    assertThat(arrayFalse.getAsBoolean()).isFalse();
   }
 }
