@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -218,5 +219,21 @@ public final class LinkedTreeMapTest {
     @SuppressWarnings("unchecked")
     Map<String, Integer> deserialized = (Map<String, Integer>) objIn.readObject();
     assertThat(deserialized).isEqualTo(Collections.singletonMap("a", 1));
+  }
+
+  @Test
+  public void testIteratorThrowsConcurrentModificationException() {
+    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    map.put("a", "android");
+    map.put("b", "bbq");
+
+    Iterator<Entry<String, String>> iterator = map.entrySet().iterator();
+    iterator.next();
+
+    // Modify the map while iterating
+    map.put("c", "cola");
+
+    // The next call to next() should throw ConcurrentModificationException
+    assertThrows(ConcurrentModificationException.class, () -> iterator.next());
   }
 }
