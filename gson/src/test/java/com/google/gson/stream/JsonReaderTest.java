@@ -1374,4 +1374,86 @@ public class JsonReaderTest {
     } catch (com.google.gson.stream.MalformedJsonException expected) {
     }
   }
+
+  @Test
+  public void testSkipQuotedValue_withEscapeSequences() throws IOException {
+    String json = "[\"abc\\\\def\", 123]";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(123);
+  }
+
+  @Test
+  public void testSkipQuotedValue_withQuoteEscape() throws IOException {
+    String json = "[\"abc\\\"def\", 456]";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(456);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipQuotedValue_withNewlineInString() throws IOException {
+    String json = "[\"abc\ndef\", 789]";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.setLenient(true);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(789);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipQuotedValue_withSingleQuoteEscape() throws IOException {
+    String json = "['abc\\'def', 111]";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.setLenient(true);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(111);
+  }
+
+  @Test
+  public void testSkipQuotedValue_unterminatedString_throwsException() throws IOException {
+    String json = "[\"abc";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.beginArray();
+    try {
+      reader.skipValue();
+      fail("Expected MalformedJsonException");
+    } catch (com.google.gson.stream.MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Unterminated string");
+    }
+  }
+
+  @Test
+  public void testSkipQuotedValue_unterminatedStringAfterBufferFill_throwsException() throws IOException {
+    StringBuilder longString = new StringBuilder();
+    longString.append("[\"");
+    for (int i = 0; i < 2000; i++) {
+      longString.append("a");
+    }
+    String json = longString.toString();
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.beginArray();
+    try {
+      reader.skipValue();
+      fail("Expected MalformedJsonException");
+    } catch (com.google.gson.stream.MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Unterminated string");
+    }
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipQuotedValue_multipleNewlines() throws IOException {
+    String json = "[\"line1\nline2\nline3\", 222]";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.setLenient(true);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(222);
+  }
 }
