@@ -1631,4 +1631,78 @@ public class JsonReaderTest {
       assertThat(expected.getMessage()).contains("Unterminated string");
     }
   }
+
+  @Test
+  public void testNextString_withFloatingPointNumber() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("123.456"));
+    assertThat(reader.nextString()).isEqualTo("123.456");
+  }
+
+  @Test
+  public void testNextString_withExponentialNumber() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("1.23e10"));
+    assertThat(reader.nextString()).isEqualTo("1.23e10");
+  }
+
+  @Test
+  public void testNextString_withNegativeFloatingPointNumber() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("-456.789"));
+    assertThat(reader.nextString()).isEqualTo("-456.789");
+  }
+
+  @Test
+  public void testNextString_withBoolean_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("true"));
+    try {
+      reader.nextString();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException expected) {
+      assertThat(expected.getMessage()).contains("Expected a string");
+    }
+  }
+
+  @Test
+  public void testNextString_withNull_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("null"));
+    try {
+      reader.nextString();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException expected) {
+      assertThat(expected.getMessage()).contains("Expected a string");
+    }
+  }
+
+  @Test
+  public void testNextString_withBeginArray_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("["));
+    try {
+      reader.nextString();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException expected) {
+      assertThat(expected.getMessage()).contains("Expected a string");
+    }
+  }
+
+  @Test
+  public void testNextString_withBeginObject_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{"));
+    try {
+      reader.nextString();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException expected) {
+      assertThat(expected.getMessage()).contains("Expected a string");
+    }
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testNextString_afterFailedNextLong_withDecimal() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("123.456"));
+    try {
+      reader.nextLong();
+      fail("Expected NumberFormatException");
+    } catch (NumberFormatException expected) {
+    }
+    assertThat(reader.nextString()).isEqualTo("123.456");
+  }
 }
