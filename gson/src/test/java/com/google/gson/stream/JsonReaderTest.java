@@ -1010,4 +1010,122 @@ public class JsonReaderTest {
     assertThat(reader.nextString()).isEqualTo("value");
     reader.endObject();
   }
+
+  @Test
+  public void testNextNonWhitespace_withNewlines() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\n\n\n{\"key\":\"value\"}"));
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  public void testNextNonWhitespace_withVariousWhitespace() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader(" \t\r\n{\"key\":\"value\"}"));
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  public void testNextNonWhitespace_withSlashAtBufferBoundary() throws IOException {
+    StringBuilder json = new StringBuilder();
+    for (int i = 0; i < 1023; i++) {
+      json.append(' ');
+    }
+    json.append("/{\"key\":\"value\"}");
+    JsonReader reader = new JsonReader(new StringReader(json.toString()));
+    reader.setStrictness(Strictness.LENIENT);
+    try {
+      reader.beginObject();
+      fail("Expected IOException");
+    } catch (IOException expected) {
+    }
+  }
+
+  @Test
+  public void testNextNonWhitespace_withSlashFollowedByNonCommentChar() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("/x"));
+    reader.setStrictness(Strictness.LENIENT);
+    try {
+      reader.beginObject();
+      fail("Expected IOException");
+    } catch (IOException expected) {
+    }
+  }
+
+  @Test
+  public void testNextNonWhitespace_withHashComment() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("#comment\n{\"key\":\"value\"}"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  public void testNextNonWhitespace_withCppStyleComment() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("//comment\n{\"key\":\"value\"}"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  public void testNextNonWhitespace_withCStyleComment() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("/* comment */{\"key\":\"value\"}"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  public void testNextNonWhitespace_withEofThrowsException() {
+    JsonReader reader = new JsonReader(new StringReader("   "));
+    try {
+      reader.beginObject();
+      fail("Expected IOException");
+    } catch (IOException expected) {
+      assertThat(expected.getMessage()).contains("End of input");
+    }
+  }
+
+  @Test
+  public void testNextNonWhitespace_withMultipleDocumentsInLenientMode() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{\"a\":1} {\"b\":2}"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("a");
+    assertThat(reader.nextInt()).isEqualTo(1);
+    reader.endObject();
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("b");
+    assertThat(reader.nextInt()).isEqualTo(2);
+    reader.endObject();
+  }
+
+  @Test
+  public void testNextNonWhitespace_withCarriageReturnAndNewline() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\r\n{\"key\":\"value\"}"));
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  public void testNextNonWhitespace_withTabCharacters() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\t\t\t{\"key\":\"value\"}"));
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
 }
