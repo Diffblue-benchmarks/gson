@@ -1173,4 +1173,74 @@ public class JsonReaderTest {
       reader.endObject();
     }
   }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipValue_withSingleQuotedString() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("['test', 123]"));
+    reader.setLenient(true);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(123);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipValue_withUnquotedValue() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[NaN, 123]"));
+    reader.setLenient(true);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(123);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipValue_withUnquotedName() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{key:\"value\", \"next\":456}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    reader.skipValue();
+    reader.skipValue();
+    assertThat(reader.nextName()).isEqualTo("next");
+    assertThat(reader.nextInt()).isEqualTo(456);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipValue_withSingleQuotedName() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{'key':'value', \"next\":456}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    reader.skipValue();
+    reader.skipValue();
+    assertThat(reader.nextName()).isEqualTo("next");
+    assertThat(reader.nextInt()).isEqualTo(456);
+  }
+
+  @Test
+  public void testSkipValue_withDoubleQuotedName() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{\"key\":\"value\", \"next\":456}"));
+    reader.beginObject();
+    reader.skipValue();
+    reader.skipValue();
+    assertThat(reader.nextName()).isEqualTo("next");
+    assertThat(reader.nextInt()).isEqualTo(456);
+  }
+
+  @Test
+  public void testSkipValue_atEndOfDocument() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("123"));
+    reader.nextInt();
+    reader.skipValue();
+  }
+
+  @Test
+  public void testSkipValue_withEndObject() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{\"a\":1}"));
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("a");
+    assertThat(reader.nextInt()).isEqualTo(1);
+    reader.skipValue();
+  }
 }
