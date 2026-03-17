@@ -1327,4 +1327,45 @@ public class GsonTest {
     adapter.write(writer, 123.45f);
     assertThat(stringWriter.toString()).isEqualTo("123.45");
   }
+
+  @Test
+  public void testDoubleAdapterWithSpecialFloatingPointValuesEnabled() throws Exception {
+    Gson gson = new Gson();
+    Method method = Gson.class.getDeclaredMethod("doubleAdapter", boolean.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(gson, true);
+
+    assertThat(adapter).isNotNull();
+  }
+
+  @Test
+  public void testDoubleAdapterReadNull() throws Exception {
+    Gson gson = new Gson();
+    Method method = Gson.class.getDeclaredMethod("doubleAdapter", boolean.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(gson, false);
+
+    JsonReader reader = new JsonReader(new StringReader("null"));
+    Number result = adapter.read(reader);
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void testDoubleAdapterWriteNull() throws Exception {
+    Gson gson = new Gson();
+    Method method = Gson.class.getDeclaredMethod("doubleAdapter", boolean.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(gson, false);
+
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+    adapter.write(writer, null);
+    assertThat(stringWriter.toString()).isEqualTo("null");
+  }
 }
