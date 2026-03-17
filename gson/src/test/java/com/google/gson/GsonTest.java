@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
 import org.junit.Test;
 
@@ -1137,5 +1138,68 @@ public class GsonTest {
     assertThat(result.get(0)).isEqualTo(Long.MAX_VALUE);
     assertThat(result.get(1)).isEqualTo(Long.MIN_VALUE);
     assertThat(result.get(2)).isEqualTo(0L);
+  }
+
+  @Test
+  public void testAtomicLongSerialization() {
+    Gson gson = new Gson();
+    AtomicLong atomicLong = new AtomicLong(42L);
+    String json = gson.toJson(atomicLong);
+    assertThat(json).isEqualTo("42");
+  }
+
+  @Test
+  public void testAtomicLongDeserialization() {
+    Gson gson = new Gson();
+    String json = "123";
+    AtomicLong result = gson.fromJson(json, AtomicLong.class);
+    assertThat(result).isNotNull();
+    assertThat(result.get()).isEqualTo(123L);
+  }
+
+  @Test
+  public void testAtomicLongWithZero() {
+    Gson gson = new Gson();
+    AtomicLong atomicLong = new AtomicLong(0L);
+    String json = gson.toJson(atomicLong);
+    assertThat(json).isEqualTo("0");
+
+    AtomicLong result = gson.fromJson("0", AtomicLong.class);
+    assertThat(result).isNotNull();
+    assertThat(result.get()).isEqualTo(0L);
+  }
+
+  @Test
+  public void testAtomicLongWithNegativeValue() {
+    Gson gson = new Gson();
+    AtomicLong atomicLong = new AtomicLong(-100L);
+    String json = gson.toJson(atomicLong);
+    assertThat(json).isEqualTo("-100");
+
+    AtomicLong result = gson.fromJson("-100", AtomicLong.class);
+    assertThat(result).isNotNull();
+    assertThat(result.get()).isEqualTo(-100L);
+  }
+
+  @Test
+  public void testAtomicLongWithMaxValue() {
+    Gson gson = new Gson();
+    AtomicLong atomicLong = new AtomicLong(Long.MAX_VALUE);
+    String json = gson.toJson(atomicLong);
+
+    AtomicLong result = gson.fromJson(json, AtomicLong.class);
+    assertThat(result).isNotNull();
+    assertThat(result.get()).isEqualTo(Long.MAX_VALUE);
+  }
+
+  @Test
+  public void testAtomicLongWithMinValue() {
+    Gson gson = new Gson();
+    AtomicLong atomicLong = new AtomicLong(Long.MIN_VALUE);
+    String json = gson.toJson(atomicLong);
+
+    AtomicLong result = gson.fromJson(json, AtomicLong.class);
+    assertThat(result).isNotNull();
+    assertThat(result.get()).isEqualTo(Long.MIN_VALUE);
   }
 }
