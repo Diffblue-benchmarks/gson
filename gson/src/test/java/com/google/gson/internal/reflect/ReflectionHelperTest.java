@@ -235,6 +235,31 @@ public class ReflectionHelperTest {
   }
 
   @Test
+  public void testMakeAccessibleWithInaccessibleJdkInternals() throws Exception {
+    // Test the exception handling path in makeAccessible()
+    // On Java 9+ with --illegal-access=deny, accessing java.lang.Module internals should fail
+    try {
+      Class<?> moduleClass = Class.forName("java.lang.Module");
+      Field nameField = moduleClass.getDeclaredField("name");
+
+      // Expect JsonIOException when setAccessible fails due to module encapsulation
+      JsonIOException exception = assertThrows(JsonIOException.class, () -> {
+        ReflectionHelper.makeAccessible(nameField);
+      });
+
+      // Verify exception message contains expected parts (tests lines 69-71, 76)
+      assertThat(exception.getMessage()).contains("Failed making");
+      assertThat(exception.getMessage()).contains("field");
+      assertThat(exception.getMessage()).contains("java.lang.Module#name");
+      assertThat(exception.getMessage()).contains("accessible");
+      assertThat(exception.getMessage()).contains("either increase its visibility");
+      assertThat(exception.getCause()).isNotNull();
+    } catch (ClassNotFoundException | NoSuchFieldException e) {
+      // Skip test if class/field doesn't exist (e.g., on Java 8 runtime)
+    }
+  }
+
+  @Test
   public void testTryMakeAccessibleFailure() {
     try {
       Constructor<?> constructor = Class.forName("java.lang.System").getDeclaredConstructor();
