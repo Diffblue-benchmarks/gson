@@ -1202,4 +1202,58 @@ public class GsonTest {
     assertThat(result).isNotNull();
     assertThat(result.get()).isEqualTo(Long.MIN_VALUE);
   }
+
+  @Test
+  public void testLongAdapterWithStringPolicyReadNull() throws Exception {
+    Method method = Gson.class.getDeclaredMethod("longAdapter", LongSerializationPolicy.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(null, LongSerializationPolicy.STRING);
+
+    JsonReader reader = new JsonReader(new StringReader("null"));
+    Number result = adapter.read(reader);
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void testLongAdapterWithStringPolicyReadLong() throws Exception {
+    Method method = Gson.class.getDeclaredMethod("longAdapter", LongSerializationPolicy.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(null, LongSerializationPolicy.STRING);
+
+    JsonReader reader = new JsonReader(new StringReader("123456789"));
+    Number result = adapter.read(reader);
+    assertThat(result).isEqualTo(123456789L);
+  }
+
+  @Test
+  public void testLongAdapterWithStringPolicyWriteNull() throws Exception {
+    Method method = Gson.class.getDeclaredMethod("longAdapter", LongSerializationPolicy.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(null, LongSerializationPolicy.STRING);
+
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+    adapter.write(writer, null);
+    assertThat(stringWriter.toString()).isEqualTo("null");
+  }
+
+  @Test
+  public void testLongAdapterWithStringPolicyWriteLong() throws Exception {
+    Method method = Gson.class.getDeclaredMethod("longAdapter", LongSerializationPolicy.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(null, LongSerializationPolicy.STRING);
+
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+    adapter.write(writer, 123456789L);
+    assertThat(stringWriter.toString()).isEqualTo("\"123456789\"");
+  }
 }
