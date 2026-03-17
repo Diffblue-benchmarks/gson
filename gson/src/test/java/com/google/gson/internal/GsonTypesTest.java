@@ -434,6 +434,40 @@ public class GsonTypesTest {
     assertThat(result).isFalse();
   }
 
+  @Test
+  public void testGetSupertypeWithWildcardTypeContext() {
+    WildcardType wildcardType = GsonTypes.subtypeOf(ArrayList.class);
+    Type result = GsonTypes.getCollectionElementType(wildcardType, ArrayList.class);
+    assertThat(result).isNotNull();
+  }
+
+  @Test
+  public void testGetSupertypeWithInvalidSupertype() {
+    try {
+      GsonTypes.getCollectionElementType(String.class, String.class);
+      throw new AssertionError("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException expected) {
+      assertThat(expected.getMessage()).contains("is not the same as or a subtype of");
+    }
+  }
+
+  @Test
+  public void testGetMapKeyAndValueTypesWithWildcardTypeContext() {
+    WildcardType wildcardType = GsonTypes.subtypeOf(HashMap.class);
+    Type[] result = GsonTypes.getMapKeyAndValueTypes(wildcardType, HashMap.class);
+    assertThat(result).hasLength(2);
+  }
+
+  @Test
+  public void testGetMapKeyAndValueTypesWithInvalidSupertype() {
+    try {
+      GsonTypes.getMapKeyAndValueTypes(String.class, String.class);
+      throw new AssertionError("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException expected) {
+      assertThat(expected.getMessage()).contains("is not the same as or a subtype of");
+    }
+  }
+
   static class StringList extends ArrayList<String> {
     private static final long serialVersionUID = 1L;
   }
