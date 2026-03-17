@@ -27,6 +27,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -824,6 +825,73 @@ public class GsonTest {
     } catch (AssertionError e) {
       assertThat(e.getMessage()).contains("AssertionError (GSON");
       assertThat(e.getMessage()).contains("Test assertion error");
+    }
+  }
+
+  @Test
+  public void testToJsonElementWriterWithStrictness() throws IOException {
+    Gson gson = new GsonBuilder().setStrictness(Strictness.STRICT).create();
+    JsonPrimitive element = new JsonPrimitive("test");
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+    writer.setStrictness(Strictness.LENIENT);
+
+    gson.toJson(element, writer);
+
+    assertThat(stringWriter.toString()).isEqualTo("\"test\"");
+    assertThat(writer.getStrictness()).isEqualTo(Strictness.LENIENT);
+  }
+
+  @Test
+  public void testToJsonElementWriterWithIOException() throws IOException {
+    Gson gson = new Gson();
+    JsonPrimitive element = new JsonPrimitive("test");
+
+    Writer failingWriter = new Writer() {
+      @Override
+      public void write(char[] cbuf, int off, int len) throws IOException {
+        throw new IOException("Test IO error");
+      }
+
+      @Override
+      public void flush() throws IOException {
+      }
+
+      @Override
+      public void close() throws IOException {
+      }
+    };
+
+    JsonWriter writer = new JsonWriter(failingWriter);
+
+    try {
+      gson.toJson(element, writer);
+      throw new AssertionError("Expected JsonIOException");
+    } catch (JsonIOException e) {
+      assertThat(e.getCause()).isInstanceOf(IOException.class);
+      assertThat(e.getCause().getMessage()).isEqualTo("Test IO error");
+    }
+  }
+
+  @Test
+  public void testToJsonElementWriterWithAssertionError() throws IOException {
+    Gson gson = new Gson();
+    JsonPrimitive element = new JsonPrimitive("test");
+    StringWriter stringWriter = new StringWriter();
+
+    JsonWriter writer = new JsonWriter(stringWriter) {
+      @Override
+      public JsonWriter value(String value) throws IOException {
+        throw new AssertionError("Test assertion during write");
+      }
+    };
+
+    try {
+      gson.toJson(element, writer);
+      throw new AssertionError("Expected AssertionError to be rethrown");
+    } catch (AssertionError e) {
+      assertThat(e.getMessage()).contains("AssertionError (GSON");
+      assertThat(e.getMessage()).contains("Test assertion during write");
     }
   }
 }
