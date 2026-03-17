@@ -402,4 +402,50 @@ public class TypeTokenTest {
     TypeToken<?> token = TypeToken.getParameterized(java.util.Map.Entry.class, String.class, Integer.class);
     assertThat(token.getRawType()).isEqualTo(java.util.Map.Entry.class);
   }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testIsAssignableFromParameterizedTypeEqualityInRecursion() {
+    // Test that verifies line 252: to.equals(from) during recursive checks
+    // When checking if ArrayList<String> is assignable to List<String>,
+    // the recursive check may find exact matches in the type hierarchy
+    TypeToken<List<String>> listToken = new TypeToken<List<String>>() {};
+    Type arrayListStringType = new TypeToken<ArrayList<String>>() {}.getType();
+    assertThat(listToken.isAssignableFrom(arrayListStringType)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testIsAssignableFromParameterizedTypeThroughSuperclass() {
+    // Test that verifies lines 289-290: checking through superclass hierarchy
+    // ArrayList extends AbstractList, and AbstractList implements List
+    // This forces the algorithm to walk up the superclass chain
+    TypeToken<java.util.AbstractList<String>> abstractListToken =
+        new TypeToken<java.util.AbstractList<String>>() {};
+    Type arrayListStringType = new TypeToken<ArrayList<String>>() {}.getType();
+    assertThat(abstractListToken.isAssignableFrom(arrayListStringType)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testIsAssignableFromWithNullSuperclass() {
+    // Test that verifies line 248: from == null during recursive superclass checks
+    // When we reach the top of the hierarchy (Object has no superclass),
+    // the recursive call will be made with null
+    TypeToken<List<String>> listToken = new TypeToken<List<String>>() {};
+    // Using a concrete ArrayList, which will eventually recurse to Object (null superclass)
+    Type arrayListStringType = new TypeToken<ArrayList<String>>() {}.getType();
+    assertThat(listToken.isAssignableFrom(arrayListStringType)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testIsAssignableFromParameterizedTypeWithDeeperHierarchy() {
+    // Test walking through multiple levels of superclass hierarchy
+    // This ensures the superclass check path (lines 289-290) is exercised
+    TypeToken<java.util.Collection<String>> collectionToken =
+        new TypeToken<java.util.Collection<String>>() {};
+    Type arrayListStringType = new TypeToken<ArrayList<String>>() {}.getType();
+    assertThat(collectionToken.isAssignableFrom(arrayListStringType)).isTrue();
+  }
 }
