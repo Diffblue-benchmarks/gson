@@ -468,6 +468,52 @@ public class GsonTypesTest {
     }
   }
 
+  @Test
+  public void testEqualsWithParameterizedTypeVsNonParameterizedType() {
+    ParameterizedType parameterizedType = GsonTypes.newParameterizedTypeWithOwner(
+        null, List.class, String.class);
+    GenericArrayType arrayType = GsonTypes.arrayOf(String.class);
+    boolean result = GsonTypes.equals(parameterizedType, arrayType);
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  public void testEqualsWithGenericArrayTypeVsNonGenericArrayType() {
+    GenericArrayType arrayType = GsonTypes.arrayOf(String.class);
+    WildcardType wildcardType = GsonTypes.subtypeOf(String.class);
+    boolean result = GsonTypes.equals(arrayType, wildcardType);
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  public void testEqualsWithWildcardTypeVsNonWildcardType() {
+    WildcardType wildcardType = GsonTypes.subtypeOf(String.class);
+    TypeVariable<?>[] typeParams = List.class.getTypeParameters();
+    boolean result = GsonTypes.equals(wildcardType, typeParams[0]);
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  public void testEqualsWithTypeVariableVsNonTypeVariable() {
+    TypeVariable<?>[] typeParams = List.class.getTypeParameters();
+    ParameterizedType parameterizedType = GsonTypes.newParameterizedTypeWithOwner(
+        null, List.class, String.class);
+    boolean result = GsonTypes.equals(typeParams[0], parameterizedType);
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  public void testEqualsWithUnsupportedType() {
+    Type unsupportedType = new Type() {
+      @Override
+      public String getTypeName() {
+        return "UnsupportedType";
+      }
+    };
+    boolean result = GsonTypes.equals(unsupportedType, String.class);
+    assertThat(result).isFalse();
+  }
+
   static class StringList extends ArrayList<String> {
     private static final long serialVersionUID = 1L;
   }
