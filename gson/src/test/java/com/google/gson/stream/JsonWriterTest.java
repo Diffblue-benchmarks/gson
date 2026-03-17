@@ -765,4 +765,34 @@ public class JsonWriterTest {
 
     assertThat(stringWriter.toString()).isEqualTo("{\"number\":42,\"string\":\"text\",\"boolean\":false}");
   }
+
+  @Test
+  public void testValueStringWithLineSeparatorChar() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    writer.value("before\u2028after");
+
+    assertThat(stringWriter.toString()).isEqualTo("\"before\\u2028after\"");
+  }
+
+  @Test
+  public void testValueStringWithParagraphSeparatorChar() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    writer.value("before\u2029after");
+
+    assertThat(stringWriter.toString()).isEqualTo("\"before\\u2029after\"");
+  }
+
+  @Test
+  public void testValueStringWithUnicodeCharsNotRequiringEscape() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    writer.value("café\u00e9");
+
+    assertThat(stringWriter.toString()).isEqualTo("\"café\u00e9\"");
+  }
 }
