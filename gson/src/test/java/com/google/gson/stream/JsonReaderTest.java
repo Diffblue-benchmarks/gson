@@ -413,6 +413,31 @@ public class JsonReaderTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
+  public void testNextLong_withUnquotedValue() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[456]"));
+    reader.setLenient(true);
+    reader.beginArray();
+    assertThat(reader.nextLong()).isEqualTo(456L);
+  }
+
+  @Test
+  public void testNextLong_withDoubleString() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"789.0\""));
+    assertThat(reader.nextLong()).isEqualTo(789L);
+  }
+
+  @Test
+  public void testNextLong_withBoolean_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("true"));
+    try {
+      reader.nextLong();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException expected) {
+    }
+  }
+
+  @Test
   public void testNextInt_withInteger() throws IOException {
     JsonReader reader = new JsonReader(new StringReader("123"));
     assertThat(reader.nextInt()).isEqualTo(123);
