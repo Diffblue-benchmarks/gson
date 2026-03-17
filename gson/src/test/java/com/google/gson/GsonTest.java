@@ -23,6 +23,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.google.gson.stream.MalformedJsonException;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -712,6 +713,117 @@ public class GsonTest {
     } catch (java.lang.reflect.InvocationTargetException e) {
       assertThat(e.getCause()).isInstanceOf(JsonIOException.class);
       assertThat(e.getCause().getCause()).isInstanceOf(IOException.class);
+    }
+  }
+
+  @Test
+  public void testFromJsonReaderTypeTokenWithCustomStrictness() throws IOException {
+    Gson gson = new GsonBuilder().setStrictness(Strictness.STRICT).create();
+    JsonReader reader = new JsonReader(new StringReader("\"hello\""));
+    reader.setStrictness(Strictness.LENIENT);
+    TypeToken<String> typeToken = TypeToken.get(String.class);
+    String result = gson.fromJson(reader, typeToken);
+    assertThat(result).isEqualTo("hello");
+  }
+
+  @Test
+  public void testFromJsonReaderTypeTokenWithTypeAdapterReturningWrongType() {
+    TypeAdapterFactory wrongTypeAdapterFactory = new TypeAdapterFactory() {
+      @Override
+      @SuppressWarnings("unchecked")
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        if (type.getRawType() == String.class) {
+          return (TypeAdapter<T>) new TypeAdapter<Integer>() {
+            @Override
+            public void write(JsonWriter out, Integer value) throws IOException {
+              out.value(value);
+            }
+
+            @Override
+            public Integer read(JsonReader in) throws IOException {
+              in.nextString();
+              return Integer.valueOf(123);
+            }
+          };
+        }
+        return null;
+      }
+    };
+
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(wrongTypeAdapterFactory)
+        .create();
+
+    JsonReader reader = new JsonReader(new StringReader("\"hello\""));
+    TypeToken<String> typeToken = TypeToken.get(String.class);
+
+    try {
+      gson.fromJson(reader, typeToken);
+      throw new AssertionError("Expected ClassCastException");
+    } catch (ClassCastException e) {
+      assertThat(e.getMessage()).contains("returned wrong type");
+      assertThat(e.getMessage()).contains("requested");
+      assertThat(e.getMessage()).contains("but got instance of");
+    }
+  }
+
+  @Test(expected = JsonSyntaxException.class)
+  public void testFromJsonReaderTypeTokenWithEOFExceptionAfterRead() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"hello\"")) {
+      @Override
+      public String nextString() throws IOException {
+        throw new EOFException("Unexpected end of file");
+      }
+    };
+    reader.peek();
+
+    Gson gson = new Gson();
+    TypeToken<String> typeToken = TypeToken.get(String.class);
+    gson.fromJson(reader, typeToken);
+  }
+
+  @Test(expected = JsonSyntaxException.class)
+  public void testFromJsonReaderTypeTokenWithIOException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"hello\"")) {
+      @Override
+      public String nextString() throws IOException {
+        throw new IOException("IO error");
+      }
+    };
+
+    Gson gson = new Gson();
+    TypeToken<String> typeToken = TypeToken.get(String.class);
+    gson.fromJson(reader, typeToken);
+  }
+
+  @Test
+  public void testFromJsonReaderTypeTokenWithAssertionError() throws IOException {
+    TypeAdapter<String> assertionErrorAdapter = new TypeAdapter<String>() {
+      @Override
+      public void write(JsonWriter out, String value) throws IOException {
+        out.value(value);
+      }
+
+      @Override
+      public String read(JsonReader in) throws IOException {
+        in.nextString();
+        throw new AssertionError("Test assertion error");
+      }
+    };
+
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(String.class, assertionErrorAdapter)
+        .create();
+
+    JsonReader reader = new JsonReader(new StringReader("\"hello\""));
+    TypeToken<String> typeToken = TypeToken.get(String.class);
+
+    try {
+      gson.fromJson(reader, typeToken);
+      throw new AssertionError("Expected AssertionError to be rethrown");
+    } catch (AssertionError e) {
+      assertThat(e.getMessage()).contains("AssertionError (GSON");
+      assertThat(e.getMessage()).contains("Test assertion error");
     }
   }
 }
