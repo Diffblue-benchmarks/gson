@@ -926,4 +926,88 @@ public class JsonReaderTest {
       assertThat(expected.getMessage()).contains("Invalid escape sequence");
     }
   }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipTo_withCStyleComment() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("/* comment */{\"key\":\"value\"}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipTo_withCStyleCommentContainingNewlines() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("/* comment\nwith\nnewlines\n*/{\"key\":\"value\"}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipTo_withUnterminatedCStyleComment() {
+    JsonReader reader = new JsonReader(new StringReader("/* unterminated comment"));
+    reader.setLenient(true);
+    try {
+      reader.beginObject();
+      fail("Expected IOException");
+    } catch (IOException expected) {
+      assertThat(expected.getMessage()).contains("Unterminated comment");
+    }
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipTo_withCStyleCommentContainingPartialMatch() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("/* comment with * but not end */{\"key\":\"value\"}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipTo_withLargeCStyleComment() throws IOException {
+    StringBuilder largeComment = new StringBuilder("/* ");
+    for (int i = 0; i < 10000; i++) {
+      largeComment.append("a");
+    }
+    largeComment.append(" */{\"key\":\"value\"}");
+    JsonReader reader = new JsonReader(new StringReader(largeComment.toString()));
+    reader.setLenient(true);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipTo_withMultipleCStyleComments() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("/* first *//* second */{\"key\":\"value\"}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipTo_withCStyleCommentAndNewlineBeforeJson() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("/* comment */\n{\"key\":\"value\"}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
 }
