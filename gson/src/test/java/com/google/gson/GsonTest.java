@@ -20,10 +20,13 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+import com.google.gson.stream.MalformedJsonException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -647,5 +650,68 @@ public class GsonTest {
     Gson gson = new Gson();
     Character result = gson.fromJson("\"a\"", Character.class);
     assertThat(result).isEqualTo('a');
+  }
+
+  @Test
+  public void testAssertFullConsumptionThrowsWhenJsonNotFullyConsumed() throws Exception {
+    Method method = Gson.class.getDeclaredMethod("assertFullConsumption", Object.class, JsonReader.class);
+    method.setAccessible(true);
+
+    JsonReader mockReader = new JsonReader(new StringReader("")) {
+      @Override
+      public JsonToken peek() throws IOException {
+        return JsonToken.BEGIN_OBJECT;
+      }
+    };
+
+    try {
+      method.invoke(null, "nonNullObject", mockReader);
+      throw new AssertionError("Expected JsonSyntaxException");
+    } catch (java.lang.reflect.InvocationTargetException e) {
+      assertThat(e.getCause()).isInstanceOf(JsonSyntaxException.class);
+      assertThat(e.getCause().getMessage()).contains("JSON document was not fully consumed");
+    }
+  }
+
+  @Test
+  public void testAssertFullConsumptionHandlesMalformedJsonException() throws Exception {
+    Method method = Gson.class.getDeclaredMethod("assertFullConsumption", Object.class, JsonReader.class);
+    method.setAccessible(true);
+
+    JsonReader mockReader = new JsonReader(new StringReader("")) {
+      @Override
+      public JsonToken peek() throws IOException {
+        throw new MalformedJsonException("Test malformed JSON");
+      }
+    };
+
+    try {
+      method.invoke(null, "nonNullObject", mockReader);
+      throw new AssertionError("Expected JsonSyntaxException");
+    } catch (java.lang.reflect.InvocationTargetException e) {
+      assertThat(e.getCause()).isInstanceOf(JsonSyntaxException.class);
+      assertThat(e.getCause().getCause()).isInstanceOf(MalformedJsonException.class);
+    }
+  }
+
+  @Test
+  public void testAssertFullConsumptionHandlesIOException() throws Exception {
+    Method method = Gson.class.getDeclaredMethod("assertFullConsumption", Object.class, JsonReader.class);
+    method.setAccessible(true);
+
+    JsonReader mockReader = new JsonReader(new StringReader("")) {
+      @Override
+      public JsonToken peek() throws IOException {
+        throw new IOException("Test IO error");
+      }
+    };
+
+    try {
+      method.invoke(null, "nonNullObject", mockReader);
+      throw new AssertionError("Expected JsonIOException");
+    } catch (java.lang.reflect.InvocationTargetException e) {
+      assertThat(e.getCause()).isInstanceOf(JsonIOException.class);
+      assertThat(e.getCause().getCause()).isInstanceOf(IOException.class);
+    }
   }
 }
