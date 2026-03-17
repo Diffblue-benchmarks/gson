@@ -894,4 +894,80 @@ public class GsonTest {
       assertThat(e.getMessage()).contains("Test assertion during write");
     }
   }
+
+  @Test
+  public void testToJsonObjectTypeWriterWithStrictness() throws IOException {
+    Gson gson = new GsonBuilder().setStrictness(Strictness.STRICT).create();
+    String testObject = "test";
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+    writer.setStrictness(Strictness.LENIENT);
+
+    gson.toJson(testObject, String.class, writer);
+
+    assertThat(stringWriter.toString()).isEqualTo("\"test\"");
+    assertThat(writer.getStrictness()).isEqualTo(Strictness.LENIENT);
+  }
+
+  @Test
+  public void testToJsonObjectTypeWriterWithIOException() throws IOException {
+    Gson gson = new Gson();
+    String testObject = "test";
+
+    Writer failingWriter = new Writer() {
+      @Override
+      public void write(char[] cbuf, int off, int len) throws IOException {
+        throw new IOException("Test IO error");
+      }
+
+      @Override
+      public void flush() throws IOException {
+      }
+
+      @Override
+      public void close() throws IOException {
+      }
+    };
+
+    JsonWriter writer = new JsonWriter(failingWriter);
+
+    try {
+      gson.toJson(testObject, String.class, writer);
+      throw new AssertionError("Expected JsonIOException");
+    } catch (JsonIOException e) {
+      assertThat(e.getCause()).isInstanceOf(IOException.class);
+      assertThat(e.getCause().getMessage()).isEqualTo("Test IO error");
+    }
+  }
+
+  @Test
+  public void testToJsonObjectTypeWriterWithAssertionError() throws IOException {
+    TypeAdapter<String> assertionErrorAdapter = new TypeAdapter<String>() {
+      @Override
+      public void write(JsonWriter out, String value) throws IOException {
+        throw new AssertionError("Test assertion during write");
+      }
+
+      @Override
+      public String read(JsonReader in) throws IOException {
+        return in.nextString();
+      }
+    };
+
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(String.class, assertionErrorAdapter)
+        .create();
+
+    String testObject = "test";
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    try {
+      gson.toJson(testObject, String.class, writer);
+      throw new AssertionError("Expected AssertionError to be rethrown");
+    } catch (AssertionError e) {
+      assertThat(e.getMessage()).contains("AssertionError (GSON");
+      assertThat(e.getMessage()).contains("Test assertion during write");
+    }
+  }
 }
