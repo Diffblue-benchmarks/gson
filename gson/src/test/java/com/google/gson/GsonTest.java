@@ -37,6 +37,8 @@ import org.junit.Test;
 
 public class GsonTest {
 
+  interface CustomInterfaceForDelegateAdapterTest {}
+
   @Test
   public void testDefaultConstructor() {
     Gson gson = new Gson();
@@ -969,5 +971,123 @@ public class GsonTest {
       assertThat(e.getMessage()).contains("AssertionError (GSON");
       assertThat(e.getMessage()).contains("Test assertion during write");
     }
+  }
+
+  @Test
+  public void testGetDelegateAdapterWithNullSkipPast() {
+    Gson gson = new Gson();
+    TypeToken<String> typeToken = TypeToken.get(String.class);
+
+    try {
+      gson.getDelegateAdapter(null, typeToken);
+      throw new AssertionError("Expected NullPointerException");
+    } catch (NullPointerException e) {
+      assertThat(e.getMessage()).contains("skipPast must not be null");
+    }
+  }
+
+  @Test
+  public void testGetDelegateAdapterWithNullType() {
+    TypeAdapterFactory factory = new TypeAdapterFactory() {
+      @Override
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        return null;
+      }
+    };
+
+    Gson gson = new Gson();
+
+    try {
+      gson.getDelegateAdapter(factory, null);
+      throw new AssertionError("Expected NullPointerException");
+    } catch (NullPointerException e) {
+      assertThat(e.getMessage()).contains("type must not be null");
+    }
+  }
+
+  @Test
+  public void testGetDelegateAdapterFindsAdapterAfterSkipPast() {
+    TypeAdapterFactory firstFactory = new TypeAdapterFactory() {
+      @Override
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        return null;
+      }
+    };
+
+    TypeAdapterFactory secondFactory = new TypeAdapterFactory() {
+      @Override
+      @SuppressWarnings("unchecked")
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        if (type.getRawType() == String.class) {
+          return (TypeAdapter<T>) new TypeAdapter<String>() {
+            @Override
+            public void write(JsonWriter out, String value) throws IOException {
+              out.value(value);
+            }
+
+            @Override
+            public String read(JsonReader in) throws IOException {
+              return in.nextString();
+            }
+          };
+        }
+        return null;
+      }
+    };
+
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(firstFactory)
+        .registerTypeAdapterFactory(secondFactory)
+        .create();
+
+    TypeToken<String> typeToken = TypeToken.get(String.class);
+    TypeAdapter<String> adapter = gson.getDelegateAdapter(firstFactory, typeToken);
+
+    assertThat(adapter).isNotNull();
+  }
+
+  @Test
+  public void testGetDelegateAdapterWhenSkipPastInMiddle() {
+    TypeAdapterFactory firstFactory = new TypeAdapterFactory() {
+      @Override
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        return null;
+      }
+    };
+
+    TypeAdapterFactory secondFactory = new TypeAdapterFactory() {
+      @Override
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        return null;
+      }
+    };
+
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(firstFactory)
+        .registerTypeAdapterFactory(secondFactory)
+        .create();
+
+    TypeToken<String> typeToken = TypeToken.get(String.class);
+
+    TypeAdapter<String> adapter = gson.getDelegateAdapter(secondFactory, typeToken);
+
+    assertThat(adapter).isNotNull();
+  }
+
+  @Test
+  public void testGetDelegateAdapterFallsBackWhenSkipPastNotInFactories() {
+    TypeAdapterFactory externalFactory = new TypeAdapterFactory() {
+      @Override
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        return null;
+      }
+    };
+
+    Gson gson = new Gson();
+    TypeToken<String> typeToken = TypeToken.get(String.class);
+
+    TypeAdapter<String> adapter = gson.getDelegateAdapter(externalFactory, typeToken);
+
+    assertThat(adapter).isNotNull();
   }
 }
