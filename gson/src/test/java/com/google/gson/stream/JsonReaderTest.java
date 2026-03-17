@@ -1456,4 +1456,100 @@ public class JsonReaderTest {
     reader.skipValue();
     assertThat(reader.nextInt()).isEqualTo(222);
   }
+
+  @Test
+  public void testNextUnquotedValue_withForwardSlashInStrictMode_throwsException()
+      throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[test/value]"));
+    reader.beginArray();
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (com.google.gson.stream.MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Use JsonReader.setStrictness(Strictness.LENIENT)");
+    }
+  }
+
+  @Test
+  public void testNextUnquotedValue_withBackslashInStrictMode_throwsException()
+      throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[test\\value]"));
+    reader.beginArray();
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (com.google.gson.stream.MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Use JsonReader.setStrictness(Strictness.LENIENT)");
+    }
+  }
+
+  @Test
+  public void testNextUnquotedValue_withSemicolonInStrictMode_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[test;value]"));
+    reader.beginArray();
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (com.google.gson.stream.MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Use JsonReader.setStrictness(Strictness.LENIENT)");
+    }
+  }
+
+  @Test
+  public void testNextUnquotedValue_withHashInStrictMode_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[test#value]"));
+    reader.beginArray();
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (com.google.gson.stream.MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Use JsonReader.setStrictness(Strictness.LENIENT)");
+    }
+  }
+
+  @Test
+  public void testNextUnquotedValue_withEqualsInStrictMode_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[test=value]"));
+    reader.beginArray();
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (com.google.gson.stream.MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Use JsonReader.setStrictness(Strictness.LENIENT)");
+    }
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testNextUnquotedValue_veryLongValue() throws IOException {
+    // Create an unquoted value longer than the buffer size (1024 chars)
+    StringBuilder longValue = new StringBuilder();
+    for (int i = 0; i < 2000; i++) {
+      longValue.append('a');
+    }
+    String json = "[" + longValue.toString() + "]";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.setLenient(true);
+    reader.beginArray();
+    String result = reader.nextString();
+    assertThat(result).hasLength(2000);
+    assertThat(result).isEqualTo(longValue.toString());
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testNextUnquotedValue_veryLongValueWithMultipleFillBuffer() throws IOException {
+    // Create an unquoted value that requires multiple buffer fills
+    StringBuilder longValue = new StringBuilder();
+    for (int i = 0; i < 3000; i++) {
+      longValue.append((char) ('a' + (i % 26)));
+    }
+    String json = "[" + longValue.toString() + "]";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.setLenient(true);
+    reader.beginArray();
+    String result = reader.nextString();
+    assertThat(result).hasLength(3000);
+    assertThat(result).isEqualTo(longValue.toString());
+  }
 }
