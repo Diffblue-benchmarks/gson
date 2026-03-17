@@ -1552,4 +1552,58 @@ public class JsonReaderTest {
     assertThat(result).hasLength(3000);
     assertThat(result).isEqualTo(longValue.toString());
   }
+
+  @Test
+  public void testNextQuotedValue_withControlCharacterInStrictMode_throwsException() {
+    // Test with unescaped control character (U+0001) in strict mode
+    String json = "\"\u0001\"";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.setStrictness(Strictness.STRICT);
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (IOException expected) {
+      assertThat(expected.getMessage()).contains("Unescaped control characters");
+    }
+  }
+
+  @Test
+  public void testNextQuotedValue_withLiteralNewlineInString() throws IOException {
+    // Test with a literal newline character in a quoted string
+    String json = "\"line1\nline2\"";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.setStrictness(Strictness.LENIENT);
+    String result = reader.nextString();
+    assertThat(result).isEqualTo("line1\nline2");
+  }
+
+  @Test
+  public void testNextQuotedValue_veryLongStringWithMultipleFillBuffer() throws IOException {
+    // Create a very long quoted string that requires multiple buffer fills (buffer size is 1024)
+    StringBuilder longValue = new StringBuilder("\"");
+    for (int i = 0; i < 3000; i++) {
+      longValue.append((char) ('A' + (i % 26)));
+    }
+    longValue.append("\"");
+    JsonReader reader = new JsonReader(new StringReader(longValue.toString()));
+    String result = reader.nextString();
+    assertThat(result).hasLength(3000);
+  }
+
+  @Test
+  public void testNextQuotedValue_unterminatedStringWithBufferRefill() {
+    // Create a long string without closing quote that requires buffer refill
+    StringBuilder longValue = new StringBuilder("\"");
+    for (int i = 0; i < 2000; i++) {
+      longValue.append('a');
+    }
+    // No closing quote
+    JsonReader reader = new JsonReader(new StringReader(longValue.toString()));
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (IOException expected) {
+      assertThat(expected.getMessage()).contains("Unterminated string");
+    }
+  }
 }
