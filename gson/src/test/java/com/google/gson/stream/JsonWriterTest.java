@@ -795,4 +795,259 @@ public class JsonWriterTest {
 
     assertThat(stringWriter.toString()).isEqualTo("\"café\u00e9\"");
   }
+
+  @Test
+  public void testValueNumberCustomInfinityInStrictMode() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    Number infinityNumber = new Number() {
+      @Override
+      public int intValue() {
+        return 0;
+      }
+
+      @Override
+      public long longValue() {
+        return 0;
+      }
+
+      @Override
+      public float floatValue() {
+        return Float.POSITIVE_INFINITY;
+      }
+
+      @Override
+      public double doubleValue() {
+        return Double.POSITIVE_INFINITY;
+      }
+
+      @Override
+      public String toString() {
+        return "Infinity";
+      }
+    };
+
+    try {
+      writer.value(infinityNumber);
+      throw new AssertionError("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage()).contains("Numeric values must be finite");
+    }
+  }
+
+  @Test
+  public void testValueNumberCustomNegativeInfinityInStrictMode() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    Number negativeInfinityNumber = new Number() {
+      @Override
+      public int intValue() {
+        return 0;
+      }
+
+      @Override
+      public long longValue() {
+        return 0;
+      }
+
+      @Override
+      public float floatValue() {
+        return Float.NEGATIVE_INFINITY;
+      }
+
+      @Override
+      public double doubleValue() {
+        return Double.NEGATIVE_INFINITY;
+      }
+
+      @Override
+      public String toString() {
+        return "-Infinity";
+      }
+    };
+
+    try {
+      writer.value(negativeInfinityNumber);
+      throw new AssertionError("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage()).contains("Numeric values must be finite");
+    }
+  }
+
+  @Test
+  public void testValueNumberCustomNaNInStrictMode() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    Number nanNumber = new Number() {
+      @Override
+      public int intValue() {
+        return 0;
+      }
+
+      @Override
+      public long longValue() {
+        return 0;
+      }
+
+      @Override
+      public float floatValue() {
+        return Float.NaN;
+      }
+
+      @Override
+      public double doubleValue() {
+        return Double.NaN;
+      }
+
+      @Override
+      public String toString() {
+        return "NaN";
+      }
+    };
+
+    try {
+      writer.value(nanNumber);
+      throw new AssertionError("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage()).contains("Numeric values must be finite");
+    }
+  }
+
+  @Test
+  public void testValueNumberCustomInvalidJsonNumber() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    Number invalidNumber = new Number() {
+      @Override
+      public int intValue() {
+        return 0;
+      }
+
+      @Override
+      public long longValue() {
+        return 0;
+      }
+
+      @Override
+      public float floatValue() {
+        return 0;
+      }
+
+      @Override
+      public double doubleValue() {
+        return 0;
+      }
+
+      @Override
+      public String toString() {
+        return "not-a-number";
+      }
+    };
+
+    try {
+      writer.value(invalidNumber);
+      throw new AssertionError("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage()).contains("is not a valid JSON number");
+    }
+  }
+
+  @Test
+  public void testValueNumberCustomInfinityInLenientMode() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+    writer.setStrictness(Strictness.LENIENT);
+
+    Number infinityNumber = new Number() {
+      @Override
+      public int intValue() {
+        return 0;
+      }
+
+      @Override
+      public long longValue() {
+        return 0;
+      }
+
+      @Override
+      public float floatValue() {
+        return Float.POSITIVE_INFINITY;
+      }
+
+      @Override
+      public double doubleValue() {
+        return Double.POSITIVE_INFINITY;
+      }
+
+      @Override
+      public String toString() {
+        return "Infinity";
+      }
+    };
+
+    writer.value(infinityNumber);
+
+    assertThat(stringWriter.toString()).isEqualTo("Infinity");
+  }
+
+  @Test
+  public void testValueNumberCustomValidJsonNumber() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    Number validNumber = new Number() {
+      @Override
+      public int intValue() {
+        return 123;
+      }
+
+      @Override
+      public long longValue() {
+        return 123;
+      }
+
+      @Override
+      public float floatValue() {
+        return 123.45f;
+      }
+
+      @Override
+      public double doubleValue() {
+        return 123.45;
+      }
+
+      @Override
+      public String toString() {
+        return "123.45";
+      }
+    };
+
+    writer.value(validNumber);
+
+    assertThat(stringWriter.toString()).isEqualTo("123.45");
+  }
+
+  @Test
+  public void testValueNumberFloatObject() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    writer.value(Float.valueOf(1.5f));
+
+    assertThat(stringWriter.toString()).isEqualTo("1.5");
+  }
+
+  @Test
+  public void testValueNumberDoubleObject() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+
+    writer.value(Double.valueOf(2.5));
+
+    assertThat(stringWriter.toString()).isEqualTo("2.5");
+  }
 }
