@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLongArray;
 import org.junit.Test;
 
 public class GsonTest {
@@ -1089,5 +1090,52 @@ public class GsonTest {
     TypeAdapter<String> adapter = gson.getDelegateAdapter(externalFactory, typeToken);
 
     assertThat(adapter).isNotNull();
+  }
+
+  @Test
+  public void testAtomicLongArraySerialization() {
+    Gson gson = new Gson();
+    AtomicLongArray atomicArray = new AtomicLongArray(new long[] {1L, 2L, 3L, 100L, -50L});
+    String json = gson.toJson(atomicArray);
+    assertThat(json).isEqualTo("[1,2,3,100,-50]");
+  }
+
+  @Test
+  public void testAtomicLongArrayDeserialization() {
+    Gson gson = new Gson();
+    String json = "[10,20,30,40]";
+    AtomicLongArray result = gson.fromJson(json, AtomicLongArray.class);
+    assertThat(result).isNotNull();
+    assertThat(result.length()).isEqualTo(4);
+    assertThat(result.get(0)).isEqualTo(10L);
+    assertThat(result.get(1)).isEqualTo(20L);
+    assertThat(result.get(2)).isEqualTo(30L);
+    assertThat(result.get(3)).isEqualTo(40L);
+  }
+
+  @Test
+  public void testAtomicLongArrayEmpty() {
+    Gson gson = new Gson();
+    AtomicLongArray emptyArray = new AtomicLongArray(0);
+    String json = gson.toJson(emptyArray);
+    assertThat(json).isEqualTo("[]");
+
+    AtomicLongArray result = gson.fromJson("[]", AtomicLongArray.class);
+    assertThat(result).isNotNull();
+    assertThat(result.length()).isEqualTo(0);
+  }
+
+  @Test
+  public void testAtomicLongArrayWithLargeNumbers() {
+    Gson gson = new Gson();
+    AtomicLongArray atomicArray = new AtomicLongArray(new long[] {Long.MAX_VALUE, Long.MIN_VALUE, 0L});
+    String json = gson.toJson(atomicArray);
+
+    AtomicLongArray result = gson.fromJson(json, AtomicLongArray.class);
+    assertThat(result).isNotNull();
+    assertThat(result.length()).isEqualTo(3);
+    assertThat(result.get(0)).isEqualTo(Long.MAX_VALUE);
+    assertThat(result.get(1)).isEqualTo(Long.MIN_VALUE);
+    assertThat(result.get(2)).isEqualTo(0L);
   }
 }
