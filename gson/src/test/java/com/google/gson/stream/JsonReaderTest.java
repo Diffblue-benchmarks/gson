@@ -1128,4 +1128,49 @@ public class JsonReaderTest {
     assertThat(reader.nextString()).isEqualTo("value");
     reader.endObject();
   }
+
+  @Test
+  public void testDeeplyNestedArrays_triggersStackResize() throws IOException {
+    // Create a deeply nested array to trigger stack resizing when stackSize reaches 32
+    StringBuilder json = new StringBuilder();
+    int depth = 35; // Exceed initial stack size of 32
+    for (int i = 0; i < depth; i++) {
+      json.append("[");
+    }
+    for (int i = 0; i < depth; i++) {
+      json.append("]");
+    }
+
+    JsonReader reader = new JsonReader(new StringReader(json.toString()));
+    for (int i = 0; i < depth; i++) {
+      reader.beginArray();
+    }
+    for (int i = 0; i < depth; i++) {
+      reader.endArray();
+    }
+  }
+
+  @Test
+  public void testDeeplyNestedObjects_triggersStackResize() throws IOException {
+    // Create deeply nested objects to trigger stack resizing
+    StringBuilder json = new StringBuilder();
+    int depth = 35; // Exceed initial stack size of 32
+    for (int i = 0; i < depth; i++) {
+      json.append("{\"a\":");
+    }
+    json.append("1");
+    for (int i = 0; i < depth; i++) {
+      json.append("}");
+    }
+
+    JsonReader reader = new JsonReader(new StringReader(json.toString()));
+    for (int i = 0; i < depth; i++) {
+      reader.beginObject();
+      reader.nextName();
+    }
+    assertThat(reader.nextInt()).isEqualTo(1);
+    for (int i = 0; i < depth; i++) {
+      reader.endObject();
+    }
+  }
 }
