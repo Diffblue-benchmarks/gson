@@ -1256,4 +1256,75 @@ public class GsonTest {
     adapter.write(writer, 123456789L);
     assertThat(stringWriter.toString()).isEqualTo("\"123456789\"");
   }
+
+  @Test
+  public void testFloatAdapterWithSpecialFloatingPointValuesEnabled() throws Exception {
+    Gson gson = new Gson();
+    Method method = Gson.class.getDeclaredMethod("floatAdapter", boolean.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(gson, true);
+
+    assertThat(adapter).isNotNull();
+  }
+
+  @Test
+  public void testFloatAdapterReadNull() throws Exception {
+    Gson gson = new Gson();
+    Method method = Gson.class.getDeclaredMethod("floatAdapter", boolean.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(gson, false);
+
+    JsonReader reader = new JsonReader(new StringReader("null"));
+    Number result = adapter.read(reader);
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void testFloatAdapterReadFloat() throws Exception {
+    Gson gson = new Gson();
+    Method method = Gson.class.getDeclaredMethod("floatAdapter", boolean.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(gson, false);
+
+    JsonReader reader = new JsonReader(new StringReader("123.45"));
+    Number result = adapter.read(reader);
+    assertThat(result).isInstanceOf(Float.class);
+    assertThat(result.floatValue()).isWithin(0.01f).of(123.45f);
+  }
+
+  @Test
+  public void testFloatAdapterWriteNull() throws Exception {
+    Gson gson = new Gson();
+    Method method = Gson.class.getDeclaredMethod("floatAdapter", boolean.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(gson, false);
+
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+    adapter.write(writer, null);
+    assertThat(stringWriter.toString()).isEqualTo("null");
+  }
+
+  @Test
+  public void testFloatAdapterWriteFloat() throws Exception {
+    Gson gson = new Gson();
+    Method method = Gson.class.getDeclaredMethod("floatAdapter", boolean.class);
+    method.setAccessible(true);
+
+    @SuppressWarnings("unchecked")
+    TypeAdapter<Number> adapter = (TypeAdapter<Number>) method.invoke(gson, false);
+
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+    adapter.write(writer, 123.45f);
+    assertThat(stringWriter.toString()).isEqualTo("123.45");
+  }
 }
