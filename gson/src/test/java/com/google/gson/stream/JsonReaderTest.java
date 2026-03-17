@@ -1800,4 +1800,177 @@ public class JsonReaderTest {
     reader.setLenient(true);
     assertThat(reader.nextString()).isEqualTo("1e-");
   }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testDoPeek_arraySemicolonSeparatorInLenientMode() throws IOException {
+    // Test line 596: semicolon as array element separator in lenient mode
+    JsonReader reader = new JsonReader(new StringReader("[1;2]"));
+    reader.setLenient(true);
+    reader.beginArray();
+    assertThat(reader.nextInt()).isEqualTo(1);
+    assertThat(reader.nextInt()).isEqualTo(2);
+    reader.endArray();
+  }
+
+  @Test
+  public void testDoPeek_arrayInvalidSeparator() throws IOException {
+    // Test line 600: invalid separator in array
+    JsonReader reader = new JsonReader(new StringReader("[1 2]"));
+    reader.beginArray();
+    assertThat(reader.nextInt()).isEqualTo(1);
+    try {
+      reader.peek();
+      fail("Expected MalformedJsonException");
+    } catch (MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Unterminated array");
+    }
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testDoPeek_objectSemicolonSeparatorInLenientMode() throws IOException {
+    // Test line 612: semicolon as object element separator in lenient mode
+    JsonReader reader = new JsonReader(new StringReader("{\"a\":1;\"b\":2}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("a");
+    assertThat(reader.nextInt()).isEqualTo(1);
+    assertThat(reader.nextName()).isEqualTo("b");
+    assertThat(reader.nextInt()).isEqualTo(2);
+    reader.endObject();
+  }
+
+  @Test
+  public void testDoPeek_objectInvalidSeparator() throws IOException {
+    // Test line 616: invalid separator in object
+    JsonReader reader = new JsonReader(new StringReader("{\"a\":1 \"b\":2}"));
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("a");
+    assertThat(reader.nextInt()).isEqualTo(1);
+    try {
+      reader.peek();
+      fail("Expected MalformedJsonException");
+    } catch (MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Unterminated object");
+    }
+  }
+
+  @Test
+  public void testDoPeek_closingBraceInNonemptyObject() throws IOException {
+    // Test line 633: closing brace where name is expected in NONEMPTY_OBJECT
+    JsonReader reader = new JsonReader(new StringReader("{\"a\":1,}"));
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("a");
+    assertThat(reader.nextInt()).isEqualTo(1);
+    try {
+      reader.peek();
+      fail("Expected MalformedJsonException");
+    } catch (MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Expected name");
+    }
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testDoPeek_invalidCharacterForObjectName() throws IOException {
+    // Test line 642: invalid character where name is expected (after lenient check)
+    JsonReader reader = new JsonReader(new StringReader("{:}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    try {
+      reader.nextName();
+      fail("Expected MalformedJsonException");
+    } catch (MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Expected name");
+    }
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testDoPeek_equalsAsColonReplacement() throws IOException {
+    // Test lines 653-655: equals sign as colon replacement in lenient mode
+    JsonReader reader = new JsonReader(new StringReader("{\"key\"=\"value\"}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testDoPeek_arrowAsColonReplacement() throws IOException {
+    // Test lines 653-655: arrow (=>) as colon replacement in lenient mode
+    JsonReader reader = new JsonReader(new StringReader("{\"key\"=>\"value\"}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    assertThat(reader.nextString()).isEqualTo("value");
+    reader.endObject();
+  }
+
+  @Test
+  public void testDoPeek_missingColonAfterName() throws IOException {
+    // Test line 659: missing colon after object name
+    JsonReader reader = new JsonReader(new StringReader("{\"key\" \"value\"}"));
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("key");
+    try {
+      reader.peek();
+      fail("Expected MalformedJsonException");
+    } catch (MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Expected ':'");
+    }
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testDoPeek_multipleDocumentValuesInLenientMode() throws IOException {
+    // Test lines 672-673: multiple values at document level in lenient mode
+    JsonReader reader = new JsonReader(new StringReader("1 2"));
+    reader.setLenient(true);
+    assertThat(reader.nextInt()).isEqualTo(1);
+    assertThat(reader.nextInt()).isEqualTo(2);
+  }
+
+  @Test
+  public void testDoPeek_closedReader() throws IOException {
+    // Test lines 675-676: operations on closed reader
+    JsonReader reader = new JsonReader(new StringReader("{}"));
+    reader.close();
+    try {
+      reader.peek();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException expected) {
+      assertThat(expected.getMessage()).contains("JsonReader is closed");
+    }
+  }
+
+  @Test
+  public void testDoPeek_commaOutsideArrayContext() throws IOException {
+    // Test line 696: comma outside array context
+    JsonReader reader = new JsonReader(new StringReader("{\"a\":,}"));
+    reader.beginObject();
+    assertThat(reader.nextName()).isEqualTo("a");
+    try {
+      reader.peek();
+      fail("Expected MalformedJsonException");
+    } catch (MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Unexpected value");
+    }
+  }
+
+  @Test
+  public void testDoPeek_invalidValueCharacter() throws IOException {
+    // Test line 726: invalid value character (non-literal where value expected)
+    JsonReader reader = new JsonReader(new StringReader("[}]"));
+    reader.beginArray();
+    try {
+      reader.peek();
+      fail("Expected MalformedJsonException");
+    } catch (MalformedJsonException expected) {
+      assertThat(expected.getMessage()).contains("Expected value");
+    }
+  }
 }
