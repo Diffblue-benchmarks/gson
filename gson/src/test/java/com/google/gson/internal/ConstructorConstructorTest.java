@@ -532,4 +532,32 @@ public class ConstructorConstructorTest {
       assertThat(e.getMessage()).contains("ReflectionAccessFilter does not permit making it accessible");
     }
   }
+
+  private static class ClassWithOnlyParameterizedConstructor {
+    private final int value;
+
+    ClassWithOnlyParameterizedConstructor(int value) {
+      this.value = value;
+    }
+  }
+
+  @Test
+  public void testNewUnsafeAllocatorWithUnsafeDisabled() {
+    ConstructorConstructor cc = new ConstructorConstructor(
+        Collections.<Type, InstanceCreator<?>>emptyMap(), false, Collections.<ReflectionAccessFilter>emptyList());
+
+    ObjectConstructor<ClassWithOnlyParameterizedConstructor> constructor =
+        cc.get(TypeToken.get(ClassWithOnlyParameterizedConstructor.class));
+
+    assertThat(constructor).isNotNull();
+    try {
+      constructor.construct();
+      // Should not reach here
+      throw new AssertionError("Expected JsonIOException");
+    } catch (JsonIOException e) {
+      assertThat(e.getMessage()).contains("Unable to create instance of");
+      assertThat(e.getMessage()).contains("usage of JDK Unsafe is disabled");
+      assertThat(e.getMessage()).contains("Registering an InstanceCreator");
+    }
+  }
 }
