@@ -806,4 +806,124 @@ public class JsonReaderTest {
     JsonReader reader = new JsonReader(new StringReader("0.0"));
     assertThat(reader.nextDouble()).isEqualTo(0.0);
   }
+
+  @Test
+  public void testEscapeSequence_unterminatedEscape() {
+    JsonReader reader = new JsonReader(new StringReader("[\"\\"));
+    try {
+      reader.beginArray();
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (IOException expected) {
+      assertThat(expected.getMessage()).contains("Unterminated");
+    }
+  }
+
+  @Test
+  public void testEscapeSequence_unterminatedUnicodeEscape() {
+    JsonReader reader = new JsonReader(new StringReader("[\"\\u12"));
+    try {
+      reader.beginArray();
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (IOException expected) {
+      assertThat(expected.getMessage()).contains("Unterminated");
+    }
+  }
+
+  @Test
+  public void testEscapeSequence_unicodeWithLowercaseHex() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"\\uabcd\""));
+    assertThat(reader.nextString()).isEqualTo("\uabcd");
+  }
+
+  @Test
+  public void testEscapeSequence_unicodeWithUppercaseHex() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"\\uABCD\""));
+    assertThat(reader.nextString()).isEqualTo("\uABCD");
+  }
+
+  @Test
+  public void testEscapeSequence_unicodeWithMixedCaseHex() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"\\uAbCd\""));
+    assertThat(reader.nextString()).isEqualTo("\uAbCd");
+  }
+
+  @Test
+  public void testEscapeSequence_malformedUnicodeEscape() {
+    JsonReader reader = new JsonReader(new StringReader("\"\\u123g\""));
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (IOException expected) {
+      assertThat(expected.getMessage()).contains("Malformed Unicode escape");
+    }
+  }
+
+  @Test
+  public void testEscapeSequence_backspace() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"\\b\""));
+    assertThat(reader.nextString()).isEqualTo("\b");
+  }
+
+  @Test
+  public void testEscapeSequence_carriageReturn() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"\\r\""));
+    assertThat(reader.nextString()).isEqualTo("\r");
+  }
+
+  @Test
+  public void testEscapeSequence_formFeed() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"\\f\""));
+    assertThat(reader.nextString()).isEqualTo("\f");
+  }
+
+  @Test
+  public void testEscapeSequence_newlineInStrictMode() {
+    JsonReader reader = new JsonReader(new StringReader("\"\\\n\""));
+    reader.setStrictness(Strictness.STRICT);
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (IOException expected) {
+      assertThat(expected.getMessage()).contains("Cannot escape a newline character in strict mode");
+    }
+  }
+
+  @Test
+  public void testEscapeSequence_newlineInNonStrictMode() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"\\\n\""));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextString()).isEqualTo("\n");
+  }
+
+  @Test
+  public void testEscapeSequence_singleQuoteInStrictMode() {
+    JsonReader reader = new JsonReader(new StringReader("\"\\'\""));
+    reader.setStrictness(Strictness.STRICT);
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (IOException expected) {
+      assertThat(expected.getMessage()).contains("Invalid escaped character \"'\" in strict mode");
+    }
+  }
+
+  @Test
+  public void testEscapeSequence_singleQuoteInNonStrictMode() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"\\'\""));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextString()).isEqualTo("'");
+  }
+
+  @Test
+  public void testEscapeSequence_invalidEscapeCharacter() {
+    JsonReader reader = new JsonReader(new StringReader("\"\\x\""));
+    try {
+      reader.nextString();
+      fail("Expected MalformedJsonException");
+    } catch (IOException expected) {
+      assertThat(expected.getMessage()).contains("Invalid escape sequence");
+    }
+  }
 }
