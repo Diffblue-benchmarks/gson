@@ -560,4 +560,29 @@ public class ConstructorConstructorTest {
       assertThat(e.getMessage()).contains("Registering an InstanceCreator");
     }
   }
+
+  private static class ConstructorThrowsException {
+    ConstructorThrowsException() {
+      throw new IllegalStateException("Constructor exception");
+    }
+  }
+
+  @Test
+  public void testNewDefaultConstructorWithInvocationTargetException() {
+    ConstructorConstructor cc = new ConstructorConstructor(
+        Collections.<Type, InstanceCreator<?>>emptyMap(), true, Collections.<ReflectionAccessFilter>emptyList());
+
+    ObjectConstructor<ConstructorThrowsException> constructor =
+        cc.get(TypeToken.get(ConstructorThrowsException.class));
+
+    assertThat(constructor).isNotNull();
+    try {
+      constructor.construct();
+      assertThat(false).isTrue(); // Should not reach here
+    } catch (RuntimeException e) {
+      assertThat(e.getMessage()).contains("Failed to invoke constructor");
+      assertThat(e.getCause()).isInstanceOf(IllegalStateException.class);
+      assertThat(e.getCause().getMessage()).isEqualTo("Constructor exception");
+    }
+  }
 }
