@@ -1705,4 +1705,99 @@ public class JsonReaderTest {
     }
     assertThat(reader.nextString()).isEqualTo("123.456");
   }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testPeekNumber_withVeryLongNumber() throws IOException {
+    // Test line 803: number longer than buffer size becomes unquoted literal in lenient mode
+    StringBuilder longNumber = new StringBuilder();
+    for (int i = 0; i < 1025; i++) {
+      longNumber.append('1');
+    }
+    JsonReader reader = new JsonReader(new StringReader(longNumber.toString()));
+    reader.setLenient(true);
+    assertThat(reader.nextString()).isEqualTo(longNumber.toString());
+  }
+
+  @Test
+  public void testNextDouble_withScientificNotationNegativeExponent() throws IOException {
+    // Test lines 819-821: negative exponent in scientific notation
+    JsonReader reader = new JsonReader(new StringReader("1.5e-10"));
+    assertThat(reader.nextDouble()).isEqualTo(1.5e-10);
+  }
+
+  @Test
+  public void testNextDouble_withScientificNotationUpperCaseNegativeExponent() throws IOException {
+    // Test lines 819-821: negative exponent with uppercase E
+    JsonReader reader = new JsonReader(new StringReader("2.5E-5"));
+    assertThat(reader.nextDouble()).isEqualTo(2.5E-5);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testNextString_withMinusInWrongPosition() throws IOException {
+    // Test line 823: minus sign in wrong position treated as unquoted literal
+    JsonReader reader = new JsonReader(new StringReader("1-2"));
+    reader.setLenient(true);
+    assertThat(reader.nextString()).isEqualTo("1-2");
+  }
+
+  @Test
+  public void testNextDouble_withScientificNotationPositiveExponent() throws IOException {
+    // Test lines 826-828: positive exponent in scientific notation
+    JsonReader reader = new JsonReader(new StringReader("1.5e+10"));
+    assertThat(reader.nextDouble()).isEqualTo(1.5e+10);
+  }
+
+  @Test
+  public void testNextDouble_withScientificNotationUpperCasePositiveExponent() throws IOException {
+    // Test lines 826-828: positive exponent with uppercase E
+    JsonReader reader = new JsonReader(new StringReader("2.5E+5"));
+    assertThat(reader.nextDouble()).isEqualTo(2.5E+5);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testNextString_withPlusInWrongPosition() throws IOException {
+    // Test line 830: plus sign in wrong position treated as unquoted literal
+    JsonReader reader = new JsonReader(new StringReader("1+2"));
+    reader.setLenient(true);
+    assertThat(reader.nextString()).isEqualTo("1+2");
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testNextString_withExponentInWrongPosition() throws IOException {
+    // Test line 838: exponent marker in wrong position treated as unquoted literal
+    JsonReader reader = new JsonReader(new StringReader("e123"));
+    reader.setLenient(true);
+    assertThat(reader.nextString()).isEqualTo("e123");
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testNextString_withDecimalPointInWrongPosition() throws IOException {
+    // Test line 845: decimal point in wrong position treated as unquoted literal
+    JsonReader reader = new JsonReader(new StringReader(".123"));
+    reader.setLenient(true);
+    assertThat(reader.nextString()).isEqualTo(".123");
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testNextString_withLeadingZero() throws IOException {
+    // Test line 859: leading zero prefix treated as unquoted literal
+    JsonReader reader = new JsonReader(new StringReader("0123"));
+    reader.setLenient(true);
+    assertThat(reader.nextString()).isEqualTo("0123");
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testNextString_withIncompleteNumber() throws IOException {
+    // Test line 892: incomplete number treated as unquoted literal
+    JsonReader reader = new JsonReader(new StringReader("1e-"));
+    reader.setLenient(true);
+    assertThat(reader.nextString()).isEqualTo("1e-");
+  }
 }
