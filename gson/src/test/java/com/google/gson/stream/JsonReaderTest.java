@@ -451,6 +451,61 @@ public class JsonReaderTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
+  public void testNextInt_withUnquotedStringValue() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[abc123]"));
+    reader.setLenient(true);
+    reader.beginArray();
+    try {
+      reader.nextInt();
+      fail("Expected NumberFormatException");
+    } catch (NumberFormatException expected) {
+    }
+  }
+
+  @Test
+  public void testNextInt_withDoubleString() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"123.0\""));
+    assertThat(reader.nextInt()).isEqualTo(123);
+  }
+
+  @Test
+  public void testNextInt_withScientificNotation() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\"1.0E2\""));
+    assertThat(reader.nextInt()).isEqualTo(100);
+  }
+
+  @Test
+  public void testNextInt_withBoolean_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("true"));
+    try {
+      reader.nextInt();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException expected) {
+    }
+  }
+
+  @Test
+  public void testNextInt_withNull_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("null"));
+    try {
+      reader.nextInt();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException expected) {
+    }
+  }
+
+  @Test
+  public void testNextInt_withObject_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{}"));
+    try {
+      reader.nextInt();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException expected) {
+    }
+  }
+
+  @Test
   public void testClose() throws IOException {
     JsonReader reader = new JsonReader(new StringReader("{}"));
     reader.close();
