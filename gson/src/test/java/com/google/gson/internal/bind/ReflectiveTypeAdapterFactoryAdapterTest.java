@@ -19,13 +19,16 @@ package com.google.gson.internal.bind;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.ReflectionAccessFilter;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ReflectiveTypeAdapterFactoryAdapterTest {
@@ -225,5 +228,33 @@ public class ReflectiveTypeAdapterFactoryAdapterTest {
     adapter.write(writer, obj);
 
     assertThat(stringWriter.toString()).isEqualTo("{\"name\":null,\"value\":0}");
+  }
+
+  @Test
+  public void testReadThrowsJsonSyntaxExceptionForIllegalState() throws IOException {
+    Gson gson = new Gson();
+    TypeAdapter<SimpleClass> adapter = gson.getAdapter(SimpleClass.class);
+
+    JsonReader reader = new JsonReader(new StringReader("\"not an object\""));
+    try {
+      adapter.read(reader);
+      throw new AssertionError("Expected JsonSyntaxException");
+    } catch (JsonSyntaxException expected) {
+      // Expected exception when JsonReader is in illegal state for object parsing
+    }
+  }
+
+  @Test
+  public void testReadThrowsJsonSyntaxExceptionForArray() throws IOException {
+    Gson gson = new Gson();
+    TypeAdapter<SimpleClass> adapter = gson.getAdapter(SimpleClass.class);
+
+    JsonReader reader = new JsonReader(new StringReader("[1, 2, 3]"));
+    try {
+      adapter.read(reader);
+      throw new AssertionError("Expected JsonSyntaxException");
+    } catch (JsonSyntaxException expected) {
+      // Expected exception when array is provided instead of object
+    }
   }
 }
