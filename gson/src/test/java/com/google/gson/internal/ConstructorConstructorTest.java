@@ -585,4 +585,67 @@ public class ConstructorConstructorTest {
       assertThat(e.getCause().getMessage()).isEqualTo("Constructor exception");
     }
   }
+
+  @Test
+  public void testGetWithInstanceCreatorForRawTypeOnly() {
+    Map<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
+    List<String> instance = new ArrayList<String>();
+    instanceCreators.put(List.class, new InstanceCreator<List<?>>() {
+      @Override
+      public List<?> createInstance(Type type) {
+        return instance;
+      }
+    });
+
+    ConstructorConstructor cc = new ConstructorConstructor(instanceCreators, true, Collections.<ReflectionAccessFilter>emptyList());
+    TypeToken<List<String>> typeToken = new TypeToken<List<String>>() {};
+    ObjectConstructor<List<String>> constructor = cc.get(typeToken);
+
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.construct()).isSameInstanceAs(instance);
+  }
+
+  @Test
+  public void testGetWithDisallowUnsafeAndNoDefaultConstructor() {
+    ConstructorConstructor cc = new ConstructorConstructor(
+        Collections.<Type, InstanceCreator<?>>emptyMap(), true, Collections.<ReflectionAccessFilter>emptyList());
+
+    ObjectConstructor<ClassWithOnlyParameterizedConstructor> constructor =
+        cc.get(TypeToken.get(ClassWithOnlyParameterizedConstructor.class), false);
+
+    assertThat(constructor).isNotNull();
+    try {
+      constructor.construct();
+      assertThat(false).isTrue(); // Should not reach here
+    } catch (JsonIOException e) {
+      assertThat(e.getMessage()).contains("Unable to create instance of");
+      assertThat(e.getMessage()).contains("Register an InstanceCreator or a TypeAdapter for this type");
+    }
+  }
+
+  @Test
+  public void testGetWithBlockInaccessibleFilterAndNoDefaultConstructor() {
+    List<ReflectionAccessFilter> filters = new ArrayList<>();
+    filters.add(new ReflectionAccessFilter() {
+      @Override
+      public FilterResult check(Class<?> rawClass) {
+        return FilterResult.BLOCK_INACCESSIBLE;
+      }
+    });
+
+    ConstructorConstructor cc = new ConstructorConstructor(
+        Collections.<Type, InstanceCreator<?>>emptyMap(), true, filters);
+
+    ObjectConstructor<ClassWithOnlyParameterizedConstructor> constructor =
+        cc.get(TypeToken.get(ClassWithOnlyParameterizedConstructor.class), true);
+
+    assertThat(constructor).isNotNull();
+    try {
+      constructor.construct();
+      assertThat(false).isTrue(); // Should not reach here
+    } catch (JsonIOException e) {
+      assertThat(e.getMessage()).contains("Unable to create instance of");
+      assertThat(e.getMessage()).contains("ReflectionAccessFilter does not permit using reflection or Unsafe");
+    }
+  }
 }
