@@ -1298,4 +1298,80 @@ public class JsonReaderTest {
     assertThat(reader.nextInt()).isEqualTo(1);
     reader.skipValue();
   }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipUnquotedValue_withForwardSlashComment() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[test//comment\n, 123]"));
+    reader.setLenient(true);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(123);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipUnquotedValue_withHashComment() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[test#comment\n, 123]"));
+    reader.setLenient(true);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(123);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipUnquotedValue_withSemicolonSeparator() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[test;456]"));
+    reader.setLenient(true);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(456);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipUnquotedValue_terminatedByColon() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{test:123}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(123);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipUnquotedValue_withEqualsOperator() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{test=123}"));
+    reader.setLenient(true);
+    reader.beginObject();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(123);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testSkipUnquotedValue_longValue() throws IOException {
+    StringBuilder longValue = new StringBuilder();
+    for (int i = 0; i < 1100; i++) {
+      longValue.append('a');
+    }
+    String json = "[" + longValue.toString() + ", 456]";
+    JsonReader reader = new JsonReader(new StringReader(json));
+    reader.setLenient(true);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(456);
+  }
+
+  @Test
+  public void testSkipUnquotedValue_strictMode_throwsException() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[test//comment\n]"));
+    reader.beginArray();
+    try {
+      reader.skipValue();
+      fail("Expected MalformedJsonException");
+    } catch (com.google.gson.stream.MalformedJsonException expected) {
+    }
+  }
 }
