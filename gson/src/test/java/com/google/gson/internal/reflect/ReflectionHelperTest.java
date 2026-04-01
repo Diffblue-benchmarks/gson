@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import com.google.gson.JsonIOException;
+import com.google.gson.internal.TroubleshootingGuide;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -265,6 +266,66 @@ public final class ReflectionHelperTest {
 
     assertThat(ex).hasMessageThat().contains("Unexpected IllegalAccessException occurred");
     assertThat(ex.getCause()).isSameInstanceAs(cause);
+  }
+
+  private static String invokeGetInaccessibleTroubleshootingSuffix(Exception e) throws Exception {
+    Method method =
+        ReflectionHelper.class.getDeclaredMethod(
+            "getInaccessibleTroubleshootingSuffix", Exception.class);
+    method.setAccessible(true);
+    return (String) method.invoke(null, e);
+  }
+
+  private static Exception createInaccessibleObjectException(String message) throws Exception {
+    Class<?> clazz = Class.forName("java.lang.reflect.InaccessibleObjectException");
+    if (message == null) {
+      return (Exception) clazz.getDeclaredConstructor().newInstance();
+    }
+    return (Exception) clazz.getDeclaredConstructor(String.class).newInstance(message);
+  }
+
+  @Test
+  public void testGetInaccessibleTroubleshootingSuffixWithRegularException() throws Exception {
+    Exception e = new RuntimeException("some error");
+
+    String result = invokeGetInaccessibleTroubleshootingSuffix(e);
+
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  public void testGetInaccessibleTroubleshootingSuffixWithInaccessibleObjectExceptionToGson()
+      throws Exception {
+    Exception e = createInaccessibleObjectException("opens pkg to module com.google.gson");
+
+    String result = invokeGetInaccessibleTroubleshootingSuffix(e);
+
+    assertThat(result)
+        .isEqualTo(
+            "\nSee "
+                + TroubleshootingGuide.createUrl("reflection-inaccessible-to-module-gson"));
+  }
+
+  @Test
+  public void testGetInaccessibleTroubleshootingSuffixWithInaccessibleObjectExceptionOtherMessage()
+      throws Exception {
+    Exception e = createInaccessibleObjectException("some unrelated message");
+
+    String result = invokeGetInaccessibleTroubleshootingSuffix(e);
+
+    assertThat(result)
+        .isEqualTo("\nSee " + TroubleshootingGuide.createUrl("reflection-inaccessible"));
+  }
+
+  @Test
+  public void testGetInaccessibleTroubleshootingSuffixWithInaccessibleObjectExceptionNullMessage()
+      throws Exception {
+    Exception e = createInaccessibleObjectException(null);
+
+    String result = invokeGetInaccessibleTroubleshootingSuffix(e);
+
+    assertThat(result)
+        .isEqualTo("\nSee " + TroubleshootingGuide.createUrl("reflection-inaccessible"));
   }
 
   @Test
