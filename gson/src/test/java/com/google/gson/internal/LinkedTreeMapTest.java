@@ -479,4 +479,34 @@ public final class LinkedTreeMapTest {
     assertThat(map.get(2)).isEqualTo("b");
     assertThat(map.get(3)).isEqualTo("c");
   }
+
+  @Test
+  public void testRemoveNodeWithOnlyLeftChild() {
+    // Tree: root=2, left=1, right=null. Removing 2 exercises the
+    // removeInternal branch where left != null && right == null.
+    LinkedTreeMap<Integer, String> map = new LinkedTreeMap<>();
+    map.put(2, "b");
+    map.put(1, "a");
+
+    String removed = map.remove(2);
+    assertThat(removed).isEqualTo("b");
+    assertThat(map.size()).isEqualTo(1);
+    assertThat(map.get(1)).isEqualTo("a");
+    assertThat(map.containsKey(2)).isFalse();
+  }
+
+  @Test
+  public void testRemoveNodeWithOnlyRightChild() {
+    // Tree: root=1, left=null, right=2. Removing 1 exercises the
+    // removeInternal branch where left == null && right != null.
+    LinkedTreeMap<Integer, String> map = new LinkedTreeMap<>();
+    map.put(1, "a");
+    map.put(2, "b");
+
+    String removed = map.remove(1);
+    assertThat(removed).isEqualTo("a");
+    assertThat(map.size()).isEqualTo(1);
+    assertThat(map.get(2)).isEqualTo("b");
+    assertThat(map.containsKey(1)).isFalse();
+  }
 }
