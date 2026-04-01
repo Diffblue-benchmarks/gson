@@ -19,6 +19,8 @@ package com.google.gson.reflect;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -313,7 +315,91 @@ public final class TypeTokenTest {
     assertThat(e).hasMessageThat().contains("for type token:");
   }
 
+  @Test
+  public void testVerifyNoTypeVariableGenericArrayTypeThrows() {
+    IllegalArgumentException e =
+        assertThrows(
+            IllegalArgumentException.class,
+            TypeTokenTest::createWithArrayOfTypeVariable);
+
+    assertThat(e)
+        .hasMessageThat()
+        .contains("TypeToken type argument must not contain a type variable");
+  }
+
+  @Test
+  public void testVerifyNoTypeVariableOwnerTypeThrows() {
+    IllegalArgumentException e =
+        assertThrows(
+            IllegalArgumentException.class,
+            TypeTokenTest::createWithInnerClassOfGenericOuter);
+
+    assertThat(e)
+        .hasMessageThat()
+        .contains("TypeToken type argument must not contain a type variable");
+  }
+
+  @Test
+  public void testVerifyNoTypeVariableWildcardLowerBoundThrows() {
+    IllegalArgumentException e =
+        assertThrows(
+            IllegalArgumentException.class,
+            TypeTokenTest::createWithWildcardLowerBoundTypeVariable);
+
+    assertThat(e)
+        .hasMessageThat()
+        .contains("TypeToken type argument must not contain a type variable");
+  }
+
+  @Test
+  public void testVerifyNoTypeVariableWildcardUpperBoundThrows() {
+    IllegalArgumentException e =
+        assertThrows(
+            IllegalArgumentException.class,
+            TypeTokenTest::createWithWildcardUpperBoundTypeVariable);
+
+    assertThat(e)
+        .hasMessageThat()
+        .contains("TypeToken type argument must not contain a type variable");
+  }
+
+  @Test
+  public void testVerifyNoTypeVariableNullTypeThrows() throws Exception {
+    Method method = TypeToken.class.getDeclaredMethod("verifyNoTypeVariable", Type.class);
+    method.setAccessible(true);
+
+    InvocationTargetException e =
+        assertThrows(
+            InvocationTargetException.class,
+            () -> method.invoke(null, new Object[] {null}));
+
+    assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+    assertThat((IllegalArgumentException) e.getCause())
+        .hasMessageThat()
+        .contains("captured `null` as type argument");
+  }
+
   private static <T> TypeToken<T> createWithTypeVariable() {
     return new TypeToken<T>() {};
+  }
+
+  private static <T> TypeToken<T[]> createWithArrayOfTypeVariable() {
+    return new TypeToken<T[]>() {};
+  }
+
+  private static <T> TypeToken<?> createWithInnerClassOfGenericOuter() {
+    return new TypeToken<GenericOuter<T>.Inner>() {};
+  }
+
+  private static <T> TypeToken<?> createWithWildcardLowerBoundTypeVariable() {
+    return new TypeToken<List<? super T>>() {};
+  }
+
+  private static <T> TypeToken<?> createWithWildcardUpperBoundTypeVariable() {
+    return new TypeToken<List<? extends T>>() {};
+  }
+
+  static class GenericOuter<T> {
+    class Inner {}
   }
 }
