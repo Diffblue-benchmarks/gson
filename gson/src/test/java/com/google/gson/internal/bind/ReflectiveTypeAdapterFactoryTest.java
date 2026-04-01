@@ -36,6 +36,21 @@ public final class ReflectiveTypeAdapterFactoryTest {
     }
   }
 
+  private static class NestedBean {
+    String label;
+    SimpleBean inner;
+
+    NestedBean() {}
+  }
+
+  private static class MultiFieldBean {
+    String first;
+    String second;
+    int count;
+
+    MultiFieldBean() {}
+  }
+
   @Test
   public void testFieldsDataConstructorViaSerialization() {
     Gson gson = new GsonBuilder().create();
@@ -57,5 +72,66 @@ public final class ReflectiveTypeAdapterFactoryTest {
 
     assertThat(bean.name).isEqualTo("hello");
     assertThat(bean.value).isEqualTo(7);
+  }
+
+  @Test
+  public void testFieldReflectionAdapterCreatesAccumulator() {
+    Gson gson = new GsonBuilder().create();
+
+    SimpleBean bean = gson.fromJson("{}", SimpleBean.class);
+
+    assertThat(bean).isNotNull();
+    assertThat(bean.name).isNull();
+    assertThat(bean.value).isEqualTo(0);
+  }
+
+  @Test
+  public void testFieldReflectionAdapterReadFieldSetsValues() {
+    Gson gson = new GsonBuilder().create();
+
+    MultiFieldBean bean =
+        gson.fromJson(
+            "{\"first\":\"alpha\",\"second\":\"beta\",\"count\":3}", MultiFieldBean.class);
+
+    assertThat(bean.first).isEqualTo("alpha");
+    assertThat(bean.second).isEqualTo("beta");
+    assertThat(bean.count).isEqualTo(3);
+  }
+
+  @Test
+  public void testFieldReflectionAdapterFinalizeReturnsPopulatedObject() {
+    Gson gson = new GsonBuilder().create();
+    String json = "{\"name\":\"finalized\",\"value\":99}";
+
+    SimpleBean bean = gson.fromJson(json, SimpleBean.class);
+
+    assertThat(bean).isNotNull();
+    assertThat(bean.name).isEqualTo("finalized");
+    assertThat(bean.value).isEqualTo(99);
+  }
+
+  @Test
+  public void testFieldReflectionAdapterWithNestedObject() {
+    Gson gson = new GsonBuilder().create();
+    String json = "{\"label\":\"outer\",\"inner\":{\"name\":\"inner\",\"value\":5}}";
+
+    NestedBean bean = gson.fromJson(json, NestedBean.class);
+
+    assertThat(bean.label).isEqualTo("outer");
+    assertThat(bean.inner).isNotNull();
+    assertThat(bean.inner.name).isEqualTo("inner");
+    assertThat(bean.inner.value).isEqualTo(5);
+  }
+
+  @Test
+  public void testFieldReflectionAdapterRoundTrip() {
+    Gson gson = new GsonBuilder().create();
+    SimpleBean original = new SimpleBean("roundtrip", 123);
+
+    String json = gson.toJson(original);
+    SimpleBean deserialized = gson.fromJson(json, SimpleBean.class);
+
+    assertThat(deserialized.name).isEqualTo("roundtrip");
+    assertThat(deserialized.value).isEqualTo(123);
   }
 }
