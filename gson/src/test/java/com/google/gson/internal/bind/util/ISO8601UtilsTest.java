@@ -160,4 +160,24 @@ public final class ISO8601UtilsTest {
     ISO8601Utils.parse("1970-01-01T00:00:00Z", pos);
     assertThat(pos.getIndex()).isGreaterThan(0);
   }
+
+  @Test
+  public void testParseInvalidTimezoneIndicatorThrowsParseException() {
+    assertThrows(
+        ParseException.class,
+        () -> ISO8601Utils.parse("1970-01-01T00:00:00X", new ParsePosition(0)));
+  }
+
+  @Test
+  public void testParseMismatchedTimezoneThrowsParseException() {
+    assertThrows(
+        ParseException.class,
+        () -> ISO8601Utils.parse("1970-01-01T00:00:00+99:99", new ParsePosition(0)));
+  }
+
+  @Test
+  public void testParseEmptyStringThrowsParseExceptionWithClassName() {
+    assertThrows(
+        ParseException.class, () -> ISO8601Utils.parse("", new ParsePosition(0)));
+  }
 }
