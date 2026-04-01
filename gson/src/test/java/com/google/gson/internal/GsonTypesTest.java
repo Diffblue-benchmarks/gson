@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThrows;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -411,6 +412,53 @@ public final class GsonTypesTest {
   @Test
   public void testRequiresOwnerTypeForNonStaticInnerClass() {
     assertThat(GsonTypes.requiresOwnerType(NonStaticInner.class)).isTrue();
+  }
+
+  @Test
+  public void testResolveTypeVariableSeenAgainReturnsCachedResult() {
+    // HashMap has type parameters K and V; use K twice to trigger the cached-result path (line 360)
+    TypeVariable<?> K = HashMap.class.getTypeParameters()[0];
+    ParameterizedType mapKK =
+        GsonTypes.newParameterizedTypeWithOwner(null, HashMap.class, K, K);
+    ParameterizedType contextType =
+        GsonTypes.newParameterizedTypeWithOwner(null, HashMap.class, String.class, Integer.class);
+
+    Type result = GsonTypes.resolve(contextType, HashMap.class, mapKK);
+
+    assertThat(result).isInstanceOf(ParameterizedType.class);
+    Type[] typeArgs = ((ParameterizedType) result).getActualTypeArguments();
+    // Both positions had TypeVariable K; K resolves to String (first arg in context).
+    // The second occurrence hits the cached-result path and also returns String.
+    assertThat(typeArgs[0]).isEqualTo(String.class);
+    assertThat(typeArgs[1]).isEqualTo(String.class);
+  }
+
+  @Test
+  public void testResolveWildcardLowerBoundResolvable() {
+    // ? super E in context of ArrayList<String> → lowerBound resolves to String (lines 423-427)
+    TypeVariable<?> typeVarE = ArrayList.class.getTypeParameters()[0];
+    WildcardType supertypeOfE = GsonTypes.supertypeOf(typeVarE);
+    ParameterizedType listStringType =
+        GsonTypes.newParameterizedTypeWithOwner(null, ArrayList.class, String.class);
+
+    Type result = GsonTypes.resolve(listStringType, ArrayList.class, supertypeOfE);
+
+    assertThat(result).isInstanceOf(WildcardType.class);
+    assertThat(((WildcardType) result).getLowerBounds()[0]).isEqualTo(String.class);
+  }
+
+  @Test
+  public void testResolveWildcardUpperBoundResolvable() {
+    // ? extends E in context of ArrayList<String> → upperBound resolves to String (lines 433-434)
+    TypeVariable<?> typeVarE = ArrayList.class.getTypeParameters()[0];
+    WildcardType subtypeOfE = GsonTypes.subtypeOf(typeVarE);
+    ParameterizedType listStringType =
+        GsonTypes.newParameterizedTypeWithOwner(null, ArrayList.class, String.class);
+
+    Type result = GsonTypes.resolve(listStringType, ArrayList.class, subtypeOfE);
+
+    assertThat(result).isInstanceOf(WildcardType.class);
+    assertThat(((WildcardType) result).getUpperBounds()[0]).isEqualTo(String.class);
   }
 
   @SuppressWarnings("InnerClassMayBeStatic")
