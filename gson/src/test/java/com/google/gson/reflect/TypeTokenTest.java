@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThrows;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
@@ -202,6 +203,23 @@ public final class TypeTokenTest {
     TypeToken<?> arrayToken = TypeToken.getArray(String.class);
 
     assertThat(arrayToken.isAssignableFrom(String[].class)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings({"deprecation", "unchecked"})
+  public void testIsAssignableFromGenericArrayTypeWithParameterizedComponent() {
+    TypeToken<?> token = new TypeToken<List<String>[]>() {};
+    Type fromType = new TypeToken<ArrayList<String>[]>() {}.getType();
+
+    assertThat(token.isAssignableFrom(fromType)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testIsAssignableFromClassArrayWithParameterizedComponentType() {
+    TypeToken<?> token = new TypeToken<List<String>[]>() {};
+
+    assertThat(token.isAssignableFrom(ArrayList[].class)).isFalse();
   }
 
   @Test
