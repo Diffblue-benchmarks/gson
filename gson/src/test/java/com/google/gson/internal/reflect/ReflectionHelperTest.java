@@ -162,6 +162,33 @@ public final class ReflectionHelperTest {
   }
 
   @Test
+  public void testTryMakeAccessibleFailure() throws Exception {
+    Constructor<?> constructor = SampleClass.class.getDeclaredConstructor();
+    SecurityManager original = System.getSecurityManager();
+    String result;
+    System.setSecurityManager(
+        new SecurityManager() {
+          @Override
+          public void checkPermission(java.security.Permission perm) {
+            if (perm instanceof java.lang.reflect.ReflectPermission
+                && "suppressAccessChecks".equals(perm.getName())) {
+              throw new SecurityException("reflective access denied");
+            }
+          }
+        });
+    try {
+      result = ReflectionHelper.tryMakeAccessible(constructor);
+    } finally {
+      System.setSecurityManager(original);
+    }
+
+    assertThat(result).isNotNull();
+    assertThat(result).contains("Failed making constructor '");
+    assertThat(result).contains("SampleClass");
+    assertThat(result).contains("reflective access denied");
+  }
+
+  @Test
   public void testIsRecordReturnsFalse() {
     // On JDK versions without record support, isRecord returns false
     assertThat(ReflectionHelper.isRecord(String.class)).isFalse();
