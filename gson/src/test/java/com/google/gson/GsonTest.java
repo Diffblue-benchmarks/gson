@@ -30,6 +30,7 @@ import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
 import org.junit.Before;
 import org.junit.Test;
@@ -602,6 +603,27 @@ public final class GsonTest {
     JsonWriter jsonWriter = new JsonWriter(throwingWriter);
     assertThrows(
         JsonIOException.class, () -> gson.toJson("hello", String.class, jsonWriter));
+  }
+
+  @Test
+  public void testAtomicLongSerialization() {
+    AtomicLong atomicLong = new AtomicLong(42L);
+    String json = gson.toJson(atomicLong);
+    assertThat(json).isEqualTo("42");
+  }
+
+  @Test
+  public void testAtomicLongDeserialization() {
+    AtomicLong result = gson.fromJson("123", AtomicLong.class);
+    assertThat(result.get()).isEqualTo(123L);
+  }
+
+  @Test
+  public void testAtomicLongRoundTrip() {
+    AtomicLong original = new AtomicLong(Long.MAX_VALUE);
+    String json = gson.toJson(original);
+    AtomicLong deserialized = gson.fromJson(json, AtomicLong.class);
+    assertThat(deserialized.get()).isEqualTo(original.get());
   }
 
   @Test
