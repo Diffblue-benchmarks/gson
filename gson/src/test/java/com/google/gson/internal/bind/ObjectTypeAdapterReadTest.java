@@ -17,6 +17,7 @@
 package com.google.gson.internal.bind;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -181,5 +182,15 @@ public final class ObjectTypeAdapterReadTest {
     List<?> list = (List<?>) map.get("items");
     assertThat(list.get(0)).isEqualTo(1.0);
     assertThat(list.get(1)).isEqualTo(2.0);
+  }
+
+  @Test
+  public void testReadTerminalThrowsForUnexpectedToken() throws IOException {
+    // Manually advance past the opening brace so the reader is positioned at a NAME token.
+    // readTerminal has no case for NAME and should throw IllegalStateException.
+    JsonReader reader = new JsonReader(new StringReader("{\"key\": \"value\"}"));
+    reader.beginObject();
+
+    assertThrows(IllegalStateException.class, () -> adapter.read(reader));
   }
 }
