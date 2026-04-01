@@ -738,4 +738,71 @@ public final class JsonReaderTest {
     assertThat(reader.nextInt()).isEqualTo(42);
     reader.close();
   }
+
+  @Test
+  public void testSkipValueUnquotedString() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[unquoted, 42]"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.endArray();
+    reader.close();
+  }
+
+  @Test
+  public void testSkipValueSingleQuotedString() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("['value', 42]"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.endArray();
+    reader.close();
+  }
+
+  @Test
+  public void testSkipValueNumber() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[42, 100]"));
+    reader.beginArray();
+    reader.skipValue();
+    assertThat(reader.nextInt()).isEqualTo(100);
+    reader.endArray();
+    reader.close();
+  }
+
+  @Test
+  public void testSkipValueUnquotedNameUpdatesPath() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{unquoted: 1}"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginObject();
+    reader.skipValue();
+    assertThat(reader.getPath()).isEqualTo("$.<skipped>");
+    reader.skipValue();
+    reader.endObject();
+    reader.close();
+  }
+
+  @Test
+  public void testSkipValueSingleQuotedNameUpdatesPath() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{'name': 1}"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginObject();
+    reader.skipValue();
+    assertThat(reader.getPath()).isEqualTo("$.<skipped>");
+    reader.skipValue();
+    reader.endObject();
+    reader.close();
+  }
+
+  @Test
+  public void testSkipValueDoubleQuotedNameUpdatesPath() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("{\"key\": 1}"));
+    reader.beginObject();
+    reader.skipValue();
+    assertThat(reader.getPath()).isEqualTo("$.<skipped>");
+    reader.skipValue();
+    reader.endObject();
+    reader.close();
+  }
 }
