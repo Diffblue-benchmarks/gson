@@ -447,4 +447,36 @@ public final class LinkedTreeMapTest {
       assertThat(map.get(i)).isEqualTo("v" + i);
     }
   }
+
+  @Test
+  public void testInsertRightLeftRotation() {
+    // Inserting 1, 3, 2 triggers AVL right-left rotation:
+    // after inserting 2, node 1 has right subtree (3) that is left-heavy (has left child 2),
+    // causing a rotateRight(3) followed by rotateLeft(1).
+    LinkedTreeMap<Integer, String> map = new LinkedTreeMap<>();
+    map.put(1, "a");
+    map.put(3, "c");
+    map.put(2, "b");
+
+    assertThat(map.size()).isEqualTo(3);
+    assertThat(map.get(1)).isEqualTo("a");
+    assertThat(map.get(2)).isEqualTo("b");
+    assertThat(map.get(3)).isEqualTo("c");
+  }
+
+  @Test
+  public void testInsertCreatesBalancedNodeStopsRebalancing() {
+    // Inserting 2, 1, 3 triggers the delta==0 case during rebalance on insert:
+    // after inserting 3, node 2 has leftHeight==rightHeight==1, so height is updated
+    // and the rebalance loop breaks early because the insert restored balance.
+    LinkedTreeMap<Integer, String> map = new LinkedTreeMap<>();
+    map.put(2, "b");
+    map.put(1, "a");
+    map.put(3, "c");
+
+    assertThat(map.size()).isEqualTo(3);
+    assertThat(map.get(1)).isEqualTo("a");
+    assertThat(map.get(2)).isEqualTo("b");
+    assertThat(map.get(3)).isEqualTo("c");
+  }
 }
