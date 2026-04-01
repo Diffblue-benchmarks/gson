@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThrows;
 import com.google.gson.InstanceCreator;
 import com.google.gson.JsonIOException;
 import com.google.gson.ReflectionAccessFilter;
+import com.google.gson.ReflectionAccessFilter.FilterResult;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayDeque;
@@ -317,6 +318,49 @@ public final class ConstructorConstructorTest {
     assertThat(ex).hasMessageThat().contains("usage of JDK Unsafe is disabled");
   }
 
+  // ---- newDefaultConstructor: BLOCK_ALL with public constructor (covers line 239) ----
+
+  @Test
+  public void testNewDefaultConstructorBlockAllPublicConstructorSucceeds() {
+    ConstructorConstructor cc =
+        new ConstructorConstructor(
+            Collections.<Type, InstanceCreator<?>>emptyMap(),
+            true,
+            Collections.<ReflectionAccessFilter>singletonList(
+                clazz -> FilterResult.BLOCK_ALL));
+    ObjectConstructor<SimpleBean> ctor = cc.get(TypeToken.get(SimpleBean.class));
+    assertThat(ctor.construct()).isInstanceOf(SimpleBean.class);
+  }
+
+  // ---- newDefaultConstructor: BLOCK_ALL with non-public constructor (covers lines 246, 253, 254) ----
+
+  @Test
+  public void testNewDefaultConstructorBlockAllNonPublicConstructorThrows() {
+    ConstructorConstructor cc =
+        new ConstructorConstructor(
+            Collections.<Type, InstanceCreator<?>>emptyMap(),
+            true,
+            Collections.<ReflectionAccessFilter>singletonList(
+                clazz -> FilterResult.BLOCK_ALL));
+    ObjectConstructor<PackagePrivateCtorClass> ctor =
+        cc.get(TypeToken.get(PackagePrivateCtorClass.class));
+    JsonIOException ex = assertThrows(JsonIOException.class, ctor::construct);
+    assertThat(ex).hasMessageThat().contains("Unable to invoke no-args constructor");
+    assertThat(ex).hasMessageThat().contains("ReflectionAccessFilter");
+  }
+
+  // ---- newDefaultConstructor: constructor throws (covers lines 294, 297, 299, 301) ----
+
+  @Test
+  public void testNewDefaultConstructorThrowingConstructorWrapsException() {
+    ConstructorConstructor cc = newConstructorConstructor();
+    ObjectConstructor<ThrowingConstructorClass> ctor =
+        cc.get(TypeToken.get(ThrowingConstructorClass.class));
+    RuntimeException ex = assertThrows(RuntimeException.class, ctor::construct);
+    assertThat(ex).hasMessageThat().contains("Failed to invoke constructor");
+    assertThat(ex.getCause()).hasMessageThat().isEqualTo("constructor threw");
+  }
+
   // ---- helper types ----
 
   static abstract class AbstractBase {}
@@ -327,6 +371,16 @@ public final class ConstructorConstructorTest {
 
   public static final class NoArglessConstructorClass {
     public NoArglessConstructorClass(String ignored) {}
+  }
+
+  public static final class PackagePrivateCtorClass {
+    PackagePrivateCtorClass() {}
+  }
+
+  public static final class ThrowingConstructorClass {
+    public ThrowingConstructorClass() {
+      throw new RuntimeException("constructor threw");
+    }
   }
 
   enum MyEnum {
