@@ -624,4 +624,36 @@ public final class JsonReaderTest {
     assertThat(reader.nextInt()).isEqualTo(42);
     reader.close();
   }
+
+  @Test
+  public void testSkipToEndOfLineCommentWithNewline() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("// comment\n42"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.close();
+  }
+
+  @Test
+  public void testSkipToEndOfLineCommentWithCarriageReturn() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("// comment\r42"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.close();
+  }
+
+  @Test
+  public void testSkipToHashCommentWithNewline() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("# comment\n42"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.close();
+  }
+
+  @Test
+  public void testSkipToHashCommentWithCarriageReturn() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("# comment\r42"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.close();
+  }
 }
