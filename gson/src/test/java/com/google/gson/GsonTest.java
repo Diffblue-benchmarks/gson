@@ -692,6 +692,41 @@ public final class GsonTest {
   }
 
   @Test
+  public void testFloatAdapterDeserializeNullValue() {
+    Float result = gson.fromJson("null", Float.class);
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void testFloatAdapterDeserializeValue() {
+    Float result = gson.fromJson("3.14", Float.class);
+    assertThat(result).isEqualTo(3.14f);
+  }
+
+  @Test
+  public void testFloatAdapterSerializeNull() {
+    String json = gson.toJson(null, Float.class);
+    assertThat(json).isEqualTo("null");
+  }
+
+  @Test
+  public void testFloatAdapterSerializeValue() {
+    String json = gson.toJson(1.5f);
+    assertThat(json).isEqualTo("1.5");
+  }
+
+  @Test
+  public void testFloatAdapterSerializeNanThrows() {
+    assertThrows(IllegalArgumentException.class, () -> gson.toJson(Float.NaN));
+  }
+
+  @Test
+  public void testFloatAdapterSerializeInfinityThrows() {
+    assertThrows(IllegalArgumentException.class, () -> gson.toJson(Float.POSITIVE_INFINITY));
+    assertThrows(IllegalArgumentException.class, () -> gson.toJson(Float.NEGATIVE_INFINITY));
+  }
+
+  @Test
   public void testAtomicLongArrayToJsonWithWriterAssertionError() {
     JsonWriter throwingWriter =
         new JsonWriter(new StringWriter()) {
