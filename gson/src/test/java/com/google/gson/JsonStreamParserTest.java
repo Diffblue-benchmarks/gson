@@ -19,6 +19,8 @@ package com.google.gson;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.NoSuchElementException;
 import org.junit.Test;
@@ -91,5 +93,26 @@ public final class JsonStreamParserTest {
   public void testNextWithMalformedJsonThrowsJsonParseException() {
     JsonStreamParser parser = new JsonStreamParser("{invalid}");
     assertThrows(JsonParseException.class, () -> parser.next());
+  }
+
+  @Test
+  public void testHasNextMalformedJsonThrowsJsonSyntaxException() {
+    JsonStreamParser parser = new JsonStreamParser(",");
+    assertThrows(JsonSyntaxException.class, () -> parser.hasNext());
+  }
+
+  @Test
+  public void testHasNextIOExceptionThrowsJsonIOException() {
+    Reader throwingReader = new Reader() {
+      @Override
+      public int read(char[] cbuf, int off, int len) throws IOException {
+        throw new IOException("test IO error");
+      }
+
+      @Override
+      public void close() throws IOException {}
+    };
+    JsonStreamParser parser = new JsonStreamParser(throwingReader);
+    assertThrows(JsonIOException.class, () -> parser.hasNext());
   }
 }
