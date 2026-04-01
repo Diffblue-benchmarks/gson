@@ -667,6 +667,31 @@ public final class GsonTest {
   }
 
   @Test
+  public void testLongAdapterStringPolicyDeserializeValue() {
+    Gson g = new GsonBuilder().setLongSerializationPolicy(LongSerializationPolicy.STRING).create();
+    Long result = g.fromJson("\"123\"", Long.class);
+    assertThat(result).isEqualTo(123L);
+  }
+
+  @Test
+  public void testLongAdapterStringPolicyDeserializeNull() {
+    Gson g = new GsonBuilder().setLongSerializationPolicy(LongSerializationPolicy.STRING).create();
+    Long result = g.fromJson("null", Long.class);
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void testLongAdapterStringPolicySerializeNull() {
+    Gson g =
+        new GsonBuilder()
+            .setLongSerializationPolicy(LongSerializationPolicy.STRING)
+            .serializeNulls()
+            .create();
+    String json = g.toJson(null, Long.class);
+    assertThat(json).isEqualTo("null");
+  }
+
+  @Test
   public void testAtomicLongArrayToJsonWithWriterAssertionError() {
     JsonWriter throwingWriter =
         new JsonWriter(new StringWriter()) {
