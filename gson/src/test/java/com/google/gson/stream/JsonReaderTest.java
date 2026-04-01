@@ -805,4 +805,41 @@ public final class JsonReaderTest {
     reader.endObject();
     reader.close();
   }
+
+  @Test
+  public void testNextIntLongOverflowThrows() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[9999999999]"));
+    reader.beginArray();
+    NumberFormatException e = assertThrows(NumberFormatException.class, reader::nextInt);
+    assertThat(e).hasMessageThat().contains("9999999999");
+    reader.close();
+  }
+
+  @Test
+  public void testNextIntFromDoubleQuotedString() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[\"42\"]"));
+    reader.beginArray();
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.endArray();
+    reader.close();
+  }
+
+  @Test
+  public void testNextIntFromUnquotedString() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[+42]"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginArray();
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.endArray();
+    reader.close();
+  }
+
+  @Test
+  public void testNextIntFromFractionalStringThrows() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[\"1.5\"]"));
+    reader.beginArray();
+    NumberFormatException e = assertThrows(NumberFormatException.class, reader::nextInt);
+    assertThat(e).hasMessageThat().contains("1.5");
+    reader.close();
+  }
 }
