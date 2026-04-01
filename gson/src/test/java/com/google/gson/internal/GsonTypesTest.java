@@ -461,6 +461,22 @@ public final class GsonTypesTest {
     assertThat(((WildcardType) result).getUpperBounds()[0]).isEqualTo(String.class);
   }
 
+  @Test
+  public void testGetCollectionElementTypeWildcardContext() {
+    ParameterizedType listStringType =
+        GsonTypes.newParameterizedTypeWithOwner(null, ArrayList.class, String.class);
+    WildcardType wildcardContext = GsonTypes.subtypeOf(listStringType);
+    Type elementType = GsonTypes.getCollectionElementType(wildcardContext, ArrayList.class);
+    assertThat(elementType).isEqualTo(String.class);
+  }
+
+  @Test
+  public void testGetCollectionElementTypeInvalidContextRawTypeThrows() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> GsonTypes.getCollectionElementType(String.class, String.class));
+  }
+
   @SuppressWarnings("InnerClassMayBeStatic")
   class NonStaticInner {}
 }
