@@ -30,6 +30,7 @@ import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLongArray;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -604,7 +605,47 @@ public final class GsonTest {
   }
 
   @Test
-  public void testToJsonWithTypeJsonWriterAssertionError() {
+  public void testAtomicLongArraySerialization() {
+    AtomicLongArray array = new AtomicLongArray(new long[] {1L, 2L, 3L});
+    String json = gson.toJson(array);
+    assertThat(json).isEqualTo("[1,2,3]");
+  }
+
+  @Test
+  public void testAtomicLongArraySerializationEmpty() {
+    AtomicLongArray array = new AtomicLongArray(0);
+    String json = gson.toJson(array);
+    assertThat(json).isEqualTo("[]");
+  }
+
+  @Test
+  public void testAtomicLongArrayDeserialization() {
+    AtomicLongArray array = gson.fromJson("[10,20,30]", AtomicLongArray.class);
+    assertThat(array.length()).isEqualTo(3);
+    assertThat(array.get(0)).isEqualTo(10L);
+    assertThat(array.get(1)).isEqualTo(20L);
+    assertThat(array.get(2)).isEqualTo(30L);
+  }
+
+  @Test
+  public void testAtomicLongArrayDeserializationEmpty() {
+    AtomicLongArray array = gson.fromJson("[]", AtomicLongArray.class);
+    assertThat(array.length()).isEqualTo(0);
+  }
+
+  @Test
+  public void testAtomicLongArrayRoundTrip() {
+    AtomicLongArray original = new AtomicLongArray(new long[] {Long.MIN_VALUE, 0L, Long.MAX_VALUE});
+    String json = gson.toJson(original);
+    AtomicLongArray deserialized = gson.fromJson(json, AtomicLongArray.class);
+    assertThat(deserialized.length()).isEqualTo(original.length());
+    for (int i = 0; i < original.length(); i++) {
+      assertThat(deserialized.get(i)).isEqualTo(original.get(i));
+    }
+  }
+
+  @Test
+  public void testAtomicLongArrayToJsonWithWriterAssertionError() {
     JsonWriter throwingWriter =
         new JsonWriter(new StringWriter()) {
           @Override
