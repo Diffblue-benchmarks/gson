@@ -842,4 +842,43 @@ public final class JsonReaderTest {
     assertThat(e).hasMessageThat().contains("1.5");
     reader.close();
   }
+
+  @Test
+  public void testNextStringUnquoted() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[hello]"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginArray();
+    assertThat(reader.nextString()).isEqualTo("hello");
+    reader.endArray();
+    reader.close();
+  }
+
+  @Test
+  public void testNextStringSingleQuoted() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("['hello']"));
+    reader.setStrictness(Strictness.LENIENT);
+    reader.beginArray();
+    assertThat(reader.nextString()).isEqualTo("hello");
+    reader.endArray();
+    reader.close();
+  }
+
+  @Test
+  public void testNextStringFromFloatNumber() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[1.5]"));
+    reader.beginArray();
+    assertThat(reader.nextString()).isEqualTo("1.5");
+    reader.endArray();
+    reader.close();
+  }
+
+  @Test
+  public void testNextStringFromBufferedAfterFailedLong() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("[1.5]"));
+    reader.beginArray();
+    assertThrows(NumberFormatException.class, reader::nextLong);
+    assertThat(reader.nextString()).isEqualTo("1.5");
+    reader.endArray();
+    reader.close();
+  }
 }
