@@ -329,6 +329,56 @@ public final class ExcluderTest {
     assertThat(excluder.excludeClass(String.class, false)).isFalse();
   }
 
+  @Test
+  public void testCreateAdapterExcludedSerializationReadDelegatesToRealAdapter() throws IOException {
+    // skipSerialize=true, skipDeserialize=false: read() must delegate to real adapter (line 134)
+    ExclusionStrategy strategy = new AlwaysExcludeStrategy();
+    Excluder result = excluder.withExclusionStrategy(strategy, true, false);
+    Gson gson = new GsonBuilder().create();
+    TypeAdapter<String> adapter = result.create(gson, TypeToken.get(String.class));
+    assertThat(adapter).isNotNull();
+
+    JsonReader reader = new JsonReader(new StringReader("\"hello\""));
+    String value = adapter.read(reader);
+    assertThat(value).isEqualTo("hello");
+  }
+
+  @Test
+  public void testCreateAdapterExcludedDeserializationWriteDelegatesToRealAdapter()
+      throws IOException {
+    // skipSerialize=false, skipDeserialize=true: write() must delegate to real adapter (line 143)
+    ExclusionStrategy strategy = new AlwaysExcludeStrategy();
+    Excluder result = excluder.withExclusionStrategy(strategy, false, true);
+    Gson gson = new GsonBuilder().create();
+    TypeAdapter<String> adapter = result.create(gson, TypeToken.get(String.class));
+    assertThat(adapter).isNotNull();
+
+    StringWriter sw = new StringWriter();
+    JsonWriter writer = new JsonWriter(sw);
+    adapter.write(writer, "world");
+    writer.flush();
+    assertThat(sw.toString()).isEqualTo("\"world\"");
+  }
+
+  @Test
+  public void testCreateAdapterDelegateLazyInitializedOnlyOnce() throws IOException {
+    // Verifies that delegate() (lines 149-153) is lazily created and reused on subsequent calls
+    ExclusionStrategy strategy = new AlwaysExcludeStrategy();
+    Excluder result = excluder.withExclusionStrategy(strategy, true, false);
+    Gson gson = new GsonBuilder().create();
+    TypeAdapter<String> adapter = result.create(gson, TypeToken.get(String.class));
+    assertThat(adapter).isNotNull();
+
+    // Call read() twice to exercise delegate caching (d != null path on second call)
+    JsonReader reader1 = new JsonReader(new StringReader("\"first\""));
+    String value1 = adapter.read(reader1);
+    assertThat(value1).isEqualTo("first");
+
+    JsonReader reader2 = new JsonReader(new StringReader("\"second\""));
+    String value2 = adapter.read(reader2);
+    assertThat(value2).isEqualTo("second");
+  }
+
   // Test data classes
 
   @Since(2.0)
