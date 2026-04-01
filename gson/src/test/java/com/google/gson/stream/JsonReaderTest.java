@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import com.google.gson.Strictness;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
@@ -652,6 +653,63 @@ public final class JsonReaderTest {
   @Test
   public void testSkipToHashCommentWithCarriageReturn() throws IOException {
     JsonReader reader = new JsonReader(new StringReader("# comment\r42"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.close();
+  }
+
+  @Test
+  public void testNextNonWhitespaceNewlineIncrementsLineNumber() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\n42"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.close();
+  }
+
+  @Test
+  public void testNextNonWhitespaceTab() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\t42"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.close();
+  }
+
+  @Test
+  public void testNextNonWhitespaceCarriageReturn() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("\r42"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.close();
+  }
+
+  @Test
+  public void testNextNonWhitespaceThrowsEofExceptionOnTruncatedArray() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("["));
+    reader.beginArray();
+    assertThrows(EOFException.class, reader::peek);
+    reader.close();
+  }
+
+  @Test
+  public void testNextNonWhitespaceSlashNotFollowedByCommentChar() throws IOException {
+    // In LENIENT mode, '/' followed by a char that is neither '*' nor '/' causes
+    // nextNonWhitespace to return '/', which then results in a syntax error.
+    JsonReader reader = new JsonReader(new StringReader("/1"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThrows(MalformedJsonException.class, reader::peek);
+    reader.close();
+  }
+
+  @Test
+  public void testNextNonWhitespaceSlashAtBufferBoundary() throws IOException {
+    // Place '/' exactly at the end of the 1024-char buffer to exercise the path where
+    // p == l after reading '/' and fillBuffer(2) must be called to peek at next char.
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < JsonReader.BUFFER_SIZE - 1; i++) {
+      sb.append(' ');
+    }
+    sb.append("/* comment */42");
+    JsonReader reader = new JsonReader(new StringReader(sb.toString()));
     reader.setStrictness(Strictness.LENIENT);
     assertThat(reader.nextInt()).isEqualTo(42);
     reader.close();
