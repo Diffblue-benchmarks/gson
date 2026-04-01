@@ -599,4 +599,29 @@ public final class JsonReaderTest {
     reader.skipValue();
     reader.close();
   }
+
+  @Test
+  public void testSkipToCStyleComment() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("/* comment */ 42"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.close();
+  }
+
+  @Test
+  public void testSkipToUnterminatedCStyleComment() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("/* unterminated"));
+    reader.setStrictness(Strictness.LENIENT);
+    MalformedJsonException e = assertThrows(MalformedJsonException.class, reader::peek);
+    assertThat(e).hasMessageThat().contains("Unterminated comment");
+    reader.close();
+  }
+
+  @Test
+  public void testSkipToCommentWithNewlines() throws IOException {
+    JsonReader reader = new JsonReader(new StringReader("/* line1\nline2 */ 42"));
+    reader.setStrictness(Strictness.LENIENT);
+    assertThat(reader.nextInt()).isEqualTo(42);
+    reader.close();
+  }
 }
