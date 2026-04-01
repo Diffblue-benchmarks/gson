@@ -278,6 +278,23 @@ public final class TypeTokenTest {
     assertThat(e).hasMessageThat().contains("Type argument must not be null");
   }
 
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testIsAssignableFromUnsupportedTypeThrows() {
+    Type wildcardType =
+        ((ParameterizedType) new TypeToken<List<? extends Number>>() {}.getType())
+            .getActualTypeArguments()[0];
+    TypeToken<?> wildcardToken = TypeToken.get(wildcardType);
+
+    IllegalArgumentException e =
+        assertThrows(
+            IllegalArgumentException.class, () -> wildcardToken.isAssignableFrom(Integer.class));
+
+    assertThat(e).hasMessageThat().contains("Unsupported type, expected one of:");
+    assertThat(e).hasMessageThat().contains("but got:");
+    assertThat(e).hasMessageThat().contains("for type token:");
+  }
+
   private static <T> TypeToken<T> createWithTypeVariable() {
     return new TypeToken<T>() {};
   }
