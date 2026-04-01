@@ -127,6 +127,35 @@ public final class ReflectionHelperTest {
   }
 
   @Test
+  public void testMakeAccessibleFailure() throws Exception {
+    Field field = SampleClass.class.getDeclaredField("value");
+    SecurityManager original = System.getSecurityManager();
+    JsonIOException thrown = null;
+    System.setSecurityManager(
+        new SecurityManager() {
+          @Override
+          public void checkPermission(java.security.Permission perm) {
+            if (perm instanceof java.lang.reflect.ReflectPermission
+                && "suppressAccessChecks".equals(perm.getName())) {
+              throw new SecurityException("reflective access denied");
+            }
+          }
+        });
+    try {
+      ReflectionHelper.makeAccessible(field);
+    } catch (JsonIOException e) {
+      thrown = e;
+    } finally {
+      System.setSecurityManager(original);
+    }
+
+    assertThat(thrown).isNotNull();
+    assertThat(thrown).hasMessageThat().contains("Failed making");
+    assertThat(thrown).hasMessageThat().contains("SampleClass#value");
+    assertThat(thrown.getCause()).isInstanceOf(SecurityException.class);
+  }
+
+  @Test
   public void testIsStaticTrue() {
     assertThat(ReflectionHelper.isStatic(StaticInner.class)).isTrue();
   }
