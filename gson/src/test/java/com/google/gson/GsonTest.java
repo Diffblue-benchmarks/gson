@@ -572,4 +572,50 @@ public final class GsonTest {
             AssertionError.class, () -> gson.toJson(new JsonPrimitive("hello"), throwingWriter));
     assertThat(e).hasMessageThat().contains("AssertionError (GSON");
   }
+
+  @Test
+  public void testToJsonWithTypeJsonWriterWithGsonStrictness() throws IOException {
+    Gson strictGson = new GsonBuilder().setStrictness(Strictness.STRICT).create();
+    StringWriter sw = new StringWriter();
+    JsonWriter writer = new JsonWriter(sw);
+    strictGson.toJson("hello", String.class, writer);
+    writer.flush();
+    assertThat(sw.toString()).isEqualTo("\"hello\"");
+  }
+
+  @Test
+  public void testToJsonWithTypeJsonWriterIOException() {
+    Writer throwingWriter =
+        new Writer() {
+          @Override
+          public void write(char[] cbuf, int off, int len) throws IOException {
+            throw new IOException("simulated io error");
+          }
+
+          @Override
+          public void flush() throws IOException {}
+
+          @Override
+          public void close() throws IOException {}
+        };
+    JsonWriter jsonWriter = new JsonWriter(throwingWriter);
+    assertThrows(
+        JsonIOException.class, () -> gson.toJson("hello", String.class, jsonWriter));
+  }
+
+  @Test
+  public void testToJsonWithTypeJsonWriterAssertionError() {
+    JsonWriter throwingWriter =
+        new JsonWriter(new StringWriter()) {
+          @Override
+          public JsonWriter value(String value) throws IOException {
+            throw new AssertionError("simulated assertion error");
+          }
+        };
+    AssertionError e =
+        assertThrows(
+            AssertionError.class,
+            () -> gson.toJson("hello", String.class, throwingWriter));
+    assertThat(e).hasMessageThat().contains("AssertionError (GSON");
+  }
 }
