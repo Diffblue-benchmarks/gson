@@ -26,6 +26,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
@@ -525,6 +526,50 @@ public final class GsonTest {
         assertThrows(
             AssertionError.class,
             () -> assertionErrorGson.fromJson(reader, TypeToken.get(String.class)));
+    assertThat(e).hasMessageThat().contains("AssertionError (GSON");
+  }
+
+  @Test
+  public void testToJsonJsonElementJsonWriterWithGsonStrictness() throws IOException {
+    Gson strictGson = new GsonBuilder().setStrictness(Strictness.STRICT).create();
+    StringWriter sw = new StringWriter();
+    JsonWriter writer = new JsonWriter(sw);
+    strictGson.toJson(new JsonPrimitive("test"), writer);
+    writer.flush();
+    assertThat(sw.toString()).isEqualTo("\"test\"");
+  }
+
+  @Test
+  public void testToJsonJsonElementJsonWriterIOException() {
+    Writer throwingWriter =
+        new Writer() {
+          @Override
+          public void write(char[] cbuf, int off, int len) throws IOException {
+            throw new IOException("simulated io error");
+          }
+
+          @Override
+          public void flush() throws IOException {}
+
+          @Override
+          public void close() throws IOException {}
+        };
+    JsonWriter jsonWriter = new JsonWriter(throwingWriter);
+    assertThrows(JsonIOException.class, () -> gson.toJson(new JsonPrimitive("hello"), jsonWriter));
+  }
+
+  @Test
+  public void testToJsonJsonElementJsonWriterAssertionError() {
+    JsonWriter throwingWriter =
+        new JsonWriter(new StringWriter()) {
+          @Override
+          public JsonWriter value(String value) throws IOException {
+            throw new AssertionError("simulated assertion error");
+          }
+        };
+    AssertionError e =
+        assertThrows(
+            AssertionError.class, () -> gson.toJson(new JsonPrimitive("hello"), throwingWriter));
     assertThat(e).hasMessageThat().contains("AssertionError (GSON");
   }
 }
