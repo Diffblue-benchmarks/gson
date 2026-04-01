@@ -425,6 +425,29 @@ public final class JsonTreeReaderTest {
   }
 
   @Test
+  public void testPushTriggersStackGrowthWithDeeplyNestedJson() throws IOException {
+    // Build a 17-level deeply nested array to trigger the internal stack resize in push()
+    // The initial stack capacity is 32; after 16 beginArray() calls stackSize reaches 32,
+    // and the next peek() invokes push() with stackSize == stack.length, triggering the resize.
+    JsonArray innermost = new JsonArray();
+    innermost.add(new JsonPrimitive(42));
+    JsonArray current = innermost;
+    for (int i = 0; i < 16; i++) {
+      JsonArray outer = new JsonArray();
+      outer.add(current);
+      current = outer;
+    }
+    JsonTreeReader reader = new JsonTreeReader(current);
+    for (int i = 0; i < 16; i++) {
+      reader.beginArray();
+    }
+    // After 16 beginArray() calls stackSize==32==stack.length; the 17th beginArray()
+    // internally calls peek(), which calls push() with stackSize==32, triggering the resize.
+    reader.beginArray();
+    assertThat(reader.nextInt()).isEqualTo(42);
+  }
+
+  @Test
   public void testNextStringInArrayIncrementsPathIndex() throws IOException {
     JsonArray array = new JsonArray();
     array.add(new JsonPrimitive("a"));
