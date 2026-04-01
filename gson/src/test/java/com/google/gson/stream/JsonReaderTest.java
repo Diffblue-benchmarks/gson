@@ -701,6 +701,30 @@ public final class JsonReaderTest {
   }
 
   @Test
+  public void testPushExceedsInitialStackCapacity() throws IOException {
+    // The internal stack starts with capacity 32. Creating JSON with more than 32 levels of
+    // nesting causes the stack arrays to be resized (lines 1476-1479 in JsonReader).
+    int depth = 33;
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < depth; i++) {
+      sb.append('[');
+    }
+    sb.append("1");
+    for (int i = 0; i < depth; i++) {
+      sb.append(']');
+    }
+    JsonReader reader = new JsonReader(new StringReader(sb.toString()));
+    for (int i = 0; i < depth; i++) {
+      reader.beginArray();
+    }
+    assertThat(reader.nextInt()).isEqualTo(1);
+    for (int i = 0; i < depth; i++) {
+      reader.endArray();
+    }
+    reader.close();
+  }
+
+  @Test
   public void testNextNonWhitespaceSlashAtBufferBoundary() throws IOException {
     // Place '/' exactly at the end of the 1024-char buffer to exercise the path where
     // p == l after reading '/' and fillBuffer(2) must be called to peek at next char.
