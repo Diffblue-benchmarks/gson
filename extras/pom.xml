@@ -95,4 +95,21 @@
   <scm>
     <tag>gson-extras-2.12.1</tag>
   </scm>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <configuration>
+          <targetClasses>
+            <param>com.google.gson.extras.*</param>
+            <param>com.google.gson.graph.*</param>
+            <param>com.google.gson.interceptors.*</param>
+            <param>com.google.gson.typeadapters.*</param>
+          </targetClasses>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

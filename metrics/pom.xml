@@ -86,4 +86,18 @@
       <organization>Google Inc.</organization>
     </developer>
   </developers>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <configuration>
+          <targetClasses>
+            <param>com.google.gson.metrics.*</param>
+          </targetClasses>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

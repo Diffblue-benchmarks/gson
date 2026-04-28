@@ -346,6 +346,15 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <configuration>
+          <targetClasses>
+            <param>com.google.gson.*</param>
+          </targetClasses>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
